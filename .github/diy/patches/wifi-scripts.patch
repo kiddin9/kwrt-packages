@@ -1,10 +1,11 @@
 --- a/wifi-scripts/files/lib/wifi/mac80211.uc
 +++ b/wifi-scripts/files/lib/wifi/mac80211.uc
-@@ -77,7 +77,6 @@ set ${s}.${id}
- set ${s}.band='${lc(band_name)}'
- set ${s}.channel='${channel}'
+@@ -90,7 +90,7 @@ set ${s}.channel='${channel}'
  set ${s}.htmode='${htmode}'
--set ${s}.disabled='1'
+ set ${s}.country='${country || ''}'
+ set ${s}.num_global_macaddr='${num_global_macaddr || ''}'
+-set ${s}.disabled='${defaults ? 0 : 1}'
++set ${s}.disabled='0'
  
  set ${si}=wifi-iface
  set ${si}.device='${name}'
