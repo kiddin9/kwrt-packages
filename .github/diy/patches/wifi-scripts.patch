@@ -1,0 +1,10 @@
+--- a/wifi-scripts/files/lib/wifi/mac80211.uc
++++ b/wifi-scripts/files/lib/wifi/mac80211.uc
+@@ -77,7 +77,6 @@ set ${s}.${id}
+ set ${s}.band='${lc(band_name)}'
+ set ${s}.channel='${channel}'
+ set ${s}.htmode='${htmode}'
+-set ${s}.disabled='1'
+ 
+ set ${si}=wifi-iface
+ set ${si}.device='${name}'

@@ -1,0 +1,50 @@
+--- a/luci-app-upnp/root/usr/share/rpcd/ucode/luci.upnp
++++ b/luci-app-upnp/root/usr/share/rpcd/ucode/luci.upnp
+@@ -46,7 +46,7 @@ const methods = {
+ 
+ 			if (ipt) {
+ 				for (let line = ipt.read('line'); length(line); line = ipt.read('line')) {
+-					let m = match(line, /^([0-9]+)\s+([a-z]+).+dpt:([0-9]+) to:(\S+):([0-9]+)/);
++					let m = match(line, /^([0-9]+).*\s+([a-z]+).+dpt:([0-9]+) to:(\S+):([0-9]+)/);
+ 
+ 					if (m) {
+ 						push(rules, {
+
+--- a/luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js
++++ b/luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js
+@@ -178,6 +178,9 @@ return view.extend({
+ 		o.datatype    = 'port'
+ 		o.placeholder = '0-65535'
+ 
++		s.taboption('advanced', form.Flag, 'force_forwarding', _('Force Forwarding'),
++			_('Force forwarding even there is no public IP (please try STUN first)'))
++
+ 		s = m.section(form.GridSection, 'perm_rule', _('MiniUPnP ACLs'),
+ 			_('ACLs specify which external ports may be redirected to which internal addresses and ports'))
+ 
+
+--- a/luci-app-upnp/po/templates/upnp.pot
++++ b/luci-app-upnp/po/templates/upnp.pot
+@@ -214,3 +214,9 @@ msgstr ""
+ #: luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js:140
+ msgid "Value in KByte/s, informational only"
+ msgstr ""
++
++msgid "Force Forwarding"
++msgstr ""
++
++msgid "Force forwarding even there is no public IP (please try STUN first)"
++msgstr ""
+
+--- a/luci-app-upnp/po/zh_Hans/upnp.po
++++ b/luci-app-upnp/po/zh_Hans/upnp.po
+@@ -230,3 +230,9 @@ msgstr "使用 STUN"
+ #: luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js:140
+ msgid "Value in KByte/s, informational only"
+ msgstr "单位为 KByte/s，仅供参考"
++
++msgid "Force Forwarding"
++msgstr "强制转发"
++
++msgid "Force forwarding even there is no public IP (please try STUN first)"
++msgstr "就算没有公网IP也进行转发（请先尝试STUN）"
