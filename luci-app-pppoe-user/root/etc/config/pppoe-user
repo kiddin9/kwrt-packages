@@ -1,0 +1,14 @@
+
+config user
+	option enabled '1'
+	option username 'guest'
+	option servicename '*'
+	option password '12345678'
+	option ipaddr '*'
+	option package 'home'
+	option qos '1'
+	option urate '1850'
+	option drate '3750'
+	option unit 'kbytes'
+	option connect '1024'
+

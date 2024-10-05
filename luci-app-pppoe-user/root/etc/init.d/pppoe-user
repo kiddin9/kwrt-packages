@@ -1,0 +1,70 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=90
+
+SPEED_LIMIT_SWITCH=0
+CURRENT_DATE=$(date +"%Y-%m-%d")
+CHAP_SECRETS=/etc/ppp/chap-secrets
+BACKUP_FILE=/var/pppoe-user/backup
+mkdir -p "${BACKUP_FILE}"
+
+setup_user() {
+    local cfg="$1"
+    config_get enabled "$cfg" enabled
+    config_get username "$cfg" username
+    config_get servicename "$cfg" servicename
+    [ -n "$servicename" ] || servicename="*"
+    config_get password "$cfg" password
+    config_get ipaddr "$cfg" ipaddr
+    config_get qos "$1" qos
+    config_get urate "$1" urate
+    config_get drate "$1" drate
+    config_get unit "$1" unit
+    [ -n "${unit}" ] || unit="kbytes"
+    config_get expires "$cfg" expires
+
+    if [ "$expires" == "$CURRENT_DATE" ]; then
+        uci set pppoe-user."$cfg".enabled=0
+        uci commit pppoe-user
+    fi
+
+    # Do not append to the CHAP_SECRETS file if the user is not enabled
+    if [ "$enabled" -eq 1 ] && [ "$expires" != "$CURRENT_DATE" ]; then
+        echo "$username $servicename $password $ipaddr" >> "$CHAP_SECRETS"
+    fi
+}
+
+daily_check() {
+    (crontab -u root -l ; echo "59 6 * * * /etc/init.d/pppoe-user start") | sort - | uniq - | crontab -u root -
+    (crontab -u root -l ; echo "59 23 * * * cp -f /etc/config/pppoe-user /var/pppoe-user/backup/\$pppoe-user.bak") | sort - | uniq - | crontab -u root -
+}
+
+enable_speed_limit() {
+	nft add table inet pppoe-user-qos
+	nft add chain inet pppoe-user-qos upload { type filter hook prerouting priority filter\; policy accept\; }
+	nft add chain inet pppoe-user-qos download { type filter hook postrouting priority filter\; policy accept\; }
+}
+
+disable_speed_limit() {
+	nft delete table inet pppoe-user-qos
+}
+
+start() {
+    cp -rf "$CHAP_SECRETS" /etc/ppp/lasttime-chap-secrets
+    > "$CHAP_SECRETS"
+    daily_check
+    config_load pppoe-user
+    config_foreach setup_user user
+    chmod 600 "$CHAP_SECRETS"
+    
+    if [ "$SPEED_LIMIT_SWITCH" = "1" ]; then
+        enable_speed_limit
+    else
+        disable_speed_limit
+    fi
+}
+
+stop() {
+    killall -q pppoe-user
+}

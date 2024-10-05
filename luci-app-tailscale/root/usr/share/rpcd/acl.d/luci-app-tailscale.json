@@ -1,0 +1,19 @@
+{
+	"luci-app-tailscale": {
+		"description": "Grant access to Tailscale configuration",
+		"read": {
+			"file": {
+				"/sbin/ifconfig": [ "exec" ],
+				"/sbin/logread": [ "exec" ],
+				"/usr/sbin/tailscale": [ "exec" ]
+			},
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"uci": [ "tailscale" ]
+		},
+		"write": {
+			"uci": [ "tailscale" ]
+		}
+	}
+}

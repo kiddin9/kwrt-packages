@@ -1,0 +1,13 @@
+listen_addrs_ipv6 = ["::0"]
+
+[[zones]]
+zone = "."
+
+zone_type = "Forward"
+stores = { type = "forward", name_servers = [
+        { socket_addr = "[2400:3200::1]:443", protocol = "h3", trust_negative_responses = true, tls_dns_name = "dns.alidns.com" },
+        { socket_addr = "223.5.5.5:443", protocol = "h3", trust_negative_responses = true, tls_dns_name = "dns.alidns.com" },
+        { socket_addr = "[2400:3200:baba::1]:443", protocol = "h3", trust_negative_responses = true, tls_dns_name = "dns.alidns.com" },
+        { socket_addr = "223.6.6.6:443", protocol = "h3", trust_negative_responses = true, tls_dns_name = "dns.alidns.com" },
+    ], options = { rotate = true, edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 2, shuffle_dns_servers = true }}
+

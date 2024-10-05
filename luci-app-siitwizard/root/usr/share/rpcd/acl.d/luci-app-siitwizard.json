@@ -1,0 +1,11 @@
+{
+	"luci-app-siitwizard": {
+		"description": "Grant UCI access for luci-app-siitwizard",
+		"read": {
+			"uci": [ "siit" ]
+		},
+		"write": {
+			"uci": [ "siit" ]
+		}
+	}
+}

@@ -1,0 +1,54 @@
+name: Build Packages
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: shogo82148/actions-create-release@v1
+        with:
+          generate_release_notes: true
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+  build:
+    name: Build on ${{ matrix.version }} for ${{ matrix.arch }}
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: create_release
+    strategy:
+      matrix:
+        arch: [arm_cortex-a15_neon-vfpv4]  # x86-64,
+        version: [22.03, 21.02]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build ipk
+        uses: ttimasdf/gh-action-openwrt-build-package@master
+        env:
+          ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.version }}
+
+      - name: Upload ipk packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.arch }}-${{ matrix.version }}-package
+          # path: bin/packages/${{ matrix.arch }}/action/*.ipk
+          path: bin/packages/*/action/*.ipk
+
+      - uses: shogo82148/actions-upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: bin/packages/*/action/*.ipk
+          asset_name: luci-app-jederproxy_${{ github.ref_name }}-openwrt-${{ matrix.version }}.ipk

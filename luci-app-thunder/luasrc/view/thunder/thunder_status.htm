@@ -1,0 +1,26 @@
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(5, '<%=url("admin/nas/thunder/status")%>', null,
+		function(x, data)
+		{
+			var tb = document.getElementById('thunder_status');
+			if (data && tb)
+			{
+				if (data.running)
+				{
+					tb.innerHTML = '<em style=\"color:green\"><b>' + data.application + '<%:RUNNING%></b></em>' + "<input class=\"cbi-button cbi-button-reload mar-10\" type=\"button\" value=\" <%:Open Web Interface%> \" onclick=\"window.open('//" + window.location.hostname + ":" + <%=luci.sys.exec("uci -q get thunder.@thunder[0].port"):gsub("^%s*(.-)%s*$", "%1")%> + "/')\"/>";
+				}
+				else
+				{
+					tb.innerHTML = '<em style=\"color:red\"><b>' + data.application + '<%:NOT RUNNING%></b></em>';
+				}
+			}
+		}
+	);
+//]]></script>
+
+<style>.mar-10 {margin-left: 50px; margin-right: 10px;}</style>
+<fieldset class="cbi-section">
+	<p id="thunder_status">
+		<em><b><%:Collecting data...%></b></em>
+	</p>
+</fieldset>
