@@ -59,9 +59,12 @@ endef
 define Package/clouddrive2/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/clouddrive2.init $(1)/etc/init.d/clouddrive2
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/clouddrive2.config $(1)/etc/config/clouddrive2
 	$(INSTALL_DIR) $(1)/usr/share/clouddrive2
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION)/* $(1)/usr/share/clouddrive2/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION)/clouddrive $(1)/usr/share/clouddrive2/
+	cp -rf $(PKG_BUILD_DIR)/clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION)/wwwroot $(1)/usr/share/clouddrive2/
 endef
 
 $(eval $(call Download,clouddrive2))
-$(eval $(call BuildPackage,clouddrive2)
+$(eval $(call BuildPackage,clouddrive2))
