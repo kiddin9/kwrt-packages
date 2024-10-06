@@ -96,7 +96,7 @@ jobs:
         git_clone https://github.com/kiddin9/luci-app-wizard
         git_clone https://github.com/kiddin9/openwrt-adguardhome && mvdir openwrt-adguardhome
         git_clone https://github.com/kiddin9/luci-app-cloudreve
-        git_clone https://github.com/kiddin9/openwrt-clouddrive2
+        git_clone https://github.com/kiddin9/openwrt-clouddrive2 && mvdir openwrt-clouddrive2
         ) &
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
