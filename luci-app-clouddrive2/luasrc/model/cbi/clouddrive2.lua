@@ -2,6 +2,8 @@ local m, s, o
 
 m = Map("clouddrive2", translate("CloudDrive2"), translate("Configure and manage CloudDrive2"))
 
+m:section(SimpleSection).template="clouddrive2/status"
+
 s = m:section(TypedSection, "clouddrive2", translate("Settings"))
 s.anonymous = true
 s.addremove = false

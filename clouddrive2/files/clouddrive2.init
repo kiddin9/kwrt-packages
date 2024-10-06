@@ -5,7 +5,7 @@ STOP=15
 USE_PROCD=1
 
 SERVICE=clouddrive2
-PROGDIR=/opt/clouddrive/clouddrive
+PROGDIR=/usr/share/clouddrive2/clouddrive
 
 load_config() {
     config_load 'clouddrive2'
@@ -36,7 +36,7 @@ start_service() {
 stop_service() {
     load_config
     echo "Stopping $SERVICE"
-    pgrep $PROGDIR | xargs killall -3
+    killall -3 clouddrive
     [ -d "$mount_point" ] && fusermount -u "$mount_point"
 }
 

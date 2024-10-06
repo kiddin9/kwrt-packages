@@ -4,11 +4,14 @@ function index()
     if not nixio.fs.access("/etc/config/clouddrive2") then
         return
     end
+	entry({"admin", "nas"}, firstchild(), _("NAS"), 45).dependent = false
+	entry({"admin","nas","clouddrive2"},cbi("clouddrive2"),_("clouddrive2"), 10).acl_depends = { "luci-app-clouddrive2" }
+    entry({"admin", "nas", "clouddrive2", "status"}, call("act_status")).leaf = true
+end
 
-    local page = entry({"admin", "services", "clouddrive2"}, alias("admin", "services", "clouddrive2", "settings"), _("CloudDrive2"), 60)
-    page.dependent = true
-    page.acl_depends = { "luci-app-clouddrive2" }
-
-    entry({"admin", "services", "clouddrive2", "settings"}, cbi("clouddrive2"), _("Settings"), 10).leaf = true
-    entry({"admin", "services", "clouddrive2", "status"}, template("clouddrive2/status"), _("Status"), 20).leaf = true
+function act_status()
+  local e={}
+  e.running=luci.sys.call("pgrep clouddrive >/dev/null")==0
+  luci.http.prepare_content("application/json")
+  luci.http.write_json(e)
 end
