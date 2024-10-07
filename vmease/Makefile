@@ -11,7 +11,7 @@ PKG_ARCH_VMEASE:=$(ARCH)
 
 PKG_NAME:=vmease
 PKG_VERSION:=0.5.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://fw0.koolcenter.com/binary/vmease/
 PKG_HASH:=skip

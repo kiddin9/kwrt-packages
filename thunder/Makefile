@@ -3,7 +3,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=thunder
 
 PKG_VERSION:=1.0.3
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=gngpp <gngppz@gmail.com>

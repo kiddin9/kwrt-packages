@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mproxy
 PKG_VERSION=1.0.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=lean
 PKG_LICENSE:=MIT

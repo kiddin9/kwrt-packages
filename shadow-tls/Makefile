@@ -5,7 +5,7 @@ include $(INCLUDE_DIR)/package.mk
 
 PKG_NAME:=shadow-tls
 PKG_VERSION:=0.2.25
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=FluffyTigerFear

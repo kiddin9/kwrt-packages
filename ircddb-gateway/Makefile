@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ircddb-gateway
 PKG_VERSION:=1.3.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_REV:=380c094
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/lazywalker/ircDDBGateway
@@ -19,7 +19,7 @@ PKG_LICENSE:=GPL-2.0
 PKG_MAINTAINER:=Michael BD7MQB <bd7mqb@qq.com>
 
 PKG_CHECK_FORMAT_SECURITY:=0
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 

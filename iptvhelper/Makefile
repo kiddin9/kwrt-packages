@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iptvhelper
 PKG_VERSION:=0.1.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Shun Li <riverscn@gmail.com>
 PKG_LICENSE:=GPL-3.0
 

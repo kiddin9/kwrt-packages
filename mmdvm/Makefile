@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mmdvm
 PKG_VERSION:=1.0.7
-PKG_RELEASE:=
+PKG_RELEASE:=2
 GIT_REVISION:=$(shell git rev-parse --short HEAD)
 PKG_REVISION:=$(PKG_VERSION)-$(PKG_RELEASE)-$(GIT_REVISION)
 PKG_LICENSE:=GPL-2.0

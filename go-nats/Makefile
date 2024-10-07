@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=go-nats
 PKG_VERSION:=0.0.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/enobufs/go-nats.git

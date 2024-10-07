@@ -11,7 +11,7 @@ PKG_ARCH_ffmpeg:=$(ARCH)
 
 PKG_NAME:=ffmpeg-static
 PKG_VERSION:=0.0.1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_SOURCE:=ffmpeg-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/Carseason/openwrt-packages/releases/download/prebuilt/
 PKG_HASH:=skip

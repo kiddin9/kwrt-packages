@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=alwaysonline
 PKG_VERSION:=1.2.0
-PKG_RELEASE:=
+PKG_RELEASE:=2
 UCI_VERSION:=20240731
 
 PKG_MAINTAINER:=muink <hukk1996@gmail.com>

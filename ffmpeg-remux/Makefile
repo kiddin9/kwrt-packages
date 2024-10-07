@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg-remux
 PKG_VERSION:=4.3.3
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_SOURCE:=ffmpeg-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ffmpeg.org/releases/

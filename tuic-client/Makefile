@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tuic-client
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>

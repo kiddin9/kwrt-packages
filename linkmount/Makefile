@@ -12,7 +12,7 @@ PKG_ARCH_LINKEASE:=$(ARCH)
 
 PKG_NAME:=linkmount
 PKG_VERSION:=1.0.3
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://fw0.koolcenter.com/binary/LinkEase/AutoUpgrade/linkmount/

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minieap
 PKG_VERSION:=0.93.7
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_MAINTAINER:=lala <maoerpet@foxmail.com>
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE

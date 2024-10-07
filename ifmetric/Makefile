@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ifmetric
 PKG_VERSION:=0.3.0
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Konstantine Shevlakov <shevlakov@132lan.ru>
 PKG_LICENSE:=LICENSE

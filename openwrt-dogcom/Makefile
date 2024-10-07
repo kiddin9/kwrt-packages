@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dogcom
 PKG_VERSION=v1.6.2
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=fuyumi <280604399@qq.com>
 PKG_LICENSE:=AGPL-3.0

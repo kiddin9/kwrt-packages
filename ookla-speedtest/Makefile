@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ookla-speedtest
 PKG_VERSION:=1.2.0
-PKG_RELEASE:=
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Konstantine Shevlakov <shevlakov@132lan.ru>
 
 include $(INCLUDE_DIR)/package.mk

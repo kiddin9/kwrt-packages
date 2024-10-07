@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-aliddns
 PKG_VERSION:=0.4.2
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE

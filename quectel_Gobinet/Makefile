@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gobinet
 PKG_VERSION:=1.6.3
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk

@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=go-stun
 PKG_VERSION=0.1.4
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=muink <hukk1996@gmail.com>
 PKG_LICENSE:=Apache-2.0

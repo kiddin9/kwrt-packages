@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fancontrol
 PKG_VERSION:=1
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 
 PKG_LICENSE:=MIT

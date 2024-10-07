@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=mmdvm-host
 PKG_REV:=81ad9f0
 PKG_VERSION:=1.3.2
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/lazywalker/MMDVMHost.git

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-banmac-nft
 PKG_VERSION:=20231012
-PKG_RELEASE:=
+PKG_RELEASE:=2
 
 
 include $(INCLUDE_DIR)/package.mk
