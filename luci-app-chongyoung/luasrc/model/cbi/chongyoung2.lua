@@ -13,8 +13,12 @@ function t.cfgvalue()
     local value = fs.readfile(conffile)
     return value or ""
 end
+
+-- 在保存前，将Windows换行符 (\r\n) 替换为Linux换行符 (\n)，否则会导致读取密码时发生错误。。。
 function t.write(self, section, value)
     if value then
+        -- 将 \r\n 替换为 \n
+        value = value:gsub("\r\n", "\n")
         fs.writefile(conffile, value)
     end
 end
