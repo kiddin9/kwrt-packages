@@ -103,7 +103,7 @@ jobs:
         git clone https://github.com/fw876/helloworld && rm -rf helloworld/{v2raya,naiveproxy,chinadns-ng} && mvdir helloworld
         git_clone https://github.com/xiaorouji/openwrt-passwall-packages && mvdir openwrt-passwall-packages
         git_clone https://github.com/Lienol/openwrt-package liep
-        git clone https://github.com/AutoCONFIG/minieap-openwrt -b default
+        # git clone https://github.com/AutoCONFIG/minieap-openwrt -b default
         git_clone https://github.com/rufengsuixing/luci-app-autoipsetadder
         git_clone https://github.com/NateLol/luci-app-beardropper
         git_clone https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
