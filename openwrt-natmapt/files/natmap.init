@@ -301,7 +301,7 @@ clear_status_files() {
 			rm -f $f; break
 		done
 	else
-		find * -type f -print0 | xargs -0 rm -f --
+		find . -type f -print0 | xargs -0 rm -f --
 	fi
 	popd >/dev/null
 }
