@@ -20,5 +20,7 @@ uci del mihomo.config.init
 # commit
 uci commit mihomo
 
+chmod -R +x /etc/init.d/mihomo  /etc/mihomo/*
+
 # exit with 0
 exit 0
