@@ -1,6 +1,6 @@
 #!/bin/sh
 
-chmod -R +x /etc/init.d/mihomo  /etc/mihomo/*
+chmod -R +x /etc/init.d/mihomo  /etc/mihomo/* /usr/libexec/mihomo-call
 
 . "$IPKG_INSTROOT/etc/mihomo/scripts/constants.sh"
 
