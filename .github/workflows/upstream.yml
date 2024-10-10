@@ -155,7 +155,8 @@ jobs:
         git_clone https://github.com/linkease/nas-packages && mv -n nas-packages/{network/services/*,multimedia/*} ./; rm -rf nas-packages
         git_clone https://github.com/linkease/nas-packages-luci && mv -n nas-packages-luci/luci/* ./; rm -rf nas-packages-luci
         git_clone https://github.com/linkease/istore && mv -n istore/luci/* ./; rm -rf istore
-        git_clone https://github.com/morytyann/OpenWrt-mihomo && mvdir OpenWrt-mihomo
+        git_clone https://github.com/muink/openwrt-fchomo && mvdir openwrt-fchomo
+        git_clone https://github.com/kiddin9/luci-app-mihomo
         git_clone https://github.com/asvow/luci-app-tailscale
         ) &
         (
