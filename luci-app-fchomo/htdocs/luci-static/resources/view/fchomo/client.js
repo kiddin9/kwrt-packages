@@ -221,7 +221,6 @@ return view.extend({
 			so.value.apply(so, res);
 		})
 
-		// dev: Features under development
 		so = ss.taboption('field_general', form.MultiValue, 'groups', _('Group'));
 		hm.preset_outbound.full.forEach((res) => {
 			so.value.apply(so, res);
@@ -790,7 +789,7 @@ return view.extend({
 		so.depends('type', 'rule_set');
 		so.modalonly = true;
 
-		so = ss.option(form.DummyValue, '_value', _('Value'));
+		so = ss.option(form.DummyValue, '_entry', _('Entry'));
 		so.load = function(section_id) {
 			var option = uci.get(data[0], section_id, 'type');
 

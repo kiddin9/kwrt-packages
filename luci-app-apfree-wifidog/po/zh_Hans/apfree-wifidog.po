@@ -315,4 +315,8 @@ msgstr "MQTT 密码"
 msgid "The password of the mqtt."
 msgstr "mqtt 的密码"
 
+msgid "The external interface of the device, if bypass mode, do not choose."
+msgstr "设备的外部接口，如果是旁路模式，不要选择"
 
+msgid "External Interface"
+msgstr "外部接口"

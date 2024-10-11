@@ -65,8 +65,15 @@ return view.extend({
 						_('The mode of the authentication server.'));
 		o.value('cloud', _('Cloud Auth'));
 		o.value('local', _('Local Auth'));
-		o.defaulValue = 'cloud';
+		o.default = 'cloud';
 		o.optional = false;
+
+		o = s.taboption('basic', widgets.NetworkSelect, 'external_interface', _('External Interface'),
+						_('The external interface of the device, if bypass mode, do not choose.'));
+		o.rmempty = true;
+		o.nocreate = true;
+		o.loopback = false;
+		o.default = 'wan';
 
 		o = s.taboption('basic', form.Value, 'device_id', _('Device ID'), _('The ID of the device.'));
 		o.rmempty = false;
