@@ -204,8 +204,9 @@ function renderPayload(s, total, uciconfig) {
 		hm.rules_type.forEach((res) => {
 			o.value.apply(o, res);
 		})
-		hm.rules_logical_type.forEach((res) => {
-			o.depends('type', res[0]);
+		Object.keys(hm.rules_logical_payload_count).forEach((key) => {
+			if (n < hm.rules_logical_payload_count[key])
+				o.depends('type', key);
 		})
 		initPayload(o, n, 'type', uciconfig);
 		o.onchange = function(ev, section_id, value) {
@@ -562,7 +563,7 @@ return view.extend({
 		so.onchange = function(ev, section_id, value) {
 			var UIEl = this.section.getUIElement(section_id, 'entry');
 
-			var newvalue = ('N' + UIEl.getValue()).replace(/^[^,]+/, value);
+			var newvalue = new RulesEntry(('N' + UIEl.getValue()).replace(/^[^,]+/, value)).toString();
 
 			UIEl.node.previousSibling.innerText = newvalue;
 			return UIEl.setValue(newvalue);
@@ -881,6 +882,15 @@ return view.extend({
 		so.load = L.bind(loadDNSServerLabel, so);
 		so.validate = L.bind(validateNameserver, so);
 		so.rmempty = false;
+		so.editable = true;
+
+		so = ss.option(form.ListValue, 'proxy', _('Proxy group'),
+			_('Override the Proxy group of DNS server.'));
+		so.default = hm.preset_outbound.direct[0][0];
+		hm.preset_outbound.direct.forEach((res) => {
+			so.value.apply(so, res);
+		})
+		so.load = L.bind(hm.loadProxyGroupLabel, so, hm.preset_outbound.direct);
 		so.editable = true;
 		/* DNS policy END */
 

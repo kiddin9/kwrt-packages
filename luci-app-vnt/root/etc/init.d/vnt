@@ -54,7 +54,7 @@ start_vntcli() {
                 pgrep -f vnt_check | xargs kill -9 >/dev/null 2>&1
                 ps | grep 'vnt-cli' | grep -v grep | awk '{print $1}' | xargs kill >/dev/null 2>&1
                 ps | grep 'vnt-cli' | grep -v grep | awk '{print $1}' | xargs kill -9 >/dev/null 2>&1
-		local token mode ipaddr mtu desvice_id localadd log comp local_ipv4
+		local token mode ipaddr mtu desvice_id localadd log comp local_dev
 		local peeradd desvice_name vntshost stunhost checkip mapping disable_stats
 		local punch client_port key forward serverw vntdns allow_wg
 		local finger relay first_latency tunname passmode
@@ -63,7 +63,7 @@ start_vntcli() {
                 config_get desvice_id "$cfg" 'desvice_id'
                 config_get desvice_name "$cfg" 'desvice_name'
                 config_get vntshost "$cfg" 'vntshost'
-                config_get local_ipv4 "$cfg" 'local_ipv4'
+                config_get local_dev "$cfg" 'local_dev'
 #以下解析IP4P地址的脚本由恩山大佬liaohcai提供
 if [ ! -z "$vntshost" ] ; then
 
@@ -220,7 +220,7 @@ EOF
                    fi
                 fi
 		[ -z "$tunname" ] || procd_append_param command --nic "$tunname"
-                [ -z "$local_ipv4" ] || procd_append_param command --local-ipv4 "$local_ipv4"
+                [ -z "$local_dev" ] || procd_append_param command --local-dev "$local_dev"
 		[ "$punch" = "all" ] || procd_append_param command --punch "$punch"
 		[ "$passmode" != "off" ] && [ -n "$key" ] && procd_append_param command --model "$passmode"
 		[ "$passmode" != "off" ] && [ -n "$key" ] && procd_append_param command -w "$key"

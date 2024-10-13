@@ -58,6 +58,10 @@ msgstr "API TLS 私钥"
 msgid "API secret"
 msgstr "API 令牌"
 
+#: htdocs/luci-static/resources/view/fchomo/global.js:140
+msgid "Application version"
+msgstr "应用版本"
+
 #: htdocs/luci-static/resources/view/fchomo/global.js:541
 #: htdocs/luci-static/resources/view/fchomo/global.js:593
 msgid "Access Control"
@@ -987,6 +991,10 @@ msgstr "覆盖目标地址"
 #: htdocs/luci-static/resources/view/fchomo/node.js:81
 msgid "Override fields"
 msgstr "覆盖字段"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:888
+msgid "Override the Proxy group of DNS server."
+msgstr "覆盖 DNS 服务器所使用的策略组。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:487
 msgid "Override the connection destination address with the sniffed domain."

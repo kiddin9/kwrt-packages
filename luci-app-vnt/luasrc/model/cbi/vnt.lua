@@ -177,9 +177,28 @@ key:depends("passmode", "chacha20")
 key:depends("passmode", "chacha20_poly1305")
 key:depends("passmode", "xor")
 
-local_ipv4  = s:taboption("privacy",Value, "local_ipv4", translate("出口节点IP地址"),
-	translate("本地出口网卡的ipv4地址"))
-local_ipv4.optional = false
+local sys = require("luci.sys")
+
+local_dev = s:taboption("privacy", ListValue, "local_dev", translate("绑定出口网卡"),
+    translate("指定作为流量出口的网卡"))
+local_dev.optional = false
+
+-- 添加空白值作为默认选项
+local_dev:value("", translate("不绑定"))
+
+-- 获取通过 ifconfig 列出的网卡接口
+local ifaces = sys.exec("ifconfig | grep -E '^[a-zA-Z0-9]+' | awk -F':' '{print $1}' | awk '{print $1}'")
+for iface in string.gmatch(ifaces, "%S+") do
+    -- 使用 ip 命令获取网卡的 IP 地址
+    local ip_addr = sys.exec("ifconfig " .. iface .. " | grep 'inet ' | awk '{print $2}'")
+    ip_addr = ip_addr:gsub("%s+", "")  -- 去除回车和空白字符
+    
+    -- 如果没有找到 IP 地址，则继续下一个网卡
+    if ip_addr ~= "" then
+        -- 将网卡名作为值，IP地址作为显示名称
+        local_dev:value(iface, iface .. " (" .. ip_addr .. ")")
+    end
+end
 
 serverw = s:taboption("privacy",Flag, "serverw", translate("启用服务端客户端加密"),
 	translate("用服务端通信的数据加密，采用rsa+aes256gcm加密客户端和服务端之间通信的数据，可以避免token泄漏、中间人攻击，<br>上面的加密模式是客户端与客户端之间加密，这是服务器和客户端之间的加密，不是一个性质，无需选择加密模式"))
