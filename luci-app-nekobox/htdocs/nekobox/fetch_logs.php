@@ -24,7 +24,7 @@ if (array_key_exists($file, $allowed_files)) {
         
         if (strlen($content) > $max_chars) {
             file_put_contents($file_path, ''); 
-            echo "日志文件已清空，超过字符数限制。";
+            echo "Log file has been cleared, exceeding the character limit.";
             return;
         }
 
