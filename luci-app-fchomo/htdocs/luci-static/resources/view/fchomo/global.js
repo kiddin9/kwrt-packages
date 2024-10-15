@@ -299,6 +299,9 @@ return view.extend({
 		so.value('debug', _('Debug'));
 		so.default = 'warning';
 
+		so = ss.option(form.Flag, 'etag_support', _('ETag support'));
+		so.default = so.enabled;
+
 		so = ss.option(form.Flag, 'ipv6', _('IPv6 support'));
 		so.default = so.enabled;
 
@@ -309,8 +312,13 @@ return view.extend({
 		so.default = so.disabled;
 
 		so = ss.option(form.Value, 'keep_alive_interval', _('TCP-Keep-Alive interval'),
-			_('In seconds. <code>120</code> is used by default.'));
-		so.placeholder = '120';
+			_('In seconds. <code>%s</code> will be used if empty.').format('30'));
+		so.placeholder = '30';
+		so.validate = L.bind(hm.validateTimeDuration, so);
+
+		so = ss.option(form.Value, 'keep_alive_idle', _('TCP-Keep-Alive idle'),
+			_('In seconds. <code>%s</code> will be used if empty.').format('600'));
+		so.placeholder = '600';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 
 		/* Global Authentication */
@@ -408,7 +416,7 @@ return view.extend({
 		so.placeholder = '65536';
 
 		so = ss.option(form.Value, 'tun_udp_timeout', _('UDP NAT expiration time'),
-			_('In seconds. <code>300</code> is used by default.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('300'));
 		so.placeholder = '300';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 
@@ -463,6 +471,15 @@ return view.extend({
 		}
 		so.rmempty = false;
 
+		so = ss.option(form.DynamicList, 'external_controller_cors_allow_origins', _('CORS Allow origins'),
+			_('CORS allowed origins, <code>*</code> will be used if empty.'));
+		so.placeholder = 'https://yacd.metacubex.one';
+
+		so = ss.option(form.Flag, 'external_controller_cors_allow_private_network', _('CORS Allow private network'),
+			_('Allow access from private network.</br>' +
+			'To access the API on a private network from a public website, it must be enabled.'));
+		so.default = so.enabled;
+
 		so = ss.option(form.Value, 'external_controller_port', _('API HTTP port'));
 		so.datatype = 'port';
 		so.placeholder = '9090';
@@ -497,6 +514,12 @@ return view.extend({
 
 		so = ss.option(form.DynamicList, 'skip_domain', _('Skiped sniffing domain'));
 		so.datatype = 'list(string)';
+
+		so = ss.option(form.DynamicList, 'skip_src_address', _('Skiped sniffing src address'));
+		so.datatype = 'list(cidr)';
+
+		so = ss.option(form.DynamicList, 'skip_dst_address', _('Skiped sniffing dst address'));
+		so.datatype = 'list(cidr)';
 
 		/* Sniff protocol settings */
 		o = s.taboption('sniffer', form.SectionValue, '_sniffer_sniff', form.GridSection, 'sniff', _('Sniff protocol'));

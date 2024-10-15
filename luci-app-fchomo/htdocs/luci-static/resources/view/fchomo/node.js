@@ -143,7 +143,7 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.Value, 'interval', _('Update interval'),
-			_('In seconds. <code>86400</code> will be used if empty.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('86400'));
 		so.placeholder = '86400';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 		so.depends('type', 'http');
@@ -267,13 +267,13 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_interval', _('Health check interval'),
-			_('In seconds. <code>600</code> will be used if empty.'));
+			_('In seconds. <code>%s</code> will be used if empty.').format('600'));
 		so.placeholder = '600';
 		so.validate = L.bind(hm.validateTimeDuration, so);
 		so.modalonly = true;
 
 		so = ss.taboption('field_health', form.Value, 'health_timeout', _('Health check timeout'),
-			_('In millisecond. <code>5000</code> will be used if empty.'));
+			_('In millisecond. <code>%s</code> will be used if empty.').format('5000'));
 		so.datatype = 'uinteger';
 		so.placeholder = '5000';
 		so.modalonly = true;

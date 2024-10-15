@@ -187,10 +187,12 @@ config["global-ua"] = 'clash.meta';
 config.mode = uci.get(uciconf, uciglobal, 'mode') || 'rule';
 config["find-process-mode"] = uci.get(uciconf, uciglobal, 'find_process_mode') || 'off';
 config["log-level"] = uci.get(uciconf, uciglobal, 'log_level') || 'warning';
+config["etag-support"] = (uci.get(uciconf, uciglobal, 'etag_support') === '0') ? false : true;
 config.ipv6 = (uci.get(uciconf, uciglobal, 'ipv6') === '0') ? false : true;
 config["unified-delay"] = strToBool(uci.get(uciconf, uciglobal, 'unified_delay')) || false;
 config["tcp-concurrent"] = strToBool(uci.get(uciconf, uciglobal, 'tcp_concurrent')) || false;
-config["keep-alive-interval"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 120;
+config["keep-alive-interval"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_interval')) || 30;
+config["keep-alive-idle"] = parse_time_duration(uci.get(uciconf, uciglobal, 'keep_alive_idle')) || 600;
 /* ACL settings */
 config["interface-name"] = bind_interface;
 config["routing-mark"] = self_mark;
@@ -219,6 +221,10 @@ config.tls = {
 const api_port = uci.get(uciconf, uciapi, 'external_controller_port');
 const api_tls_port = uci.get(uciconf, uciapi, 'external_controller_tls_port');
 /* API settings */
+config["external-controller-cors"] = {
+	"allow-origins": uci.get(uciconf, uciapi, 'external_controller_cors_allow_origins') || ['*'],
+	"allow-private-network" : (uci.get(uciconf, uciapi, 'external_controller_cors_allow_private_network') === '0') ? false : true
+};
 config["external-controller"] = api_port ? '[::]:' + api_port : null;
 config["external-controller-tls"] = api_tls_port ? '[::]:' + api_tls_port : null;
 config["external-doh-server"] = uci.get(uciconf, uciapi, 'external_doh_server');
@@ -252,7 +258,9 @@ config.sniffer = {
 	"override-destination": (uci.get(uciconf, ucisniffer, 'override_destination') === '0') ? false : true,
 	sniff: {},
 	"force-domain": uci.get(uciconf, ucisniffer, 'force_domain'),
-	"skip-domain": uci.get(uciconf, ucisniffer, 'skip_domain')
+	"skip-domain": uci.get(uciconf, ucisniffer, 'skip_domain'),
+	"skip-src-address": uci.get(uciconf, ucisniffer, 'skip_src_address'),
+	"skip-dst-address": uci.get(uciconf, ucisniffer, 'skip_dst_address')
 };
 /* Sniff protocol settings */
 uci.foreach(uciconf, ucisniff, (cfg) => {
