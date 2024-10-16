@@ -389,15 +389,6 @@ btn5cmd.cfgvalue = function(self, section)
     return string.format("<pre>%s</pre>", luci.util.pcdata(content))
 end
 
-btnrm = s:taboption("infos", Button, "btnrm")
-btnrm.inputtitle = translate("检测更新")
-btnrm.description = translate("点击按钮开始检测更新，上方状态栏显示")
-btnrm.inputstyle = "apply"
-btnrm:depends("cmdmode", "原版")
-btnrm.write = function()
-  os.execute("rm -rf /tmp/vnt*.tag /tmp/vnt*.newtag")
-end
-
 local upload = s:taboption("upload", FileUpload, "upload_file")
 upload.optional = true
 upload.default = ""

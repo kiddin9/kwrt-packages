@@ -8,7 +8,9 @@
 				"/usr/sbin/tailscale": [ "exec" ]
 			},
 			"ubus": {
-				"service": [ "list" ]
+				"service": [ "list" ],
+				"network.interface.lan": [ "status" ],
+				"network.interface.wan": [ "status" ]
 			},
 			"uci": [ "tailscale" ]
 		},

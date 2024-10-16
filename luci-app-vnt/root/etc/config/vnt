@@ -13,10 +13,12 @@ config vnt-cli
 	option tunmode 'tun'
 	option passmode 'off'
         option clibin '/usr/bin/vnt-cli'
+        option vnt_input 'vnt'
 config vnts
 	option enabled '0'
 	option server_port '29872'
 	option subnet '10.26.0.1'
         option vntsbin '/usr/bin/vnts'
-        option logs '0'
+        option logs '1'
+        option web '0'
         option sfinger '0'

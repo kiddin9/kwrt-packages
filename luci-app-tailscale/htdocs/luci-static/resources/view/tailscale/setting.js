@@ -18,6 +18,51 @@ var callServiceList = rpc.declare({
 	expect: { '': {} }
 });
 
+function callInterfaceStatus(interfaceName) {
+	return rpc.declare({
+		object: `network.interface.${interfaceName}`,
+		method: 'status',
+		params: ['name'],
+		expect: { '': {} }
+	});
+}
+
+function getInterfaceSubnets(interfaces = ['lan', 'wan']) {
+	const calculateSubnetAndCIDR = (ip, cidr) => {
+		const cidrInt = parseInt(cidr, 10);
+		const maskBinary = '1'.repeat(cidrInt).padEnd(32, '0');
+		const ipBinary = (ip) => 
+			ip.split('.').map(octet => parseInt(octet, 10).toString(2).padStart(8, '0'))
+			.join('');
+		const subnetBinary = ipBinary(ip).split('').map((bit, index) => 
+			(bit === '1' && maskBinary[index] === '1') ? '1' : '0'
+		).join('');
+		const subnet = [
+			parseInt(subnetBinary.slice(0, 8), 2),
+			parseInt(subnetBinary.slice(8, 16), 2),
+			parseInt(subnetBinary.slice(16, 24), 2),
+			parseInt(subnetBinary.slice(24, 32), 2)
+		].join('.');
+		return `${subnet}/${cidrInt}`;
+	};
+
+	const rpcCalls = interfaces.map(interfaceName => {
+		const callStatus = callInterfaceStatus(interfaceName);
+		return callStatus('ipv4-address').catch(() => ({ 'ipv4-address': [] }));
+	});
+
+	return Promise.all(rpcCalls)
+		.then(res => {
+			const interfaceSubnets = res.flatMap(status => 
+				(status['ipv4-address'] || []).map(addr => {
+					return calculateSubnetAndCIDR(addr.address, addr.mask)
+				})
+			);
+			return [...new Set(interfaceSubnets)];
+		})
+		.catch(() => []);
+}
+
 function getStatus() {
 	var status = {
 		isRunning: false,
@@ -81,13 +126,15 @@ return view.extend({
 	load: function() {
 		return Promise.all([
 			uci.load('tailscale'),
-			getStatus()
+			getStatus(),
+			getInterfaceSubnets()
 		]);
 	},
 
 	render: function(data) {
 		var m, s, o;
 		var statusData = data[1];
+		var interfaceSubnets = data[2];
 		var onlineExitNodes = statusData.onlineExitNodes;
 		var subnetRoutes = statusData.subnetRoutes;
 
@@ -187,6 +234,11 @@ return view.extend({
 		o.rmempty = true;
 
 		o = s.taboption('advance', form.DynamicList, 'advertiseRoutes', _('Expose Subnets'), _('Expose physical network routes into Tailscale, e.g. <code>10.0.0.0/24</code>.'));
+		if (interfaceSubnets.length > 0) {
+			interfaceSubnets.forEach(function(subnet) {
+				o.value(subnet, subnet);
+			});
+		}
 		o.default = '';
 		o.rmempty = true;
 
