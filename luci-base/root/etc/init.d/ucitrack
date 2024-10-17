@@ -8,7 +8,7 @@ register_init() {
 	local init="$2"
 	shift; shift
 
-	if [ -x "$init" ] && ! grep -sqE 'USE_PROCD=.' "$init"; then
+	if [ -x "$init" ] && ! grep -sq 'procd_add_reload_trigger' "$init"; then
 		logger -t "ucitrack" "Setting up /etc/config/$config reload trigger for non-procd $init"
 		procd_add_config_trigger "config.change" "$config" "$init" "$@"
 	fi
