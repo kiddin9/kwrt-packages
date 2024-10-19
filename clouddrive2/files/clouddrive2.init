@@ -39,15 +39,3 @@ stop_service() {
     killall -3 clouddrive
     [ -d "$mount_point" ] && fusermount -u "$mount_point"
 }
-
-status() {
-    pgrep "$PROGDIR" >/dev/null
-    case $? in
-        0)
-            echo '{"running":true}'
-            ;;
-        *)
-            echo '{"running":false}'
-            ;;
-    esac
-}
