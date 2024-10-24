@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chinadns-ng
 PKG_VERSION:=2024.10.14
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 ifeq ($(ARCH),aarch64)
   ifeq ($(BOARD),rockchip)
@@ -13,26 +13,43 @@ ifeq ($(ARCH),aarch64)
     PKG_HASH:=skip
   endif
 else ifeq ($(ARCH),arm)
-  ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
-  ifeq ($(ARM_CPU_FEATURES),)
+  ifeq ($(CONFIG_arm_v6),y)
     PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabi@generic+v6+soft_float@fast+lto
     PKG_HASH:=skip
+  else ifeq ($(CONFIG_arm_v7),y)
+    ifeq ($(CONFIG_HAS_FPU),y)
+      PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabihf@generic+v7a@fast+lto
+      PKG_HASH:=skip
+    else
+      PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabi@generic+v6+soft_float@fast+lto
+      PKG_HASH:=skip
+    endif
   else
-    PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabihf@generic+v7a@fast+lto
+    PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabi@generic+v5te+soft_float@fast+lto
     PKG_HASH:=skip
   endif
 else ifeq ($(ARCH),mips)
   PKG_ARCH:=chinadns-ng+wolfssl@mips-linux-musl@mips32+soft_float@fast+lto
   PKG_HASH:=skip
 else ifeq ($(ARCH),mipsel)
-  PKG_ARCH:=chinadns-ng+wolfssl@mipsel-linux-musl@mips32+soft_float@fast+lto
-  PKG_HASH:=skip
+  ifeq ($(CONFIG_HAS_FPU),)
+    PKG_ARCH:=chinadns-ng+wolfssl@mipsel-linux-musl@mips32+soft_float@fast+lto
+    PKG_HASH:=skip
+  else
+    PKG_ARCH:=chinadns-ng+wolfssl@mipsel-linux-musl@mips32@fast+lto
+    PKG_HASH:=skip
+  endif
 else ifeq ($(ARCH),mips64)
   PKG_ARCH:=chinadns-ng+wolfssl@mips64-linux-musl@mips64+soft_float@fast+lto
   PKG_HASH:=skip
 else ifeq ($(ARCH),i386)
-  PKG_ARCH:=chinadns-ng+wolfssl@i386-linux-musl@i686@fast+lto
-  PKG_HASH:=skip
+  ifneq ($(CONFIG_TARGET_x86_geode)$(CONFIG_TARGET_x86_legacy),)
+    PKG_ARCH:=chinadns-ng+wolfssl@i386-linux-musl@i686@fast+lto
+    PKG_HASH:=skip
+  else
+    PKG_ARCH:=chinadns-ng+wolfssl@i386-linux-musl@pentium4@fast+lto
+    PKG_HASH:=skip
+  endif
 else ifeq ($(ARCH),x86_64)
   PKG_ARCH:=chinadns-ng+wolfssl@x86_64-linux-musl@x86_64@fast+lto
   PKG_HASH:=skip
