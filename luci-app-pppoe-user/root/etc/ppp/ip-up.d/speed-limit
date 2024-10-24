@@ -1,42 +1,45 @@
 #!/bin/sh
-#
-# This script is run by the pppd after the link is established.
-# It should be used to add routes, set IP address, run the mailq etc.
-#
-# This script is called with the following arguments:
-# Arg  Name               Example
-# $1   Interface name     ppp0
-# $2   The tty            ttyS1
-# $3   The link speed     38400
-# $4   Local IP number    12.34.56.78
-# $5   Peer  IP number    12.34.56.99
-#
+(
+  flock -n 200 || exit 1
 
-#
-# The environment is cleared before executing this script
-# so the path must be reset
-#
-PATH=/usr/sbin:/sbin:/usr/bin:/bin
-export PATH
+  # Environment variable settings
+  PATH=/usr/sbin:/sbin:/usr/bin:/bin
+  export PATH
 
-LOGIN_TIME="$(date "+%Y-%m-%d_%H:%M:%S")"
-USERNAME="${PEERNAME}"
-PEERIP="${5}"
+  LOGIN_TIME="$(date "+%Y-%m-%d_%H:%M:%S")"
+  USERNAME="${PEERNAME}"
+  PEERIP="${5}"
 
-USER_CONFIG="pppoe-user"
-USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
-USER_QOS="$(uci get ${USER_CONFIG}."${USER_CFGID}".qos)"
-USER_UPLOAD="$(uci get ${USER_CONFIG}."${USER_CFGID}".urate)"
-USER_DOWNLOAD="$(uci get ${USER_CONFIG}."${USER_CFGID}".drate)"
-USER_UNIT="$(uci get ${USER_CONFIG}."${USER_CFGID}".unit)"
-UP="upload"
-DOWN="download"
+  USER_CONFIG="pppoe-user"
+  USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
+  
+  # Get user configuration
+  USER_QOS="$(uci get ${USER_CONFIG}.${USER_CFGID}.qos 2>/dev/null)"
+  USER_UPLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.urate 2>/dev/null)"
+  USER_DOWNLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.drate 2>/dev/null)"
+  USER_UNIT="$(uci get ${USER_CONFIG}.${USER_CFGID}.unit 2>/dev/null)"
 
-if [ "${USER_QOS}" = "1" ]; then
-nft insert rule inet pppoe-user-qos ${UP} ip saddr "${PEERIP}" limit rate over "${USER_UPLOAD}" "${USER_UNIT}"/second drop
-nft insert rule inet pppoe-user-qos ${DOWN} ip daddr "${PEERIP}" limit rate over "${USER_DOWNLOAD}" "${USER_UNIT}"/second drop
-fi
+  # Ensure that the obtained values are valid
+  if [ -z "${USER_QOS}" ] || [ -z "${USER_UPLOAD}" ] || [ -z "${USER_DOWNLOAD}" ] || [ -z "${USER_UNIT}" ]; then
+      logger "${LOGIN_TIME} ERROR: Failed to get user config for ${USERNAME} (${PEERIP})"
+      exit 1
+  fi
 
-logger "${LOGIN_TIME} ${PEERNAME} ${PEERIP} SPEED-LIMIT >>>>>> The script has been executed!"
+  UP="upload"
+  DOWN="download"
 
-exit 0
+  # Add traffic control rules
+  if [ "${USER_QOS}" = "1" ]; then
+      nft insert rule inet pppoe ${UP} ip saddr "${PEERIP}" limit rate over "${USER_UPLOAD}" "${USER_UNIT}"/second counter drop || {
+          logger "${LOGIN_TIME} ERROR: Invalid upload speed limit for IP ${PEERIP}"
+          exit 1
+      }
+      nft insert rule inet pppoe ${DOWN} ip daddr "${PEERIP}" limit rate over "${USER_DOWNLOAD}" "${USER_UNIT}"/second counter drop || {
+          logger "${LOGIN_TIME} ERROR: Invalid download speed limit for IP ${PEERIP}"
+          exit 1
+      }
+  fi
+
+  exit 0
+
+) 200>/var/lock/ipup.lock

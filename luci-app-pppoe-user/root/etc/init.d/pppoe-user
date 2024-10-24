@@ -3,7 +3,7 @@
 START=90
 STOP=90
 
-SPEED_LIMIT_SWITCH=0
+SPEED_LIMIT_SWITCH=1
 CURRENT_DATE=$(date +"%Y-%m-%d")
 CHAP_SECRETS=/etc/ppp/chap-secrets
 BACKUP_FILE=/var/pppoe-user/backup
@@ -41,13 +41,18 @@ daily_check() {
 }
 
 enable_speed_limit() {
-	nft add table inet pppoe-user-qos
-	nft add chain inet pppoe-user-qos upload { type filter hook prerouting priority filter\; policy accept\; }
-	nft add chain inet pppoe-user-qos download { type filter hook postrouting priority filter\; policy accept\; }
+	nft add table inet pppoe
+	nft add chain inet pppoe upload { type filter hook prerouting priority filter\; policy accept\; }
+	nft add chain inet pppoe download { type filter hook postrouting priority filter\; policy accept\; }
+	##nft add chain inet pppoe forward { type filter hook postrouting priority filter\; policy accept\; }
+	uci set firewall.@zone[0].device='ppp+'
+	uci commit firewall
 }
 
 disable_speed_limit() {
-	nft delete table inet pppoe-user-qos
+	nft delete table inet pppoe
+	uci del firewall.@zone[0].device
+	uci commit firewall
 }
 
 start() {

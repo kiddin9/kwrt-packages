@@ -1,39 +1,44 @@
 #!/bin/sh
-#
-# This script is run by the pppd after the link is established.
-# It should be used to add routes, set IP address, run the mailq
-# etc.
-#
-# This script is called with the following arguments:
-#    Arg  Name               Example
-#    $1   Interface name     ppp0
-#    $2   The tty            ttyS1
-#    $3   The link speed     38400
-#    $4   Local IP number    12.34.56.78
-#    $5   Peer  IP number    12.34.56.99
-#
+(
+  flock -n 200 || exit 1
 
-#
-# The  environment is cleared before executing this script
-# so the path must be reset
-#
-PATH=/usr/sbin:/sbin:/usr/bin:/bin
-export PATH
+  # The environment is cleared before executing this script
+  PATH=/usr/sbin:/sbin:/usr/bin:/bin
+  export PATH
 
-QUIT_TIME="$(date "+%Y-%m-%d_%H:%M:%S")"
-USERNAME="${PEERNAME}"
-PEERIP="${5}"
+  QUIT_TIME="$(date "+%Y-%m-%d_%H:%M:%S")"
+  USERNAME="${PEERNAME}"
+  PEERIP="${5}"
 
-USER_CONFIG="pppoe-user"
-USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
-UP="upload"
-DOWN="download"
-UPLOAD_HANDLE="$(nft -a list chain inet pppoe-user-qos ${UP} | grep "${PEERIP}" | awk '{print $NF}')"
-DOWNLOAD_HANDLE="$(nft -a list chain inet pppoe-user-qos ${DOWN} | grep "${PEERIP}" | awk '{print $NF}')"
+  USER_CONFIG="pppoe-user"
+  USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
+  UP="upload"
+  DOWN="download"
 
-nft delete rule inet pppoe-user-qos ${UP} handle "${UPLOAD_HANDLE}"
-nft delete rule inet pppoe-user-qos ${DOWN} handle "${DOWNLOAD_HANDLE}"
+  # Get the handles for the rate limit rules
+  UPLOAD_HANDLE="$(nft -a list chain inet pppoe ${UP} | grep "${PEERIP}" | awk '{print $NF}')"
+  DOWNLOAD_HANDLE="$(nft -a list chain inet pppoe ${DOWN} | grep "${PEERIP}" | awk '{print $NF}')"
 
-logger "${QUIT_TIME} ${PEERNAME} ${PEERIP} SPEED-LIMIT >>>>>> The script has been executed!"
+  # Remove upload rule
+  if [ -n "${UPLOAD_HANDLE}" ]; then
+      nft delete rule inet pppoe ${UP} handle "${UPLOAD_HANDLE}" || {
+          logger "${QUIT_TIME} ERROR: Failed to delete upload rule for ${PEERIP}"
+          exit 1
+      }
+  else
+      logger "${QUIT_TIME} WARNING: No upload rule found for ${PEERIP}"
+  fi
 
-exit 0
+  # Remove download rule
+  if [ -n "${DOWNLOAD_HANDLE}" ]; then
+      nft delete rule inet pppoe ${DOWN} handle "${DOWNLOAD_HANDLE}" || {
+          logger "${QUIT_TIME} ERROR: Failed to delete download rule for ${PEERIP}"
+          exit 1
+      }
+  else
+      logger "${QUIT_TIME} WARNING: No download rule found for ${PEERIP}"
+  fi
+
+  exit 0
+
+) 200>/var/lock/ipdown.lock
