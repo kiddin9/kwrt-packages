@@ -20,8 +20,6 @@ setup_user() {
     config_get qos "$1" qos
     config_get urate "$1" urate
     config_get drate "$1" drate
-    config_get unit "$1" unit
-    [ -n "${unit}" ] || unit="kbytes"
     config_get expires "$cfg" expires
 
     if [ "$expires" == "$CURRENT_DATE" ]; then

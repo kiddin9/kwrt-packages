@@ -39,42 +39,15 @@ return view.extend({
     o = s.option(form.Value, 'package', _('Package'));
     o.readonly = true;
     
-    // Package field (dropdown)
-    o = s.option(form.ListValue, 'speed', _('Speed'));
-    o.default = '0';
-    o.value('0', '0 Mbps');
-    o.value('10', '10 Mbps');
-    o.value('20', '20 Mbps');
-    o.value('30', '30 Mbps');
-    o.value('40', '40 Mbps');
-    o.value('50', '50 Mbps');
-    o.value('60', '60 Mbps');
-    o.value('70', '70 Mbps');
-    o.value('80', '80 Mbps');
-    o.value('90', '90 Mbps');
-    o.value('100', '100 Mbps');
-    o.value('200', '200 Mbps');
-    o.value('300', '300 Mbps');
-    o.value('400', '400 Mbps');
-    o.value('500', '500 Mbps');
-    o.value('600', '600 Mbps');
-    o.value('700', '700 Mbps');
-    o.value('800', '800 Mbps');
-    o.value('900', '900 Mbps');
-    o.value('1000', '1000 Mbps');
-    o.value('1250', '1250 Mbps');
-    o.value('2500', '2500 Mbps');
-    o.value('10000', '10000 Mbps');
-    o.value('40000', '40000 Mbps');
-    o.value('1', '1 Mbps');
-    o.value('2', '2 Mbps');
-    o.value('3', '3 Mbps');
-    o.value('4', '4 Mbps');
-    o.value('5', '5 Mbps');
-    o.value('6', '6 Mbps');
-    o.value('7', '7 Mbps');
-    o.value('8', '8 Mbps');
-    o.value('9', '9 Mbps');
+    // Upload Speed field (dropdown)
+    var o = s.option(form.Value, 'urate', _('Upload Speed'));
+    o.modalonly = true;
+    o.readonly = true;
+    
+    // Download Speed field (dropdown)
+    var o = s.option(form.Value, 'drate', _('Download Speed'));
+    o.modalonly = true;
+    o.readonly = true;
     
     // OLT field (dropdown)
     var o = s.option(form.Value, 'olt', _('OLT'));

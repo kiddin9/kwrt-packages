@@ -31,7 +31,6 @@ USER_PACKAGE="$(uci get ${USER_CONFIG}.${USER_CFGID}.package)"
 USER_QOS="$(uci get ${USER_CONFIG}.${USER_CFGID}.qos)"
 USER_UPLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.urate)"
 USER_DOWNLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.drate)"
-USER_UNIT="$(uci get ${USER_CONFIG}.${USER_CFGID}.unit)"
 USER_CONNECT="$(uci get ${USER_CONFIG}.${USER_CFGID}.connect)"
 RENEWAL_DATE="$(uci get ${USER_CONFIG}.${USER_CFGID}.expires)"
 

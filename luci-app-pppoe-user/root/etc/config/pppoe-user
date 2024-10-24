@@ -7,8 +7,7 @@ config user
 	option ipaddr '*'
 	option package 'home'
 	option qos '1'
-	option urate '1850'
-	option drate '3750'
-	option unit 'kbytes'
+	option urate '15'
+	option drate '30'
 	option connect '1024'
 

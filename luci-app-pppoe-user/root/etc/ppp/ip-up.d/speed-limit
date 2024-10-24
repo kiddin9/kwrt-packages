@@ -13,11 +13,11 @@
   USER_CONFIG="pppoe-user"
   USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
   
-  # Get user configuration
+  # Convert Mbps to KBytes
   USER_QOS="$(uci get ${USER_CONFIG}.${USER_CFGID}.qos 2>/dev/null)"
-  USER_UPLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.urate 2>/dev/null)"
-  USER_DOWNLOAD="$(uci get ${USER_CONFIG}.${USER_CFGID}.drate 2>/dev/null)"
-  USER_UNIT="$(uci get ${USER_CONFIG}.${USER_CFGID}.unit 2>/dev/null)"
+  USER_UPLOAD="$(($(uci get ${USER_CONFIG}.${USER_CFGID}.urate 2>/dev/null) * 125))"
+  USER_DOWNLOAD="$(($(uci get ${USER_CONFIG}.${USER_CFGID}.drate 2>/dev/null) * 125))"
+  USER_UNIT="kbytes"
 
   # Ensure that the obtained values are valid
   if [ -z "${USER_QOS}" ] || [ -z "${USER_UPLOAD}" ] || [ -z "${USER_DOWNLOAD}" ] || [ -z "${USER_UNIT}" ]; then
