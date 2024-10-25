@@ -1,6 +1,7 @@
 <?php
 ob_start();
 include './cfg.php';
+ini_set('memory_limit', '256M');
 $subscription_file = '/etc/neko/config/subscription.txt'; 
 $download_path = '/etc/neko/config/'; 
 $php_script_path = '/www/nekobox/personal.php'; 
@@ -329,6 +330,17 @@ $current_subscription_url = getSubscriptionUrlFromFile($subscription_file);
     <script type="text/javascript" src="./assets/js/neko.js"></script>
 </head>
 <body>
+<style>
+@media (max-width: 767px) {
+    .row a {
+        font-size: 9px; 
+    }
+}
+
+.table-responsive {
+    width: 100%;
+}
+</style>
 <div class="container-sm container-bg callout border border-3 rounded-4 col-11">
     <div class="row">
         <a href="./index.php" class="col btn btn-lg">🏠 首页</a>

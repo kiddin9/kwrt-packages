@@ -195,7 +195,7 @@ if (!file_exists($subscriptionFile)) {
 
 $subscriptions = json_decode(file_get_contents($subscriptionFile), true);
 if (!$subscriptions) {
-    for ($i = 0; $i < 7; $i++) {
+    for ($i = 0; $i < 6; $i++) {
         $subscriptions[$i] = [
             'url' => '',
             'file_name' => "subscription_{$i}.yaml",
@@ -625,6 +625,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding: 8px 0;
     color: #00ff9d; 
 }
+
+@media (max-width: 767px) {
+    .row a {
+        font-size: 9px; 
+    }
+}
+
+.table-responsive {
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .table th,
+    .table td {
+        padding: 6px 8px; 
+        font-size: 14px; 
+    }
+
+    .table th:nth-child(1), .table td:nth-child(1) {
+        width: 10%; 
+    }
+    .table th:nth-child(2), .table td:nth-child(2) {
+        width: 20%; 
+    }
+    .table th:nth-child(3), .table td:nth-child(3) {
+        width: 25%; 
+    }
+    .table th:nth-child(4), .table td:nth-child(4) {
+        width: 45%; 
+        white-space: nowrap;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: space-between; 
+    }
+
+    .btn-group .btn {
+        flex: 1 1 22%; 
+        margin-bottom: 5px; 
+        margin-right: 5px; 
+        text-align: center; 
+        font-size: 9px; 
+    }
+
+    .btn-group .btn-rename {
+        width: 70px; 
+        font-size: 9px; 
+    }
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+}
 </style>
 
 <script>
@@ -842,38 +897,45 @@ function showUpdateAlert() {
     <?php endif; ?>
 <?php endif; ?>
 
-  <h2 class="text-success text-center mt-4 mb-4">订阅管理</h2>
+<h2 class="text-success text-center mt-4 mb-4">订阅管理</h2>
 
-    <?php if ($message): ?>
-        <div class="alert alert-info text-start"> 
-            <?php echo nl2br(htmlspecialchars($message)); ?>
-        </div>
-    <?php endif; ?>
+<?php if (isset($message) && $message): ?>
+    <div class="alert alert-info">
+        <?php echo nl2br(htmlspecialchars($message)); ?>
+    </div>
+<?php endif; ?>
 
+<?php if (isset($subscriptions) && is_array($subscriptions)): ?>
     <div class="row">
         <?php for ($i = 0; $i < 6; $i++): ?>
-            <div class="col-md-4 mb-4">
-                <div class="card">
+            <div class="col-md-4 mb-3">
+                <form method="post" class="card">
                     <div class="card-body">
-                        <h5 class="card-title">订阅链接 <?php echo ($i + 1); ?></h5>
-                        <form method="post">
-                            <div class="input-group mb-3">
-                                <input type="text" name="subscription_url" id="subscription_url_<?php echo $i; ?>" 
-                                       value="<?php echo htmlspecialchars($subscriptions[$i]['url']); ?>" required 
-                                       class="form-control" placeholder="输入链接">
-                                <input type="text" name="custom_file_name" id="custom_file_name_<?php echo $i; ?>" 
-                                       value="<?php echo htmlspecialchars($subscriptions[$i]['file_name']); ?>" 
-                                       class="form-control" placeholder="自定义文件名">
-                                <input type="hidden" name="index" value="<?php echo $i; ?>">
-                                <button type="submit" name="update" class="btn btn-success ml-2">
-                                    <i>🔄</i> 更新
-                                </button>
-                            </div>
-                        </form>
+                        <div class="form-group">
+                            <h5 for="subscription_url_<?php echo $i; ?>" class="mb-2">订阅链接 <?php echo ($i + 1); ?></h5>
+                            <input type="text" name="subscription_url" id="subscription_url_<?php echo $i; ?>" value="<?php echo htmlspecialchars($subscriptions[$i]['url'] ?? ''); ?>" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom_file_name_<?php echo $i; ?>">自定义文件名</label>
+                            <input type="text" name="custom_file_name" id="custom_file_name_<?php echo $i; ?>" value="subscription_<?php echo ($i + 1); ?>.yaml" class="form-control">
+                        </div>
+                        <input type="hidden" name="index" value="<?php echo $i; ?>">
+                        <div class="text-center mt-3"> 
+                            <button type="submit" name="update" class="btn btn-info">🔄 更新订阅 <?php echo ($i + 1); ?></button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
+
+            <?php if (($i + 1) % 3 == 0 && $i < 5): ?>
+                </div><div class="row">
+            <?php endif; ?>
+            
         <?php endfor; ?>
+    </div>
+<?php else: ?>
+    <p>未找到订阅信息。</p>
+<?php endif; ?>
     </div>
 </section>
 <section id="subscription-management" class="section-gap">
