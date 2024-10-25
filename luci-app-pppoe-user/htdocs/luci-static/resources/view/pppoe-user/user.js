@@ -269,6 +269,27 @@ return view.extend({
     o.default = '30';
     o.depends('qos', '1'); // Show only when QoS is enabled
     
+    // Concurrent Connection Number Segment (dropdown menu)
+    var o = s.option(form.ListValue, 'connect', _('Connection Number'));
+    o.modalonly = true;
+    o.datatype = "range(128,1048576)"
+    o.default = '2048';
+    o.value('128');
+    o.value('256');
+    o.value('512');
+    o.value('1024');
+    o.value('2048');
+    o.value('4096');
+    o.value('8192');
+    o.value('16384');
+    o.value('32768');
+    o.value('65536');
+    o.value('131072');
+    o.value('262144');
+    o.value('524288');
+    o.value('1048576');
+    o.depends('qos', '1'); // Show only when QoS is enabled
+    
     // Opening Date field (read-only)
     o = s.option(form.Value, 'opening', _('Opening Date'));
     o.readonly = true;

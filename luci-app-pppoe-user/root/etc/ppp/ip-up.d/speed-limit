@@ -11,17 +11,17 @@
   PEERIP="${5}"
 
   USER_CONFIG="pppoe-user"
-  USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -sf 2)"
-  
+  USER_CFGID="$(uci show ${USER_CONFIG} | grep "${USERNAME}" | cut -d '.' -f 2)"
+
   # Convert Mbps to KBytes
   USER_QOS="$(uci get ${USER_CONFIG}.${USER_CFGID}.qos 2>/dev/null)"
   USER_UPLOAD="$(($(uci get ${USER_CONFIG}.${USER_CFGID}.urate 2>/dev/null) * 125))"
   USER_DOWNLOAD="$(($(uci get ${USER_CONFIG}.${USER_CFGID}.drate 2>/dev/null) * 125))"
-  USER_UNIT="kbytes"
+  USER_CONNECT="$(uci get ${USER_CONFIG}.${USER_CFGID}.connect 2>/dev/null)"
 
   # Ensure that the obtained values are valid
-  if [ -z "${USER_QOS}" ] || [ -z "${USER_UPLOAD}" ] || [ -z "${USER_DOWNLOAD}" ] || [ -z "${USER_UNIT}" ]; then
-      logger "${LOGIN_TIME} ERROR: Failed to get user config for ${USERNAME} (${PEERIP})"
+  if [ -z "${USER_QOS}" ] || [ -z "${USER_UPLOAD}" ] || [ -z "${USER_DOWNLOAD}" ] || [ -z "${USER_CONNECT}" ]; then
+      logger "${LOGIN_TIME} ERROR: Failed to get user config for (${USERNAME}) (${PEERIP})"
       exit 1
   fi
 
@@ -30,14 +30,25 @@
 
   # Add traffic control rules
   if [ "${USER_QOS}" = "1" ]; then
-      nft insert rule inet pppoe ${UP} ip saddr "${PEERIP}" limit rate over "${USER_UPLOAD}" "${USER_UNIT}"/second counter drop || {
-          logger "${LOGIN_TIME} ERROR: Invalid upload speed limit for IP ${PEERIP}"
+      # Ensure rules are inserted in the correct order
+
+      # Upload chain
+      nft insert rule inet pppoe ${UP} ip saddr "${PEERIP}" ct count over "${USER_CONNECT}" drop
+      nft insert rule inet pppoe ${UP} ip saddr "${PEERIP}" ct state new limit rate "${USER_CONNECT}"/minute accept
+      nft insert rule inet pppoe ${UP} ip saddr "${PEERIP}" limit rate over "${USER_UPLOAD}" kbytes/second counter drop
+      if [ $? -ne 0 ]; then
+          logger "${LOGIN_TIME} ERROR: Failed to insert upload rules (${USERNAME}) (${PEERIP})"
           exit 1
-      }
-      nft insert rule inet pppoe ${DOWN} ip daddr "${PEERIP}" limit rate over "${USER_DOWNLOAD}" "${USER_UNIT}"/second counter drop || {
-          logger "${LOGIN_TIME} ERROR: Invalid download speed limit for IP ${PEERIP}"
+      fi
+
+      # Download chain
+      nft insert rule inet pppoe ${DOWN} ip daddr "${PEERIP}" ct count over "${USER_CONNECT}" drop
+      nft insert rule inet pppoe ${DOWN} ip daddr "${PEERIP}" ct state new limit rate "${USER_CONNECT}"/minute accept
+      nft insert rule inet pppoe ${DOWN} ip daddr "${PEERIP}" limit rate over "${USER_DOWNLOAD}" kbytes/second counter drop
+      if [ $? -ne 0 ]; then
+          logger "${LOGIN_TIME} ERROR: Failed to insert download rules (${USERNAME}) (${PEERIP})"
           exit 1
-      }
+      fi
   fi
 
   exit 0

@@ -20,6 +20,7 @@ setup_user() {
     config_get qos "$1" qos
     config_get urate "$1" urate
     config_get drate "$1" drate
+    config_get connect "$1" connect
     config_get expires "$cfg" expires
 
     if [ "$expires" == "$CURRENT_DATE" ]; then

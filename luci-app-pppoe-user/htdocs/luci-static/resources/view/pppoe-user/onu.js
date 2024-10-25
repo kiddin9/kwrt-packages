@@ -49,6 +49,11 @@ return view.extend({
     o.modalonly = true;
     o.readonly = true;
     
+    // Concurrent Connection Number Segment (dropdown menu)
+    var o = s.option(form.Value, 'connect', _('Connection Number'));
+    o.modalonly = true;
+    o.readonly = true;
+    
     // OLT field (dropdown)
     var o = s.option(form.Value, 'olt', _('OLT'));
     o.value('1', 'OLT 1');
