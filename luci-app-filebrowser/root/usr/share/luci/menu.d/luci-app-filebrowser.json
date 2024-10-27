@@ -1,13 +1,14 @@
 {
-	"admin/system/filebrowser": {
-		"title": "File Browser",
-		"order": 80,
+	"admin/services/filebrowser": {
+		"title": "FileBrowser",
 		"action": {
+			"order": 30,
 			"type": "view",
-			"path": "system/filebrowser"
+			"path": "filebrowser"
 		},
 		"depends": {
-			"acl": [ "luci-app-filebrowser" ]
+			"acl": [ "luci-app-filebrowser" ],
+			"uci": { "filebrowser": true }
 		}
 	}
 }

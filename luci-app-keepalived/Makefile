@@ -10,6 +10,7 @@ PKG_MAINTAINER:=Jaymin Patel <jem.patel@gmail.com>
 
 LUCI_TITLE:=LuCI support for the Keepalived
 LUCI_DEPENDS:=+luci-base +keepalived +keepalived-sync
+LUCI_PKGARCH:=all
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
