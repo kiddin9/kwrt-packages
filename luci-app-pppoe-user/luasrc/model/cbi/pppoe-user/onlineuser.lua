@@ -10,12 +10,16 @@ if fs.access(session_path) then
     for filename in fs.dir(session_path) do
         local session_file = session_path .. "/" .. filename
         local file = io.open(session_file, "r")
-        local t = jsonc.parse(file:read("*a"))
-        file:close()
-
-        if t then
-            t.session_file = session_file
-            sessions[#sessions + 1] = t
+        if file then
+            local content = file:read("*a")
+            file:close()
+            if content then
+                local t = jsonc.parse(content)
+                if t then
+                    t.session_file = session_file
+                    sessions[#sessions + 1] = t
+                end
+            end
         end
     end
 end
@@ -26,7 +30,7 @@ local f = SimpleForm("")
 f.reset = false
 f.submit = false
 
-local t = f:section(Table, sessions, translate("Online Users [ " .. count .. "]"))
+local t = f:section(Table, sessions, translatef("Online Users [%d]", count))
 t:option(DummyValue, "username", translate("User Name"))
 t:option(DummyValue, "mac", translate("MAC address"))
 t:option(DummyValue, "interface", translate("Interface"))
@@ -39,8 +43,10 @@ t:option(DummyValue, "pid", translate("Process ID"))
 local kill = t:option(Button, "kill", translate("Forced Offline"))
 kill.inputstyle = "reset"
 function kill.write(t, s)
-    luci.util.execi("rm -f " .. t.map:get(s, "session_file"))
-    util.exec("kill -15 " .. t.map:get(s, "pid"))
+    local session_file = util.shellquote(t.map:get(s, "session_file"))
+    local pid = util.shellquote(t.map:get(s, "pid"))
+    luci.util.exec("rm -f " .. session_file)
+    util.exec("kill -15 " .. pid)
     luci.http.redirect(o.build_url("admin/status/userstatus/onlineuser"))
 end
 

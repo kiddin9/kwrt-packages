@@ -37,7 +37,7 @@ RENEWAL_DATE="$(uci get ${USER_CONFIG}.${USER_CFGID}.expires)"
 CONFIG_PATH="/var/etc/pppoe-user"
 SESSION_PATH="${CONFIG_PATH}/session"
 
-PID="$(cat /var/run/${IFACE}.pid 2>/dev/null)"
+PID="$(cat /var/run/pppd/${IFACE}.pid 2>/dev/null)"
 MAC="$(ps -w | grep pppd | grep -v 'grep' | grep -h -m 1 "${PID}" | awk '{print $10}' | cut -d : -f 2,2-7)"
 
 mkdir -p "${USER_LOG}"
