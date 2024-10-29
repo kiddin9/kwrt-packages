@@ -246,12 +246,6 @@ start_service() {
 	procd_set_param limits core="unlimited"
 	procd_set_param limits nofile="1048576 1048576"
 
-	procd_add_jail mihomo requirejail procfs
-	procd_add_jail_mount "$PROG" /etc/TZ /etc/localtime /etc/hosts /etc/ssl/certs
-	procd_add_jail_mount_rw "$RUN_DIR" "$LOG_DIR" /dev/net
-	procd_set_param capabilities /etc/capabilities/mihomo.json
-	procd_set_param no_new_privs 1
-
 	procd_close_instance
 	# transparent proxy
 	if [ "$transparent_proxy" == 1 ]; then
@@ -270,10 +264,10 @@ start_service() {
 			ip tuntap add dev "$TUN_DEVICE" mode tun vnet_hdr
 			ip link set "$TUN_DEVICE" up
 			if [ "$ipv4_proxy" == 1 ]; then
-				ip route add unicast default dev $TUN_DEVICE table "$TUN_ROUTE_TABLE"
+				ip route add unicast default dev "$TUN_DEVICE" table "$TUN_ROUTE_TABLE"
 			fi
 			if [ "$ipv6_proxy" == 1 ]; then
-				ip -6 route add unicast default dev $TUN_DEVICE table "$TUN_ROUTE_TABLE"
+				ip -6 route add unicast default dev "$TUN_DEVICE" table "$TUN_ROUTE_TABLE"
 			fi
 			$TUN_SH
 		fi
@@ -305,9 +299,14 @@ start_service() {
 				ip -6 rule add pref "$UDP_RULE_PREF" fwmark "$FW_MARK/$FW_MARK_MASK" ipproto udp table "$udp_route_table"
 			fi
 		fi
-		nft -f "$HIJACK_NFT" -D FW_MARK="$FW_MARK" -D FW_MARK_MASK="$FW_MARK_MASK" -D MIHOMO_USER="$MIHOMO_USER" -D TUN_DEVICE="$TUN_DEVICE" -D DNS_PORT="$dns_port" -D REDIR_PORT="$redir_port" -D TPROXY_PORT="$tproxy_port"
+		nft -f "$HIJACK_NFT" -D FW_MARK="$FW_MARK" -D FW_MARK_MASK="$FW_MARK_MASK" -D TUN_DEVICE="$TUN_DEVICE" -D DNS_PORT="$dns_port" -D REDIR_PORT="$redir_port" -D TPROXY_PORT="$tproxy_port"
 		nft -f "$RESERVED_IP_NFT"
 		nft -f "$RESERVED_IP6_NFT"
+		if [ "$tcp_transparent_proxy_mode" != "redirect" ]; then
+			nft flush chain inet "$FW_TABLE" nat_output
+			nft flush chain inet "$FW_TABLE" dstnat
+		fi
+		nft add element inet "$FW_TABLE" bypass_group \{ "$MIHOMO_GROUP" \}
 		nft add element inet "$FW_TABLE" fake_ip \{ "$fake_ip_range" \}
 		# dns hijack
 		if [ "$ipv4_dns_hijack" == 1 ]; then
@@ -380,6 +379,23 @@ start_service() {
 			fi
 			nft add rule inet "$FW_TABLE" mangle_prerouting meta l4proto udp jump "${access_control_mode}_${udp_transparent_proxy_mode}"
 		fi
+		# fix compatible between tproxy and dockerd (kmod-br-netfilter)
+		if [ "$tproxy_enable" == 1 ] && (lsmod | grep -q br_netfilter); then
+			if [ "$ipv4_proxy" == 1 ]; then
+				local bridge_nf_call_iptables; bridge_nf_call_iptables=$(sysctl -e -n net.bridge.bridge-nf-call-iptables)
+				if [ "$bridge_nf_call_iptables" == 1 ]; then
+					touch /tmp/bridge_nf_call_iptables.flag
+					sysctl -q -w net.bridge.bridge-nf-call-iptables=0
+				fi
+			fi
+			if [ "$ipv6_proxy" == 1 ]; then
+				local bridge_nf_call_ip6tables; bridge_nf_call_ip6tables=$(sysctl -e -n net.bridge.bridge-nf-call-ip6tables)
+				if [ "$bridge_nf_call_ip6tables" == 1 ]; then
+					touch /tmp/bridge_nf_call_ip6tables.flag
+					sysctl -q -w net.bridge.bridge-nf-call-ip6tables=0
+				fi
+			fi
+		fi
 	fi
 	# cron
 	if [[ "$scheduled_restart" == 1 && -n "$cron_expression" ]]; then
@@ -432,6 +448,15 @@ cleanup() {
 	for handle in $handles; do
 		nft delete rule inet fw4 forward handle "$handle"
 	done
+	# revert fix compatible between tproxy and dockerd (kmod-br-netfilter)
+	if [ -f "/tmp/bridge_nf_call_iptables.flag" ]; then
+		rm -f /tmp/bridge_nf_call_iptables.flag
+		sysctl -q -w net.bridge.bridge-nf-call-iptables=1
+	fi
+	if [ -f "/tmp/bridge_nf_call_ip6tables.flag" ]; then
+		rm -f /tmp/bridge_nf_call_ip6tables.flag
+		sysctl -q -w net.bridge.bridge-nf-call-ip6tables=1
+	fi
 	# delete cron
 	sed -i '/#mihomo/d' "/etc/crontabs/root" > /dev/null 2>&1
 	/etc/init.d/cron restart

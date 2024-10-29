@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 
 LUCI_TITLE:=LuCI Support for mihomo
-LUCI_DEPENDS:=+luci-base +mihomo +ca-bundle +curl +yq firewall4 +kmod-nft-tproxy +ip-full +kmod-tun +procd-ujail
+LUCI_DEPENDS:=+luci-base +mihomo +ca-bundle +curl +yq firewall4 +ip-full +kmod-inet-diag +kmod-nft-tproxy +kmod-tun
 
 define Package/luci-app-mihomo/conffiles
 /etc/config/mihomo
