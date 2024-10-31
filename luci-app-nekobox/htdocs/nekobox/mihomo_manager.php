@@ -709,6 +709,8 @@ function showUpdateAlert() {
     </div>
     <div class="text-center">
         <h1 style="margin-top: 40px; margin-bottom: 20px;">Mihomo 文件管理</h1>
+       <div class="card mb-4">
+    <div class="card-body">
     <div class="container">
     <h5>代理文件管理</h5>
     <div class="table-responsive">
@@ -727,7 +729,7 @@ function showUpdateAlert() {
                     <tr>
                         <td class="align-middle"><a href="download.php?file=<?php echo urlencode($file); ?>"><?php echo htmlspecialchars($file); ?></a></td>
                         <td class="align-middle"><?php echo file_exists($filePath) ? formatSize(filesize($filePath)) : '文件不存在'; ?></td>
-                        <td class="align-middle"><?php echo htmlspecialchars(date('Y-m-d H:i:s', filemtime($filePath))); ?></td>
+                        <td class="align-middle"><?php echo htmlspecialchars(date('Y-m-d H:i:s', filemtime($filePath) + 8 * 60 * 60)); ?></td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 <form action="" method="post" class="d-inline">
@@ -773,7 +775,7 @@ function showUpdateAlert() {
                     <tr>
                         <td class="align-middle"><a href="download.php?file=<?php echo urlencode($file); ?>"><?php echo htmlspecialchars($file); ?></a></td>
                         <td class="align-middle"><?php echo file_exists($filePath) ? formatSize(filesize($filePath)) : '文件不存在'; ?></td>
-                        <td class="align-middle"><?php echo htmlspecialchars(date('Y-m-d H:i:s', filemtime($filePath))); ?></td>
+                        <td class="align-middle"><?php echo htmlspecialchars(date('Y-m-d H:i:s', filemtime($filePath) + 8 * 60 * 60)); ?></td>
                         <td>
                             <div class="d-flex justify-content-center">
                                 <form action="" method="post" class="d-inline">
@@ -907,6 +909,7 @@ function showUpdateAlert() {
                     </select>
 
                     <button type="button" class="btn btn-success btn-sm mx-1" onclick="formatContent()">格式化缩进</button>
+                    <button type="button" class="btn btn-success btn-sm mx-1" id="yamlFormatBtn" onclick="formatYamlContent()" style="display: none;">格式化 YAML</button>
                     <button type="button" class="btn btn-info btn-sm mx-1" id="jsonValidationBtn" onclick="validateJsonSyntax()">验证 JSON 语法</button>
                     <button type="button" class="btn btn-info btn-sm mx-1" id="yamlValidationBtn" onclick="validateYamlSyntax()" style="display: none;">验证 YAML 语法</button>
                     <button type="button" class="btn btn-primary btn-sm mx-1" onclick="saveFullScreenContent()">保存并关闭</button>
@@ -937,7 +940,7 @@ let aceEditorInstance;
 
 function initializeAceEditor() {
     aceEditorInstance = ace.edit("aceEditorContainer");
-    const savedTheme = localStorage.getItem("editorTheme") || "ace/theme/Vibrant Ink";
+    const savedTheme = localStorage.getItem("editorTheme") || "ace/theme/vibrant_ink";
     aceEditorInstance.setTheme(savedTheme);
     aceEditorInstance.session.setMode("ace/mode/javascript"); 
     aceEditorInstance.setOptions({
@@ -984,31 +987,6 @@ function initializeAceEditor() {
 
     function openSearch() {
         aceEditorInstance.execCommand("find");
-    }
-
-    function detectContentFormat() {
-        const content = aceEditorInstance.getValue().trim();
-
-        if (isJsonDetected) {
-            document.getElementById("jsonValidationBtn").style.display = "inline-block";
-            document.getElementById("yamlValidationBtn").style.display = "none";
-            return;
-        }
-
-        try {
-            JSON.parse(content);
-            document.getElementById("jsonValidationBtn").style.display = "inline-block";
-            document.getElementById("yamlValidationBtn").style.display = "none";
-            isJsonDetected = true; 
-        } catch {
-        if (isYamlFormat(content)) {
-            document.getElementById("jsonValidationBtn").style.display = "none";
-            document.getElementById("yamlValidationBtn").style.display = "inline-block";
-        } else {
-            document.getElementById("jsonValidationBtn").style.display = "none";
-            document.getElementById("yamlValidationBtn").style.display = "none";
-            }
-        }
     }
 
     function isYamlFormat(content) {
@@ -1073,6 +1051,49 @@ function initializeAceEditor() {
             }
         } catch (e) {
             alert("格式化错误: " + e.message);
+        }
+    }
+
+
+    function formatYamlContent() {
+        const content = aceEditorInstance.getValue();
+        
+        try {
+            const yamlObject = jsyaml.load(content); 
+            const formattedYaml = jsyaml.dump(yamlObject, { indent: 4 }); 
+            aceEditorInstance.setValue(formattedYaml, -1);
+            alert("YAML 格式化成功");
+        } catch (e) {
+            alert("YAML 格式化错误: " + e.message);
+        }
+    }
+
+    function detectContentFormat() {
+        const content = aceEditorInstance.getValue().trim();
+
+        if (isJsonDetected) {
+            document.getElementById("jsonValidationBtn").style.display = "inline-block";
+            document.getElementById("yamlValidationBtn").style.display = "none";
+            document.getElementById("yamlFormatBtn").style.display = "none"; 
+            return;
+        }
+
+        try {
+            JSON.parse(content);
+            document.getElementById("jsonValidationBtn").style.display = "inline-block";
+            document.getElementById("yamlValidationBtn").style.display = "none";
+            document.getElementById("yamlFormatBtn").style.display = "none"; 
+            isJsonDetected = true; 
+        } catch {
+            if (isYamlFormat(content)) {
+                document.getElementById("jsonValidationBtn").style.display = "none";
+                document.getElementById("yamlValidationBtn").style.display = "inline-block";
+                document.getElementById("yamlFormatBtn").style.display = "inline-block"; 
+            } else {
+                document.getElementById("jsonValidationBtn").style.display = "none";
+                document.getElementById("yamlValidationBtn").style.display = "none";
+                document.getElementById("yamlFormatBtn").style.display = "none"; 
+            }
         }
     }
 

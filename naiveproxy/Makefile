@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=naiveproxy
 PKG_VERSION:=130.0.6723.40-5
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 ARCH_PREBUILT:=$(ARCH_PACKAGES)
 
@@ -13,6 +13,10 @@ else ifeq ($(ARCH_PREBUILT),i386_pentium-mmx)
   ARCH_PREBUILT:=x86
 else ifeq ($(ARCH_PREBUILT),i386_pentium4)
   ARCH_PREBUILT:=x86
+else ifeq ($(ARCH_PREBUILT),mipsel_24kc_24kf)
+  ARCH_PREBUILT:=mipsel_24kc
+else ifeq ($(ARCH_PREBUILT),mipsel_74kc)
+  ARCH_PREBUILT:=mipsel_24kc
 else ifeq ($(ARCH_PREBUILT),riscv64_riscv64)
   ARCH_PREBUILT:=riscv64
 endif
