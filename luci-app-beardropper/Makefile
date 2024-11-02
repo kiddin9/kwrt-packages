@@ -10,8 +10,6 @@ include $(TOPDIR)/rules.mk
 LUCI_Title:=LuCI Support for BearDropper
 LUCI_PKGARCH=all
 
-PKG_VERSION:=1.1
-PKG_RELEASE:=2
 
 PKG_MAINTANINER:=Nate Ding <natelol@github.com>
 PKG_LICENSE:=GLPv3
