@@ -102,10 +102,13 @@ return view.extend({
         o = s.option(form.DummyValue, '_status', _('Service Status'));
         o.rawhtml = true;
         o.render = function(section_id) {
-            var status = uci.get('qosmate', 'global', 'enabled') === '1' ? 'Running' : 'Stopped (Disabled)';
+            var runningText = _('Running');
+            var stoppedText = _('Stopped');
+            var status = uci.get('qosmate', 'global', 'enabled') === '1' ? runningText : stoppedText;
+            var statusColor = status === runningText ? 'green' : 'red';
             return E('div', { 'class': 'cbi-value' }, [
                 E('label', { 'class': 'cbi-value-title' }, _('Service Status')),
-                E('div', { 'class': 'cbi-value-field' }, status)
+                E('div', { 'class': 'cbi-value-field', 'style': 'color:' + statusColor }, status)
             ]);
         };
         
@@ -286,16 +289,13 @@ return view.extend({
             ]);
         });
 
-        o = s.option(form.Flag, 'enabled', _('Enable'), _('Enable or disable qosmate'));
-        o.rmempty = false;
-
         // Version information
         o = s.option(form.DummyValue, '_version', _('Version Information'));
         o.rawhtml = true;
         o.render = function(section_id) {
             var updateAvailable = currentVersion !== latestVersion && 
-                                currentVersion !== 'Unable to fetch' && 
-                                latestVersion !== 'Unable to fetch';
+                                currentVersion !== _('Unable to fetch') && 
+                                latestVersion !== _('Unable to fetch');
 
             var html = '<div>' +
                     '<strong>' + _('Current Version') + ':</strong> ' + currentVersion + '<br>' +
