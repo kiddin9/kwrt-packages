@@ -1,0 +1,4 @@
+[ -n "${IPKG_INSTROOT}" ] || {
+	(. /etc/uci-defaults/luci-app-nbtverify) && rm -f /etc/uci-defaults/luci-app-nbtverify
+	exit 0
+}

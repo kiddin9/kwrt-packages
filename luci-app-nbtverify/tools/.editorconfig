@@ -1,0 +1,4 @@
+[*.{fs,fsx}]
+fsharp_newline_between_type_definition_and_members = false
+fsharp_blank_lines_around_nested_multiline_expressions = false
+fsharp_newline_before_multiline_computation_expression = false

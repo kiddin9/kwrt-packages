@@ -1,0 +1,7 @@
+
+config server
+	option username ''
+	option password ''
+	option enabled '1'
+	option mobile '1'
+

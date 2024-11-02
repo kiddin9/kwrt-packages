@@ -1,0 +1,33 @@
+{
+    "luci-app-tinyfm": {
+        "description": "Grant access to TinyFM configuration",
+        "read": {
+            "ubus": {
+                "luci": [ "getInitList", "setInitAction" ],
+                "file": [ "list", "read", "stat" ]
+            },
+            "uci": [ "tinyfm" ],
+            "file": {
+                "/etc/config/tinyfm": [ "read" ],
+                "/etc/init.d/tinyfm": [ "read" ],
+                "/": [ "list" ],
+                "/www/tinyfm": [ "list" ],
+                "/etc/openclash": [ "list" ],
+                "/etc/mihomo": [ "list" ]
+            }
+        },
+        "write": {
+            "ubus": {
+                "luci": [ "setInitAction" ],
+                "file": [ "write", "remove", "exec" ]
+            },
+            "uci": [ "tinyfm" ],
+            "file": {
+                "/etc/config/tinyfm": [ "write" ],
+                "/": [ "write" ],
+                "/www/tinyfm": [ "write" ],
+                "/usr/bin/tinyfm.sh": [ "exec" ]
+            }
+        }
+    }
+}

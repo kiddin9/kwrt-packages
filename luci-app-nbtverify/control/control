@@ -1,0 +1,12 @@
+Package: luci-app-nbtverify
+Version: 1.0
+Depends: +ipset +dnsmasq-full +curl
+Source: https://github.com/nbtca/luci-app-nbtverify
+SourceName: luci-app-nbtverify
+License: GPL-2.0
+Section: luci
+SourceDateEpoch: 1644683634
+Maintainer: nbtca <https://github.com/nbtca>
+Architecture: x86_64
+Description:  LuCI Support for nbtverify
+# Installed-Size: 1268
