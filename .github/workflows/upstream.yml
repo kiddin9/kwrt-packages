@@ -231,7 +231,6 @@ jobs:
         ) &
         (
         git clone https://github.com/sirpdboy/luci-theme-kucat -b js --depth 1
-        git_clone https://github.com/blueberry-pie-11/luci-app-natmap lucinatmap && mv lucinatmap/{luci-app-natmap,natmap} ./;rm -rf lucinatmap
         git_clone https://github.com/QiuSimons/luci-app-daed-next daed1 && mvdir daed1
         git_clone https://github.com/sirpdboy/luci-app-netdata
         git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
