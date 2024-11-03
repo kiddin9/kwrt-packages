@@ -335,8 +335,8 @@ jobs:
         git_clone https://github.com/sbwml/luci-app-openai opai && mvdir opai
         # git_clone https://github.com/0x676e67/luci-app-wireguard-ui wireguardui && mvdir wireguardui
         ) &
-         (
-        git_clone https://github.com/bobbyunknown/luci-app-syscontrol
+        (
+        git_clone https://github.com/kiddin9/luci-app-syscontrol
         git_clone https://github.com/bobbyunknown/luci-app-insomclash
         git_clone https://github.com/muink/luci-app-ssrust
         git_clone https://github.com/hudra0/qosmate
