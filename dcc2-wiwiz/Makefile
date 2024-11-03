@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dcc2-wiwiz
-PKG_VERSION:=8.0.0
-PKG_RELEASE:=3
+PKG_VERSION:=8.2.1
+PKG_RELEASE:=4
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 CMAKE_INSTALL:=1
@@ -47,7 +47,7 @@ else
 endif
 
 define Package/dcc2-wiwiz-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config $(1)/www/cgi-bin $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/rtty $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/rtty.init $(1)/etc/init.d/rtty
 	$(INSTALL_CONF) ./files/rtty.config $(1)/etc/config/rtty
@@ -60,8 +60,8 @@ define Package/dcc2-wiwiz-$(BUILD_VARIANT)/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/controller/rtty.lua $(1)/usr/lib/lua/luci/controller/rtty.lua
 	$(INSTALL_DATA) ./files/usr/lib/lua/luci/model/cbi/rtty.lua $(1)/usr/lib/lua/luci/model/cbi/rtty.lua
-  $(INSTALL_BIN) ./files/www/cgi-bin/dvstatus $(1)/www/cgi-bin/dvstatus
-  $(INSTALL_BIN) ./files/usr/bin/assocnum.sh $(1)/usr/bin/assocnum.sh
+	$(INSTALL_BIN) ./files/www/cgi-bin/dvstatus $(1)/www/cgi-bin/dvstatus
+	$(INSTALL_BIN) ./files/usr/bin/assocnum.sh $(1)/usr/bin/assocnum.sh
 
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/uci-defaults-rtty $(1)/etc/uci-defaults/rtty

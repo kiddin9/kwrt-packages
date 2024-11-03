@@ -41,6 +41,6 @@ local conn_count = exec("cat /proc/sys/net/netfilter/nf_conntrack_count")
 local conn_max = exec("sysctl -n -e net.nf_conntrack_max net.ipv4.netfilter.ip_conntrack_max")
 
 print("Content-type: application/javascript\n")
-print("dvstatus({\"id\":\"".. id .."\", \"clientNum\": \"".. clientNum .."\", \"assocNum\": \"".. 
+print("{\"id\":\"".. id .."\", \"clientNum\": \"".. clientNum .."\", \"assocNum\": \"".. 
 	assocNum .."\", \"leasesNum\": \"".. #leases .."\", \"loadavg\":".. 
-	luci.util.serialize_json(loadavg) ..", \"conn_count\": \"".. conn_count .."\", \"conn_max\": \"".. conn_max .."\"})")
+	luci.util.serialize_json(loadavg) ..", \"conn_count\": \"".. conn_count .."\", \"conn_max\": \"".. conn_max .."\"}")

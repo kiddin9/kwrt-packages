@@ -1,4 +1,5 @@
-m = Map("rtty", translate("Wiwiz")) 
+m = Map("rtty", translate("Wiwiz"),
+translate("DCC2远程管理 Ver 1.2.2 <a href='http://www.wiwiz.com/pinpinwifi/wiwiz-ipk.htm' target='_blank'>使用说明</a>")) 
 
 rtty = m:section(TypedSection, "rtty", "")
 
@@ -28,7 +29,5 @@ port = rtty:option(Value, "port", "服务器端口");
 port.optional = false 
 port.rmempty = false
 port.default = "5912"
-
-ver = rtty:option(DummyValue, "ver", "DCC2插件版本", "<a href='http://www.wiwiz.com/pinpinwifi/wiwiz-ipk.htm' target='_blank'>使用说明</a>");
 
 return m
