@@ -1,6 +1,8 @@
-include $(TOPDIR)/rules.mk
+#
+# This is free software, licensed under the MIT License.
+#
 
-PKG_NAME:=luci-app-qosmate
+include $(TOPDIR)/rules.mk
 
 PKG_MAINTAINER:=Markus Hütter <mh@hudra.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -11,9 +13,4 @@ LUCI_PKGARCH:=all
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
-define Build/Compile
-endef
-
 # call BuildPackage - OpenWrt buildroot signature
-
-$(eval $(call BuildPackage,$(PKG_NAME)))
