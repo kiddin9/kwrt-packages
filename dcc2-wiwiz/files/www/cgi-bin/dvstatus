@@ -31,9 +31,10 @@ if token ~= mytoken then
 end
 
 local sysinfo = luci.util.ubus("system", "info") or { }
-local stat = require "luci.tools.status"
+--local stat = require "luci.tools.status"
 
-leases = stat.dhcp_leases()
+--leases = stat.dhcp_leases()  -- #leases is number
+local leasesNum = exec("cat /tmp/dhcp.leases 2>/dev/null | wc -l 2>/dev/null")
 local loadavg    = sysinfo.load or { 0, 0, 0 }
 local clientNum = exec("cat /proc/net/arp | grep 'br-lan' | grep '0x2' | wc -l")
 local assocNum = exec("sh /usr/bin/assocnum.sh | wc -l")
@@ -42,5 +43,5 @@ local conn_max = exec("sysctl -n -e net.nf_conntrack_max net.ipv4.netfilter.ip_c
 
 print("Content-type: application/javascript\n")
 print("{\"id\":\"".. id .."\", \"clientNum\": \"".. clientNum .."\", \"assocNum\": \"".. 
-	assocNum .."\", \"leasesNum\": \"".. #leases .."\", \"loadavg\":".. 
+	assocNum .."\", \"leasesNum\": \"".. leasesNum .."\", \"loadavg\":".. 
 	luci.util.serialize_json(loadavg) ..", \"conn_count\": \"".. conn_count .."\", \"conn_max\": \"".. conn_max .."\"}")
