@@ -1,7 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autokick-wiwiz
-PKG_RELEASE:=3
+PKG_VERSION:=20241103
+PKG_RELEASE:=4
 LUCI_DIR:=/usr/lib/lua/luci
 
 include $(INCLUDE_DIR)/package.mk
@@ -13,6 +14,10 @@ define Package/autokick-wiwiz
   DEPENDS:=
   TITLE:= Disconnects wireless user when the user is authenticated and expired via Portal
   PKGARCH:=all
+endef
+
+define Package/autokick-wiwiz/conffiles
+/etc/config/autokick
 endef
 
 define Build/Prepare
