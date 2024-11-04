@@ -361,7 +361,7 @@ jobs:
         git_sparse_clone openwrt-23.05 "https://github.com/openwrt/openwrt" \
         package/base-files package/system/opkg package/network/services/ppp \
         package/network/services/dnsmasq
-        git_sparse_clone main "https://github.com/openwrt/openwrt" \
+        git_sparse_clone 913368a223c3818d2b5b60b06820532038be3467 "https://github.com/openwrt/openwrt" \
         package/network/config/wifi-scripts
         git_sparse_clone openwrt-23.05 "https://github.com/openwrt/luci" applications/luci-app-attendedsysupgrade applications/luci-app-aria2 \
         applications/luci-app-ddns applications/luci-app-acme applications/luci-app-opkg \
