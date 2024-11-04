@@ -1,13 +1,13 @@
 #!/usr/bin/env ucode
 'use strict';
-import { vlist_new, is_equal, wdev_set_mesh_params, wdev_remove, wdev_set_up, phy_open } from "/usr/share/hostap/common.uc";
+import { vlist_new, is_equal, wdev_create, wdev_set_mesh_params, wdev_remove, wdev_set_up, phy_open } from "/usr/share/hostap/common.uc";
 import { readfile, writefile, basename, readlink, glob } from "fs";
 let libubus = require("ubus");
 
 let keep_devices = {};
-let phy_name = shift(ARGV);
+let phy = shift(ARGV);
 let command = shift(ARGV);
-let phy, phydev;
+let phydev;
 
 function iface_stop(wdev)
 {
@@ -30,7 +30,7 @@ function iface_start(wdev)
 		wdev_config[key] = wdev[key];
 	if (!wdev_config.macaddr && wdev.mode != "monitor")
 		wdev_config.macaddr = phydev.macaddr_next();
-	phydev.wdev_add(ifname, wdev_config);
+	wdev_create(phy, ifname, wdev_config);
 	wdev_set_up(ifname, true);
 	let htmode = wdev.htmode || "NOHT";
 	if (wdev.freq)
@@ -85,15 +85,20 @@ function delete_ifname(config)
 		delete config[key].ifname;
 }
 
-function add_existing(phydev, config)
+function add_existing(phy, config)
 {
-	phydev.for_each_wdev((wdev) => {
+	let wdevs = glob(`/sys/class/ieee80211/${phy}/device/net/*`);
+	wdevs = map(wdevs, (arg) => basename(arg));
+	for (let wdev in wdevs) {
 		if (config[wdev])
-			return;
+			continue;
+
+		if (basename(readlink(`/sys/class/net/${wdev}/phy80211`)) != phy)
+			continue;
 
 		if (trim(readfile(`/sys/class/net/${wdev}/operstate`)) == "down")
 			config[wdev] = {};
-	});
+	}
 }
 
 function usage()
@@ -109,7 +114,7 @@ Commands:
 
 const commands = {
 	set_config: function(args) {
-		let statefile = `/var/run/wdev-${phy_name}.json`;
+		let statefile = `/var/run/wdev-${phy}.json`;
 
 		let new_config = shift(args);
 		for (let dev in ARGV)
@@ -132,12 +137,12 @@ const commands = {
 		if (type(old_config) == "object")
 			config.data = old_config;
 
-		add_existing(phydev, config.data);
+		add_existing(phy, config.data);
 		add_ifname(config.data);
 		drop_inactive(config.data);
 
 		let ubus = libubus.connect();
-		let data = ubus.call("hostapd", "config_get_macaddr_list", { phy: phydev.name, radio: phydev.radio ?? -1 });
+		let data = ubus.call("hostapd", "config_get_macaddr_list", { phy: phy });
 		let macaddr_list = [];
 		if (type(data) == "object" && data.macaddr)
 			macaddr_list = data.macaddr;
@@ -161,7 +166,7 @@ const commands = {
 
 		let macaddr = phydev.macaddr_generate(data);
 		if (!macaddr) {
-			warn(`Could not get MAC address for phy ${phy_name}\n`);
+			warn(`Could not get MAC address for phy ${phy}\n`);
 			exit(1);
 		}
 
@@ -169,14 +174,12 @@ const commands = {
 	},
 };
 
-if (!phy_name || !command | !commands[command])
+if (!phy || !command | !commands[command])
 	usage();
 
-let phy_split = split(phy_name, ":");
-phydev = phy_open(phy_split[0], phy_split[1]);
-phy = phydev.phy;
+phydev = phy_open(phy);
 if (!phydev) {
-	warn(`PHY ${phy_name} does not exist\n`);
+	warn(`PHY ${phy} does not exist\n`);
 	exit(1);
 }
 

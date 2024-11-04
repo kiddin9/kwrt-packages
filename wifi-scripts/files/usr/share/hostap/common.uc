@@ -1,6 +1,6 @@
 import * as nl80211 from "nl80211";
 import * as rtnl from "rtnl";
-import { readfile, glob, basename, readlink, open } from "fs";
+import { readfile, glob, basename, readlink } from "fs";
 
 const iftypes = {
 	ap: nl80211.const.NL80211_IFTYPE_AP,
@@ -74,14 +74,6 @@ function find_reusable_wdev(phyidx)
 	return null;
 }
 
-function wdev_set_radio_mask(name, mask)
-{
-	nl80211.request(nl80211.const.NL80211_CMD_SET_INTERFACE, 0, {
-		dev: name,
-		vif_radio_mask: mask
-	});
-}
-
 function wdev_create(phy, name, data)
 {
 	let phyidx = int(readfile(`/sys/class/ieee80211/${phy}/index`));
@@ -101,24 +93,24 @@ function wdev_create(phy, name, data)
 		req["4addr"] = data["4addr"];
 	if (data.macaddr)
 		req.mac = data.macaddr;
-	if (data.radio != null && data.radio >= 0)
-		req.vif_radio_mask = 1 << data.radio;
 
 	nl80211.error();
 
 	let reuse_ifname = find_reusable_wdev(phyidx);
 	if (reuse_ifname &&
 	    (reuse_ifname == name ||
-	     rtnl.request(rtnl.const.RTM_SETLINK, 0, { dev: reuse_ifname, ifname: name}) != false)) {
-		req.dev = req.ifname;
-		delete req.ifname;
-		nl80211.request(nl80211.const.NL80211_CMD_SET_INTERFACE, 0, req);
-	} else {
+	     rtnl.request(rtnl.const.RTM_SETLINK, 0, { dev: reuse_ifname, ifname: name}) != false))
+		nl80211.request(
+			nl80211.const.NL80211_CMD_SET_INTERFACE, 0, {
+				wiphy: phyidx,
+				dev: name,
+				iftype: iftypes[data.mode],
+			});
+	else
 		nl80211.request(
 			nl80211.const.NL80211_CMD_NEW_INTERFACE,
 			nl80211.const.NLM_F_CREATE,
 			req);
-	}
 
 	let error = nl80211.error();
 	if (error)
@@ -198,8 +190,7 @@ const phy_proto = {
 	},
 
 	macaddr_generate: function(data) {
-		let phy = this.phy;
-		let radio_idx = this.radio;
+		let phy = this.name;
 		let idx = int(data.id ?? 0);
 		let mbssid = int(data.mbssid ?? 0) > 0;
 		let num_global = int(data.num_global ?? 1);
@@ -209,29 +200,21 @@ const phy_proto = {
 		if (!base_addr)
 			return null;
 
+		if (!idx && !mbssid)
+			return base_addr;
+
 		let base_mask = phy_sysfs_file(phy, "address_mask");
 		if (!base_mask)
 			return null;
 
-		if (base_mask == "00:00:00:00:00:00" &&
-		    (radio_idx > 0 || idx >= num_global)) {
+		if (base_mask == "00:00:00:00:00:00" && idx >= num_global) {
 			let addrs = split(phy_sysfs_file(phy, "addresses"), "\n");
 
-			if (radio_idx != null) {
-				if (radio_idx && radio_idx < length(addrs))
-					base_addr = addrs[radio_idx];
-				else
-					idx += radio_idx * 16;
-			} else {
-				if (idx < length(addrs))
-					return addrs[idx];
+			if (idx < length(addrs))
+				return addrs[idx];
 
-				base_mask = "ff:ff:ff:ff:ff:ff";
-			}
+			base_mask = "ff:ff:ff:ff:ff:ff";
 		}
-
-		if (!idx && !mbssid)
-			return base_addr;
 
 		let addr = macaddr_split(base_addr);
 		let mask = macaddr_split(base_mask);
@@ -292,55 +275,27 @@ const phy_proto = {
 		}
 	},
 
-	wdev_add: function(name, data) {
-		let phydev = this;
-		wdev_create(this.phy, name, {
-			...data,
-			radio: this.radio,
-		});
-	},
-
 	for_each_wdev: function(cb) {
-		let wdevs = nl80211.request(
-			nl80211.const.NL80211_CMD_GET_INTERFACE,
-			nl80211.const.NLM_F_DUMP,
-			{ wiphy: this.idx }
-		);
-
-		let mac_wdev = {};
+		let wdevs = glob(`/sys/class/ieee80211/${this.name}/device/net/*`);
+		wdevs = map(wdevs, (arg) => basename(arg));
 		for (let wdev in wdevs) {
-			if (wdev.iftype == nl80211.const.NL80211_IFTYPE_AP_VLAN)
-				continue;
-			if (this.radio != null && wdev.vif_radio_mask != null &&
-			    !(wdev.vif_radio_mask & (1 << this.radio)))
-				continue;
-			mac_wdev[wdev.mac] = wdev;
-		}
-
-		for (let wdev in wdevs) {
-			if (!mac_wdev[wdev.mac])
+			if (basename(readlink(`/sys/class/net/${wdev}/phy80211`)) != this.name)
 				continue;
 
-			cb(wdev.ifname);
+			cb(wdev);
 		}
 	}
 };
 
-function phy_open(phy, radio)
+function phy_open(phy)
 {
 	let phyidx = readfile(`/sys/class/ieee80211/${phy}/index`);
 	if (!phyidx)
 		return null;
 
-	let name = phy;
-	if (radio === "" || radio < 0)
-		radio = null;
-	if (radio != null)
-		name += "." + radio;
-
 	return proto({
-		phy, name, radio,
-		idx: int(phyidx),
+		name: phy,
+		idx: int(phyidx)
 	}, phy_proto);
 }
 
@@ -410,9 +365,9 @@ function is_equal(val1, val2) {
 
 function vlist_new(cb) {
 	return proto({
-		cb: cb,
-		data: {}
-	}, vlist_proto);
+			cb: cb,
+			data: {}
+		}, vlist_proto);
 }
 
-export { wdev_remove, wdev_create, wdev_set_mesh_params, wdev_set_radio_mask, wdev_set_up, is_equal, vlist_new, phy_is_fullmac, phy_open };
+export { wdev_remove, wdev_create, wdev_set_mesh_params, wdev_set_up, is_equal, vlist_new, phy_is_fullmac, phy_open };
