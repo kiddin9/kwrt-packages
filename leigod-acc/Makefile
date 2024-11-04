@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=leigod-acc
 PKG_VERSION:=1.3.0.30
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -26,18 +26,32 @@ endef
 
 ifeq ($(ARCH),x86_64)
 	acc-arch:=amd64
-endif
-ifeq ($(ARCH),mipsel)
-	acc-arch:=mipsle
-endif
-ifeq ($(ARCH),arm)
-	acc-arch:=arm
-endif
-ifeq ($(ARCH),aarch64)
-	acc-arch:=arm64
+	PKG_HASH:=skip
 endif
 
+ifeq ($(ARCH),mipsel)
+	acc-arch:=mipsle
+	PKG_HASH:=skip
+endif
+
+ifeq ($(ARCH),arm)
+	acc-arch:=arm
+	PKG_HASH:=skip
+endif
+
+ifeq ($(ARCH),aarch64)
+	acc-arch:=arm64
+	PKG_HASH:=skip
+endif
+
+PKG_SOURCE_URL:=http://119.3.40.126/router_plugin/
+PKG_SOURCE:=acc-gw.linux.$(acc-arch)
+
 define Build/Prepare
+	$(call Build/Prepare/Default)
+	mkdir -p $(PKG_BUILD_DIR)/bin
+	wget -O $(PKG_BUILD_DIR)/bin/acc-gw.linux.$(acc-arch) $(PKG_SOURCE_URL)$(PKG_SOURCE)
+	chmod +x $(PKG_BUILD_DIR)/bin/acc-gw.linux.$(acc-arch)
 endef
 
 define Build/Configure
@@ -48,7 +62,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/sbin/leigod
-	$(INSTALL_BIN) ./files/acc-gw.linux.$(acc-arch) $(1)/usr/sbin/leigod/acc-gw.linux.$(acc-arch)
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/acc-gw.linux.$(acc-arch) $(1)/usr/sbin/leigod/acc-gw.linux.$(acc-arch)
 	$(INSTALL_BIN) ./files/leigod_uninstall.sh $(1)/usr/sbin/leigod/leigod_uninstall.sh
 	$(INSTALL_BIN) ./files/plugin_common.sh $(1)/usr/sbin/leigod/plugin_common.sh
 	$(INSTALL_BIN) ./files/leigod-helper.sh $(1)/usr/sbin/leigod/leigod-helper.sh
