@@ -55,10 +55,8 @@ start() {
 		the_record="$(jsonfilter -s "$records" -qe '@.result[*]'|grep "\"type\": \"SRV\""|grep "\"name\": \"_${srv_serv}._${srv_proto}.${srv}\""|grep "\"priority\": ${srv_priority}"|grep "\"weight\": ${srv_weight}")"
 		json_init
 		json_add_string type "SRV"
+		json_add_string name "_${srv_serv}._${srv_proto}.${srv}"
 		json_add_object data
-			json_add_string service "_${srv_serv}"
-			json_add_string proto "_${srv_proto}"
-			json_add_string name "${srv}"
 			json_add_int priority "${srv_priority}"
 			json_add_int weight "${srv_weight}"
 			json_add_int port "${port}"
