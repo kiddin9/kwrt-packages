@@ -6,7 +6,7 @@
      +uci-firewall \
 +    +fuse-overlayfs +cgroupfs-mount \
 +    +kmod-vxlan +kmod-macvlan +kmod-dummy +kmod-crypto-gcm +kmod-crypto-seqiv +kmod-crypto-ghash +kmod-ipsec +kmod-nf-nathelper +kmod-nf-nathelper-extra +btrfs-progs \
-     @!(mips||mipsel)
+     @!(mips||mips64||mipsel)
    USERID:=docker:docker
    MENU:=1
 @@ -94,13 +96,13 @@ define Build/Prepare
