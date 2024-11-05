@@ -1,15 +1,15 @@
 --- a/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js
 +++ b/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js
-@@ -111,7 +111,7 @@ return view.extend({
+@@ -103,7 +103,7 @@ return view.extend({
  
  		if (image.name != undefined) {
- 			this.data.sha256_unsigned = image.sha256_unsigned;
--			let sysupgrade_url = `${this.data.url}/store/${response.bin_dir}/${image.name}`;
-+			let sysupgrade_url = `${this.data.url}/store/${response.request_hash}/${image.name}`;
+ 			this.sha256_unsigned = image.sha256_unsigned;
+-			let sysupgrade_url = `${data.url}/store/${response.bin_dir}/${image.name}`;
++			let sysupgrade_url = `${data.url}/store/${response.request_hash}/${image.name}`;
  
  			let keep = E('input', { type: 'checkbox' });
  			keep.checked = true;
-@@ -251,10 +251,46 @@ return view.extend({
+@@ -249,10 +249,46 @@ return view.extend({
  		ui.showModal(_('Error building the firmware image'), body);
  	},
  
@@ -48,24 +48,24 @@
 +    return btoa(resultString);
 +	},
 +
- 	handleRequest: function (server, main) {
+ 	handleRequest: function (server, main, content, data, firmware) {
  		let request_url = `${server}/api/v1/build`;
  		let method = 'POST';
- 		let content = this.firmware;
-+		let headers = {'Ng-One-Time-Verif-Value':this.GENERATE_NG_ONE_TIME_VERIF_VALUE()}
+ 		let local_content = content;
++		let headers = {'Ng-One-Time-Verif-Value':GENERATE_NG_ONE_TIME_VERIF_VALUE()};
  
  		/**
  		 * If `request_hash` is available use a GET request instead of
-@@ -267,7 +303,7 @@ return view.extend({
+@@ -265,7 +301,7 @@ return view.extend({
  		}
  
  		request
--			.request(request_url, { method: method, content: content })
-+			.request(request_url, { method: method, content: content, headers:headers })
+-			.request(request_url, { method: method, content: local_content })
++			.request(request_url, { method: method, content: local_content, headers:headers })
  			.then((response) => {
  				switch (response.status) {
  					case 202:
-@@ -393,7 +429,7 @@ return view.extend({
+@@ -394,7 +430,7 @@ return view.extend({
  								if (keep) {
  									ui.awaitReconnect(window.location.host);
  								} else {
@@ -74,28 +74,39 @@
  								}
  							});
  						}
-@@ -401,14 +437,11 @@ return view.extend({
+@@ -402,13 +438,17 @@ return view.extend({
  			});
  	},
  
--	handleCheck: function () {
-+	handleCheck: function (force) {
- 		let { url, revision } = this.data;
- 		let { version, target } = this.firmware;
+-	handleCheck: function (data, firmware) {
++	handleCheck: function (data, firmware, force) {
+ 		this.request_hash = '';
+ 		let { url, revision, advanced_mode, branch } = data;
+ 		let { version, target, profile, packages } = firmware;
++
++		Number(data.distribution) ? firmware.rootfs_size_mb = Number(data.distribution) : ;
++		data.efi ? firmware.efi = "efi" : firmware.efi = "not";
++
  		let candidates = [];
--		let request_url = `${url}/api/overview`;
--		if (version.endsWith('SNAPSHOT')) {
--			request_url = `${url}/api/v1/revision/${version}/${target}`;
--		}
-+		let request_url = `${url}/api/v1/revision/${version}/${target}`;
+ 
+-		const endpoint = version.endsWith('SNAPSHOT') ? `revision/${version}/${target}` : 'overview';
++		const endpoint = `revision/${version}/${target}`;
+ 		const request_url = `${url}/api/v1/${endpoint}`;
  
  		ui.showModal(_('Searching...'), [
- 			E(
-@@ -438,40 +471,12 @@ return view.extend({
+@@ -435,41 +475,20 @@ return view.extend({
+ 					E('pre', {}, response.responseText),
+ 					E('div', { class: 'right' }, [
+ 						E('div', { class: 'btn', click: ui.hideModal }, _('Close')),
++						E('div', { class: 'btn cbi-button cbi-button-positive', click: ui.createHandlerFn(this, function () {
++											this.handleCheck(1)
++										}) }, _('Force Sysupgrade')),
+ 					]),
  				]);
  				return;
  			}
 -			if (version.endsWith('SNAPSHOT')) {
++
  				const remote_revision = response.json().revision;
  				if (
 -					get_revision_count(revision) < get_revision_count(remote_revision)
@@ -115,54 +126,40 @@
 -					}
 -
 -					// skip branch upgrades outside the advanced mode
--					if (
--						this.data.branch != remote_branch &&
--						this.data.advanced_mode == 0
--					) {
+-					if (branch != remote_branch && advanced_mode == 0) {
 -						continue;
 -					}
 -
 -					candidates.unshift([remote_version, null]);
 -
 -					// don't offer branches older than the current
--					if (this.data.branch == remote_branch) {
+-					if (branch == remote_branch) {
 -						break;
 -					}
 -				}
 -			}
  
  			// allow to re-install running firmware in advanced mode
- 			if (this.data.advanced_mode == 1) {
-@@ -485,7 +490,7 @@ return view.extend({
- 					request: {
- 						profile: this.firmware.profile,
- 						version: candidates[0][0],
--						packages: Object.keys(this.firmware.packages).sort(),
-+						packages: Object.keys(this.firmware.packages).filter((value) => value.search("-zh-cn") == -1).sort(),
- 					},
- 				};
+ 			if (advanced_mode == 1) {
+@@ -586,6 +605,7 @@ return view.extend({
+ 			url: uci.get_first('attendedsysupgrade', 'server', 'url'),
+ 			branch: get_branch(promises[1].release.version),
+ 			revision: promises[1].release.revision,
++			distribution: promises[1].release.distribution,
+ 			efi: promises[2],
+ 			advanced_mode: uci.get_first('attendedsysupgrade', 'client', 'advanced_mode') || 0,
+ 			rebuilder: uci.get_first('attendedsysupgrade', 'server', 'rebuilder')
+@@ -599,6 +619,8 @@ return view.extend({
+ 			diff_packages: true,
+ 			filesystem: promises[1].rootfs_type
+ 		};
++		Number(data.distribution) ? firmware.rootfs_size_mb = Number(data.distribution) : ;
++		data.efi ? firmware.efi = "efi" : firmware.efi = "not";
+ 		return [data, firmware];
+ 	},
  
-@@ -568,6 +573,9 @@ return view.extend({
- 					),
- 					E('div', { class: 'right' }, [
- 						E('div', { class: 'btn', click: ui.hideModal }, _('Close')),
-+					E('div', { class: 'btn cbi-button cbi-button-positive', click: ui.createHandlerFn(this, function () {
-+											this.handleCheck(1)
-+										}) }, _('Force Sysupgrade')),
- 					]),
- 				]);
- 			}
-@@ -596,6 +604,8 @@ return view.extend({
- 		this.data.revision = response[1].release.revision;
- 
- 		this.data.efi = response[2];
-+		Number(response[1].release.distribution) ? this.firmware.rootfs_size_mb = Number(response[1].release.distribution) : 
-+		this.data.efi ? this.firmware.efi = "efi" : this.firmware.efi = "not";
- 
- 		this.data.url = uci.get_first('attendedsysupgrade', 'server', 'url');
- 		this.data.advanced_mode =
-@@ -627,6 +637,16 @@ return view.extend({
- 					this.data.revision
+@@ -627,6 +649,16 @@ return view.extend({
+ 					data.revision
  				)
  			),
 +			E('p', [_('更多个性化定制请使用网页版: '),E('a', {
