@@ -19,8 +19,8 @@
 +		s.taboption('advanced', form.Flag, 'force_forwarding', _('Force Forwarding'),
 +			_('Force forwarding even there is no public IP (please try STUN first)'))
 +
- 		s = m.section(form.GridSection, 'perm_rule', _('MiniUPnP ACLs'),
- 			_('ACLs specify which external ports may be redirected to which internal addresses and ports'))
+ 		s = m.section(form.GridSection, 'perm_rule', _('Service ACLs'),
+ 			_('ACLs specify which external ports can be forwarded to which client addresses and ports, IPv6 always allowed.'))
  
 
 --- a/luci-app-upnp/po/templates/upnp.pot
