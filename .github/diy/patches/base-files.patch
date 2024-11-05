@@ -11,40 +11,29 @@
 
 --- a/base-files/files/sbin/sysupgrade
 +++ b/base-files/files/sbin/sysupgrade
-@@ -231,24 +231,15 @@ do_save_conffiles() {
- 	ask_bool 0 "Edit config file list" && vi "$CONFFILES"
+@@ -277,13 +277,15 @@ create_backup_archive() {
+ 		# Part of archive with installed packages info
+ 		if [ $ret -eq 0 ]; then
+ 			if [ "$SAVE_INSTALLED_PKGS" -eq 1 ]; then
+-				# Format: pkg-name<TAB>{rom,overlay,unknown}
+-				# rom is used for pkgs in /rom, even if updated later
+-				tar_print_member "$INSTALLED_PACKAGES" "$(find /usr/lib/opkg/info -name "*.control" \( \
+-					\( -exec test -f /rom/{} \; -exec echo {} rom \; \) -o \
+-					\( -exec test -f /overlay/upper/{} \; -exec echo {} overlay \; \) -o \
+-					\( -exec echo {} unknown \; \) \
+-					\) | sed -e 's,.*/,,;s/\.control /\t/')" || ret=1
++				. /etc/profile.d/opkg.sh && opkg save
++				[ -f /rom/etc/uci-defaults/zz-asu-defaults ] && {
++				cp -f /rom/etc/uci-defaults/zz-asu-defaults /etc/uci-defaults/zz-asu-defaults
++				echo "/etc/uci-defaults/zz-asu-defaults" >> $CONFFILES
++				}
++			else
++				uci -q del opkg.auto
++				uci -q del opkg.custom
++				uci commit opkg
+ 			fi
+ 		fi
  
- 	if [ "$SAVE_INSTALLED_PKGS" -eq 1 ]; then
--		echo "${INSTALLED_PACKAGES}" >> "$CONFFILES"
--		mkdir -p "$ETCBACKUP_DIR"
--		# Avoid touching filesystem on each backup
--		RAMFS="$(mktemp -d -t sysupgrade.XXXXXX)"
--		mkdir -p "$RAMFS/upper" "$RAMFS/work"
--		mount -t overlay overlay -o lowerdir=$ETCBACKUP_DIR,upperdir=$RAMFS/upper,workdir=$RAMFS/work $ETCBACKUP_DIR &&
--			UMOUNT_ETCBACKUP_DIR=1 || {
--				echo "Cannot mount '$ETCBACKUP_DIR' as tmpfs to avoid touching disk while saving the list of installed packages." >&2
--				ask_bool 0 "Abort" && exit
--			}
--
--		# Format: pkg-name<TAB>{rom,overlay,unkown}
--		# rom is used for pkgs in /rom, even if updated later
--		find /usr/lib/opkg/info -name "*.control" \( \
--			\( -exec test -f /rom/{} \; -exec echo {} rom \; \) -o \
--			\( -exec test -f /overlay/upper/{} \; -exec echo {} overlay \; \) -o \
--			\( -exec echo {} unknown \; \) \
--			\) | sed -e 's,.*/,,;s/\.control /\t/' > ${INSTALLED_PACKAGES}
-+		. /etc/profile.d/opkg.sh && opkg save
-+		[ -f /rom/etc/uci-defaults/zz-asu-defaults ] && {
-+		 cp -f /rom/etc/uci-defaults/zz-asu-defaults /etc/uci-defaults/zz-asu-defaults
-+		 echo "/etc/uci-defaults/zz-asu-defaults" >> $CONFFILES
-+		}
-+	else
-+		uci -q del opkg.auto
-+		uci -q del opkg.custom
-+		uci commit opkg
- 	fi
- 
- 	v "Saving config files..."
 
 --- a/luci-base/root/etc/init.d/ucitrack
 +++ b/luci-base/root/etc/init.d/ucitrack
