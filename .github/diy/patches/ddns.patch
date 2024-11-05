@@ -4,11 +4,11 @@
  PKG_MAINTAINER:=Ansuel Smith <ansuelsmth@gmail.com>
  
  LUCI_TITLE:=LuCI Support for Dynamic DNS Client (ddns-scripts)
--LUCI_DEPENDS:=+luci-mod-admin-full +luci-lua-runtime +ddns-scripts
-+LUCI_DEPENDS:=+luci-mod-admin-full +luci-lua-runtime +ddns-scripts +ddns-scripts-aliyun +ddns-scripts-dnspod +ddns-scripts-cloudflare
- LUCI_PKGARCH:=all
+-LUCI_DEPENDS:=+luci-base +luci-lua-runtime +ddns-scripts
++LUCI_DEPENDS:=+luci-base +luci-lua-runtime +ddns-scripts +ddns-scripts-aliyun +ddns-scripts-dnspod +ddns-scripts-cloudflare
  
  include ../../luci.mk
+ 
 
 --- a/ddns-scripts/Makefile
 +++ b/ddns-scripts/Makefile
