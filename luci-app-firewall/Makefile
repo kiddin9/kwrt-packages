@@ -6,10 +6,11 @@
 
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=Firewall and Portforwarding application
-LUCI_DEPENDS:=+uci-firewall
+LUCI_TITLE:=Firewall and port forwarding application
+LUCI_DEPENDS:=+luci-base +uci-firewall
 
 PKG_LICENSE:=Apache-2.0
+PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

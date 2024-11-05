@@ -7,6 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-base
+PKG_BUILD_FLAGS:=no-lto
 
 LUCI_TYPE:=mod
 LUCI_BASENAME:=base
@@ -26,7 +27,7 @@ LUCI_DEPENDS:=\
 	+ucode-mod-html \
 	+liblucihttp-ucode
 
-PKG_LICENSE:=MIT
+PKG_LICENSE:=Apache-2.0
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)
 
@@ -35,7 +36,6 @@ include $(INCLUDE_DIR)/host-build.mk
 define Package/luci-base/conffiles
 /etc/luci-uploads
 /etc/config/luci
-/etc/config/ucitrack
 endef
 
 define Package/luci-base/postinst

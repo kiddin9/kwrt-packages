@@ -7,7 +7,10 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Support for Transmission
-LUCI_DEPENDS:=+transmission-daemon +transmission-web-control
+LUCI_DEPENDS:=+luci-base +transmission-daemon +transmission-web-control
+
+PKG_LICENSE:=Apache-2.0
+PKG_MAINTAINER:=Richard Yu <yurichard3839@gmail.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

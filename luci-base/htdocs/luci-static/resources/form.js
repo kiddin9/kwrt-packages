@@ -204,7 +204,7 @@ var CBIAbstractElement = baseclass.extend(/** @lends LuCI.form.AbstractElement.p
 	/**
 	 * Add another form element as children to this element.
 	 *
-	 * @param {AbstractElement} element
+	 * @param {AbstractElement} obj
 	 * The form element to add.
 	 */
 	append: function(obj) {
@@ -217,7 +217,7 @@ var CBIAbstractElement = baseclass.extend(/** @lends LuCI.form.AbstractElement.p
 	 * The `parse()` function recursively walks the form element tree and
 	 * triggers input value reading and validation for each encountered element.
 	 *
-	 * Elements which are hidden due to unsatisified dependencies are skipped.
+	 * Elements which are hidden due to unsatisfied dependencies are skipped.
 	 *
 	 * @returns {Promise<void>}
 	 * Returns a promise resolving once this element's value and the values of
@@ -275,16 +275,18 @@ var CBIAbstractElement = baseclass.extend(/** @lends LuCI.form.AbstractElement.p
 	},
 
 	/**
-	 * Strip any HTML tags from the given input string.
+	 * Strip any HTML tags from the given input string, and decode
+	 * HTML entities.
 	 *
-	 * @param {string} input
+	 * @param {string} s
 	 * The input string to clean.
 	 *
 	 * @returns {string}
-	 * The cleaned input string with HTML tags removed.
+	 * The cleaned input string with HTML tags removed, and HTML
+	 * entities decoded.
 	 */
 	stripTags: function(s) {
-		if (typeof(s) == 'string' && !s.match(/[<>]/))
+		if (typeof(s) == 'string' && !s.match(/[<>\&]/))
 			return s;
 
 		var x = dom.elem(s) ? s : dom.parse('<div>' + s + '</div>');
@@ -348,7 +350,7 @@ var CBIAbstractElement = baseclass.extend(/** @lends LuCI.form.AbstractElement.p
  * @classdesc
  *
  * The `Map` class represents one complete form. A form usually maps one UCI
- * configuraton file and is divided into multiple sections containing multiple
+ * configuration file and is divided into multiple sections containing multiple
  * fields each.
  *
  * It serves as main entry point into the `LuCI.form` for typical view code.
@@ -364,7 +366,7 @@ var CBIAbstractElement = baseclass.extend(/** @lends LuCI.form.AbstractElement.p
  *
  * @param {string} [description]
  * The description text of the form which is usually rendered as text
- * paragraph below the form title and before the actual form conents.
+ * paragraph below the form title and before the actual form contents.
  * If omitted, the corresponding paragraph element will not be rendered.
  */
 var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
@@ -502,11 +504,11 @@ var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
 	 * @param {LuCI.form.AbstractSection} sectionclass
 	 * The section class to use for rendering the configuration section.
 	 * Note that this value must be the class itself, not a class instance
-	 * obtained from calling `new`. It must also be a class dervied from
+	 * obtained from calling `new`. It must also be a class derived from
 	 * `LuCI.form.AbstractSection`.
 	 *
 	 * @param {...string} classargs
-	 * Additional arguments which are passed as-is to the contructor of the
+	 * Additional arguments which are passed as-is to the constructor of the
 	 * given section class. Refer to the class specific constructor
 	 * documentation for details.
 	 *
@@ -558,7 +560,7 @@ var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
 	 * The `parse()` function recursively walks the form element tree and
 	 * triggers input value reading and validation for each child element.
 	 *
-	 * Elements which are hidden due to unsatisified dependencies are skipped.
+	 * Elements which are hidden due to unsatisfied dependencies are skipped.
 	 *
 	 * @returns {Promise<void>}
 	 * Returns a promise resolving once the entire form completed parsing all
@@ -588,7 +590,7 @@ var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
 	 *
 	 * @param {boolean} [silent=false]
 	 * If set to `true`, trigger an alert message to the user in case saving
-	 * the form data failes. Otherwise fail silently.
+	 * the form data failures. Otherwise fail silently.
 	 *
 	 * @returns {Promise<void>}
 	 * Returns a promise resolving once the entire save operation is complete.
@@ -688,15 +690,15 @@ var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
 	/**
 	 * Find a form option element instance.
 	 *
-	 * @param {string} name_or_id
+	 * @param {string} name
 	 * The name or the full ID of the option element to look up.
 	 *
 	 * @param {string} [section_id]
 	 * The ID of the UCI section containing the option to look up. May be
 	 * omitted if a full ID is passed as first argument.
 	 *
-	 * @param {string} [config]
-	 * The name of the UCI configuration the option instance is belonging to.
+	 * @param {string} [config_name]
+	 * The name of the UCI configuration the option instance belongs to.
 	 * Defaults to the main UCI configuration of the map if omitted.
 	 *
 	 * @returns {Array<LuCI.form.AbstractValue,string>|null}
@@ -797,7 +799,7 @@ var CBIMap = CBIAbstractElement.extend(/** @lends LuCI.form.Map.prototype */ {
  *
  * @param {string} [description]
  * The description text of the form which is usually rendered as text
- * paragraph below the form title and before the actual form conents.
+ * paragraph below the form title and before the actual form contents.
  * If omitted, the corresponding paragraph element will not be rendered.
  */
 var CBIJSONMap = CBIMap.extend(/** @lends LuCI.form.JSONMap.prototype */ {
@@ -921,7 +923,7 @@ var CBIAbstractSection = CBIAbstractElement.extend(/** @lends LuCI.form.Abstract
 	 * triggers input value reading and validation for each encountered child
 	 * option element.
 	 *
-	 * Options which are hidden due to unsatisified dependencies are skipped.
+	 * Options which are hidden due to unsatisfied dependencies are skipped.
 	 *
 	 * @returns {Promise<void>}
 	 * Returns a promise resolving once the values of all child elements have
@@ -967,7 +969,7 @@ var CBIAbstractSection = CBIAbstractElement.extend(/** @lends LuCI.form.Abstract
 	 * contents. If omitted, no description will be rendered.
 	 *
 	 * @throws {Error}
-	 * Throws an exeption if a tab with the same `name` already exists.
+	 * Throws an exception if a tab with the same `name` already exists.
 	 */
 	tab: function(name, title, description) {
 		if (this.tabs && this.tabs[name])
@@ -997,24 +999,24 @@ var CBIAbstractSection = CBIAbstractElement.extend(/** @lends LuCI.form.Abstract
 	 * @param {LuCI.form.AbstractValue} optionclass
 	 * The option class to use for rendering the configuration option. Note
 	 * that this value must be the class itself, not a class instance obtained
-	 * from calling `new`. It must also be a class dervied from
+	 * from calling `new`. It must also be a class derived from
 	 * [LuCI.form.AbstractSection]{@link LuCI.form.AbstractSection}.
 	 *
 	 * @param {...*} classargs
-	 * Additional arguments which are passed as-is to the contructor of the
+	 * Additional arguments which are passed as-is to the constructor of the
 	 * given option class. Refer to the class specific constructor
 	 * documentation for details.
 	 *
 	 * @throws {TypeError}
 	 * Throws a `TypeError` exception in case the passed class value is not a
-	 * descendent of `AbstractValue`.
+	 * descendant of `AbstractValue`.
 	 *
 	 * @returns {LuCI.form.AbstractValue}
 	 * Returns the instantiated option class instance.
 	 */
 	option: function(cbiClass /*, ... */) {
 		if (!CBIAbstractValue.isSubclass(cbiClass))
-			throw L.error('TypeError', 'Class must be a descendent of CBIAbstractValue');
+			throw L.error('TypeError', 'Class must be a descendant of CBIAbstractValue');
 
 		var obj = cbiClass.instantiate(this.varargs(arguments, 1, this.map, this));
 		this.append(obj);
@@ -1024,17 +1026,17 @@ var CBIAbstractSection = CBIAbstractElement.extend(/** @lends LuCI.form.Abstract
 	/**
 	 * Add a configuration option widget to a tab of the section.
 	 *
-	 * @param {string} tabname
+	 * @param {string} tabName
 	 * The name of the section tab to add the option element to.
 	 *
 	 * @param {LuCI.form.AbstractValue} optionclass
 	 * The option class to use for rendering the configuration option. Note
 	 * that this value must be the class itself, not a class instance obtained
-	 * from calling `new`. It must also be a class dervied from
+	 * from calling `new`. It must also be a class derived from
 	 * [LuCI.form.AbstractSection]{@link LuCI.form.AbstractSection}.
 	 *
 	 * @param {...*} classargs
-	 * Additional arguments which are passed as-is to the contructor of the
+	 * Additional arguments which are passed as-is to the constructor of the
 	 * given option class. Refer to the class specific constructor
 	 * documentation for details.
 	 *
@@ -1044,7 +1046,7 @@ var CBIAbstractSection = CBIAbstractElement.extend(/** @lends LuCI.form.Abstract
 	 *
 	 * @throws {TypeError}
 	 * Throws a `TypeError` exception in case the passed class value is not a
-	 * descendent of `AbstractValue`.
+	 * descendant of `AbstractValue`.
 	 *
 	 * @returns {LuCI.form.AbstractValue}
 	 * Returns the instantiated option class instance.
@@ -1377,7 +1379,7 @@ var CBIAbstractValue = CBIAbstractElement.extend(/** @lends LuCI.form.AbstractVa
 
 	/**
 	 * If set to `true`, the underlying ui input widget value is not cleared
-	 * from the configuration on unsatisfied depedencies. The default behavior
+	 * from the configuration on unsatisfied dependencies. The default behavior
 	 * is to remove the values of all options whose dependencies are not
 	 * fulfilled.
 	 *
@@ -1539,10 +1541,10 @@ var CBIAbstractValue = CBIAbstractElement.extend(/** @lends LuCI.form.AbstractVa
 	 */
 
 	/**
-	 * Add a dependency contraint to the option.
+	 * Add a dependency constraint to the option.
 	 *
 	 * Dependency constraints allow making the presence of option elements
-	 * dependant on the current values of certain other options within the
+	 * dependent on the current values of certain other options within the
 	 * same form. An option element with unsatisfied dependencies will be
 	 * hidden from the view and its current value is omitted when saving.
 	 *
@@ -1554,7 +1556,7 @@ var CBIAbstractValue = CBIAbstractElement.extend(/** @lends LuCI.form.AbstractVa
 	 * a logical "and" expression.
 	 *
 	 * Option names may be given in "dot notation" which allows to reference
-	 * option elements outside of the current form section. If a name without
+	 * option elements outside the current form section. If a name without
 	 * dot is specified, it refers to an option within the same configuration
 	 * section. If specified as <code>configname.sectionid.optionname</code>,
 	 * options anywhere within the same form may be specified.
@@ -1620,11 +1622,11 @@ var CBIAbstractValue = CBIAbstractElement.extend(/** @lends LuCI.form.AbstractVa
 	 *  </li>
 	 * </ul>
 	 *
-	 * @param {string|Object<string, string|RegExp>} optionname_or_depends
+	 * @param {string|Object<string, string|RegExp>} field
 	 * The name of the option to depend on or an object describing multiple
-	 * dependencies which must be satified (a logical "and" expression).
+	 * dependencies which must be satisfied (a logical "and" expression).
 	 *
-	 * @param {string} optionvalue|RegExp
+	 * @param {string|RegExp} value
 	 * When invoked with a plain option name as first argument, this parameter
 	 * specifies the expected value. In case an object is passed as first
 	 * argument, this parameter is ignored.
@@ -2672,7 +2674,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 			dom.append(tdEl.lastElementChild,
 				E('button', {
 					'title': _('Edit'),
-					'class': 'cbi-button cbi-button-edit',
+					'class': 'btn cbi-button cbi-button-edit',
 					'click': evFn
 				}, [ _('Edit') ])
 			);
@@ -2682,7 +2684,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 			dom.append(tdEl.lastElementChild,
 				E('button', {
 					'title': more_label,
-					'class': 'cbi-button cbi-button-edit',
+					'class': 'btn cbi-button cbi-button-edit',
 					'click': ui.createHandlerFn(this, 'renderMoreOptionsModal', section_id)
 				}, [ more_label ])
 			);
@@ -2694,7 +2696,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 			dom.append(tdEl.lastElementChild,
 				E('button', {
 					'title': btn_title || _('Delete'),
-					'class': 'cbi-button cbi-button-remove',
+					'class': 'btn cbi-button cbi-button-remove',
 					'click': ui.createHandlerFn(this, 'handleRemove', section_id),
 					'disabled': this.map.readonly || null
 				}, [ btn_title || _('Delete') ])
@@ -2974,7 +2976,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 
 			if (!this.getPreviousModalMap())
 				prevNode.parentNode
-					.querySelector('div.right > button')
+					.querySelector('div.button-row > button')
 					.firstChild.data = _('Dismiss');
 		}
 		else {
@@ -3082,7 +3084,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 	 * @returns {*|Promise<*>}
 	 * Return values of this function are ignored but if a promise is returned,
 	 * it is run to completion before the rendering is continued, allowing
-	 * custom logic to perform asynchroneous work before the modal dialog
+	 * custom logic to perform asynchronous work before the modal dialog
 	 * is shown.
 	 */
 	addModalOptions: function(modalSection, section_id, ev) {
@@ -3207,8 +3209,8 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 						.appendChild(E('span', title ? ' » ' + title : ''));
 
 					mapNode.parentNode
-						.querySelector('div.right > button')
-						.firstChild.data = _('Back');
+						.querySelector('div.button-row > button')
+						.firstChild.data = _('Dismiss');
 
 					mapNode.classList.add('hidden');
 					mapNode.parentNode.insertBefore(nodes, mapNode.nextElementSibling);
@@ -3218,13 +3220,13 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
 				else {
 					ui.showModal(title, [
 						nodes,
-						E('div', { 'class': 'right' }, [
+						E('div', { 'class': 'button-row' }, [
 							E('button', {
-								'class': 'cbi-button',
+								'class': 'btn cbi-button',
 								'click': ui.createHandlerFn(this, 'handleModalCancel', m)
 							}, [ _('Dismiss') ]), ' ',
 							E('button', {
-								'class': 'cbi-button cbi-button-positive important',
+								'class': 'btn cbi-button cbi-button-positive important',
 								'click': ui.createHandlerFn(this, 'handleModalSave', m),
 								'disabled': m.readonly || null
 							}, [ _('Save') ])
@@ -3254,7 +3256,7 @@ var CBITableSection = CBITypedSection.extend(/** @lends LuCI.form.TableSection.p
  *
  * Another important difference is that the table cells show a readonly text
  * preview of the corresponding option elements by default, unless the child
- * option element is explicitely made writable by setting the `editable`
+ * option element is explicitly made writable by setting the `editable`
  * property to `true`.
  *
  * Additionally, the grid section honours a `modalonly` property of child
@@ -3303,7 +3305,7 @@ var CBIGridSection = CBITableSection.extend(/** @lends LuCI.form.GridSection.pro
 	 * contents. If omitted, no description will be rendered.
 	 *
 	 * @throws {Error}
-	 * Throws an exeption if a tab with the same `name` already exists.
+	 * Throws an exception if a tab with the same `name` already exists.
 	 */
 	tab: function(name, title, description) {
 		CBIAbstractSection.prototype.tab.call(this, name, title, description);
@@ -3621,7 +3623,7 @@ var CBIValue = CBIAbstractValue.extend(/** @lends LuCI.form.Value.prototype */ {
 	 * @param {string} key
 	 * The choice value to add.
 	 *
-	 * @param {Node|string} value
+	 * @param {Node|string} val
 	 * The caption for the choice value. May be a DOM node, a document fragment
 	 * or a plain text string. If omitted, the `key` value is used as caption.
 	 */
@@ -3918,6 +3920,135 @@ var CBIListValue = CBIValue.extend(/** @lends LuCI.form.ListValue.prototype */ {
 });
 
 /**
+ * @class RichListValue
+ * @memberof LuCI.form
+ * @augments LuCI.form.ListValue
+ * @hideconstructor
+ * @classdesc
+ *
+ * The `RichListValue` class implements a simple static HTML select element
+ * allowing the user to choose a single value from a set of predefined choices.
+ * Each choice may contain a tertiary, more elaborate description.
+ * It builds upon the {@link LuCI.form.ListValue} widget.
+ *
+ * @param {LuCI.form.Map|LuCI.form.JSONMap} form
+ * The configuration form this section is added to. It is automatically passed
+ * by [option()]{@link LuCI.form.AbstractSection#option} or
+ * [taboption()]{@link LuCI.form.AbstractSection#taboption} when adding the
+ * option to the section.
+ *
+ * @param {LuCI.form.AbstractSection} section
+ * The configuration section this option is added to. It is automatically passed
+ * by [option()]{@link LuCI.form.AbstractSection#option} or
+ * [taboption()]{@link LuCI.form.AbstractSection#taboption} when adding the
+ * option to the section.
+ *
+ * @param {string} option
+ * The name of the UCI option to map.
+ *
+ * @param {string} [title]
+ * The title caption of the option element.
+ *
+ * @param {string} [description]
+ * The description text of the option element.
+ */
+var CBIRichListValue = CBIListValue.extend(/** @lends LuCI.form.ListValue.prototype */ {
+	__name__: 'CBI.RichListValue',
+
+	__init__: function() {
+		this.super('__init__', arguments);
+		this.widget = 'select';
+		this.orientation = 'horizontal';
+		this.deplist = [];
+	},
+
+	/**
+	 * Set the orientation of the underlying radio or checkbox elements.
+	 *
+	 * May be one of `horizontal` or `vertical`. Only applies to non-select
+	 * widget types.
+	 *
+	 * @name LuCI.form.RichListValue.prototype#orientation
+	 * @type string
+	 * @default horizontal
+	 */
+
+	/**
+	 * Set the size attribute of the underlying HTML select element.
+	 *
+	 * @name LuCI.form.RichListValue.prototype#size
+	 * @type number
+	 * @default null
+	 */
+
+	/**
+	 * Set the type of the underlying form controls.
+	 *
+	 * May be one of `select` or `radio`. If set to `select`, an HTML
+	 * select element is rendered, otherwise a collection of `radio`
+	 * elements is used.
+	 *
+	 * @name LuCI.form.RichListValue.prototype#widget
+	 * @type string
+	 * @default select
+	 */
+
+	 /** @private */
+	renderWidget: function(section_id, option_index, cfgvalue) {
+		var choices = this.transformChoices();
+		var widget = new ui.Dropdown((cfgvalue != null) ? cfgvalue : this.default, choices, {
+			id: this.cbid(section_id),
+			size: this.size,
+			sort: this.keylist,
+			widget: this.widget,
+			optional: this.optional,
+			orientation: this.orientation,
+			select_placeholder: this.select_placeholder || this.placeholder,
+			custom_placeholder: this.custom_placeholder || this.placeholder,
+			validate: L.bind(this.validate, this, section_id),
+			disabled: (this.readonly != null) ? this.readonly : this.map.readonly
+		});
+
+		return widget.render();
+	},
+
+	/**
+	 * Add a predefined choice to the form option. By adding one or more
+	 * choices, the plain text input field is turned into a combobox widget
+	 * which prompts the user to select a predefined choice, or to enter a
+	 * custom value.
+	 *
+	 * @param {string} key
+	 * The choice value to add.
+	 *
+	 * @param {Node|string} val
+	 * The caption for the choice value. May be a DOM node, a document fragment
+	 * or a plain text string. If omitted, the `key` value is used as caption.
+	 * 
+	 * @param {Node|string} description
+	 * The description text of the choice value. May be a DOM node, a document
+	 * fragment or a plain text string. If omitted, the value element is
+	 * implemented as a simple ListValue entry.
+	 * 
+	 */
+	value: function(value, title, description) {
+		if (description) {
+			CBIListValue.prototype.value.call(this, value, E([], [
+				E('span', { 'class': 'hide-open' }, [ title ]),
+				E('div', { 'class': 'hide-close', 'style': 'min-width:25vw' }, [
+					E('strong', [ title ]),
+					E('br'),
+					E('span', { 'style': 'white-space:normal' }, description)
+				])
+			]));
+		}
+		else {
+			CBIListValue.prototype.value.call(this, value, title);
+		}
+	}
+});
+
+/**
  * @class FlagValue
  * @memberof LuCI.form
  * @augments LuCI.form.Value
@@ -3963,7 +4094,7 @@ var CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */ {
 	 * Sets the input value to use for the checkbox checked state.
 	 *
 	 * @name LuCI.form.FlagValue.prototype#enabled
-	 * @type number
+	 * @type string
 	 * @default 1
 	 */
 
@@ -3971,7 +4102,7 @@ var CBIFlagValue = CBIValue.extend(/** @lends LuCI.form.FlagValue.prototype */ {
 	 * Sets the input value to use for the checkbox unchecked state.
 	 *
 	 * @name LuCI.form.FlagValue.prototype#disabled
-	 * @type number
+	 * @type string
 	 * @default 0
 	 */
 
@@ -4114,6 +4245,14 @@ var CBIMultiValue = CBIDynamicList.extend(/** @lends LuCI.form.MultiValue.protot
 	},
 
 	/**
+	 * Allows custom value entry in addition to those already specified.
+	 *
+	 * @name LuCI.form.MultiValue.prototype#create
+	 * @type boolean
+	 * @default null
+	 */
+
+	/**
 	 * Allows to specify the [display_items]{@link LuCI.ui.Dropdown.InitOptions}
 	 * property of the underlying dropdown widget. If omitted, the value of
 	 * the `size` property is used or `3` when `size` is unspecified as well.
@@ -4144,6 +4283,7 @@ var CBIMultiValue = CBIDynamicList.extend(/** @lends LuCI.form.MultiValue.protot
 			multiple: true,
 			optional: this.optional || this.rmempty,
 			select_placeholder: this.placeholder,
+			create: this.create,
 			display_items: this.display_size || this.size || 3,
 			dropdown_items: this.dropdown_size || this.size || -1,
 			validate: L.bind(this.validate, this, section_id),
@@ -4282,7 +4422,7 @@ var CBIDummyValue = CBIValue.extend(/** @lends LuCI.form.DummyValue.prototype */
 	__name__: 'CBI.DummyValue',
 
 	/**
-	 * Set an URL which is opened when clicking on the dummy value text.
+	 * Set a URL which is opened when clicking on the dummy value text.
 	 *
 	 * By setting this property, the dummy value text is wrapped in an `<a>`
 	 * element with the property value used as `href` attribute.
@@ -4543,11 +4683,22 @@ var CBIFileUpload = CBIValue.extend(/** @lends LuCI.form.FileUpload.prototype */
 	__init__: function(/* ... */) {
 		this.super('__init__', arguments);
 
+		this.browser = false;
 		this.show_hidden = false;
 		this.enable_upload = true;
 		this.enable_remove = true;
+		this.enable_download = false;
 		this.root_directory = '/etc/luci-uploads';
 	},
+
+
+	/**
+	 * Open in a file browser mode instead of selecting for a file
+	 *
+	 * @name LuCI.form.FileUpload.prototype#browser
+	 * @type boolean
+	 * @default false
+	 */
 
 	/**
 	 * Toggle display of hidden files.
@@ -4594,6 +4745,14 @@ var CBIFileUpload = CBIValue.extend(/** @lends LuCI.form.FileUpload.prototype */
 	 */
 
 	/**
+	 * Toggle download file functionality.
+	 *
+	 * @name LuCI.form.FileUpload.prototype#enable_download
+	 * @type boolean
+	 * @default false
+	 */
+
+	/**
 	 * Specify the root directory for file browsing.
 	 *
 	 * This property defines the topmost directory the file browser widget may
@@ -4614,9 +4773,11 @@ var CBIFileUpload = CBIValue.extend(/** @lends LuCI.form.FileUpload.prototype */
 		var browserEl = new ui.FileUpload((cfgvalue != null) ? cfgvalue : this.default, {
 			id: this.cbid(section_id),
 			name: this.cbid(section_id),
+			browser: this.browser,
 			show_hidden: this.show_hidden,
 			enable_upload: this.enable_upload,
 			enable_remove: this.enable_remove,
+			enable_download: this.enable_download,
 			root_directory: this.root_directory,
 			disabled: (this.readonly != null) ? this.readonly : this.map.readonly
 		});
@@ -4755,7 +4916,7 @@ var CBISectionValue = CBIValue.extend(/** @lends LuCI.form.SectionValue.prototyp
  * @hideconstructor
  * @classdesc
  *
- * The LuCI form class provides high level abstractions for creating creating
+ * The LuCI form class provides high level abstractions for creating
  * UCI- or JSON backed configurations forms.
  *
  * To import the class in views, use `'require form'`, to import it in
@@ -4806,6 +4967,7 @@ return baseclass.extend(/** @lends LuCI.form.prototype */ {
 	Value: CBIValue,
 	DynamicList: CBIDynamicList,
 	ListValue: CBIListValue,
+	RichListValue: CBIRichListValue,
 	Flag: CBIFlagValue,
 	MultiValue: CBIMultiValue,
 	TextValue: CBITextValue,

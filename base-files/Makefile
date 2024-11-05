@@ -13,7 +13,7 @@ include $(INCLUDE_DIR)/feeds.mk
 
 PKG_NAME:=base-files
 PKG_FLAGS:=nonshared
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_FILE_DEPENDS:=$(PLATFORM_DIR)/ $(GENERIC_PLATFORM_DIR)/base-files/
 PKG_BUILD_DEPENDS:=usign/host ucert/host
@@ -42,7 +42,7 @@ define Package/base-files
   DEPENDS:=+netifd +libc +jsonfilter +SIGNED_PACKAGES:usign +SIGNED_PACKAGES:openwrt-keyring +NAND_SUPPORT:ubi-utils +fstools +fwtool
   TITLE:=Base filesystem for OpenWrt
   URL:=http://openwrt.org/
-  VERSION:=$(PKG_RELEASE)-$(REVISION)
+  VERSION:=$(PKG_RELEASE)~$(lastword $(subst -, ,$(REVISION)))
 endef
 
 define Package/base-files/conffiles
@@ -74,7 +74,7 @@ endef
 define ImageConfigOptions
 	mkdir -p $(1)/lib/preinit
 	echo 'pi_suppress_stderr="$(CONFIG_TARGET_PREINIT_SUPPRESS_STDERR)"' >$(1)/lib/preinit/00_preinit.conf
-	echo 'fs_failsafe_wait_timeout=$(if $(CONFIG_TARGET_PREINIT_TIMEOUT),$(CONFIG_TARGET_PREINIT_TIMEOUT),2)' >>$(1)/lib/preinit/00_preinit.conf
+	echo 'fs_failsafe_wait_timeout=$(if $(CONFIG_TARGET_PREINIT_TIMEOUT),$(CONFIG_TARGET_PREINIT_TIMEOUT),4)' >>$(1)/lib/preinit/00_preinit.conf
 	echo 'pi_init_path="$(TARGET_INIT_PATH)"' >>$(1)/lib/preinit/00_preinit.conf
 	echo 'pi_init_env=$(if $(CONFIG_TARGET_INIT_ENV),$(CONFIG_TARGET_INIT_ENV),"")' >>$(1)/lib/preinit/00_preinit.conf
 	echo 'pi_init_cmd=$(if $(CONFIG_TARGET_INIT_CMD),$(CONFIG_TARGET_INIT_CMD),"/sbin/init")' >>$(1)/lib/preinit/00_preinit.conf
@@ -105,11 +105,22 @@ define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 endef
 
+define Build/Quilt
+endef
+
 define Build/Compile/Default
 
 endef
 Build/Compile = $(Build/Compile/Default)
 
+ifneq ($(CONFIG_USE_APK),)
+ifndef CONFIG_BUILDBOT
+  define Package/base-files/install-key
+	mkdir -p $(1)/etc/apk/keys
+	$(CP) $(BUILD_KEY_APK_PUB) $(1)/etc/apk/keys/
+  endef
+endif
+else
 ifdef CONFIG_SIGNED_PACKAGES
   define Build/Configure
 	[ -s $(BUILD_KEY) -a -s $(BUILD_KEY).pub ] || \
@@ -124,8 +135,8 @@ ifndef CONFIG_BUILDBOT
   define Package/base-files/install-key
 	mkdir -p $(1)/etc/opkg/keys
 	$(CP) $(BUILD_KEY).pub $(1)/etc/opkg/keys/`$(STAGING_DIR_HOST)/bin/usign -F -p $(BUILD_KEY).pub`
-
   endef
+endif
 endif
 endif
 
@@ -193,7 +204,8 @@ define Package/base-files/install
 		$(1)/usr/lib \
 		$(1)/usr/bin \
 		$(1)/sys \
-		$(1)/www \
+		$(1)/www
+	mkdir -p -m 750 \
 		$(1)/root
 
 	$(LN) /proc/mounts $(1)/etc/mtab
@@ -227,15 +239,23 @@ endif
 		cat $(BIN_DIR)/feeds.buildinfo >>$(1)/etc/build.feeds; \
 		cat $(BIN_DIR)/version.buildinfo >>$(1)/etc/build.version)
 
+	$(if $(CONFIG_TARGET_PREINIT_DISABLE_FAILSAFE), \
+		rm -f $(1)/etc/banner.failsafe,)
+
+ifneq ($(CONFIG_USE_APK),)
+	mkdir -p $(1)/etc/apk/
+	$(call FeedSourcesAppendAPK,$(1)/etc/apk/repositories)
+	$(VERSION_SED_SCRIPT) $(1)/etc/apk/repositories
+
+	rm -f $(1)/etc/uci-defaults/13_fix-group-user
+else
 	$(if $(CONFIG_CLEAN_IPKG),, \
 		mkdir -p $(1)/etc/opkg; \
-		$(call FeedSourcesAppend,$(1)/etc/opkg/distfeeds.conf); \
+		$(call FeedSourcesAppendOPKG,$(1)/etc/opkg/distfeeds.conf); \
 		$(VERSION_SED_SCRIPT) $(1)/etc/opkg/distfeeds.conf)
 	$(if $(CONFIG_IPK_FILES_CHECKSUMS),, \
 		rm -f $(1)/sbin/pkg_check)
-
-	$(if $(CONFIG_TARGET_PREINIT_DISABLE_FAILSAFE), \
-		rm -f $(1)/etc/banner.failsafe,)
+endif
 endef
 
 ifneq ($(DUMP),1)

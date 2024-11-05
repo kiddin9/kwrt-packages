@@ -26,7 +26,7 @@ var modalDiv = null,
  * events.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -134,7 +134,7 @@ var UIElement = baseclass.extend(/** @lends LuCI.ui.AbstractElement.prototype */
 	 * @memberof LuCI.ui.AbstractElement
 	 * @returns {boolean}
 	 * Returns `true` if the input value has been altered by the user or
-	 * `false` if it is unchaged. Note that if the user modifies the initial
+	 * `false` if it is unchanged. Note that if the user modifies the initial
 	 * value and changes it back to the original state, it is still reported
 	 * as changed.
 	 */
@@ -316,7 +316,7 @@ var UIElement = baseclass.extend(/** @lends LuCI.ui.AbstractElement.prototype */
  * The `Textfield` class implements a standard single line text input field.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -441,7 +441,7 @@ var UITextfield = UIElement.extend(/** @lends LuCI.ui.Textfield.prototype */ {
  * The `Textarea` class implements a multiline text area input field.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -511,7 +511,7 @@ var UITextarea = UIElement.extend(/** @lends LuCI.ui.Textarea.prototype */ {
 			'style': style,
 			'cols': this.options.cols,
 			'rows': this.options.rows,
-			'wrap': this.options.wrap ? '' : null
+			'wrap': this.options.wrap ? 'soft' : 'off'
 		}, [ value ]));
 
 		if (this.options.monospace)
@@ -557,7 +557,7 @@ var UITextarea = UIElement.extend(/** @lends LuCI.ui.Textarea.prototype */ {
  * The `Checkbox` class implements a simple checkbox input field.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -696,7 +696,7 @@ var UICheckbox = UIElement.extend(/** @lends LuCI.ui.Checkbox.prototype */ {
  * values are enabled or not.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -726,7 +726,7 @@ var UISelect = UIElement.extend(/** @lends LuCI.ui.Select.prototype */ {
 	 * @property {boolean} [multiple=false]
 	 * Specifies whether multiple choice values may be selected.
 	 *
-	 * @property {string} [widget=select]
+	 * @property {"select"|"individual"} [widget=select]
 	 * Specifies the kind of widget to render. May be either `select` or
 	 * `individual`. When set to `select` an HTML `<select>` element will be
 	 * used, otherwise a group of checkbox or radio button elements is created,
@@ -904,7 +904,7 @@ var UISelect = UIElement.extend(/** @lends LuCI.ui.Select.prototype */ {
  * supports non-text choice labels.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -1255,7 +1255,7 @@ var UIDropdown = UIElement.extend(/** @lends LuCI.ui.Dropdown.prototype */ {
 		sb.setAttribute('open', '');
 
 		var pv = ul.cloneNode(true);
-		    pv.classList.add('preview');
+		pv.classList.add('preview');
 
 		if (fl)
 			fl.classList.add('cbi-dropdown-open');
@@ -1985,7 +1985,7 @@ var UIDropdown = UIElement.extend(/** @lends LuCI.ui.Dropdown.prototype */ {
  * with a set of enforced default properties for easier instantiation.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -2052,7 +2052,7 @@ var UICombobox = UIDropdown.extend(/** @lends LuCI.ui.Combobox.prototype */ {
  * into a dropdown to chose from a set of different action choices.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -2075,7 +2075,7 @@ var UIComboButton = UIDropdown.extend(/** @lends LuCI.ui.ComboButton.prototype *
 	/**
 	 * ComboButtons support the same properties as
 	 * [Dropdown.InitOptions]{@link LuCI.ui.Dropdown.InitOptions} but enforce
-	 * specific values for some properties and add aditional button specific
+	 * specific values for some properties and add additional button specific
 	 * properties.
 	 *
 	 * @typedef {LuCI.ui.Dropdown.InitOptions} InitOptions
@@ -2169,7 +2169,7 @@ var UIComboButton = UIDropdown.extend(/** @lends LuCI.ui.ComboButton.prototype *
  * from a set of predefined choices.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -2192,7 +2192,7 @@ var UIComboButton = UIDropdown.extend(/** @lends LuCI.ui.ComboButton.prototype *
  */
 var UIDynamicList = UIElement.extend(/** @lends LuCI.ui.DynamicList.prototype */ {
 	/**
-	 * In case choices are passed to the dynamic list contructor, the widget
+	 * In case choices are passed to the dynamic list constructor, the widget
 	 * supports the same properties as [Dropdown.InitOptions]{@link LuCI.ui.Dropdown.InitOptions}
 	 * but enforces specific values for some dropdown properties.
 	 *
@@ -2524,7 +2524,7 @@ var UIDynamicList = UIElement.extend(/** @lends LuCI.ui.DynamicList.prototype */
  * which allows to store form data without exposing it to the user.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -2590,7 +2590,7 @@ var UIHiddenfield = UIElement.extend(/** @lends LuCI.ui.Hiddenfield.prototype */
  * browse, select and delete files beneath a predefined remote directory.
  *
  * UI widget instances are usually not supposed to be created by view code
- * directly, instead they're implicitely created by `LuCI.form` when
+ * directly, instead they're implicitly created by `LuCI.form` when
  * instantiating CBI forms.
  *
  * This class is automatically instantiated as part of `LuCI.ui`. To use it
@@ -2613,6 +2613,9 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 	 * @typedef {LuCI.ui.AbstractElement.InitOptions} InitOptions
 	 * @memberof LuCI.ui.FileUpload
 	 *
+	 * @property {boolean} [browser=false]
+	 * Use a file browser mode.
+	 *
 	 * @property {boolean} [show_hidden=false]
 	 * Specifies whether hidden files should be displayed when browsing remote
 	 * files. Note that this is not a security feature, hidden files are always
@@ -2633,19 +2636,24 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 	 * remotely depends on the ACL setup for the current session. This option
 	 * merely controls whether the file remove controls are rendered or not.
 	 *
+	 * @property {boolean} [enable_download=false]
+	 * Specifies whether the widget allows the user to download files.
+	 *
 	 * @property {string} [root_directory=/etc/luci-uploads]
 	 * Specifies the remote directory the upload and file browsing actions take
-	 * place in. Browsing to directories outside of the root directory is
+	 * place in. Browsing to directories outside the root directory is
 	 * prevented by the widget. Note that this is not a security feature.
-	 * Whether remote directories are browseable or not solely depends on the
+	 * Whether remote directories are browsable or not solely depends on the
 	 * ACL setup for the current session.
 	 */
 	__init__: function(value, options) {
 		this.value = value;
 		this.options = Object.assign({
+			browser: false,
 			show_hidden: false,
 			enable_upload: true,
 			enable_remove: true,
+			enable_download: false,
 			root_directory: '/etc/luci-uploads'
 		}, options);
 	},
@@ -2664,7 +2672,7 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 
 	/** @override */
 	render: function() {
-		return L.resolveDefault(this.value != null ? fs.stat(this.value) : null).then(L.bind(function(stat) {
+		var renderFileBrowser = L.resolveDefault(this.value != null ? fs.stat(this.value) : null).then(L.bind(function(stat) {
 			var label;
 
 			if (L.isObject(stat) && stat.type != 'directory')
@@ -2676,13 +2684,13 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 				label = [ this.iconForType('file'), ' %s (%s)'.format(this.truncatePath(this.value), _('File not accessible')) ];
 			else
 				label = [ _('Select file…') ];
-
-			return this.bind(E('div', { 'id': this.options.id }, [
-				E('button', {
-					'class': 'btn',
-					'click': UI.prototype.createHandlerFn(this, 'handleFileBrowser'),
-					'disabled': this.options.disabled ? '' : null
-				}, label),
+			let btnOpenFileBrowser = E('button', {
+				'class': 'btn open-file-browser',
+				'click': UI.prototype.createHandlerFn(this, 'handleFileBrowser'),
+				'disabled': this.options.disabled ? '' : null
+			}, label);
+			var fileBrowserEl = E('div', { 'id': this.options.id }, [
+				btnOpenFileBrowser,
 				E('div', {
 					'class': 'cbi-filebrowser'
 				}),
@@ -2691,8 +2699,18 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 					'name': this.options.name,
 					'value': this.value
 				})
-			]));
+			]);
+			return this.bind(fileBrowserEl);
 		}, this));
+		// in a browser mode open dir listing after render by clicking on a Select button
+		if (this.options.browser) {
+			return renderFileBrowser.then(function (fileBrowserEl) {
+				var btnOpenFileBrowser = fileBrowserEl.getElementsByClassName('open-file-browser').item(0);
+				btnOpenFileBrowser.click();
+				return fileBrowserEl;
+			});
+		}
+		return renderFileBrowser
 	},
 
 	/** @private */
@@ -2917,6 +2935,10 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 						'class': 'btn',
 						'click': UI.prototype.createHandlerFn(this, 'handleReset')
 					}, [ _('Deselect') ]) : '',
+					this.options.enable_download && list[i].type == 'file' ? E('button', {
+						'class': 'btn',
+						'click': UI.prototype.createHandlerFn(this, 'handleDownload', entrypath, list[i])
+					}, [ _('Download') ]) : '',
 					this.options.enable_remove ? E('button', {
 						'class': 'btn cbi-button-negative',
 						'click': UI.prototype.createHandlerFn(this, 'handleDelete', entrypath, list[i])
@@ -2947,11 +2969,11 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 			rows,
 			E('div', { 'class': 'right' }, [
 				this.renderUpload(path, list),
-				E('a', {
+				!this.options.browser ? E('a', {
 					'href': '#',
 					'class': 'btn',
 					'click': UI.prototype.createHandlerFn(this, 'handleCancel')
-				}, _('Cancel'))
+				}, _('Cancel')) : ''
 			]),
 		]);
 	},
@@ -2981,6 +3003,22 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 	},
 
 	/** @private */
+	handleDownload: function(path, fileStat, ev) {
+		fs.read_direct(path, 'blob').then(function (blob) {
+			var url = window.URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			a.style.display = 'none';
+			a.href = url;
+			a.download = fileStat.name;
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}).catch(function(err) {
+			alert(_('Download failed: %s').format(err.message));
+		});
+	},
+
+	/** @private */
 	handleSelect: function(path, fileStat, ev) {
 		var browser = dom.parent(ev.target, '.cbi-filebrowser'),
 		    ul = browser.querySelector('ul');
@@ -2989,7 +3027,7 @@ var UIFileUpload = UIElement.extend(/** @lends LuCI.ui.FileUpload.prototype */ {
 			dom.content(ul, E('em', { 'class': 'spinning' }, _('Loading directory contents…')));
 			L.resolveDefault(fs.list(path), []).then(L.bind(this.renderListing, this, browser, path));
 		}
-		else {
+		else if (!this.options.browser) {
 			var button = this.node.firstElementChild,
 			    hidden = this.node.lastElementChild;
 
@@ -3082,7 +3120,7 @@ var UIMenu = baseclass.singleton(/** @lends LuCI.ui.menu.prototype */ {
 	 * @property {string} name - The internal name of the node, as used in the URL
 	 * @property {number} order - The sort index of the menu node
 	 * @property {string} [title] - The title of the menu node, `null` if the node should be hidden
-	 * @property {satisified} boolean - Boolean indicating whether the menu enries dependencies are satisfied
+	 * @property {satisfied} boolean - Boolean indicating whether the menu entries dependencies are satisfied
 	 * @property {readonly} [boolean] - Boolean indicating whether the menu entries underlying ACLs are readonly
 	 * @property {LuCI.ui.menu.MenuNode[]} [children] - Array of child menu nodes.
 	 */
@@ -3525,7 +3563,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * be opened. Invoking showModal() while a modal dialog is already open will
 	 * replace the open dialog with a new one having the specified contents.
 	 *
-	 * Additional CSS class names may be passed to influence the appearence of
+	 * Additional CSS class names may be passed to influence the appearance of
 	 * the dialog. Valid values for the classes depend on the underlying theme.
 	 *
 	 * @see LuCI.dom.content
@@ -3533,7 +3571,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * @param {string} [title]
 	 * The title of the dialog. If `null`, no title element will be rendered.
 	 *
-	 * @param {*} contents
+	 * @param {*} children
 	 * The contents to add to the modal dialog. This should be a DOM node or
 	 * a document fragment in most cases. The value is passed as-is to the
 	 * `dom.content()` function - refer to its documentation for applicable
@@ -3582,7 +3620,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	/** @private */
 	cancelModal: function(ev) {
 		if (ev.key == 'Escape') {
-			var btn = modalDiv.querySelector('.right > button, .right > .btn');
+			var btn = modalDiv.querySelector('.right > button, .right > .btn, .button-row > .btn');
 
 			if (btn)
 				btn.click();
@@ -3657,11 +3695,11 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * Add a notification banner at the top of the current view.
 	 *
 	 * A notification banner is an alert message usually displayed at the
-	 * top of the current view, spanning the entire availibe width.
+	 * top of the current view, spanning the entire available width.
 	 * Notification banners will stay in place until dismissed by the user.
 	 * Multiple banners may be shown at the same time.
 	 *
-	 * Additional CSS class names may be passed to influence the appearence of
+	 * Additional CSS class names may be passed to influence the appearance of
 	 * the banner. Valid values for the classes depend on the underlying theme.
 	 *
 	 * @see LuCI.dom.content
@@ -3670,7 +3708,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * The title of the notification banner. If `null`, no title element
 	 * will be rendered.
 	 *
-	 * @param {*} contents
+	 * @param {*} children
 	 * The contents to add to the notification banner. This should be a DOM
 	 * node or a document fragment in most cases. The value is passed as-is
 	 * to the `dom.content()` function - refer to its documentation for
@@ -3721,7 +3759,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	},
 
 	/**
-	 * Display or update an header area indicator.
+	 * Display or update a header area indicator.
 	 *
 	 * An indicator is a small label displayed in the header area of the screen
 	 * providing few amounts of status information such as item counts or state
@@ -3748,7 +3786,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * Note that this parameter only applies to new indicators, when updating
 	 * existing labels it is ignored.
 	 *
-	 * @param {string} [style=active]
+	 * @param {"active"|"inactive"} [style=active]
 	 * The indicator style to use. May be either `active` or `inactive`.
 	 *
 	 * @returns {boolean}
@@ -3791,7 +3829,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	},
 
 	/**
-	 * Remove an header area indicator.
+	 * Remove a header area indicator.
 	 *
 	 * This function removes the given indicator label from the header indicator
 	 * area. When the given indicator is not found, this function does nothing.
@@ -3825,7 +3863,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * subsequently wrapped into a `<span class="nowrap">` element.
 	 *
 	 * The resulting `<span>` element tuples are joined by the given separators
-	 * to form the final markup which is appened to the given parent DOM node.
+	 * to form the final markup which is appended to the given parent DOM node.
 	 *
 	 * @param {Node} node
 	 * The parent DOM node to append the markup to. Any previous child elements
@@ -4152,7 +4190,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * @param {string} path
 	 * The remote file path to upload the local file to.
 	 *
-	 * @param {Node} [progessStatusNode]
+	 * @param {Node} [progressStatusNode]
 	 * An optional DOM text node whose content text is set to the progress
 	 * percentage value during file upload.
 	 *
@@ -4165,99 +4203,94 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 		return new Promise(function(resolveFn, rejectFn) {
 			UI.prototype.showModal(_('Uploading file…'), [
 				E('p', _('Please select the file to upload.')),
-				E('div', { 'style': 'display:flex' }, [
-					E('div', { 'class': 'left', 'style': 'flex:1' }, [
-						E('input', {
-							type: 'file',
-							style: 'display:none',
-							change: function(ev) {
-								var modal = dom.parent(ev.target, '.modal'),
-								    body = modal.querySelector('p'),
-								    upload = modal.querySelector('.cbi-button-action.important'),
-								    file = ev.currentTarget.files[0];
+				E('div', { 'class': 'button-row' }, [
+					E('button', {
+						'class': 'btn cbi-button',
+						'click': function() {
+							UI.prototype.hideModal();
+							rejectFn(new Error(_('Upload has been cancelled')));
+						}
+					}, [ _('Cancel') ]),
+					E('input', {
+						type: 'file',
+						style: 'display:none',
+						change: function(ev) {
+							var modal = dom.parent(ev.target, '.modal'),
+							    body = modal.querySelector('p'),
+							    upload = modal.querySelector('.cbi-button-action.important'),
+							    file = ev.currentTarget.files[0];
 
-								if (file == null)
-									return;
+							if (file == null)
+								return;
 
-								dom.content(body, [
-									E('ul', {}, [
-										E('li', {}, [ '%s: %s'.format(_('Name'), file.name.replace(/^.*[\\\/]/, '')) ]),
-										E('li', {}, [ '%s: %1024mB'.format(_('Size'), file.size) ])
-									])
-								]);
+							dom.content(body, [
+								E('ul', {}, [
+									E('li', {}, [ '%s: %s'.format(_('Name'), file.name.replace(/^.*[\\\/]/, '')) ]),
+									E('li', {}, [ '%s: %1024mB'.format(_('Size'), file.size) ])
+								])
+							]);
 
-								upload.disabled = false;
-								upload.focus();
-							}
-						}),
-						E('button', {
-							'class': 'btn',
-							'click': function(ev) {
-								ev.target.previousElementSibling.click();
-							}
-						}, [ _('Browse…') ])
-					]),
-					E('div', { 'class': 'right', 'style': 'flex:1' }, [
-						E('button', {
-							'class': 'btn',
-							'click': function() {
+							upload.disabled = false;
+							upload.focus();
+						}
+					}),
+					E('button', {
+						'class': 'btn cbi-button',
+						'click': function(ev) {
+							ev.target.previousElementSibling.click();
+						}
+					}, [ _('Browse…') ]),
+					E('button', {
+						'class': 'btn cbi-button-action important',
+						'disabled': true,
+						'click': function(ev) {
+							var input = dom.parent(ev.target, '.modal').querySelector('input[type="file"]');
+
+							if (!input.files[0])
+								return;
+
+							var progress = E('div', { 'class': 'cbi-progressbar', 'title': '0%' }, E('div', { 'style': 'width:0' }));
+
+							UI.prototype.showModal(_('Uploading file…'), [ progress ]);
+
+							var data = new FormData();
+
+							data.append('sessionid', rpc.getSessionID());
+							data.append('filename', path);
+							data.append('filedata', input.files[0]);
+
+							var filename = input.files[0].name;
+
+							request.post(L.env.cgi_base + '/cgi-upload', data, {
+								timeout: 0,
+								progress: function(pev) {
+									var percent = (pev.loaded / pev.total) * 100;
+
+									if (progressStatusNode)
+										progressStatusNode.data = '%.2f%%'.format(percent);
+
+									progress.setAttribute('title', '%.2f%%'.format(percent));
+									progress.firstElementChild.style.width = '%.2f%%'.format(percent);
+								}
+							}).then(function(res) {
+								var reply = res.json();
+
 								UI.prototype.hideModal();
-								rejectFn(new Error(_('Upload has been cancelled')));
-							}
-						}, [ _('Cancel') ]),
-						' ',
-						E('button', {
-							'class': 'btn cbi-button-action important',
-							'disabled': true,
-							'click': function(ev) {
-								var input = dom.parent(ev.target, '.modal').querySelector('input[type="file"]');
 
-								if (!input.files[0])
-									return;
-
-								var progress = E('div', { 'class': 'cbi-progressbar', 'title': '0%' }, E('div', { 'style': 'width:0' }));
-
-								UI.prototype.showModal(_('Uploading file…'), [ progress ]);
-
-								var data = new FormData();
-
-								data.append('sessionid', rpc.getSessionID());
-								data.append('filename', path);
-								data.append('filedata', input.files[0]);
-
-								var filename = input.files[0].name;
-
-								request.post(L.env.cgi_base + '/cgi-upload', data, {
-									timeout: 0,
-									progress: function(pev) {
-										var percent = (pev.loaded / pev.total) * 100;
-
-										if (progressStatusNode)
-											progressStatusNode.data = '%.2f%%'.format(percent);
-
-										progress.setAttribute('title', '%.2f%%'.format(percent));
-										progress.firstElementChild.style.width = '%.2f%%'.format(percent);
-									}
-								}).then(function(res) {
-									var reply = res.json();
-
-									UI.prototype.hideModal();
-
-									if (L.isObject(reply) && reply.failure) {
-										UI.prototype.addNotification(null, E('p', _('Upload request failed: %s').format(reply.message)));
-										rejectFn(new Error(reply.failure));
-									}
-									else {
-										reply.name = filename;
-										resolveFn(reply);
-									}
-								}, function(err) {
-									UI.prototype.hideModal();
-									rejectFn(err);
-								});
-							}
-						}, [ _('Upload') ])
-					])
+								if (L.isObject(reply) && reply.failure) {
+									UI.prototype.addNotification(null, E('p', _('Upload request failed: %s').format(reply.message)));
+									rejectFn(new Error(reply.failure));
+								}
+								else {
+									reply.name = filename;
+									resolveFn(reply);
+								}
+							}, function(err) {
+								UI.prototype.hideModal();
+								rejectFn(err);
+							});
+						}
+					}, [ _('Upload') ])
 				])
 			]);
 		});
@@ -4266,7 +4299,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	/**
 	 * Perform a device connectivity test.
 	 *
-	 * Attempt to fetch a well known ressource from the remote device via HTTP
+	 * Attempt to fetch a well known resource from the remote device via HTTP
 	 * in order to test connectivity. This function is mainly useful to wait
 	 * for the router to come back online after a reboot or reconfiguration.
 	 *
@@ -4274,7 +4307,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * The protocol to use for fetching the resource. May be either `http`
 	 * (the default) or `https`.
 	 *
-	 * @param {string} [host=window.location.host]
+	 * @param {string} [ipaddr=window.location.host]
 	 * Override the host address to probe. By default the current host as seen
 	 * in the address bar is probed.
 	 *
@@ -4363,7 +4396,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 		 *
 		 * @instance
 		 * @memberof LuCI.ui.changes
-		 * @param {number} numChanges
+		 * @param {number} n
 		 * The number of changes to indicate.
 		 */
 		setIndicator: function(n) {
@@ -4436,26 +4469,29 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 							E('var', {}, E('ins', '&#160;')), ' ', _('Option changed') ]),
 						E('div', { 'class': 'uci-change-legend-label' }, [
 							E('var', {}, E('del', '&#160;')), ' ', _('Option removed') ])]),
-					E('br'), list,
-					E('div', { 'class': 'right' }, [
-						E('button', {
-							'class': 'btn',
-							'click': UI.prototype.hideModal
-						}, [ _('Close') ]), ' ',
-						new UIComboButton('0', {
-							0: [ _('Save & Apply') ],
-							1: [ _('Apply unchecked') ]
-						}, {
-							classes: {
-								0: 'btn cbi-button cbi-button-positive important',
-								1: 'btn cbi-button cbi-button-negative important'
-							},
-							click: L.bind(function(ev, mode) { this.apply(mode == '0') }, this)
-						}).render(), ' ',
-						E('button', {
-							'class': 'cbi-button cbi-button-reset',
-							'click': L.bind(this.revert, this)
-						}, [ _('Revert') ])])])
+					E('br'),
+					list,
+				]),
+				E('div', { 'class': 'button-row' }, [
+					E('button', {
+						'class': 'btn cbi-button',
+						'click': UI.prototype.hideModal
+					}, [ _('Close') ]), ' ',
+					new UIComboButton('0', {
+						0: [ _('Save & Apply') ],
+						1: [ _('Apply unchecked') ]
+					}, {
+						classes: {
+							0: 'btn cbi-button cbi-button-positive important',
+							1: 'btn cbi-button cbi-button-negative important'
+						},
+						click: L.bind(function(ev, mode) { this.apply(mode == '0') }, this)
+					}).render(), ' ',
+					E('button', {
+						'class': 'btn cbi-button cbi-button-reset',
+						'click': L.bind(this.revert, this)
+					}, [ _('Revert') ])
+				])
 			]);
 
 			for (var config in this.changes) {
@@ -4688,21 +4724,20 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 
 					UI.prototype.changes.displayStatus('warning', [
 						E('h4', _('Connectivity change')),
-						E('p', _('The network access to this device could be interrupted by changing settings of the "%h" interface.').format(affected)),
-						E('p', _('If the IP address used to access LuCI changes, a <strong>manual reconnect to the new IP</strong> is required within %d seconds to confirm the settings, otherwise modifications will be reverted.').format(L.env.apply_rollback)),
-						E('div', { 'class': 'right' }, [
+						E('p', _('Changes have been made to the existing connection via "%h". This could inhibit access to this device. Any IP change requires <strong>connecting to the new IP</strong> within %d seconds to retain the changes.').format(affected, L.env.apply_rollback)),
+						E('div', { 'class': 'button-row' }, [
 							E('button', {
-								'class': 'btn',
+								'class': 'btn cbi-button',
 								'click': rejectFn,
 							}, [ _('Cancel') ]), ' ',
 							E('button', {
 								'class': 'btn cbi-button-action important',
 								'click': resolveFn.bind(null, true)
-							}, [ _('Apply with revert after connectivity loss') ]), ' ',
+							}, [ _('Apply, reverting in case of connectivity loss') ]), ' ',
 							E('button', {
 								'class': 'btn cbi-button-negative important',
 								'click': resolveFn.bind(null, false)
-							}, [ _('Apply and keep settings') ])
+							}, [ _('Apply unchecked') ])
 						])
 					]);
 				});
@@ -4905,7 +4940,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 *
 	 * By instantiating the view class, its corresponding contents are
 	 * rendered and included into the view area. Any runtime errors are
-	 * catched and rendered using [LuCI.error()]{@link LuCI#error}.
+	 * caught and rendered using [LuCI.error()]{@link LuCI#error}.
 	 *
 	 * @param {string} path
 	 * The view path to render.

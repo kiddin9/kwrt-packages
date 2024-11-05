@@ -12,6 +12,22 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "X-Generator: Weblate 5.7-dev\n"
 
+#: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:94
+msgid ""
+"<i>Applies to Ping Reboot and Periodic Reboot modes</i> <br /> When "
+"rebooting the router, the service will trigger a soft reboot. Entering a non-"
+"zero value here will trigger a delayed hard reboot if the soft reboot were "
+"to fail. Enter the number of seconds to wait for the soft reboot to fail or "
+"use 0 to disable the forced reboot delay."
+msgstr ""
+
+#: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:111
+msgid ""
+"<i>Applies to Ping Reboot and Restart Interface modes</i> <br /> If using "
+"ModemManager, you can have Watchcat restart your ModemManager interface by "
+"specifying its name."
+msgstr ""
+
 #: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:104
 msgid ""
 "<i>Applies to Ping Reboot, Restart Interface, and Run Script modes</i> <br /"
@@ -22,20 +38,8 @@ msgstr "Použít Ping k restartování, a spustit skript mode."
 msgid "Address family for pinging the host"
 msgstr ""
 
-#: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:94
-msgid ""
-"Applies to Ping Reboot and Periodic Reboot modes</i> <br /> When rebooting "
-"the router, the service will trigger a soft reboot. Entering a non-zero "
-"value here will trigger a delayed hard reboot if the soft reboot were to "
-"fail. Enter the number of seconds to wait for the soft reboot to fail or use "
-"0 to disable the forced reboot delay."
-msgstr ""
-
-#: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:111
-msgid ""
-"Applies to Ping Reboot and Restart Interface modes</i> <br /> If using "
-"ModemManager, you can have Watchcat restart your ModemManger interface by "
-"specifying its name."
+#: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:65
+msgid "Any"
 msgstr ""
 
 #: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:84
@@ -196,3 +200,56 @@ msgstr "Watchcat"
 #: applications/luci-app-watchcat/htdocs/luci-static/resources/view/watchcat.js:82
 msgid "Windows: 32 bytes"
 msgstr ""
+
+#~ msgid "Forced reboot delay"
+#~ msgstr "Prodleva nuceného restartu"
+
+#~ msgid "Host address to ping"
+#~ msgstr "Adresa zařízení, vůči kterému bude testováno připojení (ping)"
+
+#~ msgid ""
+#~ "How often to check internet connection. Default unit is seconds, you can "
+#~ "you use the suffix 'm' for minutes, 'h' for hours or 'd' for days"
+#~ msgstr ""
+#~ "Perioda testování připojení; výchozí časovou jednotkou jsou sekundy, "
+#~ "avšak použitím přípony \"m\" lze určit minuty, pomocí \"h\" hodiny a "
+#~ "\"d\" dny"
+
+#~ msgid ""
+#~ "In periodic mode, it defines the reboot period. In internet mode, it "
+#~ "defines the longest period of time without internet access before a "
+#~ "reboot is engaged.Default unit is seconds, you can use the suffix 'm' for "
+#~ "minutes, 'h' for hours or 'd' for days"
+#~ msgstr ""
+#~ "Pokud je nastaven periodický režim práce, tak tato hodnota vyjadřuje "
+#~ "interval opakování restartu. V 'internetovém' režimu práce hodnota "
+#~ "vyjadřuje nejdelší možnou dobu, po kterou smí být zařízení bez připojení "
+#~ "k internetu, resp. nastavenému testovacímu zařízení - po jejím uplynutí "
+#~ "je proveden automaticky reset. Výchozí jednotkou jsou sekundy, pomocí "
+#~ "přípony \"m\" lze nastavit minuty, pomocí \"h\" hodiny a prostřednictvím "
+#~ "\"d\" dny"
+
+#~ msgid "Operating mode"
+#~ msgstr "Režim fungování"
+
+#~ msgid "Ping host"
+#~ msgstr "Cílové zařízení příkazu ping"
+
+#~ msgid "Ping period"
+#~ msgstr "Interval opakování testu ping"
+
+#~ msgid ""
+#~ "Watchcat allows configuring a periodic reboot when the Internet "
+#~ "connection has been lost for a certain period of time."
+#~ msgstr ""
+#~ "Nástroj Watchcat umožňuje provést restart zařízení, když ztráta připojení "
+#~ "trvá stanovenou dobu, případně restart provádět periodicky vždy."
+
+#~ msgid ""
+#~ "When rebooting the system, the watchcat will trigger a soft reboot. "
+#~ "Entering a non zero value here will trigger a delayed hard reboot if the "
+#~ "soft reboot fails. Enter a number of seconds to enable, use 0 to disable"
+#~ msgstr ""
+#~ "Watchcat provádí \"měkký\" restart (hodnota 0). Zadáním nenulové hodnoty "
+#~ "nastavíte interval (v sekundách), po kterém bude proveden \"tvrdý\" "
+#~ "restart, pokud \"měkký\" restart selhal"

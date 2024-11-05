@@ -8,10 +8,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qt6base
-PKG_BASE:=6.5
+PKG_BASE:=6.7
 PKG_BUGFIX:=3
 PKG_VERSION:=$(PKG_BASE).$(PKG_BUGFIX)
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=qtbase-everywhere-src-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://mirrors.tencent.com/qt/archive/qt/$(PKG_BASE)/$(PKG_VERSION)/submodules/ \
@@ -58,7 +58,7 @@ endef
 TARGET_CFLAGS+= -I$(STAGING_DIR)/usr/include/libdrm
 ifdef CONFIG_USE_GLIBC
   ifeq ($(ARCH),x86_64)
-    TARGET_LDFLAGS+= -Wl,--sysroot=$(TOOLCHAIN_DIR)
+    TARGET_LDFLAGS+= -Wl,--sysroot=$(TOOLCHAIN_ROOT_DIR)
   endif
 endif
 
