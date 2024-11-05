@@ -364,7 +364,7 @@ jobs:
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/openwrt" \
         package/network/config/wifi-scripts
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/luci" applications/luci-app-attendedsysupgrade applications/luci-app-aria2 \
-        applications/luci-app-ddns applications/luci-app-acme applications/luci-app-opkg \
+        applications/luci-app-ddns applications/luci-app-acme applications/luci-app-package-manager \
         applications/luci-app-ksmbd applications/luci-app-samba4 applications/luci-app-watchcat applications/luci-app-upnp \
         applications/luci-app-transmission modules/luci-base modules/luci-mod-network \
         modules/luci-mod-status modules/luci-mod-system
