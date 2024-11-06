@@ -107,12 +107,12 @@ custom_instance() {
 		config_get subnetRoutes $cfg 'subnetRoutes'
 		if [ -n "$subnetRoutes" ];  then
 			i=1
-			lan_ip=$(uci get network.lan.ipaddr)
+			ts_ip=$(tailscale ip -4)
 			for route in $subnetRoutes; do
 				uci set network.ts_subnet$i='route'
-				uci set network.ts_subnet$i.interface='lan'
+				uci set network.ts_subnet$i.interface='tailscale'
 				uci set network.ts_subnet$i.target=$route
-				uci set network.ts_subnet$i.gateway=$lan_ip
+				uci set network.ts_subnet$i.gateway=$ts_ip
 				let i++
 			done
 		else

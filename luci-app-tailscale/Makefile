@@ -9,10 +9,6 @@ LUCI_DEPENDS:=+tailscale
 LUCI_PKGARCH:=all
 
 
-define Package/luci-app-tailscale/conffiles
-/etc/config/tailscale
-endef
-
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
