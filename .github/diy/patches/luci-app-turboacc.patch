@@ -20,32 +20,6 @@
  	+PACKAGE_$(PKG_NAME)_INCLUDE_OFFLOADING:kmod-ipt-offload \
  	+PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE:kmod-fast-classifier \
  	+PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE_CM:kmod-shortcut-fe-cm \
-@@ -34,7 +32,7 @@ LUCI_PKGARCH:=all
- define Package/$(PKG_NAME)/config
- config PACKAGE_$(PKG_NAME)_INCLUDE_OFFLOADING
- 	bool "Include Flow Offload"
--	default y if !(TARGET_ipq40xx||TARGET_ipq806x||TARGET_qualcommax||TARGET_x86)
-+	default y if !(TARGET_ipq40xx||TARGET_ipq806x||TARGET_qualcommax||TARGET_ipq807x||TARGET_x86)
- 
- config PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE
- 	bool "Include Shortcut-FE"
-@@ -45,14 +43,14 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE_CM
- 	bool "Include Shortcut-FE CM"
- 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_OFFLOADING=n
- 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE=n
--	default y if !(TARGET_ipq806x||TARGET_qualcommax)
-+	default y if !(TARGET_ipq806x||TARGET_qualcommax||TARGET_ipq807x)
- 
- config PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE_DRV
- 	bool "Include Shortcut-FE ECM"
- 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_OFFLOADING=n
- 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE=n
- 	depends on PACKAGE_$(PKG_NAME)_INCLUDE_SHORTCUT_FE_CM=n
--	depends on (TARGET_ipq806x||TARGET_qualcommax)
-+	depends on (TARGET_ipq806x||TARGET_qualcommax||TARGET_ipq807x)
- 	default y
- 
- config PACKAGE_$(PKG_NAME)_INCLUDE_BBR_CCA
 
 --- a/luci-app-turboacc/luasrc/controller/turboacc.lua
 +++ b/luci-app-turboacc/luasrc/controller/turboacc.lua
@@ -254,15 +228,3 @@
  endef
  
  define KernelPackage/fast-classifier
-
---- a/shortcut-fe/simulated-driver/Makefile
-+++ b/shortcut-fe/simulated-driver/Makefile
-@@ -30,7 +30,7 @@ define KernelPackage/shortcut-fe-drv
-   SECTION:=kernel
-   CATEGORY:=Kernel modules
-   SUBMENU:=Network Support
--  DEPENDS:=@TARGET_qualcommax +kmod-shortcut-fe
-+  DEPENDS:=@(TARGET_ipq806x||TARGET_ipq807x||TARGET_qualcommax) +kmod-shortcut-fe
-   KCONFIG:= \
- 	   CONFIG_NET_CLS_ACT=y \
- 	   CONFIG_XFRM=y
