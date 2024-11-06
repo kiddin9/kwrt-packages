@@ -1,0 +1,72 @@
+From 510f97dca05de10d53662e0301b233da3d0a8420 Mon Sep 17 00:00:00 2001
+From: hingbong <hingbonglo@gmail.com>
+Date: Wed, 6 Nov 2024 12:43:08 +0000
+Subject: [PATCH] feat: Implement Round Robin server selection for DNS lookups
+
+* Adds the `RoundRobin` variant to the `ServerOrderingStrategy` enum.
+* Modifies `send` function to use AtomicUsize and perform Round Robin selection
+  based on the number of concurrent requests.
+* Ensures at least one server is used even for `num_concurrent_reqs = 1`.
+---
+ crates/resolver/src/config.rs                  |  1 +
+ .../src/name_server/name_server_pool.rs        | 18 ++++++++++++++++--
+ 2 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/crates/resolver/src/config.rs b/crates/resolver/src/config.rs
+index 0d0fb85c..8b96798b 100644
+--- a/crates/resolver/src/config.rs
++++ b/crates/resolver/src/config.rs
+@@ -778,6 +778,7 @@ pub enum ServerOrderingStrategy {
+     /// The order provided to the resolver is used. The ordering does not vary
+     /// over time.
+     UserProvidedOrder,
++    RoundRobin,
+ }
+ 
+ impl Default for ServerOrderingStrategy {
+diff --git a/crates/resolver/src/name_server/name_server_pool.rs b/crates/resolver/src/name_server/name_server_pool.rs
+index 6bd0986c..dacb3c8d 100644
+--- a/crates/resolver/src/name_server/name_server_pool.rs
++++ b/crates/resolver/src/name_server/name_server_pool.rs
+@@ -7,7 +7,7 @@
+ 
+ use std::cmp::Ordering;
+ use std::pin::Pin;
+-use std::sync::Arc;
++use std::sync::{Arc, atomic::{AtomicUsize, Ordering as AtomicOrdering}};
+ use std::task::{Context, Poll};
+ use std::time::Duration;
+ 
+@@ -39,6 +39,8 @@ pub struct NameServerPool<P: ConnectionProvider + Send + 'static> {
+     options: ResolverOpts,
+ }
+ 
++static NEXT_INDEX: AtomicUsize = AtomicUsize::new(0);
++
+ /// A pool of NameServers
+ ///
+ /// This is not expected to be used directly, see [crate::AsyncResolver].
+@@ -171,7 +173,19 @@ where
+             //   reorder the connections based on current view...
+             //   this reorders the inner set
+             ServerOrderingStrategy::QueryStatistics => conns.sort_unstable(),
+-            ServerOrderingStrategy::UserProvidedOrder => {}
++            ServerOrderingStrategy::UserProvidedOrder => {},
++            ServerOrderingStrategy::RoundRobin => {
++                let num_concurrent_reqs = if opts.num_concurrent_reqs > 1 {
++                    opts.num_concurrent_reqs
++                } else {
++                    1
++                };
++                if num_concurrent_reqs < conns.len() {
++                    let index = NEXT_INDEX.fetch_add(num_concurrent_reqs, AtomicOrdering::SeqCst) % conns.len();
++                    let temp = conns.drain(0..index).collect::<Vec<_>>();
++                    conns.extend(temp);
++                }                
++            },
+         }
+         let request_loop = request.clone();
+ 
+-- 
+2.30.2
+
