@@ -1,4 +1,4 @@
-From a28c02e5b300e5ec45e72c40c364e4cb893a471f Mon Sep 17 00:00:00 2001
+From 2872ef1de03105d3d32fe1a12b7add0bb273082d Mon Sep 17 00:00:00 2001
 From: hingbong <hingbonglo@gmail.com>
 Date: Wed, 6 Nov 2024 12:43:08 +0000
 Subject: [PATCH] feat: Implement Round Robin server selection for DNS lookups
@@ -8,9 +8,9 @@ Subject: [PATCH] feat: Implement Round Robin server selection for DNS lookups
   based on the number of concurrent requests.
 * Ensures at least one server is used even for `num_concurrent_reqs = 1`.
 ---
- crates/resolver/src/config.rs                 |  3 +++
- .../src/name_server/name_server_pool.rs       | 27 ++++++++++++++++---
- 2 files changed, 27 insertions(+), 3 deletions(-)
+ crates/resolver/src/config.rs                 |  3 ++
+ .../src/name_server/name_server_pool.rs       | 28 +++++++++++++++++--
+ 2 files changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/crates/resolver/src/config.rs b/crates/resolver/src/config.rs
 index 0d0fb85c..b86a8791 100644
@@ -27,7 +27,7 @@ index 0d0fb85c..b86a8791 100644
  
  impl Default for ServerOrderingStrategy {
 diff --git a/crates/resolver/src/name_server/name_server_pool.rs b/crates/resolver/src/name_server/name_server_pool.rs
-index 6bd0986c..9471360c 100644
+index 6bd0986c..036ff959 100644
 --- a/crates/resolver/src/name_server/name_server_pool.rs
 +++ b/crates/resolver/src/name_server/name_server_pool.rs
 @@ -7,7 +7,10 @@
@@ -74,7 +74,15 @@ index 6bd0986c..9471360c 100644
          }
      }
  
-@@ -163,6 +170,7 @@ where
+@@ -156,6 +163,7 @@ where
+             datagram_conns,
+             stream_conns,
+             options,
++            next_index: Arc::from(AtomicUsize::new(0)),
+         }
+     }
+ 
+@@ -163,6 +171,7 @@ where
          opts: ResolverOpts,
          conns: Arc<[NameServer<P>]>,
          request: DnsRequest,
@@ -82,7 +90,7 @@ index 6bd0986c..9471360c 100644
      ) -> Result<DnsResponse, ProtoError> {
          let mut conns: Vec<NameServer<P>> = conns.to_vec();
  
-@@ -172,6 +180,18 @@ where
+@@ -172,6 +181,18 @@ where
              //   this reorders the inner set
              ServerOrderingStrategy::QueryStatistics => conns.sort_unstable(),
              ServerOrderingStrategy::UserProvidedOrder => {}
@@ -101,7 +109,7 @@ index 6bd0986c..9471360c 100644
          }
          let request_loop = request.clone();
  
-@@ -190,6 +210,7 @@ where
+@@ -190,6 +211,7 @@ where
          let request = request.into();
          let datagram_conns = Arc::clone(&self.datagram_conns);
          let stream_conns = Arc::clone(&self.stream_conns);
@@ -109,7 +117,7 @@ index 6bd0986c..9471360c 100644
          // TODO: remove this clone, return the Message in the error?
          let tcp_message = request.clone();
  
-@@ -210,7 +231,7 @@ where
+@@ -210,7 +232,7 @@ where
  
              // First try the UDP connections
              let udp_res: Result<DnsResponse, ProtoError> =
@@ -118,7 +126,7 @@ index 6bd0986c..9471360c 100644
                      Ok(response) if response.truncated() => {
                          debug!("truncated response received, retrying over TCP");
                          Ok(response)
-@@ -229,7 +250,7 @@ where
+@@ -229,7 +251,7 @@ where
  
              // Try query over TCP, as response to query over UDP was either truncated or was an
              // error.
