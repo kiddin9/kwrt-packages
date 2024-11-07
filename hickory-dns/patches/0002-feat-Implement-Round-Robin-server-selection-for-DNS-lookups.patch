@@ -1,4 +1,4 @@
-From 941a008d28abba009376490b5605fac8f08f74f9 Mon Sep 17 00:00:00 2001
+From a28c02e5b300e5ec45e72c40c364e4cb893a471f Mon Sep 17 00:00:00 2001
 From: hingbong <hingbonglo@gmail.com>
 Date: Wed, 6 Nov 2024 12:43:08 +0000
 Subject: [PATCH] feat: Implement Round Robin server selection for DNS lookups
@@ -9,8 +9,8 @@ Subject: [PATCH] feat: Implement Round Robin server selection for DNS lookups
 * Ensures at least one server is used even for `num_concurrent_reqs = 1`.
 ---
  crates/resolver/src/config.rs                 |  3 +++
- .../src/name_server/name_server_pool.rs       | 20 ++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ .../src/name_server/name_server_pool.rs       | 27 ++++++++++++++++---
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
 diff --git a/crates/resolver/src/config.rs b/crates/resolver/src/config.rs
 index 0d0fb85c..b86a8791 100644
@@ -27,7 +27,7 @@ index 0d0fb85c..b86a8791 100644
  
  impl Default for ServerOrderingStrategy {
 diff --git a/crates/resolver/src/name_server/name_server_pool.rs b/crates/resolver/src/name_server/name_server_pool.rs
-index 6bd0986c..011eeebb 100644
+index 6bd0986c..9471360c 100644
 --- a/crates/resolver/src/name_server/name_server_pool.rs
 +++ b/crates/resolver/src/name_server/name_server_pool.rs
 @@ -7,7 +7,10 @@
@@ -42,16 +42,47 @@ index 6bd0986c..011eeebb 100644
  use std::task::{Context, Poll};
  use std::time::Duration;
  
-@@ -39,6 +42,8 @@ pub struct NameServerPool<P: ConnectionProvider + Send + 'static> {
+@@ -37,6 +40,7 @@ pub struct NameServerPool<P: ConnectionProvider + Send + 'static> {
+     datagram_conns: Arc<[NameServer<P>]>, /* All NameServers must be the same type */
+     stream_conns: Arc<[NameServer<P>]>,   /* All NameServers must be the same type */
      options: ResolverOpts,
++    next_index: Arc<AtomicUsize>,
  }
  
-+static NEXT_INDEX: AtomicUsize = AtomicUsize::new(0);
-+
  /// A pool of NameServers
- ///
- /// This is not expected to be used directly, see [crate::AsyncResolver].
-@@ -172,6 +177,19 @@ where
+@@ -105,6 +109,7 @@ where
+             datagram_conns: Arc::from(datagram_conns),
+             stream_conns: Arc::from(stream_conns),
+             options,
++            next_index: Arc::from(AtomicUsize::new(0)),
+         }
+     }
+ 
+@@ -129,6 +134,7 @@ where
+             datagram_conns: Arc::from(datagram_conns),
+             stream_conns: Arc::from(stream_conns),
+             options,
++            next_index: Arc::from(AtomicUsize::new(0)),
+         }
+     }
+ 
+@@ -142,6 +148,7 @@ where
+             datagram_conns: Arc::from(datagram_conns),
+             stream_conns: Arc::from(stream_conns),
+             options,
++            next_index: Arc::from(AtomicUsize::new(0)),
+         }
+     }
+ 
+@@ -163,6 +170,7 @@ where
+         opts: ResolverOpts,
+         conns: Arc<[NameServer<P>]>,
+         request: DnsRequest,
++        next_index: &Arc<AtomicUsize>,
+     ) -> Result<DnsResponse, ProtoError> {
+         let mut conns: Vec<NameServer<P>> = conns.to_vec();
+ 
+@@ -172,6 +180,18 @@ where
              //   this reorders the inner set
              ServerOrderingStrategy::QueryStatistics => conns.sort_unstable(),
              ServerOrderingStrategy::UserProvidedOrder => {}
@@ -62,15 +93,40 @@ index 6bd0986c..011eeebb 100644
 +                    1
 +                };
 +                if num_concurrent_reqs < conns.len() {
-+                    let index = NEXT_INDEX.fetch_add(num_concurrent_reqs, AtomicOrdering::SeqCst)
++                    let index = next_index.fetch_add(num_concurrent_reqs, AtomicOrdering::SeqCst)
 +                        % conns.len();
-+                    let temp = conns.drain(0..index).collect::<Vec<_>>();
-+                    conns.extend(temp);
++                    conns.rotate_left(index);
 +                }
 +            }
          }
          let request_loop = request.clone();
  
+@@ -190,6 +210,7 @@ where
+         let request = request.into();
+         let datagram_conns = Arc::clone(&self.datagram_conns);
+         let stream_conns = Arc::clone(&self.stream_conns);
++        let next_index = Arc::clone(&self.next_index);
+         // TODO: remove this clone, return the Message in the error?
+         let tcp_message = request.clone();
+ 
+@@ -210,7 +231,7 @@ where
+ 
+             // First try the UDP connections
+             let udp_res: Result<DnsResponse, ProtoError> =
+-                match Self::try_send(opts.clone(), datagram_conns, request).await {
++                match Self::try_send(opts.clone(), datagram_conns, request, &next_index).await {
+                     Ok(response) if response.truncated() => {
+                         debug!("truncated response received, retrying over TCP");
+                         Ok(response)
+@@ -229,7 +250,7 @@ where
+ 
+             // Try query over TCP, as response to query over UDP was either truncated or was an
+             // error.
+-            let tcp_res = Self::try_send(opts, stream_conns, tcp_message).await;
++            let tcp_res = Self::try_send(opts, stream_conns, tcp_message, &next_index).await;
+ 
+             let tcp_err = match tcp_res {
+                 res @ Ok(..) => return res.map_err(ProtoError::from),
 -- 
 2.30.2
 
