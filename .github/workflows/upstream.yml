@@ -163,7 +163,6 @@ jobs:
         git_clone https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
         git_clone https://github.com/frainzy1477/luci-app-clash
         git_clone https://github.com/peter-tank/luci-app-fullconenat
-        git_clone https://github.com/sbwml/openwrt-alist && mvdir openwrt-alist
         git_clone https://github.com/KFERMercer/luci-app-tcpdump
         git_clone https://github.com/ykxVK8yL5L/pikpak-webdav pikpak && mv -n pikpak/openwrt/* ./;rm -rf pikpak
         git_clone https://github.com/jjm2473/openwrt-apps && rm -rf openwrt-apps/{luci-app-cpufreq,luci-app-ota,luci-alias.mk} && sed -i "s/luci-alias.mk/..\/luci.mk/" openwrt-apps/*/Makefile && mvdir openwrt-apps
