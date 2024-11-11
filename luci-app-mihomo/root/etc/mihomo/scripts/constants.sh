@@ -18,6 +18,7 @@ TUN_DEVICE="mihomo"
 PROG="/usr/bin/mihomo"
 HOME_DIR="/etc/mihomo"
 PROFILES_DIR="$HOME_DIR/profiles"
+SUBSCRIPTIONS_DIR="$HOME_DIR/subscriptions"
 MIXIN_FILE_PATH="$HOME_DIR/mixin.yaml"
 RUN_DIR="$HOME_DIR/run"
 RUN_PROFILE_PATH="$RUN_DIR/config.yaml"
@@ -25,6 +26,8 @@ RUN_UI_DIR="$RUN_DIR/ui"
 LOG_DIR="/var/log/mihomo"
 APP_LOG_PATH="$LOG_DIR/app.log"
 CORE_LOG_PATH="$LOG_DIR/core.log"
+
+mkdir -p $PROFILES_DIR $SUBSCRIPTIONS_DIR $RUN_UI_DIR
 
 # scripts
 SH_DIR="$HOME_DIR/scripts"
