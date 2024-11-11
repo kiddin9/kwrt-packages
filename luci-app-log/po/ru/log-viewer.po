@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Poedit 2.0.6\n"
 
 msgid "Alert"
-msgstr "Тревога"
+msgstr ""
 
 msgid "All"
 msgstr "Все"
@@ -29,12 +29,6 @@ msgstr "Применять фильтр даты как регулярное в�
 msgid "Auto refresh"
 msgstr "Автообновление"
 
-msgid "Critical"
-msgstr "Критическая ситуация"
-
-msgid "Debug"
-msgstr "Отладка"
-
 msgid "Dismiss"
 msgstr "Закрыть"
 
@@ -44,14 +38,8 @@ msgstr "Скачать журнал"
 msgid "Edit"
 msgstr "Изменить"
 
-msgid "Emergency"
-msgstr "Чрезвычайная ситуация"
-
 msgid "Entries"
 msgstr "Записи"
-
-msgid "Error"
-msgstr "Ошибка"
 
 msgid "Facility"
 msgstr "Категория"
@@ -76,9 +64,6 @@ msgstr "Хост"
 
 msgid "Hosts"
 msgstr "Хосты"
-
-msgid "Info"
-msgstr "Информация"
 
 msgid "Invalid regular expression"
 msgstr "Неправильное регулярное выражение"
@@ -113,9 +98,6 @@ msgstr "Фильтр сообщений"
 msgid "No entries available..."
 msgstr "Нет доступных записей..."
 
-msgid "Notice"
-msgstr "Сообщение"
-
 msgid "Refresh log"
 msgstr "Обновить лог"
 
@@ -139,9 +121,6 @@ msgstr "Невозможно загрузить данные лога:"
 
 msgid "Unsupported log format"
 msgstr "Неподдерживаемый формат лога"
-
-msgid "Warning"
-msgstr "Внимание"
 
 msgid "ascending"
 msgstr "по возрастанию"

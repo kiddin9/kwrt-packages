@@ -19,12 +19,6 @@ msgstr ""
 msgid "Auto refresh"
 msgstr ""
 
-msgid "Critical"
-msgstr ""
-
-msgid "Debug"
-msgstr ""
-
 msgid "Dismiss"
 msgstr ""
 
@@ -34,13 +28,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-msgid "Emergency"
-msgstr ""
-
 msgid "Entries"
-msgstr ""
-
-msgid "Error"
 msgstr ""
 
 msgid "Facility"
@@ -65,9 +53,6 @@ msgid "Host"
 msgstr ""
 
 msgid "Hosts"
-msgstr ""
-
-msgid "Info"
 msgstr ""
 
 msgid "Invalid regular expression"
@@ -103,9 +88,6 @@ msgstr ""
 msgid "No entries available..."
 msgstr ""
 
-msgid "Notice"
-msgstr ""
-
 msgid "Refresh log"
 msgstr ""
 
@@ -128,9 +110,6 @@ msgid "Unable to load log data:"
 msgstr ""
 
 msgid "Unsupported log format"
-msgstr ""
-
-msgid "Warning"
 msgstr ""
 
 msgid "ascending"
