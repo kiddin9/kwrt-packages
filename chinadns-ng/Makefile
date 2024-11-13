@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chinadns-ng
 PKG_VERSION:=2024.10.14
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 ifeq ($(ARCH),aarch64)
   ifeq ($(BOARD),rockchip)
@@ -42,6 +42,9 @@ else ifeq ($(ARCH),mipsel)
 else ifeq ($(ARCH),mips64)
   PKG_ARCH:=chinadns-ng+wolfssl@mips64-linux-musl@mips64+soft_float@fast+lto
   PKG_HASH:=skip
+else ifeq ($(ARCH),mips64el)
+  PKG_ARCH:=chinadns-ng+wolfssl@mips64el-linux-musl@mips64+soft_float@fast+lto
+  PKG_HASH:=skip
 else ifeq ($(ARCH),i386)
   ifneq ($(CONFIG_TARGET_x86_geode)$(CONFIG_TARGET_x86_legacy),)
     PKG_ARCH:=chinadns-ng+wolfssl@i386-linux-musl@i686@fast+lto
@@ -73,7 +76,7 @@ define Package/chinadns-ng
   SUBMENU:=IP Addresses and Names
   TITLE:=ChinaDNS next generation, refactoring with epoll and ipset.
   URL:=https://github.com/zfl9/chinadns-ng
-  DEPENDS:=@(aarch64||arm||i386||mips||mipsel||mips64||x86_64) +ipset
+  DEPENDS:=@(aarch64||arm||i386||mips||mipsel||mips64||mips64el||x86_64) +ipset
 endef
 
 define Build/Compile
