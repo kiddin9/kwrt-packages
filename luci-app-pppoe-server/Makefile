@@ -7,7 +7,6 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI support for PPPoE Server
 LUCI_DEPENDS:=+rp-pppoe-common +rp-pppoe-server
-LUCI_PKGARCH:=all
 
 define Package/luci-app-pppoe-server/preinst
 #!/bin/sh

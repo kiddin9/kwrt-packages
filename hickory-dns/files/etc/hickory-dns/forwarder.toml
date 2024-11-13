@@ -1,4 +1,4 @@
-listen_addrs_ipv6 = ["::0"]
+listen_addrs_ipv6 = ["::1"]
 
 [[zones]]
 zone = "."
