@@ -7,6 +7,7 @@
 +	conf->force_depends = 1;
 +	conf->force_checksum = 1;
 +	conf->force_overwrite = 1;
++	conf->force_maintainer = 1;
 +
  	if (!conf->conf_file && !conf->offline_root)
  		conf->conf_file = xstrdup("/etc/opkg.conf");
