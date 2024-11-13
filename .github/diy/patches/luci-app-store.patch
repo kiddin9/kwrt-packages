@@ -1,9 +1,9 @@
 --- a/luci-app-store/src/compat.conf
 +++ b/luci-app-store/src/compat.conf
 @@ -1 +1 @@
--src/gz istore_compat https://istore.linkease.com/repo/all/compat
+-src/gz istore_compat https://istore.istoreos.com/repo/all/compat
 \ No newline at end of file
-+# src/gz istore_compat https://istore.linkease.com/repo/all/compat
++# src/gz istore_compat https://istore.istoreos.com/repo/all/compat
 
 --- a/luci-app-store/Makefile
 +++ b/luci-app-store/Makefile
