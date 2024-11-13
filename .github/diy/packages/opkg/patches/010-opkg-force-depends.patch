@@ -1,6 +1,6 @@
 --- a/src/opkg-cl.c
 +++ b/src/opkg-cl.c
-@@ -255,6 +255,10 @@ static int args_parse(int argc, char *argv[])
+@@ -255,6 +255,11 @@ static int args_parse(int argc, char *argv[])
  		}
  	}
  
