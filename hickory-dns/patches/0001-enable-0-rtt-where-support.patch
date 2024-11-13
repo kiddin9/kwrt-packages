@@ -1,8 +1,8 @@
 diff --git a/crates/proto/src/h3/h3_client_stream.rs b/crates/proto/src/h3/h3_client_stream.rs
-index b723a811..9bdc7d40 100644
+index d7db8bf0..be49301c 100644
 --- a/crates/proto/src/h3/h3_client_stream.rs
 +++ b/crates/proto/src/h3/h3_client_stream.rs
-@@ -392,7 +392,7 @@ impl H3ClientStreamBuilder {
+@@ -390,7 +390,7 @@ impl H3ClientStreamBuilder {
          if crypto_config.alpn_protocols.is_empty() {
              crypto_config.alpn_protocols = vec![ALPN_H3.to_vec()];
          }
