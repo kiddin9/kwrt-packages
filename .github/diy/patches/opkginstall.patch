@@ -139,56 +139,56 @@
  		(
  			cmd="$ipkg_bin"
  
-@@ -90,9 +90,45 @@ case "$action" in
+@@ -89,10 +89,45 @@ case "$action" in
+ 
  			if flock -x 200; then
  				pkmcmd="$cmd $action $@"
- 				$cmd $action "$@" </dev/null >/tmp/ipkg.out 2>/tmp/ipkg.err
+-				$cmd $action "$@" </dev/null >/tmp/ipkg.out 2>/tmp/ipkg.err
 -				code=$?
 -				stdout=$(cat /tmp/ipkg.out)
--				stderr=$(cat /tmp/ipkg.err)
-+								if [ $action == "upgradeall" ]; then
-+					$cmd update </dev/null >/tmp/opkg.out 2>/tmp/opkg.err
++				if [ $action == "upgradeall" ]; then
++					$cmd update </dev/null >/tmp/ipkg.out 2>/tmp/ipkg.err
 +					code=$?
 +					if [ $code == 0 ]; then
 +						. /etc/profile.d/opkg.sh
 +						if [[ "$(cat `opkg export au`)" ]] && lock -n /var/lock/opkg-upgrade; then
-+						 opkg upgr </dev/null >>/tmp/opkg.out 2>>/tmp/opkg.err
++						 opkg upgr </dev/null >>/tmp/ipkg.out 2>>/tmp/ipkg.err
 +						 code=$?
 +						 lock -u /var/lock/opkg-upgrade
 +						else
-+							echo "🎉 所有软件包已是最新~" >>/tmp/opkg.out
++							echo "🎉 所有软件包已是最新~" >>/tmp/ipkg.out
 +							code=0
 +						fi
 +					fi
 +				else
-+					$cmd $action "$@" </dev/null >/tmp/opkg.out 2>/tmp/opkg.err
++					$cmd $action "$@" </dev/null >/tmp/ipkg.out 2>/tmp/ipkg.err
 +					code=$?
 +				fi
 +				pkgn="$(echo $@ | cut -d - -f 3-)"
 +				case "$action" in
 +					install|upgrade)
 +					if [ "$(opkg list-installed | cut -f 1 -d ' ' | grep -w $@)" ]; then
-+							rm -f /tmp/opkg.err
++							rm -f /tmp/ipkg.err
 +							([ -f /etc/profile.d/opkg.sh ] && . /etc/profile.d/opkg.sh && opkg save) &
 +					fi
 +					;;
 +					remove)
 +						if [ ! "$(opkg list-installed | cut -f 1 -d ' ' | grep -w $@)" ]; then
-+							rm -f /tmp/opkg.err
++							rm -f /tmp/ipkg.err
 +							([ -f /etc/profile.d/opkg.sh ] && . /etc/profile.d/opkg.sh && opkg save) &
 +						fi
 +					;;
 +				esac
-+				stderr=$(cat /tmp/opkg.err)
+ 				stderr=$(cat /tmp/ipkg.err)
 +				[ -n "$stderr" ] || {
-+					echo "🎉 已完成, 请关闭本窗口~" >>/tmp/opkg.out
++					echo "🎉 已完成, 请关闭本窗口~" >>/tmp/ipkg.out
 +					code=0
 +				}
-+				stdout=$(cat /tmp/opkg.out)
++				stdout=$(cat /tmp/ipkg.out)
  			else
  				code=255
  				stderr="Failed to acquire lock"
-@@ -110,7 +146,7 @@ case "$action" in
+@@ -110,7 +145,7 @@ case "$action" in
  	;;
  	*)
  		echo "Usage: $0 {list-installed|list-available|update}" >&2
