@@ -13,7 +13,7 @@ include $(INCLUDE_DIR)/feeds.mk
 
 PKG_NAME:=base-files
 PKG_FLAGS:=nonshared
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_FILE_DEPENDS:=$(PLATFORM_DIR)/ $(GENERIC_PLATFORM_DIR)/base-files/
 PKG_BUILD_DEPENDS:=usign/host ucert/host
@@ -248,6 +248,7 @@ ifneq ($(CONFIG_USE_APK),)
 	$(VERSION_SED_SCRIPT) $(1)/etc/apk/repositories
 
 	rm -f $(1)/etc/uci-defaults/13_fix-group-user
+	rm -f $(1)/sbin/pkg_check
 else
 	$(if $(CONFIG_CLEAN_IPKG),, \
 		mkdir -p $(1)/etc/opkg; \
