@@ -9,8 +9,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libnftnl
 PKG_CPE_ID:=cpe:/a:netfilter:libnftnl
-PKG_VERSION:=1.2.6
-PKG_RELEASE:=4
+PKG_VERSION:=1.2.8
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://netfilter.org/projects/$(PKG_NAME)/files
