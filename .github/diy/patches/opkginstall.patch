@@ -205,10 +205,10 @@
  				"/etc/opkg.conf": [ "read" ],
  				"/etc/opkg/*.conf": [ "read" ],
 +				"/tmp/resolv.conf.d/resolv.conf.auto": [ "read" ],
- 				"/etc/apk/repositories": [ "read" ]
- 			},
- 			"ubus": {
-@@ -22,6 +23,7 @@
+ 				"/etc/apk/repositories": [ "read" ],
+ 				"/etc/apk/repositories.d/distfeeds.list": [ "read" ],
+ 				"/etc/apk/repositories.d/customfeeds.list": [ "read" ]
+@@ -24,6 +25,7 @@
  				"/usr/libexec/package-manager-call update": [ "exec" ],
  				"/usr/libexec/package-manager-call upgrade": [ "exec" ],
  				"/usr/libexec/package-manager-call upgrade *": [ "exec" ],
