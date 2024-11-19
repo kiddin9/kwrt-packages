@@ -13,7 +13,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-insomclash
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=18
+PKG_RELEASE:=19
 
 PKG_MAINTAINER:=BobbyUnknown <bobbyun.known88@gmail.com>
 
