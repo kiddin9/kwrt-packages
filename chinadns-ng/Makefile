@@ -2,8 +2,9 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chinadns-ng
 PKG_VERSION:=2024.11.17
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
+DOWN_VERSION:=$(PKG_VERSION)
 ifeq ($(ARCH),aarch64)
   ifeq ($(BOARD),rockchip)
     PKG_ARCH:=chinadns-ng+wolfssl@aarch64-linux-musl@generic+v8a@fast+lto
@@ -27,7 +28,7 @@ else ifeq ($(ARCH),arm)
   else
     PKG_ARCH:=chinadns-ng+wolfssl@arm-linux-musleabi@generic+v5te+soft_float@fast+lto
     PKG_HASH:=skip
-    PKG_VERSION:=2024.10.14
+    DOWN_VERSION:=2024.10.14
   endif
 else ifeq ($(ARCH),mips)
   PKG_ARCH:=chinadns-ng+wolfssl@mips-linux-musl@mips32+soft_float@fast+lto
@@ -61,8 +62,8 @@ else
   PKG_HASH:=skip
 endif
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(ARCH_PACKAGES)
-PKG_SOURCE_URL:=https://github.com/zfl9/chinadns-ng/releases/download/$(PKG_VERSION)/$(PKG_ARCH)?
+PKG_SOURCE:=$(PKG_NAME)-$(DOWN_VERSION)-$(ARCH_PACKAGES)
+PKG_SOURCE_URL:=https://github.com/zfl9/chinadns-ng/releases/download/$(DOWN_VERSION)/$(PKG_ARCH)?
 UNPACK_CMD=$(CP) $(DL_DIR)/$(PKG_SOURCE) $(PKG_BUILD_DIR)/$(PKG_NAME)
 
 PKG_LICENSE:=AGPL-3.0-only
