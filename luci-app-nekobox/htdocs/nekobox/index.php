@@ -448,6 +448,45 @@ if (isset($_POST['singbox'])) {
    writeToLog("Singbox status set to: $singbox_status");
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['cronTime'])) {
+    $cronTime = $_POST['cronTime'];
+
+    if (empty($cronTime)) {
+        echo "请提供有效的 Cron 时间格式！";
+        exit;
+    }
+
+    $startScriptPath = '/etc/neko/core/start.sh';  
+
+    $restartScriptContent = <<<EOL
+#!/bin/bash
+if pgrep -x "singbox" > /dev/null
+then
+    echo "Sing-box 正在运行，正在重启..."
+    kill $(pgrep -x "singbox")
+    sleep 2
+    sh $startScriptPath  
+    echo "Sing-box 重启成功!"
+else
+    echo "Sing-box 没有运行, 启动 Sing-box..."
+    sh $startScriptPath  
+    echo "Sing-box 启动成功!"
+fi
+EOL;
+
+    $scriptPath = '/etc/neko/core/restart_singbox.sh';
+    file_put_contents($scriptPath, $restartScriptContent);
+    chmod($scriptPath, 0755);  
+
+    $cronSchedule = $cronTime . " /bin/bash $scriptPath"; 
+    exec("crontab -l | grep -v '$scriptPath' | crontab -");  
+    exec("(crontab -l 2>/dev/null; echo \"$cronSchedule\") | crontab -");  
+
+    error_log("定时任务已设置成功，Sing-box 将在 $cronTime 自动重启。");
+    echo json_encode(['success' => true, 'message' => '定时任务已设置成功']);
+    exit;
+}
+
 if (isset($_POST['clear_singbox_log'])) {
    file_put_contents($singbox_log, '');
    writeToLog("Singbox log cleared");
@@ -569,6 +608,7 @@ if (isset($_GET['ajax'])) {
     <script type="text/javascript" src="./assets/js/feather.min.js"></script>
     <script type="text/javascript" src="./assets/js/jquery-2.1.3.min.js"></script>
     <script type="text/javascript" src="./assets/js/neko.js"></script>
+    <script type="text/javascript" src="./assets/bootstrap/bootstrap.min.js"></script>
     <?php include './ping.php'; ?>
   </head>
 <body>
@@ -846,29 +886,100 @@ $(document).ready(function() {
                 <label class="form-check-label" for="autoRefresh">自动刷新</label>
             </div>
             <button type="submit" name="clear_singbox_log" class="btn btn-danger">🗑️ 清空日志</button>
-            <button type="submit" name="update_log" value="update" class="btn btn-primary">🔄 更新时区</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#helpModal">🔄 更正时区</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cronModal">⏰ 定时重启</button>
         </form>
     </div>
 </div>
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalLabel">时区错误的解决方案</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>以下是解决时区错误的具体步骤：</p>
+        <pre>
+# 确保系统时区正确。检查时区文件是否存在：
+ls /usr/share/zoneinfo/Asia/Shanghai
 
-<?php
-if (isset($_POST['update_log'])) {
-    $logFilePath = '/www/nekobox/lib/log.php'; 
-    $url = 'https://raw.githubusercontent.com/Thaolga/neko/main/log.php'; 
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);     
-    $newLogContent = curl_exec($ch);
-    curl_close($ch);
-    if ($newLogContent !== false) {
-        file_put_contents($logFilePath, $newLogContent);
-        echo "<script>alert('时区已更新成功！');</script>";
-    } else {
-        echo "<script>alert('更新时区失败！');</script>";
-    }
-}
-?>
-<script src="./assets/js/bootstrap.bundle.min.js"></script>
+# 如果不存在，需要安装：
+opkg update
+opkg install zoneinfo-asia
+
+# 然后设置时区：
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+# 确认系统时区是否已正确应用：
+date
+        </pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cronModal" tabindex="-1" role="dialog" aria-labelledby="cronModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cronModalLabel">设置 Cron 任务时间</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="cronForm" method="POST">
+          <div class="form-group ">
+            <label for="cronTime">设置 Sing-box 重启时间</label>
+            <input type="text" class="form-control mt-3" id="cronTime" name="cronTime" placeholder="例如：0 3 * * *（每天 3 点）" required>
+          </div>
+          <div class="alert alert-info mt-3">
+            <strong>提示:</strong> Cron 表达式格式：
+            <ul>
+              <li><code>分钟 小时 日 月 星期</code></li>
+              <li>示例: 每天凌晨 2 点: <code>0 2 * * *</code></li>
+              <li>每周一凌晨 3 点: <code>0 3 * * 1</code></li>
+              <li>工作日（周一至周五）的上午 9 点: <code>0 9 * * 1-5</code></li>
+            </ul>
+          </div>
+        </form>
+        <div id="resultMessage" class="mt-3"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="cronForm">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $('#cronForm').submit(function(event) {
+        event.preventDefault(); 
+        var cronTime = $('#cronTime').val(); 
+        $.ajax({
+            type: 'POST',
+            url: '',  
+            data: { cronTime: cronTime },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $('#resultMessage').html('<div class="alert alert-success">' + response.message + '</div>');
+                    setTimeout(function() {
+                        $('#cronModal').modal('hide'); 
+                    }, 2000);
+                }
+            },
+            error: function() {
+                $('#resultMessage').html('<div class="alert alert-danger">设置 Cron 任务失败，请重试！</div>');
+            }
+        });
+    });
+</script>
 <script>
     function scrollToBottom(elementId) {
         var logElement = document.getElementById(elementId);
