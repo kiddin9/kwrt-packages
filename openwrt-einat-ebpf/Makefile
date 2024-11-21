@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
-PKG_VERSION:=0.1.3
-PKG_RELEASE:=7
+PKG_VERSION:=0.1.4
+PKG_RELEASE:=8
 
 #PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 #PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_VERSION)?
@@ -10,7 +10,7 @@ PKG_RELEASE:=7
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/EHfive/einat-ebpf.git
-PKG_SOURCE_VERSION:=ccb32a353238415f208ca27a988c8a7c4c9d27ee
+PKG_SOURCE_VERSION:=e6938a907831d3bf60cbdc92d0f4604297c34b3f
 PKG_MIRROR_HASH:=skip
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
