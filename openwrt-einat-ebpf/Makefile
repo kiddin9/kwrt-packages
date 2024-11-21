@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
 PKG_VERSION:=0.1.4
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 ifneq ($(shell echo $(PKG_RELEASE) | grep -E '^[0-9]+$$'),)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -11,7 +11,7 @@ PKG_HASH:=skip
 else
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/EHfive/einat-ebpf.git
-PKG_SOURCE_VERSION:=5a6a99e9dbd6d94d0c858b8f2991785202de7ebe
+PKG_SOURCE_VERSION:=068d80afc957df2905061855aa0887e0a227871b
 PKG_MIRROR_HASH:=skip
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.gz

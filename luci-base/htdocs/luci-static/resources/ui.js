@@ -3713,6 +3713,11 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * node or a document fragment in most cases. The value is passed as-is
 	 * to the `dom.content()` function - refer to its documentation for
 	 * applicable values.
+	 *	 
+	 * @param {int} [timeout]
+	 * A millisecond value after which the notification will disappear
+	 * automatically. If omitted, the notification will remain until it receives
+	 * the click event.
 	 *
 	 * @param {...string} [classes]
 	 * A number of extra CSS class names which are set on the notification
@@ -3721,7 +3726,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 	 * @returns {Node}
 	 * Returns a DOM Node representing the notification banner element.
 	 */
-	addNotification: function(title, children /*, ... */) {
+	addNotification: function(title, children, timeout, ...classes) {
 		var mc = document.querySelector('#maincontent') || document.body;
 		var msg = E('div', {
 			'class': 'alert-message fade-in',
@@ -3738,7 +3743,7 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 					'class': 'btn',
 					'style': 'margin-left:auto; margin-top:auto',
 					'click': function(ev) {
-						dom.parent(ev.target, '.alert-message').classList.add('fade-out');
+						fadeOutNotification(ev.target);
 					},
 
 				}, [ _('Dismiss') ])
@@ -3750,10 +3755,30 @@ var UI = baseclass.extend(/** @lends LuCI.ui.prototype */ {
 
 		dom.append(msg.firstElementChild, children);
 
-		for (var i = 2; i < arguments.length; i++)
-			msg.classList.add(arguments[i]);
+		classes.forEach(cls => msg.classList.add(cls));
 
 		mc.insertBefore(msg, mc.firstElementChild);
+
+		function fadeOutNotification(element) {
+			var notification = dom.parent(element, '.alert-message');
+			if (notification) {
+				notification.classList.add('fade-out');
+				notification.classList.remove('fade-in');
+				setTimeout(() => {
+					if (notification.parentNode) {
+						notification.parentNode.removeChild(notification);
+					}
+				});
+			}
+		}
+
+		if (typeof timeout === 'number' && timeout > 0) {
+			setTimeout(function() {
+				if (msg && msg.parentNode) {
+					fadeOutNotification(msg);
+				}
+			}, timeout);
+		}
 
 		return msg;
 	},
