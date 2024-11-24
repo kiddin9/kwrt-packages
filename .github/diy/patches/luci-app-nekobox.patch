@@ -6,7 +6,7 @@
 
 --- a/luci-app-nekobox/root/etc/uci-defaults/99_neko
 +++ b/luci-app-nekobox/root/etc/uci-defaults/99_neko
-@@ -24,11 +24,31 @@ fi
+@@ -9,11 +9,31 @@ tmp_dir="/tmp"
  echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
@@ -35,9 +35,9 @@
  
      /etc/init.d/uhttpd restart
 +    fi
- 
-     case "$arch" in
-     aarch64)
+ }
+ if [ -f "/tmp/neko/neko.bak" ]; then
+     echo "[ `date +%T` ] - Old Configs"
 
 --- a/luci-app-nekobox/Makefile
 +++ b/luci-app-nekobox/Makefile
