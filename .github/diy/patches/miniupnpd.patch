@@ -1,16 +1,3 @@
---- a/miniupnpd/Makefile
-+++ b/miniupnpd/Makefile
-@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
- 
- PKG_NAME:=miniupnpd
- PKG_VERSION:=2.3.3
--PKG_RELEASE:=1
-+PKG_RELEASE:=2
- 
- PKG_SOURCE_URL:=https://miniupnp.tuxfamily.org/files
- PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-diff --git a/miniupnpd/files/miniupnpd.init b/miniupnpd/files/miniupnpd.init
-index de3504529b600..881b5d70075ba 100644
 --- a/miniupnpd/files/miniupnpd.init
 +++ b/miniupnpd/files/miniupnpd.init
 @@ -63,6 +63,7 @@ upnpd() {
@@ -25,7 +12,7 @@ index de3504529b600..881b5d70075ba 100644
  	config_get clean_ruleset_threshold config clean_ruleset_threshold
  	config_get clean_ruleset_interval config clean_ruleset_interval
  	config_get ipv6_disable config ipv6_disable 0
-+	config_get force_forwarding config force_forwarding 0
++	config_get force_forwarding config force_forwarding 1
  
  	local conf ifname ifname6
  
@@ -37,19 +24,31 @@ index de3504529b600..881b5d70075ba 100644
  
  		[ "$use_stun" -eq 0 ] || {
  			[ -n "$stun_host" ] && echo "ext_stun_host=$stun_host"
-diff --git a/miniupnpd/files/upnpd.config b/miniupnpd/files/upnpd.config
-index bd7c3ec4007dc..9070c273978dd 100644
---- a/miniupnpd/files/upnpd.config
-+++ b/miniupnpd/files/upnpd.config
-@@ -2,6 +2,7 @@ config upnpd config
- 	option enabled		0
+
+--- a/net/miniupnpd/files/upnpd.config
++++ b/net/miniupnpd/files/upnpd.config
+@@ -1,7 +1,8 @@
+ config upnpd config
+-	option enabled		0
++	option enabled		1
  	option enable_natpmp	1
  	option enable_upnp	1
 +	option force_forwarding 1
  	option secure_mode	1
  	option log_output	0
  	option download		1024
-diff --git a/miniupnpd/patches/100-force-forwarding-support.patch b/miniupnpd/patches/100-force-forwarding-support.patch
+@@ -12,6 +13,10 @@ config upnpd config
+ 	option port		5000
+ 	option upnp_lease_file	/var/run/miniupnpd.leases
+ 	option igdv1		1
++	option use_stun '1'
++	option stun_host 'stun.miwifi.com'
++	option stun_port '3478'
++	option ipv6_disable '1'
+ 
+ config perm_rule
+ 	option action		allow
+
 new file mode 100644
 index 0000000000000..22c90ba91baa9
 --- /dev/null
@@ -261,36 +260,3 @@ index 0000000000000..22c90ba91baa9
 + 		}
 + 	}
 + #else
-
---- a/miniupnpd/files/miniupnpd.init
-+++ b/miniupnpd/files/miniupnpd.init
-@@ -91,7 +91,7 @@ upnpd() {
- 	config_get clean_ruleset_threshold config clean_ruleset_threshold
- 	config_get clean_ruleset_interval config clean_ruleset_interval
- 	config_get ipv6_disable config ipv6_disable 0
--	config_get force_forwarding config force_forwarding 0
-+	config_get force_forwarding config force_forwarding 1
- 
- 	local conf ifname ifname6
-
---- a/miniupnpd/files/upnpd.config
-+++ b/miniupnpd/files/upnpd.config
-@@ -1,5 +1,5 @@
- config upnpd config
--	option enabled		0
-+	option enabled		1
- 	option enable_natpmp	1
- 	option enable_upnp	1
- 	option force_forwarding 1
-@@ -13,6 +13,10 @@ config upnpd config
- 	option port		5000
- 	option upnp_lease_file	/var/run/miniupnpd.leases
- 	option igdv1		1
-+	option use_stun '1'
-+	option stun_host 'stun.miwifi.com'
-+	option stun_port '3478'
-+	option ipv6_disable '1'
- 
- config perm_rule
- 	option action		allow
-
