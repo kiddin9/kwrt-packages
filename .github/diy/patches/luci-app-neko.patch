@@ -4,16 +4,12 @@
  echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
--    uci set uhttpd.main.index_page='index.php'
--    uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
--    uci commit uhttpd
 +    if [ -n "$(command -v nginx)" ];then
-+cat << 'EOF' > /etc/nginx/conf.d/nekoclash.locations
-+location /nekoclash {
-+    alias /www/nekoclash;
++cat << 'EOF' > /etc/nginx/conf.d/nekobox.locations
++location /nekobox {
++    alias /www/nekobox;
 +    index index.php index.html index.htm;
- 
--    /etc/init.d/uhttpd restart
++
 +    location ~ \.php$ {
 +        if (!-f $request_filename) {
 +            return 404;
@@ -27,11 +23,11 @@
 +EOF
 +        /etc/init.d/nginx restart
 +    else
-+        uci set uhttpd.main.index_page='index.php'
-+        uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
-+        uci commit uhttpd
-+
-+        /etc/init.d/uhttpd restart
+     uci set uhttpd.main.index_page='index.php'
+     uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
+     uci commit uhttpd
+ 
+     /etc/init.d/uhttpd restart
 +    fi
  }
  if [ -f "/tmp/neko/neko.bak" ]; then
