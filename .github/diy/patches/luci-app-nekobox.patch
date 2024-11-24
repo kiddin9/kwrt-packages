@@ -7,7 +7,7 @@
 --- a/luci-app-nekobox/root/etc/uci-defaults/99_neko
 +++ b/luci-app-nekobox/root/etc/uci-defaults/99_neko
 @@ -24,11 +24,31 @@ fi
- echo "[ `date +%T` ] - Checking Files"
+ echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
 +    if [ -n "$(command -v nginx)" ];then
