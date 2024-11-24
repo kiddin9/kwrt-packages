@@ -76,13 +76,14 @@ diff --git a/miniupnpd.conf b/miniupnpd.conf
 index d314d869..3105c1aa 100644
 --- a/miniupnpd.conf
 +++ b/miniupnpd.conf
-@@ -9,6 +9,8 @@
+@@ -17,7 +17,8 @@
  # Setting ext_ip is also useful in double NAT setup, you can declare here
  # the public IP address.
  #ext_ip=
-+#force forwarding enable for upnp: default is no
-+#force_forwarding=yes
- # WAN interface must have public IP address. Otherwise it is behind NAT
+-
+++#force forwarding enable for upnp: default is no
+++#force_forwarding=yes
+ # The WAN interface must have a public IP address. Otherwise it is behind NAT
  # and port forwarding is impossible. In some cases WAN interface can be
  # behind unrestricted full-cone NAT 1:1 when all incoming traffic is NAT-ed and
 diff --git a/natpmp.c b/natpmp.c
