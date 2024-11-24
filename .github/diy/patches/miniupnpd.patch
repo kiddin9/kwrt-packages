@@ -25,8 +25,8 @@
  		[ "$use_stun" -eq 0 ] || {
  			[ -n "$stun_host" ] && echo "ext_stun_host=$stun_host"
 
---- a/net/miniupnpd/files/upnpd.config
-+++ b/net/miniupnpd/files/upnpd.config
+--- a/miniupnpd/files/upnpd.config
++++ b/miniupnpd/files/upnpd.config
 @@ -1,7 +1,8 @@
  config upnpd config
 -	option enabled		0
