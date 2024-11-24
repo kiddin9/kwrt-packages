@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nftables
 PKG_VERSION:=1.1.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://netfilter.org/projects/$(PKG_NAME)/files
@@ -48,7 +48,6 @@ define Package/nftables-nojson
   TITLE+= no JSON support
   VARIANT:=nojson
   DEFAULT_VARIANT:=1
-  CONFLICTS:=nftables-json
 endef
 
 define Package/nftables-json
