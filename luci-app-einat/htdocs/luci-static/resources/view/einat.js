@@ -110,7 +110,11 @@ return view.extend({
 		o.value('3', 'info - ' + _('Info'));
 		o.value('4', 'debug - ' + _('Debug'));
 		o.value('5', 'trace - ' + _('Trace'));
-		o.rmempty = true;
+
+		o = s.option(form.ListValue, 'bpf_loader', _('BPF loading backend'));
+		o.value('', _('Default'));
+		o.value('aya', _('aya'));
+		o.value('libbpf', _('libbpf'));
 
 		o = s.option(form.Flag, 'nat44', _('NAT44'));
 		o.default = o.disabled;
@@ -125,13 +129,22 @@ return view.extend({
 		o.noaliases = true;
 		o.nobridges = true;
 		o.nocreate = true;
-		o.rmempty = true;
 
 		o = s.option(form.Value, 'ports', _('External TCP/UDP port ranges'),
 			_('Please avoid conflicts with external ports used by other applications'));
 		o.datatype = 'portrange';
 		o.placeholder = '20000-29999';
 		o.rmempty = true;
+
+		o = s.option(widgets.NetworkSelect, 'internal_ifaces', _('Internal interfaces'),
+			_('Perform source NAT for these internal networks only.'));
+		o.multiple = true;
+		o.nocreate = true;
+
+		o = s.option(form.DynamicList, 'internal_subnets', _('Internal subnets'),
+			_('Perform source NAT for these internal networks only.'));
+		o.datatype = 'cidr';
+		o.placeholder = '192.168.0.0/16';
 
 		o = s.option(form.Flag, 'hairpin_enabled', _('Enable hairpin'),
 			_('May conflict with other policy routing-based applications'));

@@ -131,6 +131,26 @@ function stream_quic(server) {
     return null;
 }
 
+function stream_splithttp(server) {
+    if (server["transport"] == "splithttp") {
+        return {
+            path: server["splithttp_path"],
+            host: server["splithttp_host"],
+        };
+    }
+    return null;
+}
+
+function stream_httpupgrade(server) {
+    if (server["transport"] == "httpupgrade") {
+        return {
+            path: server["httpupgrade_path"],
+            host: server["httpupgrade_host"],
+        };
+    }
+    return null;
+}
+
 export function port_array(i) {
     if (type(i) === 'array') {
         return map(i, v => int(v));
@@ -158,7 +178,6 @@ export function stream_settings(server, protocol, tag) {
         stream_settings: {
             network: server["transport"],
             sockopt: {
-                mark: 253,
                 domainStrategy: server["domain_strategy"] || "UseIP",
                 dialerProxy: dialer_proxy_tag
             },
@@ -170,7 +189,9 @@ export function stream_settings(server, protocol, tag) {
             kcpSettings: stream_kcp(server),
             wsSettings: stream_ws(server),
             grpcSettings: stream_grpc(server),
-            httpSettings: stream_h2(server)
+            httpSettings: stream_h2(server),
+            splithttpSettings: stream_splithttp(server),
+            httpupgradeSettings: stream_httpupgrade(server)
         },
         dialer_proxy: dialer_proxy
     };

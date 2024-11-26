@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
 PKG_VERSION:=0.1.4
-PKG_RELEASE:=12
+PKG_RELEASE:=13
 
 ifneq ($(shell echo $(PKG_RELEASE) | grep -E '^[0-9]+$$'),)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz

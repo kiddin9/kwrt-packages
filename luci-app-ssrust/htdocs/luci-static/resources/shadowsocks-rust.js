@@ -259,18 +259,18 @@ return baseclass.extend({
 	},
 	option_install_package: function(s, tab) {
 		var bin = s.sectiontype.replace('_', ''),
-			opkg_package = 'shadowsocks-rust-' + bin, o;
+			package = 'shadowsocks-rust-' + bin, o;
 		if (tab) {
 			o = s.taboption(tab, form.Button, '_install');
 		} else {
 			o = s.option(form.Button, '_install');
 		}
 		o.title      = _('Package is not installed');
-		o.inputtitle = _('Install package ' + opkg_package);
+		o.inputtitle = _('Install package ' + package);
 		o.inputstyle = 'apply';
 		o.onclick = function() {
-			window.open(L.url('admin/system/opkg') +
-				'?query=' + opkg_package, '_blank', 'noopener');
+			window.open(L.url('admin/system/package-manager') +
+				'?query=' + package, '_blank', 'noopener');
 		};
 	},
 	parse_uri: function(uri) {

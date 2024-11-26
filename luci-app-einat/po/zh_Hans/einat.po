@@ -10,96 +10,133 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
-#: htdocs/luci-static/resources/view/einat.js:89
+#: htdocs/luci-static/resources/view/einat.js:114
+msgid "BPF loading backend"
+msgstr "BPF 加载后端"
+
+#: htdocs/luci-static/resources/view/einat.js:105
 msgid "BPF tracing log level"
 msgstr "BPF 追踪日志等级"
 
-#: htdocs/luci-static/resources/view/einat.js:65
+#: htdocs/luci-static/resources/view/einat.js:83
 msgid "Collecting data ..."
 msgstr "正在收集数据..."
 
-#: htdocs/luci-static/resources/view/einat.js:95
+#: htdocs/luci-static/resources/view/einat.js:42
+msgid "Command failed"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/einat.js:111
 msgid "Debug"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:91
+#: htdocs/luci-static/resources/view/einat.js:115
+msgid "Default"
+msgstr "默认"
+
+#: htdocs/luci-static/resources/view/einat.js:107
 msgid "Disable"
 msgstr "禁用"
 
-#: htdocs/luci-static/resources/view/einat.js:81
+#: htdocs/luci-static/resources/view/einat.js:97
 msgid "Enable"
 msgstr "启用"
 
-#: htdocs/luci-static/resources/view/einat.js:120
+#: htdocs/luci-static/resources/view/einat.js:149
 msgid "Enable hairpin"
 msgstr "启用 Hairpin"
 
-#: htdocs/luci-static/resources/view/einat.js:92
+#: htdocs/luci-static/resources/view/einat.js:108
 msgid "Error"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:114
+#: htdocs/luci-static/resources/view/einat.js:133
 msgid "External TCP/UDP port ranges"
 msgstr "外部 TCP/UDP 端口范围"
 
-#: htdocs/luci-static/resources/view/einat.js:107
+#: htdocs/luci-static/resources/view/einat.js:127
 msgid "External interface"
 msgstr "外部接口"
+
+#: htdocs/luci-static/resources/view/einat.js:46
+msgid "Failed to execute \"/etc/init.d/%s %s\" action: %s"
+msgstr ""
 
 #: root/usr/share/rpcd/acl.d/luci-app-einat.json:3
 msgid "Grant access to LuCI app einat"
 msgstr "授予访问 LuCI 应用 einat 的权限"
 
-#: htdocs/luci-static/resources/view/einat.js:125
+#: htdocs/luci-static/resources/view/einat.js:154
 msgid "Hairpin internal interfaces"
 msgstr "Hairpin 内部接口"
 
-#: htdocs/luci-static/resources/view/einat.js:94
+#: htdocs/luci-static/resources/view/einat.js:110
 msgid "Info"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:121
+#: htdocs/luci-static/resources/view/einat.js:139
+msgid "Internal interfaces"
+msgstr "内部接口"
+
+#: htdocs/luci-static/resources/view/einat.js:144
+msgid "Internal subnets"
+msgstr "内部子网"
+
+#: htdocs/luci-static/resources/view/einat.js:150
 msgid "May conflict with other policy routing-based applications"
 msgstr "可能与其他基于策略路由的应用程序发生冲突"
 
-#: htdocs/luci-static/resources/view/einat.js:99
+#: htdocs/luci-static/resources/view/einat.js:119
 msgid "NAT44"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:115
+#: htdocs/luci-static/resources/view/einat.js:140
+#: htdocs/luci-static/resources/view/einat.js:145
+msgid "Perform source NAT for these internal networks only."
+msgstr "仅对这些内部网络执行 SNAT。"
+
+#: htdocs/luci-static/resources/view/einat.js:134
 msgid "Please avoid conflicts with external ports used by other applications"
 msgstr "请避免与其他应用使用的外部端口冲突"
 
-#: htdocs/luci-static/resources/view/einat.js:72
-#: htdocs/luci-static/resources/view/einat.js:73
+#: htdocs/luci-static/resources/view/einat.js:90
+#: htdocs/luci-static/resources/view/einat.js:91
 msgid "Reload"
 msgstr "重新载入"
 
-#: htdocs/luci-static/resources/view/einat.js:48
+#: htdocs/luci-static/resources/view/einat.js:66
 msgid "SERVER NOT RUNNING"
 msgstr "服务器未运行"
 
-#: htdocs/luci-static/resources/view/einat.js:46
+#: htdocs/luci-static/resources/view/einat.js:64
 msgid "SERVER RUNNING"
 msgstr "服务器运行中"
 
-#: htdocs/luci-static/resources/view/einat.js:85
+#: htdocs/luci-static/resources/view/einat.js:101
 msgid "To enable you need install <b>einat-ebpf</b> first"
 msgstr "要启用您需要先安装 <b>einat-ebpf</b>"
 
-#: htdocs/luci-static/resources/view/einat.js:96
+#: htdocs/luci-static/resources/view/einat.js:112
 msgid "Trace"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:93
+#: htdocs/luci-static/resources/view/einat.js:109
 msgid "Warn"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:59
+#: htdocs/luci-static/resources/view/einat.js:116
+msgid "aya"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/einat.js:77
 msgid "eBPF-based Endpoint-Independent NAT"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/einat.js:59
+#: htdocs/luci-static/resources/view/einat.js:77
 #: root/usr/share/luci/menu.d/luci-app-einat.json:3
 msgid "einat-ebpf"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/einat.js:117
+msgid "libbpf"
 msgstr ""
