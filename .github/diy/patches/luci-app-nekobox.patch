@@ -45,7 +45,7 @@
  	SUBMENU:=3. Applications
  	TITLE:=LuCI support for mihomo & sing-box
  	PKGARCH:=all
--	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-mod-curl +php8-mod-zip +zoneinfo-asia
+-	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia
 +	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fastcgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia
  endef
  
