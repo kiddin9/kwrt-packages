@@ -332,7 +332,6 @@ jobs:
         git_clone https://github.com/hequan2017/luci-app-forcedata
         git_clone https://github.com/Atomseek/luci-app-gxu-webconnect
         git_clone https://github.com/sbwml/luci-app-openai opai && mvdir opai
-        # git_clone https://github.com/0x676e67/luci-app-wireguard-ui wireguardui && mvdir wireguardui
         ) &
         (
         git_clone https://github.com/kiddin9/luci-app-syscontrol
@@ -340,6 +339,9 @@ jobs:
         git_clone https://github.com/muink/luci-app-ssrust
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/kiddin9/luci-app-qosmate
+        git_clone https://github.com/0x2196f3/luci-app-subconverter luci-subconverter && mvdir luci-subconverter
+        git_clone https://github.com/karen07/antiblock-openwrt-package
+        git_clone https://github.com/karen07/luci-app-antiblock-openwrt-package
         ) &
         (
         git_sparse_clone master "https://github.com/QiuSimons/OpenWrt-Add" luci-app-irqbalance
