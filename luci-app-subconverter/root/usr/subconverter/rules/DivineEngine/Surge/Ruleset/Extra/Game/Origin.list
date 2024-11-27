@@ -1,0 +1,5 @@
+DOMAIN-SUFFIX,origin.com
+DOMAIN,cloudsync-prod.s3.amazonaws.com
+DOMAIN,origin-a.akamaihd.net // Akamai
+DOMAIN,ssl-lvlt.cdn.ea.com // Level3-CDN
+DOMAIN,rtm.tnt-ea.com

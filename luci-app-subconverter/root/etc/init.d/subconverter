@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=10
+
+start() {
+  /usr/subconverter/subconverter &
+}
+
+stop() {
+  killall -q subconverter
+}
+
+restart() {
+  stop
+  start
+}

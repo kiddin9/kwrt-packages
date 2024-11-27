@@ -1,0 +1,31 @@
+<%
+local text = luci.sys.exec("cat /usr/subconverter/pref.ini")
+
+if luci.http.formvalue("save") then
+    luci.sys.exec("echo '" .. luci.http.formvalue("text") .. "' > /usr/subconverter/pref.ini")
+    luci.sys.exec("chmod 644 /usr/subconverter/pref.ini")
+    luci.sys.exec("chown root:root /usr/subconverter/pref.ini")
+    luci.http.redirect(luci.dispatcher.build_url("admin", "services", "subconverter/prefini"))
+    return
+end
+
+if luci.http.formvalue("reset") then
+  luci.sys.exec("cp /usr/subconverter/pref.ini.bak /usr/subconverter/pref.ini")
+  luci.http.redirect(luci.dispatcher.build_url("admin", "services", "subconverter/prefini"))
+  return
+end
+%>
+<%+header%>
+<div id="view">
+  <h2>pref.ini</h2>
+  <p class="cbi-section-descr">this is the configuration for <a href="https://github.com/tindy2013/subconverter">subconverter</a>, located in "/usr/subconverter/pref.ini", only for advanced user. see the <a href="https://github.com/tindy2013/subconverter/blob/master/README-cn.md">document</a></p>
+  <form method="POST">
+    <textarea style="width:100%" rows="25" name="text"><%= text %></textarea>
+    <div class="cbi-page-actions">
+      <button class="cbi-button cbi-button-save" name="save">Save</button>
+      <button class="cbi-button cbi-button-reset" name="reset">Reset</button>
+    </div>
+  </form>
+</div>
+<%+footer%>
+
