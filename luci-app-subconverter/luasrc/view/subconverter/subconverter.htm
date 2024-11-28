@@ -115,7 +115,6 @@ end
             for (var i = 0; i < 24; i++) {
               var option = document.createElement('option');
               option.value = i;
-              option.id = i.toString();
               option.text = `${i.toString().padStart(2, '0')}:00-${((i + 2) % 24).toString().padStart(2, '0')}:00`;
               select.appendChild(option);
             }
@@ -193,7 +192,7 @@ end
           if (scheduledTime !== 'nil') {
             checkboxSchedule.checked = true;
             checkboxSchedule.dispatchEvent(new Event('change'));
-            document.getElementById(scheduledTime).selected = 'true';
+            document.getElementById("select-schedule").value = scheduledTime;
           }
       })
       .catch(error => console.error('Error:', error));
