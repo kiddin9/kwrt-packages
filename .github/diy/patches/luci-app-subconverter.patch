@@ -1,5 +1,14 @@
 --- a/luci-app-subconverter/Makefile
 +++ b/luci-app-subconverter/Makefile
+@@ -12,7 +12,7 @@ define Package/$(PKG_NAME)
+ 	PKGARCH:=all
+ 	SUBMENU:=3. Applications
+ 	TITLE:=Subconverter
+-	DEPENDS:=+luci-base +luci
++	DEPENDS:=+luci-base +luci +sub-web 
+ endef
+ 
+ define Package/$(PKG_NAME)/description
 @@ -34,21 +34,18 @@ define Package/$(PKG_NAME)/prerm
      rm -rf /usr/subconverter
  endef
