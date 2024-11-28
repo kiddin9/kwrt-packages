@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-subconverter
 PKG_VERSION:=1.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -12,7 +12,7 @@ define Package/$(PKG_NAME)
 	PKGARCH:=all
 	SUBMENU:=3. Applications
 	TITLE:=Subconverter
-	DEPENDS:=+luci-base +luci
+	DEPENDS:=+luci-base +luci +sub-web 
 endef
 
 define Package/$(PKG_NAME)/description
