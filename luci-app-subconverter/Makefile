@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-subconverter
 PKG_VERSION:=1.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -40,7 +40,7 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/subconverter
 	$(INSTALL_DIR) $(1)/etc/init.d
 
-	$(CP) -r $(TOPDIR)/package/luci-app-subconverter/* $(PKG_BUILD_DIR)/
+	$(CP) -r $(TOPDIR)/package/$(PKG_NAME)/* $(PKG_BUILD_DIR)/
 
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/controller/subconverter.lua $(1)/usr/lib/lua/luci/controller/
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/subconverter/subconverter.htm $(1)/usr/lib/lua/luci/view/subconverter

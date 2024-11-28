@@ -2,9 +2,11 @@
 local text = luci.sys.exec("cat /usr/subconverter/pref.ini")
 
 if luci.http.formvalue("save") then
-    luci.sys.exec("echo '" .. luci.http.formvalue("text") .. "' > /usr/subconverter/pref.ini")
-    luci.sys.exec("chmod 644 /usr/subconverter/pref.ini")
-    luci.sys.exec("chown root:root /usr/subconverter/pref.ini")
+    local file = io.open("/usr/subconverter/pref.ini", "w")
+    if file then
+        file:write(luci.http.formvalue("text"))
+        file:close()
+    end
     luci.http.redirect(luci.dispatcher.build_url("admin", "services", "subconverter/prefini"))
     return
 end
@@ -16,7 +18,7 @@ if luci.http.formvalue("reset") then
 end
 %>
 <%+header%>
-<div id="view">
+<div>
   <h2>pref.ini</h2>
   <p class="cbi-section-descr">this is the configuration for <a href="https://github.com/tindy2013/subconverter">subconverter</a>, located in "/usr/subconverter/pref.ini", only for advanced user. see the <a href="https://github.com/tindy2013/subconverter/blob/master/README-cn.md">document</a></p>
   <form method="POST">

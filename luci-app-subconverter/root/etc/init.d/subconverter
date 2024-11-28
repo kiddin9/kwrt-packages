@@ -4,7 +4,7 @@ START=90
 STOP=10
 
 start() {
-  /usr/subconverter/subconverter &
+  /usr/subconverter/subconverter > /dev/null 2>&1 &
 }
 
 stop() {

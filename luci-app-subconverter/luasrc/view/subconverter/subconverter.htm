@@ -39,6 +39,14 @@ local function update_port(port)
   end
 end
 
+local function start_service()
+  luci.sys.exec("/etc/init.d/subconverter start ; /etc/init.d/subconverter enable")
+end
+
+local function stop_service()
+  luci.sys.exec("/etc/init.d/subconverter stop ; /etc/init.d/subconverter disable")
+end
+
 if luci.http.formvalue("data") then
   luci.http.prepare_content("application/json")
   local json_string = "{" .. "\"status\":\"" .. tostring(get_status()) .. "\"," .. "\"enabled\":\"" .. tostring(get_enabled()) .. "\"," .. "\"scheduled_time\":\"" .. tostring(get_scheduled_time()) .. "\"," .. "\"port\":" .. tostring(get_port()) .. "}"
@@ -57,18 +65,15 @@ if luci.http.formvalue("settings") then
     if luci.http.formvalue("schedule") == "on" then
       scheduled_time = VALID_HOURS[luci.http.formvalue("schedule-selection")]
       if scheduled_time ~= nil then 
-        luci.sys.exec("/etc/init.d/subconverter stop")
-        luci.sys.exec("/etc/init.d/subconverter disable")
+        stop_service()
         update_scheduled_time(scheduled_time)
       end
     else
-      luci.sys.exec("/etc/init.d/subconverter start")
-      luci.sys.exec("/etc/init.d/subconverter enable")
+      start_service()
       update_scheduled_time(-1)
     end
   else
-    luci.sys.exec("/etc/init.d/subconverter stop")
-    luci.sys.exec("/etc/init.d/subconverter disable")
+    stop_service()
     update_scheduled_time(-1)
   end
   if luci.http.formvalue("port") then
@@ -82,8 +87,6 @@ end
 <style>
   span.running { color: green; }
   span.stopped { color: red; }
-  #container-checkbox-schedule { display: none; }
-  #container-schedule { display: none; }
 </style>
 <div class="">
   <h2><a id="subconverter" target="_blank">Subconverter</a></h2>
@@ -98,11 +101,11 @@ end
       <label for="checkbox-enable" class="cbi-value-title">Enable</label>
       <input type="checkbox" id="checkbox-enable" name="enable" class="cbi-value-field" />
     </div>
-    <div class="cbi-checkbox cbi-value" id="container-checkbox-schedule">
+    <div class="cbi-checkbox cbi-value" id="container-checkbox-schedule" style="display: none">
       <label for="checkbox-schedule" class="cbi-value-title">Schedule</label>
       <input type="checkbox" id="checkbox-schedule" name="schedule" class="cbi-value-field" />
     </div>  
-    <div class="cbi-value" id="container-schedule">
+    <div class="cbi-value" id="container-schedule" style="display: none">
       <label for="select-schedule" class="cbi-value-title">Scheduled Time</label>
       <div class="cbi-value-field">
         <select id="select-schedule" name="schedule-selection" class="cbi-input-select">
