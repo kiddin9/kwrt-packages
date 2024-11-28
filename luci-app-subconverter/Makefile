@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-subconverter
 PKG_VERSION:=1.1
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -34,21 +34,18 @@ define Package/$(PKG_NAME)/prerm
     rm -rf /usr/subconverter
 endef
 
-
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/controller
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/subconverter
 	$(INSTALL_DIR) $(1)/etc/init.d
 
-	# $(CP) -r $(TOPDIR)/package/$(PKG_NAME)/* $(PKG_BUILD_DIR)/
-
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/controller/subconverter.lua $(1)/usr/lib/lua/luci/controller/
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/subconverter/subconverter.htm $(1)/usr/lib/lua/luci/view/subconverter
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/luasrc/view/subconverter/prefini.htm $(1)/usr/lib/lua/luci/view/subconverter
+	$(INSTALL_DATA) ./luasrc/controller/subconverter.lua $(1)/usr/lib/lua/luci/controller/
+	$(INSTALL_DATA) ./luasrc/view/subconverter/subconverter.htm $(1)/usr/lib/lua/luci/view/subconverter
+	$(INSTALL_DATA) ./luasrc/view/subconverter/prefini.htm $(1)/usr/lib/lua/luci/view/subconverter
 	
-	$(CP) -r $(PKG_BUILD_DIR)/root/usr/subconverter $(1)/usr/
+	$(CP) -r ./root/usr/subconverter $(1)/usr/
 	
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/root/etc/init.d/subconverter $(1)/etc/init.d/
+	$(INSTALL_BIN) ./root/etc/init.d/subconverter $(1)/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
