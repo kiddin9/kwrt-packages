@@ -23,7 +23,7 @@ admin $2a$14$RdbOHzJhf5BaapSdlYTCbe.yWY9cEZjyDpfgwStY28K/qsM1tX8tu
  
 header {
 #中文字符显示
-                Content-Type "text/plain; charset=utf-8"
+                Content-Type "charset=utf-8"
         }
         
  log {

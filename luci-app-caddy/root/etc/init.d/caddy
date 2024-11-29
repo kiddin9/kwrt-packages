@@ -140,7 +140,7 @@ $filebasicauth
  file_server browse
  
 header {
-                Content-Type "text/plain; charset=utf-8"
+                Content-Type "charset=utf-8"
         }
         
  $logs
