@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
 PKG_VERSION:=0.1.4
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 
 ifneq ($(shell echo $(PKG_RELEASE) | grep -E '^[0-9]+$$'),)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -31,9 +31,12 @@ PKG_CONFIG_DEPENDS+= \
 	CONFIG_EINAT_EBPF_BINDGEN \
 	CONFIG_EINAT_EBPF_STATIC \
 
-include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/bpf.mk
+include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
+
+# The LLVM_PATH var is required so that einat's build script finds llvm-strip
+TARGET_PATH_PKG:=$(LLVM_PATH):$(TARGET_PATH_PKG)
 
 # $(TOPDIR)/feeds/packages/lang/rust/rust-values.mk
 # RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||mips||mipsel||mips64||mips64el||mipsel||powerpc64||riscv64||x86_64)

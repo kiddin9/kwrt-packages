@@ -32,7 +32,7 @@ And LuCI can be found here [luci-app-einat][]
 ```shell
 # Build system setup
 # Please refer to [Build system setup](https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem)
-sudo apt install clang llvm pkg-config libdw-dev libbpf-dev libelf-dev zlib1g-dev
+sudo apt install libelf-dev zlib1g-dev
 # Take the x86_64 platform as an example
 tar xjf rebuild-sdk-23.05.3-x86-64_gcc-12.3.0_musl.Linux-x86_64.tar.xz
 # Go to the SDK root dir

@@ -5,7 +5,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v2ray-geodata
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
@@ -41,14 +41,14 @@ endef
 define Package/v2ray-geoip
   $(call Package/v2ray-geodata/template)
   TITLE:=GeoIP List for V2Ray
-  VERSION:=$(GEOIP_VER)-$(PKG_RELEASE)
+  VERSION:=$(GEOIP_VER).$(PKG_RELEASE)
   LICENSE:=CC-BY-SA-4.0
 endef
 
 define Package/v2ray-geosite
   $(call Package/v2ray-geodata/template)
   TITLE:=Geosite List for V2Ray
-  VERSION:=$(GEOSITE_VER)-$(PKG_RELEASE)
+  VERSION:=$(GEOSITE_VER).$(PKG_RELEASE)
   LICENSE:=MIT
 endef
 
