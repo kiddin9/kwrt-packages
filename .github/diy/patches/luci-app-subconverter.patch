@@ -10,7 +10,7 @@
  
  define Package/$(PKG_NAME)/description
 @@ -34,21 +34,18 @@ define Package/$(PKG_NAME)/prerm
-     rm -rf /usr/subconverter
+     rm -rf /etc/subconverter
  endef
  
 -
@@ -29,7 +29,7 @@
 +	$(INSTALL_DATA) ./luasrc/view/subconverter/prefini.htm $(1)/usr/lib/lua/luci/view/subconverter
  	
 -	$(CP) -r $(PKG_BUILD_DIR)/root/usr/subconverter $(1)/usr/
-+	$(CP) -r ./root/usr/subconverter $(1)/usr/
++	$(CP) -r ./root/etc/subconverter $(1)/usr/
  	
 -	$(INSTALL_BIN) $(PKG_BUILD_DIR)/root/etc/init.d/subconverter $(1)/etc/init.d/
 +	$(INSTALL_BIN) ./root/etc/init.d/subconverter $(1)/etc/init.d/
