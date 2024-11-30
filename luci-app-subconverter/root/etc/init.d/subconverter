@@ -4,11 +4,11 @@ START=90
 STOP=10
 
 start() {
-  /usr/subconverter/subconverter > /dev/null 2>&1 &
+  /etc/subconverter/subconverter > /dev/null 2>&1 &
 }
 
 stop() {
-  killall -q subconverter
+  killall -q /etc/subconverter/subconverter
 }
 
 restart() {

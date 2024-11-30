@@ -89,7 +89,7 @@ singbox.mixed_port=2080
 [server]
 listen=0.0.0.0
 port=36611
-serve_file_root=/usr/subconverter/subweb
+serve_file_root=/etc/subconverter/subweb
 [advanced]
 log_level=fatal
 print_debug_info=false
