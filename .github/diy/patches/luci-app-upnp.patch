@@ -12,36 +12,23 @@
 
 --- a/luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js
 +++ b/luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js
-@@ -178,6 +178,9 @@ return view.extend({
- 		o.datatype    = 'port'
- 		o.placeholder = '0-65535'
+@@ -192,6 +192,9 @@ return view.extend({
+ 		o = s.taboption('advanced', form.Value, 'upnp_lease_file', _('Service lease file'));
+ 		o.placeholder = '/var/run/miniupnpd.leases';
  
 +		s.taboption('advanced', form.Flag, 'force_forwarding', _('Force Forwarding'),
 +			_('Force forwarding even there is no public IP (please try STUN first)'))
 +
- 		s = m.section(form.GridSection, 'perm_rule', _('Service ACLs'),
- 			_('ACLs specify which external ports can be forwarded to which client addresses and ports, IPv6 always allowed.'))
- 
-
---- a/luci-app-upnp/po/templates/upnp.pot
-+++ b/luci-app-upnp/po/templates/upnp.pot
-@@ -214,3 +214,9 @@ msgstr ""
- #: luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js:140
- msgid "Value in KByte/s, informational only"
- msgstr ""
-+
-+msgid "Force Forwarding"
-+msgstr ""
-+
-+msgid "Force forwarding even there is no public IP (please try STUN first)"
-+msgstr ""
+ 		s = m.section(form.GridSection, 'perm_rule', _('Service Access Control List'),
+ 			_('ACL specify which client addresses and ports can be mapped, IPv6 always allowed.'));
+ 		s.sortable = true;
 
 --- a/luci-app-upnp/po/zh_Hans/upnp.po
 +++ b/luci-app-upnp/po/zh_Hans/upnp.po
-@@ -230,3 +230,9 @@ msgstr "使用 STUN"
- #: luci-app-upnp/htdocs/luci-static/resources/view/upnp/upnp.js:140
- msgid "Value in KByte/s, informational only"
- msgstr "单位为 KByte/s，仅供参考"
+@@ -284,3 +284,9 @@ msgstr ""
+ 
+ #~ msgid "Value in KByte/s, informational only"
+ #~ msgstr "单位为 KByte/s，仅供参考"
 +
 +msgid "Force Forwarding"
 +msgstr "强制转发"
