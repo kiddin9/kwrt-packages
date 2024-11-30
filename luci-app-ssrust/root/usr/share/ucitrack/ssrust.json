@@ -1,0 +1,4 @@
+{
+	"config": "shadowsocks-rust",
+	"init": "shadowsocks-rust"
+}

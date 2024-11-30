@@ -1,0 +1,4 @@
+{
+	"config": "xupnpd",
+	"init": "xupnpd"
+}

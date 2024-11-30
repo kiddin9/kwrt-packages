@@ -1,0 +1,4 @@
+{
+	"config": "iperf3-server",
+	"init": "iperf3-server"
+}

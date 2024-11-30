@@ -1,0 +1,4 @@
+{
+	"config": "tailscale",
+	"init": "tailscale"
+}

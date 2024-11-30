@@ -1,0 +1,4 @@
+{
+	"config": "coredns",
+	"init": "coredns"
+}
