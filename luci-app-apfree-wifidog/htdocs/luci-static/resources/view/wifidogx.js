@@ -65,6 +65,7 @@ return view.extend({
 						_('The mode of the authentication server.'));
 		o.value('cloud', _('Cloud Auth'));
 		o.value('local', _('Local Auth'));
+		o.value('bypass', _('Bypass Auth'));
 		o.default = 'cloud';
 		o.optional = false;
 
@@ -80,6 +81,7 @@ return view.extend({
 		o.datatype = 'string';
 		o.optional = false;
 		o.depends('auth_server_mode', 'cloud');
+		o.depends('auth_server_mode', 'bypass');
 
 		o = s.taboption('basic', form.Value, 'auth_server_hostname', _('Auth Server Hostname'), 
 						_('The domain or IP address of the authentication server.'));
@@ -87,6 +89,7 @@ return view.extend({
 		o.datatype = 'or(host,ip4addr)';
 		o.optional = false;
 		o.depends('auth_server_mode', 'cloud');
+		o.depends('auth_server_mode', 'bypass');
 
 		o = s.taboption('basic', form.Value, 'auth_server_port', _('Auth Server Port'),
 						_('The port of the authentication server.'));
@@ -94,6 +97,7 @@ return view.extend({
 		o.datatype = 'port';
 		o.optional = false;
 		o.depends('auth_server_mode', 'cloud');
+		o.depends('auth_server_mode', 'bypass');
 
 		o = s.taboption('basic', form.Value, 'auth_server_path', _('Auth Server URI path'),
 						_('The URI path of the authentication server.'));
@@ -101,6 +105,7 @@ return view.extend({
 		o.datatype = 'string';
 		o.optional = false;
 		o.depends('auth_server_mode', 'cloud');
+		o.depends('auth_server_mode', 'bypass');
 
 		o = s.taboption('basic', form.FileUpload, 'auth_server_offline_page', _('Upload offline Page'),
 						_('The offline page of the authentication server.'));
@@ -263,6 +268,18 @@ return view.extend({
 						_('Enable JS redirect.'));
 		o.rmempty = false;
 		o.defaulValue = true;
+
+		o = s.taboption('advanced', form.Flag, 'enable_anti_nat', _('Enable Anti NAT'),
+						_('Enable Anti NAT devices.'));
+		o.rmempty = false;
+		o.defaulValue = false;
+
+		o = s.taboption('advanced', form.Value, 'ttl_value', _('TTL Value'),
+						_('The TTL value of the gateway support.'));
+		o.datatype = 'string';
+		o.rmempty = false;
+		o.defaulValue = '64,128';
+		o.depends('enable_anti_nat', '1');
 
 		// rule settings
 		o = s.taboption('rule', form.DynamicList, 'trusted_wildcard_domains', _('Trusted Wildcard Domains'),

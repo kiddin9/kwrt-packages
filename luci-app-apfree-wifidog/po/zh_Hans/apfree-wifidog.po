@@ -320,3 +320,15 @@ msgstr "设备的外部接口，如果是旁路模式，不要选择"
 
 msgid "External Interface"
 msgstr "外部接口"
+
+msgid "Enable Anti NAT devices."
+msgstr "启用反 NAT 设备"
+
+msgid "Enable Anti NAT"
+msgstr "启用反 NAT"
+
+msgid "The TTL value of the gateway support."
+msgstr "网关支持放行的 TTL 值"
+
+msgid "Bypass Auth"
+msgstr "旁认证"
