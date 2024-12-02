@@ -281,6 +281,12 @@ return view.extend({
 		o.defaulValue = '64,128';
 		o.depends('enable_anti_nat', '1');
 
+		o = s.taboption('advanced', form.Value, 'anti_nat_permit_macs', _('Anti NAT Permit MAC'),
+						_('The MAC address of the Anti NAT permit.'));
+		o.datatype = 'macaddr';
+		o.rmempty = true;
+		o.depends('enable_anti_nat', '1');
+
 		// rule settings
 		o = s.taboption('rule', form.DynamicList, 'trusted_wildcard_domains', _('Trusted Wildcard Domains'),
 						_('The trusted wildcard domains of the gateway'));
