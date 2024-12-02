@@ -1,0 +1,56 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "Modem"
+msgstr "移动通信"
+
+msgid "AT Commands"
+msgstr "AT 指令"
+
+msgid "Configuration"
+msgstr "配置"
+
+msgid "Please specify the AT command to send"
+msgstr "请指定要发送的AT指令"
+
+msgid "Please set the port for communication with the modem"
+msgstr "请设置与模块通信的端口"
+
+msgid "User AT commands"
+msgstr "用户 AT 指令"
+
+msgid "Command to send"
+msgstr "要发送的指令"
+
+msgid "Clear form"
+msgstr "清除表单"
+
+msgid "Send command"
+msgstr "发送指令"
+
+msgid "Reply"
+msgstr "回显" 
+
+msgid "User interface for handling AT commands using sms-tool. More information about the sms-tool on the %seko.one.pl forum%s."
+msgstr "用于通过 sms-tool 处理 AT 指令的用户界面。关于 sms-tool 的更多信息在 %s论坛 seko.one.pl%s。"
+
+msgid "Configuration sms-tool"
+msgstr "配置 sms-tool"
+
+msgid "Configuration panel for sms-tool and gui application."
+msgstr "sms-tool 和图形界面配置面板。"
+
+msgid "Port for communication with the modem"
+msgstr "模块通信端口"
+
+msgid "Select one of the available ttyUSBX ports."
+msgstr "请选择可用的 ttyUSBX 端口。"
+
+msgid "Please select a port"
+msgstr "请选择一个端口"
+
+msgid "Each line must have the following format: 'At command description;AT command'. For user convenience, the file is saved to the location <code>/etc/modem/atcommands.user</code>."
+msgstr "每一行必须是如下形式：'AT指令描述;AT指令'。为了用户方便，这个文件存储在：'/etc/modem/atcommands.user'。"
+
+msgid "Press [Enter] to send the command, press [Delete] to delete the command"
+msgstr "点击 [Enter]键 发送指令，点击 [Delete]键 删除指令。"
