@@ -25,10 +25,10 @@
 
 --- a/luci-app-upnp/po/zh_Hans/upnp.po
 +++ b/luci-app-upnp/po/zh_Hans/upnp.po
-@@ -284,3 +284,9 @@ msgstr ""
- 
- #~ msgid "Value in KByte/s, informational only"
- #~ msgstr "单位为 KByte/s，仅供参考"
+@@ -253,3 +253,9 @@ msgstr "上传速度"
+ msgctxt "Use %s (%s = STUN)"
+ msgid "Use %s"
+ msgstr "使用 %s"
 +
 +msgid "Force Forwarding"
 +msgstr "强制转发"
