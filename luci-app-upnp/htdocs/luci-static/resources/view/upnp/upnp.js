@@ -6,35 +6,35 @@
 'require rpc';
 'require form';
 
-var callInitAction, callUpnpGetStatus, callUpnpDeleteRule, handleDelRule;
 
-callInitAction = rpc.declare({
+
+const callInitAction = rpc.declare({
 	object: 'luci',
 	method: 'setInitAction',
 	params: [ 'name', 'action' ],
 	expect: { result: false }
 });
 
-callUpnpGetStatus = rpc.declare({
+const callUpnpGetStatus = rpc.declare({
 	object: 'luci.upnp',
 	method: 'get_status',
 	expect: {  }
 });
 
-callUpnpDeleteRule = rpc.declare({
+const callUpnpDeleteRule = rpc.declare({
 	object: 'luci.upnp',
 	method: 'delete_rule',
 	params: [ 'token' ],
 	expect: { result : "OK" },
 });
 
-handleDelRule = function(num, ev) {
+function handleDelRule(num, ev) {
 	dom.parent(ev.currentTarget, '.tr').style.opacity = 0.5;
 	ev.currentTarget.classList.add('spinning');
 	ev.currentTarget.disabled = true;
 	ev.currentTarget.blur();
 	callUpnpDeleteRule(num);
-};
+}
 
 return view.extend({
 	load: function() {
@@ -70,7 +70,7 @@ return view.extend({
 
 	render: function(data) {
 
-		var m, s, o;
+		let m, s, o;
 
 		var protocols = '%s & %s/%s'.format(
 			'<a href="https://en.wikipedia.org/wiki/Internet_Gateway_Device_Protocol" target="_blank" rel="noreferrer"><abbr title="UPnP Internet Gateway Device (Control Protocol)">UPnP IGD</abbr></a>',

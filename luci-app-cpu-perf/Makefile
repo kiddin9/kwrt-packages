@@ -6,6 +6,7 @@
 
 include $(TOPDIR)/rules.mk
 
+PKG_NAME:=luci-app-cpu-perf
 LUCI_TITLE:=CPU performance information and management for LuCI
 LUCI_DEPENDS:=+lua +luci-lib-nixio +luci-lib-jsonc
 LUCI_PKGARCH:=all
