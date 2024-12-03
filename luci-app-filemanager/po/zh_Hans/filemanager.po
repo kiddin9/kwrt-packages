@@ -1,0 +1,321 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-03 05:58-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: filemanager.js:355
+msgid "File Manager: "
+msgstr "文件管理器："
+
+#: filemanager.js:366
+msgid "Go"
+msgstr "前往"
+
+#: filemanager.js:382
+msgid "File Manager"
+msgstr "文件管理器"
+
+#: filemanager.js:391
+msgid "Editor"
+msgstr "编辑"
+
+#: filemanager.js:400
+msgid "Settings"
+msgstr "设置"
+
+#: filemanager.js:426
+msgid "Name"
+msgstr "名称"
+
+#: filemanager.js:430
+msgid "Sort by Name"
+msgstr "按名称排序"
+
+#: filemanager.js:439
+msgid "Type"
+msgstr "类型"
+
+#: filemanager.js:443
+msgid "Sort by Type"
+msgstr "按类型排序"
+
+#: filemanager.js:452
+msgid "Size"
+msgstr "大小"
+
+#: filemanager.js:456
+msgid "Sort by Size"
+msgstr "按大小排序"
+
+#: filemanager.js:465
+msgid "Last Modified"
+msgstr "修改时间"
+
+#: filemanager.js:469
+msgid "Sort by Last Modified"
+msgstr "按最后修改排序"
+
+#: filemanager.js:475
+msgid "Actions"
+msgstr "操作"
+
+#: filemanager.js:488 filemanager.js:723 filemanager.js:832 filemanager.js:895
+#: filemanager.js:1134 filemanager.js:1600
+msgid "No file selected."
+msgstr "未选择文件。"
+
+#: filemanager.js:499
+msgid "Upload File"
+msgstr "上传文件"
+
+#: filemanager.js:503
+msgid "Make Directory"
+msgstr "创建目录"
+
+#: filemanager.js:507
+msgid "Create File"
+msgstr "创建文件"
+
+#: filemanager.js:515
+msgid "Select a file from the list to edit it here."
+msgstr "从列表中选择一个文件并在此进行编辑。"
+
+#: filemanager.js:528
+msgid "Interface Settings"
+msgstr "界面设置"
+
+#: filemanager.js:536
+msgid "Window Width:"
+msgstr "窗口宽度："
+
+#: filemanager.js:545
+msgid "Window Height:"
+msgstr "窗口高度："
+
+#: filemanager.js:554
+msgid "Column Widths (format: name:width,type:width,...):"
+msgstr "列宽（格式：name:width,type:width,...）："
+
+#: filemanager.js:565
+msgid "Column Min Widths (format: name:minWidth,type:minWidth,...):"
+msgstr "列最小宽度（格式：name:minWidth,type:minWidth,...）："
+
+#: filemanager.js:576
+msgid "Column Max Widths (format: name:maxWidth,type:maxWidth,...):"
+msgstr "列最大宽度（格式：name:maxWidth,type:maxWidth,...）："
+
+#: filemanager.js:587
+msgid "Padding:"
+msgstr "填充："
+
+#: filemanager.js:596
+msgid "Padding Min:"
+msgstr "最小填充："
+
+#: filemanager.js:605
+msgid "Padding Max:"
+msgstr "最大填充："
+
+#: filemanager.js:614
+msgid "Current Directory:"
+msgstr "默认目录："
+
+#: filemanager.js:629 filemanager.js:801 filemanager.js:1279
+#: filemanager.js:1529
+msgid "Save"
+msgstr "保存"
+
+#: filemanager.js:702
+msgid "The specified path does not appear to be a directory."
+msgstr "指定路径不是一个目录。"
+
+#: filemanager.js:705
+#, javascript-format
+msgid "Failed to access the specified path: %s"
+msgstr "无法访问指定路径：%s"
+
+#: filemanager.js:733
+msgid "Uploading: "
+msgstr "上传中："
+
+#: filemanager.js:761
+msgid "File uploaded successfully: "
+msgstr "文件上传成功："
+
+#: filemanager.js:763
+msgid "File uploaded successfully."
+msgstr "文件上传成功。"
+
+#: filemanager.js:772 filemanager.js:774
+msgid "Upload failed: "
+msgstr "上传失败："
+
+#: filemanager.js:791
+msgid "Directory Name"
+msgstr "目录名称"
+
+#: filemanager.js:811
+msgid "Create Directory: "
+msgstr "创建目录："
+
+#: filemanager.js:825
+msgid "Directory created successfully."
+msgstr "目录创建成功。"
+
+#: filemanager.js:835
+#, javascript-format
+msgid "Failed to create directory: %s"
+msgstr "无法创建目录：%s"
+
+#: filemanager.js:851
+msgid "File Name"
+msgstr "文件名"
+
+#: filemanager.js:862
+msgid "Create"
+msgstr "创建"
+
+#: filemanager.js:874
+msgid "Create File: "
+msgstr "创建文件："
+
+#: filemanager.js:888
+msgid "File created successfully."
+msgstr "文件创建成功。"
+
+#: filemanager.js:898
+#, javascript-format
+msgid "Failed to create file: %s"
+msgstr "无法创建文件：%s"
+
+#: filemanager.js:906
+msgid "Failed to display the file list."
+msgstr "无法显示文件列表。"
+
+#: filemanager.js:926
+msgid ".. (Parent Directory)"
+msgstr ".. （返回上一级）"
+
+#: filemanager.js:955
+msgid "Directory"
+msgstr "目录"
+
+#: filemanager.js:1002
+msgid "File"
+msgstr "文件"
+
+#: filemanager.js:1080
+msgid "Symlink"
+msgstr "符号链接"
+
+#: filemanager.js:1106
+msgid "Unknown"
+msgstr "未知"
+
+#: filemanager.js:1142
+#, javascript-format
+msgid "Failed to load file list: %s"
+msgstr "无法加载文件列表：%s"
+
+#: filemanager.js:1260
+msgid "Editor container not found."
+msgstr "编辑容器找不到。"
+
+#: filemanager.js:1265 filemanager.js:1287 filemanager.js:1541
+msgid "Editing: "
+msgstr "编辑："
+
+#: filemanager.js:1294
+#, javascript-format
+msgid "Failed to open file: %s"
+msgstr "无法打开文件：%s"
+
+#: filemanager.js:1314
+msgid "Downloaded: "
+msgstr "下载："
+
+#: filemanager.js:1317
+#, javascript-format
+msgid "Failed to download file: %s"
+msgstr "无法下载文件：%s"
+
+#: filemanager.js:1322
+msgid "Are you sure you want to delete this file or directory?"
+msgstr "确定要删除此文件或目录吗？"
+
+#: filemanager.js:1324
+msgid "File or directory deleted successfully."
+msgstr "文件或目录删除成功。"
+
+#: filemanager.js:1331
+msgid "Deleted: "
+msgstr "已删除："
+
+#: filemanager.js:1334
+#, javascript-format
+msgid "Failed to delete file or directory: %s"
+msgstr "无法删除文件或目录：%s"
+
+#: filemanager.js:1342
+msgid "Editor textarea not found."
+msgstr "找不到编辑文本区。"
+
+#: filemanager.js:1355
+msgid "Saving: "
+msgstr "保存中："
+
+#: filemanager.js:1388 filemanager.js:1402
+msgid "File saved successfully: "
+msgstr "文件保存成功："
+
+#: filemanager.js:1390 filemanager.js:1404
+msgid "File saved successfully."
+msgstr "文件保存成功。"
+
+#: filemanager.js:1398
+#, javascript-format
+msgid "Failed to restore file permissions: %s"
+msgstr "恢复文件权限失败：%s"
+
+#: filemanager.js:1414 filemanager.js:1416
+msgid "Save failed: "
+msgstr "保存失败："
+
+#: filemanager.js:1430
+msgid "The symlink points to an unsupported type."
+msgstr "符号链接指向不支持的类型。"
+
+#: filemanager.js:1433
+#, javascript-format
+msgid "Failed to access symlink target: %s"
+msgstr "无法访问符号目标：%s"
+
+#: filemanager.js:1438
+msgid "Symlink: "
+msgstr "符号链接："
+
+#: filemanager.js:1593
+msgid "Changes saved successfully."
+msgstr "成功保存更改。"
+
+#: filemanager.js:1603
+#, javascript-format
+msgid "Failed to save changes: %s"
+msgstr "无法保存更改：%s"
+
+#: filemanager.js:1678
+msgid "Settings saved successfully."
+msgstr "设置保存成功。"
+
+#: filemanager.js:1701
+#, javascript-format
+msgid "Failed to save settings: %s"
+msgstr "保存设置失败：%s"
