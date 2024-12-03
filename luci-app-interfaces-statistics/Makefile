@@ -6,6 +6,7 @@
 
 include $(TOPDIR)/rules.mk
 
+PKG_NAME:=luci-app-interfaces-statistics
 LUCI_TITLE:=Network interfaces statistics
 LUCI_PKGARCH:=all
 PKG_LICENSE:=MIT
