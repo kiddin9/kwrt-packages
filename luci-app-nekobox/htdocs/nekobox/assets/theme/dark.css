@@ -6,29 +6,28 @@
   --bs-body-font-weight: 400;
   --bs-body-color: #e0e0e0;
   --bs-body-bg: #121212;
-  --bs-primary: #bb86fc;
-  --bs-secondary: #03dac6;
-  --bs-success: #00c853;
-  --bs-info: #2196f3;
-  --bs-warning: #ffd600;
+  --bs-primary: #ff007c; 
+  --bs-secondary: #00ffff; 
+  --bs-success: #00ff85; 
+  --bs-info: #7d5fff; 
+  --bs-warning: #ffcc00; 
+  --bs-danger: #ff4500; 
 
   --bs-heading-font-family: 'Montserrat', sans-serif;
-  --bs-heading-1: #17a2b8; 
-  --bs-heading-2: #4169E1;
-  --bs-heading-3: #B8860B;
-  --bs-heading-4: #CD853F;
-  --bs-heading-5: #D2691E;
-  --bs-heading-6: #DEB887;
+  --bs-heading-1: #ff007c; 
+  --bs-heading-2: #7d5fff;
+  --bs-heading-3: #ffcc00;
+  --bs-heading-4: #ff4500;
+  --bs-heading-5: #00ff85;
+  --bs-heading-6: #00ffff;
 
-  
-  --bs-heading-font-family: 'Montserrat', sans-serif;
   --bs-heading-font-weight: 700;
   --bs-heading-letter-spacing: 0.05em;
   --bs-heading-text-transform: uppercase;
 
-  --bs-shadow-light: 0 4px 8px rgba(0, 0, 0, 0.2);
-  --bs-shadow-medium: 0 8px 16px rgba(0, 0, 0, 0.3);
-  --bs-shadow-heavy: 0 12px 24px rgba(0, 0, 0, 0.4);
+  --bs-shadow-light: 0 4px 8px rgba(255, 0, 124, 0.4);
+  --bs-shadow-medium: 0 8px 16px rgba(0, 255, 133, 0.3);
+  --bs-shadow-heavy: 0 12px 24px rgba(125, 95, 255, 0.5);
   --bs-transition-speed: 0.3s;
 
   --bs-btn-color: #fff;

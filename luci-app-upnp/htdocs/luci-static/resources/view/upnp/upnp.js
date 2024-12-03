@@ -45,7 +45,9 @@ return view.extend({
 	},
 
 	poll_status: function(nodes, data) {
+
 		var rules = Array.isArray(data[0].rules) ? data[0].rules : [];
+
 		var rows = rules.map(function(rule) {
 			return [
 				rule.host_hint || _('Unknown'),
@@ -60,10 +62,14 @@ return view.extend({
 				}, [ _('Delete') ])
 			];
 		});
+
 		cbi_update_table(nodes.querySelector('#upnp_status_table'), rows, E('em', _('There are no active port maps.')));
+
+		return;
 	},
 
 	render: function(data) {
+
 		var m, s, o;
 
 		var protocols = '%s & %s/%s'.format(
@@ -92,6 +98,7 @@ return view.extend({
 			]);
 
 			var rules = Array.isArray(data[0].rules) ? data[0].rules : [];
+
 			var rows = rules.map(function(rule) {
 				return [
 					rule.host_hint || _('Unknown'),
@@ -106,7 +113,9 @@ return view.extend({
 					}, [ _('Delete') ])
 				];
 			});
+
 			cbi_update_table(table, rows, E('em', _('There are no active port maps.')));
+
 			return E('div', { 'class': 'cbi-section cbi-tblsection' }, [
 					E('h3', _('Active Service Port Maps')), table ]);
 		}, o, this);
@@ -120,11 +129,9 @@ return view.extend({
 			_('Start autonomous port mapping service'));
 		o.rmempty = false;
 
-		s.taboption('setup', form.Flag, 'enable_upnp', _('Enable UPnP IGD protocol'))
-		s.default = '1';
+		s.taboption('setup', form.Flag, 'enable_upnp', _('Enable UPnP IGD protocol')).default = '1';
 
-		s.taboption('setup', form.Flag, 'enable_natpmp', _('Enable PCP/NAT-PMP protocols'))
-		s.default = '1';
+		s.taboption('setup', form.Flag, 'enable_natpmp', _('Enable PCP/NAT-PMP protocols')).default = '1';
 
 		o = s.taboption('setup', form.Flag, 'igdv1', _('UPnP IGDv1 compatibility mode'),
 			_('Advertise as IGDv1 (IPv4 only) device instead of IGDv2'));
@@ -144,11 +151,11 @@ return view.extend({
 				.format('<a href="https://en.wikipedia.org/wiki/STUN" target="_blank" rel="noreferrer"><abbr title="Session Traversal Utilities for NAT">STUN</abbr></a>'),
 			_('To detect the public IPv4 address for unrestricted full-cone/one-to-one NATs'));
 
-		o = s.taboption('advanced', form.Value, 'stun_host', _('STUN Host'));
+		o = s.taboption('advanced', form.Value, 'stun_host', _('STUN host'));
 		o.depends('use_stun', '1');
 		o.datatype = 'host';
 
-		o = s.taboption('advanced', form.Value, 'stun_port', _('STUN Port'));
+		o = s.taboption('advanced', form.Value, 'stun_port', _('STUN port'));
 		o.depends('use_stun', '1');
 		o.datatype = 'port';
 		o.placeholder = '3478';
