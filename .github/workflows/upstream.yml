@@ -447,6 +447,7 @@ jobs:
         -e "s/killall \([^-]+*\)/killall -3 \1/g" \
         `find \( -path "*/files/root/etc/init.d/*" -o -path "*/root/etc/init.d/*" -o -path "*/files/*.init" \) -type f` &
         wget https://github.com/xiechangan123/luci-i18n-xray-zh-cn/raw/main/po/zh-cn/xray.zh-cn.po -P luci-app-xray/po/zh_Hans/
+        wget https://github.com/sbwml/luci-app-filemanager/raw/refs/heads/main/po/zh_Hans/filemanager.po -P luci-app-filemanager/po/zh_Hans/
         (
         function latest() {
           (curl -gs -H 'Content-Type: application/json' \
