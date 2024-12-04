@@ -72,8 +72,11 @@ return view.extend({
                     var filtered = lines.filter(elm => elm);
                     var myJsonString = JSON.stringify(filtered);
                     var myArray = JSON.parse(myJsonString);
-                    Promise.all([write_urls(myArray)]);
-                    location.reload();
+                    var write_urls_res = Promise.all([write_urls(myArray)]);
+                    write_urls_res.then(
+                        function (value) { location.reload(); },
+                        function (error) { /* code if some error */ }
+                    );
                 },
             },
             "Write URLs"
