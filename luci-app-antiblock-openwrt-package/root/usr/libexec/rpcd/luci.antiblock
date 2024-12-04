@@ -8,26 +8,44 @@
 . /usr/share/libubox/jshn.sh
 
 read_urls() {
+    file_path="$(uci get antiblock.@antiblock[0].file 2>/dev/null)"
+
     json_init
-    json_add_array "urls"
-    while read url; do
-        json_add_string "" "$url"
-    done </root/my_urls.txt
-    json_close_array
+    if [ -n "$file_path" ]; then
+        if [ -f "$file_path" ]; then
+            json_add_array "urls"
+            while read url; do
+                json_add_string "" "$url"
+            done <$file_path
+            json_close_array
+        else
+            json_add_array "empty"
+            json_close_array
+        fi
+    else
+        json_add_array "empty"
+        json_close_array
+    fi
     json_dump
     json_cleanup
 }
 
 write_urls() {
-    json_load "$1"
-    json_get_values values "urls"
-    >/root/my_urls.txt
-    for key in $values; do
-        echo "$key" >>/root/my_urls.txt
-    done
-    json_cleanup
+    file_path="$(uci get antiblock.@antiblock[0].file 2>/dev/null)"
 
-    /etc/init.d/antiblock restart
+    if [ -n "$file_path" ]; then
+        if [ -f "$file_path" ]; then
+            json_load "$1"
+            json_get_values values "urls"
+            >$file_path
+            for key in $values; do
+                echo "$key" >>$file_path
+            done
+            json_cleanup
+
+            /etc/init.d/antiblock restart
+        fi
+    fi
 }
 
 case "$1" in

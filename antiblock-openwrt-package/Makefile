@@ -2,13 +2,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antiblock
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=GPL-3.0-or-later
 
 ifeq ("$(wildcard ../antiblock)", "")
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/karen07/antiblock
-PKG_SOURCE_VERSION:=6683437b421903682b9eacb23c31523182a78803
+PKG_SOURCE_VERSION:=81a5cca4f2dcf595655d28ceda6686783196f17f
 endif
 
 include $(INCLUDE_DIR)/package.mk
