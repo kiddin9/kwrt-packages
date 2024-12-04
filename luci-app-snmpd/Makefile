@@ -10,6 +10,6 @@ LUCI_DEPENDS:=+snmpd +snmptrapd +snmp-utils +snmp-mibs
 
 PKG_LICENSE:=GPLv3
 
-#include $(TOPDIR)/feeds/luci/luci.mk
+#include ../luci/luci.mk
 include $(TOPDIR)/feeds/luci/luci.mk
 # call BuildPackage - OpenWrt buildroot signature
