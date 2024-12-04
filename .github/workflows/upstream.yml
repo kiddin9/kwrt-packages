@@ -538,14 +538,14 @@ jobs:
         sed -i \
           -e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' \
           -e "s/\(\(^\| \|	\)\(PKG_HASH\|PKG_MD5SUM\|PKG_MIRROR_HASH\|HASH\):=\).*/\1skip/" \
-          -e 's?include .*/luci.mk?include $(TOPDIR)/feeds/luci/luci.mk?' \
           -e 's/+ca-certificates/+ca-bundle/' \
           -e 's/php7/php8/g' \
           -e 's/+docker\( \|$\)/+docker +dockerd /g' \
-          -e 's/+iptables-zz-legacy\( \|$\)//g' \
-          -e 's/+ip6tables-zz-legacy\( \|$\)//g' \
           -e 's/URL:=@IMMORTALWRT/URL:=https:\/\/mirror2.immortalwrt.org\/sources/g' \
           */Makefile
+        sed -i \
+          -e 's? \.\./\.\./? $(TOPDIR)/feeds/luci/?' \
+          luci-*/Makefile
         ) &
         
         while [[ ! -f /tmp/ok ||  ! -f /tmp/ok2 ]]; do
