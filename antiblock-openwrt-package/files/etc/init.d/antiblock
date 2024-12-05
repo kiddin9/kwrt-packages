@@ -99,3 +99,7 @@ stop_service() {
 
 	/etc/init.d/dnsmasq restart >/dev/null 2>&1
 }
+
+service_triggers() {
+	procd_add_reload_trigger "antiblock"
+}

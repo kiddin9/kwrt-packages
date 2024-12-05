@@ -14,7 +14,7 @@
 
 'require homeproxy as hp';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],
@@ -91,7 +91,7 @@ return view.extend({
 	},
 
 	render: function(data) {
-		var m, s, o;
+		let m, s, o;
 		var features = data[1];
 
 		m = new form.Map('homeproxy', _('HomeProxy Server'),
@@ -745,6 +745,7 @@ return view.extend({
 		o.depends({'tls': '1', 'tls_acme': '0', 'tls_reality': '0'});
 		o.depends({'tls': '1', 'tls_acme': null, 'tls_reality': '0'});
 		o.depends({'tls': '1', 'tls_acme': null, 'tls_reality': null});
+		o.validate = L.bind(hp.validateCertificatePath, this);
 		o.rmempty = false;
 		o.modalonly = true;
 
@@ -763,6 +764,7 @@ return view.extend({
 		o.depends({'tls': '1', 'tls_acme': '0', 'tls_reality': null});
 		o.depends({'tls': '1', 'tls_acme': null, 'tls_reality': '0'});
 		o.depends({'tls': '1', 'tls_acme': null, 'tls_reality': null});
+		o.validate = L.bind(hp.validateCertificatePath, this);
 		o.rmempty = false;
 		o.modalonly = true;
 

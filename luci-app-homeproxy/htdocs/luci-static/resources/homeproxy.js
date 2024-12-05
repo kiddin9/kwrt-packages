@@ -170,7 +170,7 @@ return baseclass.extend({
 	},
 
 	getBuiltinFeatures: function() {
-		var callGetSingBoxFeatures = rpc.declare({
+		const callGetSingBoxFeatures = rpc.declare({
 			object: 'luci.homeproxy',
 			method: 'singbox_get_features',
 			expect: { '': {} }
@@ -239,7 +239,7 @@ return baseclass.extend({
 	},
 
 	uploadCertificate: function(option, type, filename, ev) {
-		var callWriteCertificate = rpc.declare({
+		const callWriteCertificate = rpc.declare({
 			object: 'luci.homeproxy',
 			method: 'certificate_write',
 			params: ['filename'],
@@ -263,6 +263,14 @@ return baseclass.extend({
 		if (section_id && value)
 			if (value.length !== length || !value.match(/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/) || value[length-1] !== '=')
 				return _('Expecting: %s').format(_('valid base64 key with %d characters').format(length));
+
+		return true;
+	},
+
+	validateCertificatePath: function(section_id, value) {
+		if (section_id && value)
+			if (!value.match(/^(\/etc\/homeproxy\/certs\/|\/etc\/acme\/|\/etc\/ssl\/).+$/))
+				return _('Expecting: %s').format(_('/etc/homeproxy/certs/..., /etc/acme/..., /etc/ssl/...'));
 
 		return true;
 	},

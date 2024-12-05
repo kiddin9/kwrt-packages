@@ -1021,6 +1021,7 @@ function renderNodeSettings(section, data, features, main_node, routing_mode) {
 		_('The path to the server certificate, in PEM format.'));
 	o.value('/etc/homeproxy/certs/client_ca.pem');
 	o.depends('tls_self_sign', '1');
+	o.validate = L.bind(hp.validateCertificatePath, this);
 	o.rmempty = false;
 	o.modalonly = true;
 
@@ -1148,7 +1149,7 @@ return view.extend({
 	},
 
 	render: function(data) {
-		var m, s, o, ss, so;
+		let m, s, o, ss, so;
 		var main_node = uci.get(data[0], 'config', 'main_node');
 		var routing_mode = uci.get(data[0], 'config', 'routing_mode');
 		var features = data[1];
