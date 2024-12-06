@@ -205,6 +205,15 @@ if (isset($_POST['saveSubscription'])) {
 
             exec($command . ' 2>&1', $output, $return_var);
 
+            if ($return_var !== 0) {
+                $command = sprintf(
+                    "curl -s -o %s %s",
+                    escapeshellarg($finalPath),
+                    escapeshellarg($url)
+                );
+                exec($command . ' 2>&1', $output, $return_var);
+            }
+
             if ($return_var === 0) {
                 outputMessage("订阅链接 {$url} 更新成功！文件已保存到: {$finalPath}");
             } else {
@@ -276,6 +285,15 @@ if (isset($_POST['update_index'])) {
         );
 
         exec($command . ' 2>&1', $output, $return_var);
+
+        if ($return_var !== 0) {
+            $command = sprintf(
+                "curl -s -o %s %s",
+                escapeshellarg($finalPath),
+                escapeshellarg($subscriptionUrl)
+            );
+            exec($command . ' 2>&1', $output, $return_var);
+        }
 
         if ($return_var !== 0) {
             $message = "订阅 $index 无法下载文件。wget 错误信息: " . implode("\n", $output);
@@ -1097,7 +1115,7 @@ function initializeAceEditor() {
     </div>
 </form>
 
-<h2 class="text-success text-center mt-4 mb-4">订阅管理 ➤ p核专用</h2>
+<h2 class=" text-center mt-4 mb-4">订阅管理 ➤ p核专用</h2>
 <div class="help-text mb-3 text-start">
     <strong>1. 对于首次使用 Sing-box 的用户，必须将核心更新至版本 v1.10.0 或更高版本。确保将出站和入站/转发防火墙规则都设置为“接受”并启用它们。
 </div>
