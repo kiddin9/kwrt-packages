@@ -381,7 +381,7 @@ jobs:
         multimedia/you-get multimedia/lux multimedia/ykdl multimedia/gallery-dl devel/go-rice admin/gotop admin/netdata
         ) &
         (
-        git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" luci-app-snmpd \
+        git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
         luci-app-packet-capture luci-app-mail msmtp luci-app-iperf atinout
         git_sparse_clone master "https://github.com/xiaoqingfengATGH/feeds-xiaoqingfeng" homeredirect luci-app-homeredirect
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/immortalwrt" \
