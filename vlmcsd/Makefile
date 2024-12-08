@@ -2,14 +2,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vlmcsd
 PKG_VERSION:=svn1113
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Wind4/vlmcsd/tar.gz/$(PKG_VERSION)?
 PKG_HASH:=skip
 
-PKG_LICENSE:=MIT
-PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=fuyumi <280604399@qq.com>
 
 PKG_BUILD_PARALLEL:=1
@@ -20,7 +18,6 @@ define Package/vlmcsd
   SECTION:=net
   CATEGORY:=Network
   TITLE:=vlmcsd for OpenWRT
-  URL:=http://forums.mydigitallife.info/threads/50234
   DEPENDS:=+libpthread
 endef
 
@@ -28,8 +25,10 @@ define Package/vlmcsd/description
   vlmcsd is a KMS Emulator in C.
 endef
 
-MAKE_FLAGS += \
-	-C $(PKG_BUILD_DIR)
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	rm $(PKG_BUILD_DIR)/GNUmakefile
+endef
 
 define Package/vlmcsd/install
 	$(INSTALL_DIR) $(1)/usr/bin

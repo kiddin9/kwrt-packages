@@ -11,6 +11,14 @@ define Package/luci-app-bmtedge/conffiles
 /etc/config/bmtedge
 endef
 
+# prerm
+# postrm
+define Package/luci-app-bmtedge/prerm
+#!/bin/sh
+docker rm -f bmtedge
+exit 0
+endef
+
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
