@@ -85,7 +85,7 @@ return view.extend({
 		var has_rgmac = res[0].path,
 			oui_be_queried = uci.get('change-mac', '@change-mac[0]', 'mac_type_specific') || '74:D0:2B';
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('change-mac', _('MAC address randomizer'),
 			_('Assign a random MAC address to the designated interface on every time boot'));

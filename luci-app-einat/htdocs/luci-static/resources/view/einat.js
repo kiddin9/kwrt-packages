@@ -12,14 +12,14 @@
 var conf = 'einat';
 var instance = 'einat';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],
 	expect: { '': {} }
 });
 
-var callRcInit = rpc.declare({
+const callRcInit = rpc.declare({
 	object: 'rc',
 	method: 'init',
 	params: ['name', 'action']
@@ -72,7 +72,7 @@ return view.extend({
 		var isRunning = res[0],
 			has_einat = res[1] ? res[1].path : null
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('einat', _('einat-ebpf'), _('eBPF-based Endpoint-Independent NAT'));
 

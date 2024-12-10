@@ -17,7 +17,7 @@ return view.extend({
 
 	render: function(data) {
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('luci_netports', _('Network Interfaces Ports Status'));
 

@@ -14,14 +14,14 @@ var nattest_fw_rulename = 'natmap-natest';
 var nattest_result_path = '/tmp/natmap-natBehavior';
 var etc_path = '/etc/natmap';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],
 	expect: { '': {} }
 });
 
-var callHostHints = rpc.declare({
+const callHostHints = rpc.declare({
 	object: 'luci-rpc',
 	method: 'getHostHints',
 	expect: { '': {} }
@@ -120,7 +120,7 @@ return view.extend({
 			scripts_notify = res[6] ? res[6] : [],
 			scripts_ddns = res[7] ? res[7] : [];
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('natmap', _('NATMap'));
 

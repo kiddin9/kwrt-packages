@@ -4,7 +4,7 @@
 'require form';
 'require rpc';
 'require uci';
-'require fs'
+'require fs';
 'require tools.widgets as widgets';
 'require tools.github as github';
 'require tools.firewall as fwtool';

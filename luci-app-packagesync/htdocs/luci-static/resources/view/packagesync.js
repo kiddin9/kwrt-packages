@@ -14,7 +14,7 @@ var conf = 'packagesync';
 var release = 'release';
 var instance = 'sync';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],
@@ -81,7 +81,7 @@ return view.extend({
 			}
 		};
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('packagesync');
 

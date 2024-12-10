@@ -9,7 +9,7 @@
 var conf = 'alwaysonline';
 var instance = 'alwaysonline';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],
@@ -54,7 +54,7 @@ return view.extend({
 	render: function(res) {
 		var isRunning = res[0];
 
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map('alwaysonline', _('AlwaysOnline'),
 			_('<a href="%s" target="_blank"><b>AlwaysOnline</b></a> is a HTTP server which mocks a lot network/internet/portal detection servers.').format('https://github.com/Jamesits/alwaysonline'));

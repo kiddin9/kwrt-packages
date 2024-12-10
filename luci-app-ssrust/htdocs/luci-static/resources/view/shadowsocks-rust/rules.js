@@ -25,7 +25,7 @@ return view.extend({
 		]);
 	},
 	render: function(stats) {
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map(conf, _('Redir Rules'),
 			_('On this page you can configure how traffics are to be \

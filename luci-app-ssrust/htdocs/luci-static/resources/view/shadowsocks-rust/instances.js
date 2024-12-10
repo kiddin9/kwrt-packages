@@ -11,7 +11,7 @@
 var conf = 'shadowsocks-rust';
 var cfgtypes = ['ss_local', 'ss_server'];
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: [ 'name' ],
@@ -20,7 +20,7 @@ var callServiceList = rpc.declare({
 
 return view.extend({
 	render: function(stats) {
-		var m, s, o;
+		let m, s, o;
 
 		m = new form.Map(conf,
 			_('Local Instances'),

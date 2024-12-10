@@ -7,7 +7,7 @@
 var conf = 'natmap';
 var natmap_instance = 'natmap';
 
-var callServiceList = rpc.declare({
+const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
 	params: ['name'],

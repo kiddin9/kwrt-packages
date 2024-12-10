@@ -8,14 +8,14 @@
 'require uci';
 'require netports';
 
-var callSessionAccess = rpc.declare({
+const callSessionAccess = rpc.declare({
 	object: 'session',
 	method: 'access',
 	params: [ 'scope', 'object', 'function' ],
 	expect: { 'access': false }
 });
 
-var callNetPortsGetInfo = rpc.declare({
+const callNetPortsGetInfo = rpc.declare({
 	object: 'netports',
 	method: 'getPortsInfo',
 	expect: { '': {} }
