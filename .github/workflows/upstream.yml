@@ -379,7 +379,7 @@ jobs:
         libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 libs/libtorrent-rasterbar \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp sound/spotifyd \
         utils/qt6tools utils/cpulimit utils/sendat utils/exfatprogs utils/filebrowser utils/cups utils/cups-bjnp utils/joker net/udp2raw net/msd_lite \
-        multimedia/you-get multimedia/lux multimedia/ykdl multimedia/gallery-dl devel/go-rice admin/gotop admin/netdata
+        multimedia/you-get multimedia/lux multimedia/ykdl multimedia/gallery-dl devel/go-rice admin/gotop
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
