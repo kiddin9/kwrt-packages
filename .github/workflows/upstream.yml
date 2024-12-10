@@ -340,7 +340,7 @@ jobs:
         git_clone https://github.com/muink/luci-app-ssrust
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/kiddin9/luci-app-qosmate
-        git_clone https://github.com/yz-java/openwrt-subconverter && mv -f openwrt-subconverter/luci-app-subconverter; rm -rf openwrt-subconverter
+        git_clone https://github.com/yz-java/openwrt-subconverter && mv -f openwrt-subconverter/luci-app-subconverter ./; rm -rf openwrt-subconverter
         # git_clone https://github.com/karen07/antiblock-openwrt-package
         # git_clone https://github.com/karen07/luci-app-antiblock-openwrt-package
         ) &
