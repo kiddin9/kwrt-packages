@@ -1,83 +1,50 @@
-### 访问数：[![](https://visitor-badge.glitch.me/badge?page_id=sirpdboy-visitor-badge)] [![](https://img.shields.io/badge/TG群-点击加入-FFFFFF.svg)](https://t.me/joinchat/AAAAAEpRF88NfOK5vBXGBQ)
+# LuCI Netdata
+> [Netdata][] is high-fidelity infrastructure monitoring and troubleshooting.
+Open-source, free, preconfigured, opinionated, and always real-time.
 
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/说明1.jpg)
+### Screenshots
 
-[luci-app-netdata可控制的实时监控 ](https://github.com/sirpdboy/luci-app-netdata)
-======================
+![config](.img/config.png "config")  
+![netdata](.img/netdata.png "netdata")  
 
-### 下载源码方法:
+### How to install
 
- ```Brach
- 
-    # 下载源码
-	
-    git clone https://github.com/sirpdboy/luci-app-netdata package/luci-app-netdata
-    make menuconfig
-	
- ``` 
-### 配置菜单
+1. Goto ~~[releases](https://github.com/muink/luci-app-netdata/tree/releases)~~ [here](https://fantastic-packages.github.io/packages/)
+2. Download the latest version of ipk
+3. Login router and goto **System --> Software**
+4. Upload and install ipk
+5. Reboot if the app is not automatically added in page
+6. Goto **Status --> Netdata**
+7. If after program update. LuCI is not working properly, please reinstall luci-app-netdata.
+8. After you upgrade Netdata, you need to reinstall netdata and luci-app-netdata.
 
- ```Brach
-    make menuconfig
-	# 找到 LuCI -> Applications, 选择 luci-app-netdata, 保存后退出。
- ``` 
- 
-### 编译
+### Build
 
- ```Brach 
-    # 编译固件
-    make package/luci-app-netdata/compile V=s
- ```
+- Compile from OpenWrt/LEDE SDK
 
+```
+# Take the x86_64 platform as an example
+tar xjf openwrt-sdk-21.02.3-x86-64_gcc-8.4.0_musl.Linux-x86_64.tar.xz
+# Go to the SDK root dir
+cd OpenWrt-sdk-*-x86_64_*
+# First run to generate a .config file
+make menuconfig
+./scripts/feeds update -a
+./scripts/feeds install -a
+# Get Makefile
+git clone --depth 1 --branch master --single-branch --no-checkout https://github.com/muink/luci-app-netdata.git package/luci-app-netdata
+pushd package/luci-app-netdata
+umask 022
+git checkout
+popd
+# Select the package LuCI -> Applications -> luci-app-netdata
+make menuconfig
+# Start compiling
+make package/luci-app-netdata/compile V=99
+```
 
-## 界面
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/netdata1.jpg)
+[Netdata]: https://github.com/netdata/netdata
 
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/netdata2.jpg)
+### License
 
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/说明2.jpg)
-
-
-
-## 使用与授权相关说明
- 
-- 本人开源的所有源码，任何引用需注明本处出处，如需修改二次发布必告之本人，未经许可不得做于任何商用用途。
-
-
-# My other project
-
-- 网络速度测试 ：https://github.com/sirpdboy/NetSpeedTest
-
-- 定时设置插件 : https://github.com/sirpdboy/luci-app-autotimeset
-
-- 关机功能插件 : https://github.com/sirpdboy/luci-app-poweroffdevice
-
-- opentopd主题 : https://github.com/sirpdboy/luci-theme-opentopd
-
-- kucat 主题: https://github.com/sirpdboy/luci-theme-kucat
-
-- 家长控制: https://github.com/sirpdboy/luci-theme-parentcontrol
-
-- 系统高级设置 : https://github.com/sirpdboy/luci-app-advanced
-
-- ddns-go动态域名: https://github.com/sirpdboy/luci-app-ddns-go
-
-- 进阶设置（系统高级设置+主题设置kucat/agron/opentopd）: https://github.com/sirpdboy/luci-app-advancedplus
-
-- 设置向导: https://github.com/sirpdboy/luci-app-wizard
-
-- 分区扩容: https://github.com/sirpdboy/luci-app-partexp
-
-- lukcy大吉: https://github.com/sirpdboy/luci-app-lukcy
-
-## 捐助
-
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/说明3.jpg)
-
-|     <img src="https://img.shields.io/badge/-支付宝-F5F5F5.svg" href="#赞助支持本项目-" height="25" alt="图飞了😂"/>  |  <img src="https://img.shields.io/badge/-微信-F5F5F5.svg" height="25" alt="图飞了😂" href="#赞助支持本项目-"/>  | 
-| :-----------------: | :-------------: |
-|![xm1](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/支付宝.png) | ![xm1](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/微信.png) |
-
-<a href="#readme">
-    <img src="https://img.shields.io/badge/-返回顶部-orange.svg" alt="图飞了😂" title="返回顶部" align="right"/>
-</a>
+- This project is licensed under the [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html)
