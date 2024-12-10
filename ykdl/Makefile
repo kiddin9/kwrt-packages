@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ykdl
 PKG_VERSION:=1.8.2
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PYPI_NAME:=ykdl
 PKG_HASH:=skip
@@ -25,7 +25,7 @@ define Package/ykdl
   TITLE:=a video downloader focus on China mainland video sites
   URL:=https://github.com/SeaHOH/ykdl
   DEPENDS:= \
-    +ca-bundle \
+    +ca-certificates \
     +ffmpeg \
     +python3 \
     +python3-email \

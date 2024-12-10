@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gallery-dl
 PKG_VERSION:=1.27.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PYPI_NAME:=gallery_dl
 PKG_HASH:=skip
@@ -25,7 +25,7 @@ define Package/gallery-dl
   TITLE:=Command-line program to download image galleries and collections
   URL:=https://github.com/mikf/gallery-dl
   DEPENDS:= \
-    +ca-bundle \
+    +ca-certificates \
     +python3 \
     +python3-codecs \
     +python3-ctypes \
