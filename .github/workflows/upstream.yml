@@ -539,7 +539,6 @@ jobs:
         sed -i \
           -e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' \
           -e "s/\(\(^\| \|	\)\(PKG_HASH\|PKG_MD5SUM\|PKG_MIRROR_HASH\|HASH\):=\).*/\1skip/" \
-          -e 's/+ca-certificates/+ca-bundle/' \
           -e 's/php7/php8/g' \
           -e 's/+docker\( \|$\)/+docker +dockerd /g' \
           -e 's/URL:=@IMMORTALWRT/URL:=https:\/\/mirror2.immortalwrt.org\/sources/g' \
