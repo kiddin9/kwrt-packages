@@ -6,7 +6,6 @@
 'require uci';
 'require fs';
 'require tools.widgets as widgets';
-'require tools.github as github';
 'require tools.firewall as fwtool';
 
 var callServiceList = rpc.declare({
