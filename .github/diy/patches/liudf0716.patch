@@ -21,7 +21,15 @@
 
 --- a/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/wifidogx.js
 +++ b/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/wifidogx.js
-@@ -44,7 +44,7 @@ return view.extend({
+@@ -6,7 +6,6 @@
+ 'require uci';
+ 'require fs';
+ 'require tools.widgets as widgets';
+-'require tools.github as github';
+ 'require tools.firewall as fwtool';
+ 
+ var callServiceList = rpc.declare({
+@@ -44,7 +43,7 @@ return view.extend({
  		var m, s, o, ss;
  
  		m = new form.Map('wifidogx', _('ApFree-WiFiDog'));
