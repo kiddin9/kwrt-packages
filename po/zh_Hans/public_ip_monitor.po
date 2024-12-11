@@ -1,0 +1,151 @@
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: public_ip_monitor.js:64 public_ip_monitor.js:72
+msgid "From"
+msgstr "从"
+
+#: public_ip_monitor.js:261
+msgid "General Settings"
+msgstr "常规设置"
+
+#: public_ip_monitor.js:312
+msgid "History Location"
+msgstr "历史记录位置"
+
+#: public_ip_monitor.js:321
+msgid "IPv4"
+msgstr "IPv4"
+
+#: public_ip_monitor.js:276
+msgid "IPv4 Check Interval"
+msgstr "IPv4 检查间隔"
+
+#: public_ip_monitor.js:129
+msgid "IPv4 Script"
+msgstr "IPv4 脚本"
+
+#: public_ip_monitor.js:282
+msgid "IPv4 Script Location"
+msgstr "IPv4 脚本位置"
+
+#: public_ip_monitor.js:270
+msgid "IPv4 Service"
+msgstr "IPv4 服务"
+
+#: public_ip_monitor.js:325
+msgid "IPv6"
+msgstr "IPv6"
+
+#: public_ip_monitor.js:300
+msgid "IPv6 Check Interval"
+msgstr "IPv6 检查间隔"
+
+#: public_ip_monitor.js:137
+msgid "IPv6 Script"
+msgstr "IPv6 脚本"
+
+#: public_ip_monitor.js:306
+msgid "IPv6 Script Location"
+msgstr "IPv6 脚本位置"
+
+#: public_ip_monitor.js:294
+msgid "IPv6 Service"
+msgstr "IPv6 服务"
+
+#: public_ip_monitor.js:264
+msgid "Monitor IPv4"
+msgstr "监控 IPv4"
+
+#: public_ip_monitor.js:288
+msgid "Monitor IPv6"
+msgstr "监控 IPv6"
+
+#: public_ip_monitor.js:264
+msgid "Monitor if there your public ipv4 address."
+msgstr "监控您的公网 IPv4 地址。"
+
+#: public_ip_monitor.js:288
+msgid "Monitor if there your public ipv6 address."
+msgstr "监控您的公网 IPv6 地址。"
+
+#: public_ip_monitor.js:97
+#: public_ip_monitor.js:28 public_ip_monitor.js:29 public_ip_monitor.js:46
+#: public_ip_monitor.js:47 public_ip_monitor.js:48 public_ip_monitor.js:91
+msgid "N/A"
+msgstr "不可用"
+
+#: public_ip_monitor.js:78 public_ip_monitor.js:82
+msgid "No entries available"
+msgstr "无可用条目"
+
+#: public_ip_monitor.js:91 public_ip_monitor.js:97
+msgid "Not monitored"
+msgstr "未监控"
+
+#: public_ip_monitor.js:257
+msgid "Overview"
+msgstr "概览"
+
+#: public_ip_monitor.js:252
+msgid "Public IP Monitor"
+msgstr "公网 IP 监控"
+
+#: public_ip_monitor.js:107
+msgid "Public IPv4 Change History"
+msgstr "公网 IPv4 变更历史"
+
+#: public_ip_monitor.js:88
+msgid "Public IPv4:"
+msgstr "公网 IPv4:"
+
+#: public_ip_monitor.js:116
+msgid "Public IPv6 Change History"
+msgstr "公网 IPv6 变更历史"
+
+#: public_ip_monitor.js:94
+msgid "Public IPv6:"
+msgstr "公网 IPv6:"
+
+#: public_ip_monitor.js:130
+msgid "Script to run when the public IPv4 changes, use $1 to retrieve the new IPv4 inside the script."
+msgstr "当公网 IPv4 发生变化时运行的脚本，使用 $1 在脚本中获取新的 IPv4。"
+
+#: public_ip_monitor.js:138
+msgid "Script to run when the public IPv6 changes, use $1 to retrieve the new IPv6 inside the script."
+msgstr "当公网 IPv6 发生变化时运行的脚本，使用 $1 在脚本中获取新的 IPv6。"
+
+#: public_ip_monitor.js:276 public_ip_monitor.js:300
+msgid "The interval in seconds which we will retrieve data from the service."
+msgstr "从服务获取数据的时间间隔（秒）。"
+
+#: public_ip_monitor.js:282
+msgid "The location of the IPv4 on change script to be triggered, use $1 to get the new IPv4 as input."
+msgstr "IPv4 变更时触发的脚本位置，使用 $1 获取新的 IPv4 作为输入。"
+
+#: public_ip_monitor.js:306
+msgid "The location of the IPv6 on change script to be triggered, use $1 to get the new IPv6 as input."
+msgstr "IPv6 变更时触发的脚本位置，使用 $1 获取新的 IPv6 作为输入。"
+
+#: public_ip_monitor.js:312
+msgid "The location the IPv4 and IPv6 history is stored."
+msgstr "IPv4 和 IPv6 历史记录的存储位置。"
+
+#: public_ip_monitor.js:270
+msgid "The service that we can retrieve the public IPv4."
+msgstr "可以获取公网 IPv4 的服务。"
+
+#: public_ip_monitor.js:294
+msgid "The service that we can retrieve the public IPv6."
+msgstr "可以获取公网 IPv6 的服务。"
+
+#: public_ip_monitor.js:253
+msgid "This monitors changes on the internet-facing public IP and trigger tasks when a change occurs."
+msgstr "监控互联网公网 IP 的变化，并在发生变化时触发任务。"
+
+#: public_ip_monitor.js:63 public_ip_monitor.js:71
+msgid "Timestamp"
+msgstr "时间戳"
+
+#: public_ip_monitor.js:65 public_ip_monitor.js:73
+msgid "To"
+msgstr "到"
