@@ -1,0 +1,35 @@
+#!/bin/sh /etc/rc.common
+START=95
+USE_PROCD=1
+CONFIGURATION=ympd
+
+start_service() { 
+	config_load "${CONFIGURATION}"
+	procd_open_instance
+	local host
+	local cert
+	local port
+	local webport
+	local user
+	local mpdpass
+	local dletoke
+	config_get host conf host
+	config_get cert conf cert
+	config_get port conf port
+	config_get webport conf webport
+	config_get user conf user
+	config_get mpdpass conf mpdpass
+	config_get dletoken conf dletoken
+	if [ -n "$cert" ]; then
+	    if [ -f "$cert" ]]; then
+	    	webport="ssl://${webport}:${cert}"
+	    else
+	    	echo "WARNING: Certificate not found!  Running without SSL..."
+	    fi
+	fi
+	if [ -n "$dletoken" ]; then
+	    dletoken="-d $dletoken"
+	fi
+	procd_set_param command /usr/bin/ympd -h "$host" -p "$port" -w "$webport" -u "$user" -m "$mpdpass" $dletoken
+	procd_close_instance
+}

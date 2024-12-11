@@ -1,0 +1,26 @@
+{
+  "luci-app-public_ip_monitor": {
+    "description": "Grant UCI and RPC access to LuCI app example",
+    "read": {
+      "ubus": {
+        "luci.public_ip_monitor": [
+          "get_ipv4_script_content",
+          "save_ipv4_script_content",
+          "get_ipv6_script_content",
+          "save_ipv6_script_content",
+          "get_history",
+          "get_current_public_ipv4",
+          "get_current_public_ipv6"
+        ]
+      },
+      "uci": [
+        "public_ip_monitor"
+      ]
+    },
+    "write": {
+      "uci": [
+        "public_ip_monitor"
+      ]
+    }
+  }
+}

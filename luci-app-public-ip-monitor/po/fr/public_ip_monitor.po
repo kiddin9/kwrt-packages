@@ -1,0 +1,162 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: public_ip_monitor.js:64 public_ip_monitor.js:72
+msgid "From"
+msgstr ""
+
+#: public_ip_monitor.js:261
+msgid "General Settings"
+msgstr ""
+
+#: public_ip_monitor.js:312
+msgid "History Location"
+msgstr ""
+
+#: public_ip_monitor.js:321
+msgid "IPv4"
+msgstr ""
+
+#: public_ip_monitor.js:276
+msgid "IPv4 Check Interval"
+msgstr ""
+
+#: public_ip_monitor.js:129
+msgid "IPv4 Script"
+msgstr ""
+
+#: public_ip_monitor.js:282
+msgid "IPv4 Script Location"
+msgstr ""
+
+#: public_ip_monitor.js:270
+msgid "IPv4 Service"
+msgstr ""
+
+#: public_ip_monitor.js:325
+msgid "IPv6"
+msgstr ""
+
+#: public_ip_monitor.js:300
+msgid "IPv6 Check Interval"
+msgstr ""
+
+#: public_ip_monitor.js:137
+msgid "IPv6 Script"
+msgstr ""
+
+#: public_ip_monitor.js:306
+msgid "IPv6 Script Location"
+msgstr ""
+
+#: public_ip_monitor.js:294
+msgid "IPv6 Service"
+msgstr ""
+
+#: public_ip_monitor.js:264
+msgid "Monitor IPv4"
+msgstr ""
+
+#: public_ip_monitor.js:288
+msgid "Monitor IPv6"
+msgstr ""
+
+#: public_ip_monitor.js:264
+msgid "Monitor if there your public ipv4 address."
+msgstr ""
+
+#: public_ip_monitor.js:288
+msgid "Monitor if there your public ipv6 address."
+msgstr ""
+
+#: public_ip_monitor.js:97
+#: public_ip_monitor.js:28 public_ip_monitor.js:29 public_ip_monitor.js:46
+#: public_ip_monitor.js:47 public_ip_monitor.js:48 public_ip_monitor.js:91
+msgid "N/A"
+msgstr ""
+
+#: public_ip_monitor.js:78 public_ip_monitor.js:82
+msgid "No entries available"
+msgstr ""
+
+#: public_ip_monitor.js:91 public_ip_monitor.js:97
+msgid "Not monitored"
+msgstr ""
+
+#: public_ip_monitor.js:257
+msgid "Overview"
+msgstr ""
+
+#: public_ip_monitor.js:252
+msgid "Public IP Monitor"
+msgstr ""
+
+#: public_ip_monitor.js:107
+msgid "Public IPv4 Change History"
+msgstr ""
+
+#: public_ip_monitor.js:88
+msgid "Public IPv4:"
+msgstr ""
+
+#: public_ip_monitor.js:116
+msgid "Public IPv6 Change History"
+msgstr ""
+
+#: public_ip_monitor.js:94
+msgid "Public IPv6:"
+msgstr ""
+
+#: public_ip_monitor.js:130
+msgid ""
+"Script to run when the public IPv4 changes, use $1 to retrieve the new IPv4 "
+"inside the script."
+msgstr ""
+
+#: public_ip_monitor.js:138
+msgid ""
+"Script to run when the public IPv6 changes, use $1 to retrieve the new IPv6 "
+"inside the script."
+msgstr ""
+
+#: public_ip_monitor.js:276 public_ip_monitor.js:300
+msgid "The interval in seconds which we will retrieve data from the service."
+msgstr ""
+
+#: public_ip_monitor.js:282
+msgid ""
+"The location of the IPv4 on change script to be triggered, use $1 to get the "
+"new IPv4 as input."
+msgstr ""
+
+#: public_ip_monitor.js:306
+msgid ""
+"The location of the IPv6 on change script to be triggered, use $1 to get the "
+"new IPv6 as input."
+msgstr ""
+
+#: public_ip_monitor.js:312
+msgid "The location the IPv4 and IPv6 history is stored."
+msgstr ""
+
+#: public_ip_monitor.js:270
+msgid "The service that we can retrieve the public IPv4."
+msgstr ""
+
+#: public_ip_monitor.js:294
+msgid "The service that we can retrieve the public IPv6."
+msgstr ""
+
+#: public_ip_monitor.js:253
+msgid ""
+"This monitors changes on the internet-facing public IP and trigger tasks "
+"when a change occurs."
+msgstr ""
+
+#: public_ip_monitor.js:63 public_ip_monitor.js:71
+msgid "Timestamp"
+msgstr ""
+
+#: public_ip_monitor.js:65 public_ip_monitor.js:73
+msgid "To"
+msgstr ""

@@ -1,0 +1,36 @@
+#!/bin/bash
+trap 'rm /tmp/peanut.{1,2,3} 2> /dev/null' EXIT
+FILE=/tmp/peanut
+header() {
+	echo -e "${GREEN}$1 Active Internet connections (servers only)${NC}"
+	echo -ne "${BLUE}"
+	cat ${FILE}.1 | head -2 | tail -1
+	echo -ne "${NC}"
+}
+GREEN='\033[1;32m'
+BLUE='\033[1;34m'
+NC='\033[0m'
+netstat -peanut | tee ${FILE}.1| sed '/LISTEN/!d' > ${FILE}.2
+if [[ -z "$1" || "$1" == "-4" ]]; then
+	header IPv4
+	grep -E '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do grep ":${port} " ${FILE}.3; done
+fi
+[[ -z "$1" ]] && echo ""
+if [[ -z "$1" || "$1" == "-6" ]]; then
+	header IPv4
+	grep -Ev '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do grep ":${port} " ${FILE}.3; done
+elif [[ "$1" == "--dump" ]]; then
+	sed "s|/| |g" ${FILE}.2 | while read PROTO A B LOCAL C D PID PROG; do
+		PORT=$(echo $LOCAL | sed 's/.*://g')
+		IP=${LOCAL//:${PORT}/}
+		CMD=${PROG}
+		if [[ "$PROG" != "-" && "$PROG" != "" ]]; then
+			CMD=($(ps w | grep -s $PID | grep -v grep 2> /dev/null))
+			CMD="${CMD[@]:4}"
+			[[ "$CMD" =~ ^\[kworker ]] && CMD=${PROG}
+		fi
+		[[ "${LOCAL}" =~ ((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5]) ]] && IPv=IPv4 || IPv=IPv6
+		echo "${PORT}|${PROTO}|${IP}|${PID}|${PROG}|${CMD}|${IPv}"
+	done | sort -n
+fi
+[[ -z "$1" ]] && echo ""

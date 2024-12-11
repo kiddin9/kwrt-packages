@@ -1,0 +1,12 @@
+{
+		"admin/services/ympd": {
+				"title": "YMPD",
+				"action": {
+						"type": "view",
+						"path": "ympd"
+				},
+				"depends": {
+						"acl": [ "luci-app-ympd" ]
+				}
+		}
+}

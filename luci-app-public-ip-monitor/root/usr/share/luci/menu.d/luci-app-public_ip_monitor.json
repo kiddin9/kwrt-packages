@@ -1,0 +1,13 @@
+{
+  "admin/services/public_ip_monitor": {
+    "title": "Public IP Monitor",
+    "order": 1,
+    "action": {
+      "type": "view",
+      "path": "public_ip_monitor"
+    },
+    "depends": {
+      "acl": [ "luci-app-public_ip_monitor" ]
+    }
+  }
+}

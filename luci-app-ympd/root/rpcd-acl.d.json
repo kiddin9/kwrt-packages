@@ -1,0 +1,15 @@
+{
+	"luci-app-ympd": {
+		"description": "Grant permissions for the YMPD LuCI app",
+		"read": {
+			"uci": [
+				"ympd"
+			],
+		},
+		"write": {
+			"uci": [
+				"ympd"
+			]
+		}
+	}
+}
