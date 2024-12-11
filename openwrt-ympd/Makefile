@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ympd
-PKG_VERSION:=1.3.0
-PKG_RELEASE:=1
+PKG_VERSION:=1.2.3
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/notandy/ympd
-PKG_SOURCE_VERSION:=ec008a4995666d673bd4cb3926fae7f4b6aa3239
+PKG_SOURCE_VERSION:=612f8fc0b2c47fc89d403e4a044541c6b2b238c8
 PKG_MIRROR_HASH:=skip
 
 include $(INCLUDE_DIR)/package.mk
