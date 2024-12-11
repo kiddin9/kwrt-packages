@@ -44,7 +44,7 @@ return view.extend({
 		var m, s, o, ss;
 
 		m = new form.Map('wifidogx', _('ApFree-WiFiDog'));
-		m.description = github.desc('apfree-wifidog offers a stable and secure captive portal solution.', 'liudf0716', 'apfree-wifidog');
+		m.description = _("apfree-wifidog is a Stable & Secure captive portal solution.");
 		
 
 		s = m.section(form.NamedSection, 'common',  _('Configuration'));
