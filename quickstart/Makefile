@@ -11,7 +11,7 @@ PKG_ARCH_quickstart:=$(ARCH)
 
 PKG_NAME:=quickstart
 PKG_VERSION:=0.9.6
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/linkease/istore-packages/releases/download/prebuilt/
 PKG_HASH:=skip
@@ -47,6 +47,7 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 		chmod 755 /etc/uci-defaults/09-quickstart
 		/etc/uci-defaults/09-quickstart && rm -f /etc/uci-defaults/09-quickstart
 	fi
+	exit 0
 fi
 endef
 

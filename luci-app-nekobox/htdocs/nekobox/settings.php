@@ -142,7 +142,7 @@ $razordVersion = getRazordVersion();
             <a href="./" class="col btn btn-lg">🏠 首页</a>
             <a href="./dashboard.php" class="col btn btn-lg">📊 面板</a>
             <a href="./configs.php" class="col btn btn-lg">⚙️ 配置</a>
-            <a href="./mon.php" class="col btn btn-lg"></i>📦 订阅</a> 
+            <a href="./singbox.php" class="col btn btn-lg"></i>📦 订阅</a> 
             <a href="#" class="col btn btn-lg">🛠️ 设定</a>
          <div class="container px-4">
     <h2 class="text-center p-2 mb-3">主题设定</h2>
@@ -593,9 +593,9 @@ function selectOperation(type) {
                             ? '开始下载 Dashboard 面板更新...'  
                             : '未知面板更新类型...',
             description: selectedPanel === 'zashboard' 
-                ? '正在更新 Zashboard 面板到最新版本' 
+                ? '正在更新 Zashboard 面板到最新版本,如遇无法显示清除浏览器缓存。' 
                 : selectedPanel === 'yacd-meat' 
-                    ? '正在更新 Yacd-Meat 面板到最新版本' 
+                    ? '正在更新 Yacd-Meat 面板到最新版本，如遇无法显示清除浏览器缓存。' 
                     : selectedPanel === 'metacubexd' 
                         ? '正在更新 Metacubexd 面板到最新版本' 
                         : selectedPanel === 'dashboard'  

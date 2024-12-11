@@ -15,7 +15,7 @@ endef
 # postrm
 define Package/luci-app-bmtedge/prerm
 #!/bin/sh
-docker rm -f bmtedge
+/root/usr/libexec/istorec/bmtedge.sh rm
 exit 0
 endef
 
