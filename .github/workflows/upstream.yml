@@ -362,7 +362,7 @@ jobs:
         package/base-files package/system/opkg package/network/services/ppp \
         package/network/services/dnsmasq package/network/config/wifi-scripts
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/luci" applications/luci-app-aria2 \
-        applications/luci-app-ddns applications/luci-app-acme applications/luci-app-package-manager \
+        applications/luci-app-ddns applications/luci-app-package-manager \
         applications/luci-app-ksmbd applications/luci-app-samba4 applications/luci-app-watchcat applications/luci-app-upnp \
         applications/luci-app-transmission applications/luci-app-filemanager modules/luci-base modules/luci-mod-network \
         modules/luci-mod-status modules/luci-mod-system
@@ -370,7 +370,7 @@ jobs:
 
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/sub-web net/dnsproxy net/haproxy net/v2raya net/cdnspeedtest net/keepalived \
+        net/sub-web net/dnsproxy net/haproxy net/cdnspeedtest \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/cloudreve net/daed \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server net/speedtest-go \
