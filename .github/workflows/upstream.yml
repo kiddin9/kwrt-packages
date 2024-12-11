@@ -137,7 +137,6 @@ jobs:
         (
         git_clone https://github.com/esirplayground/LingTiGameAcc
         git_clone https://github.com/esirplayground/luci-app-LingTiGameAcc
-        git_clone https://github.com/zxlhhyccc/luci-app-v2raya
         git_clone https://github.com/jerrykuku/luci-app-go-aliyundrive-webdav
         git_clone https://github.com/SSSSSimon/tencentcloud-openwrt-plugin-ddns && mv -n tencentcloud-openwrt-plugin-ddns/tencentcloud_ddns ./luci-app-tencentddns; rm -rf tencentcloud-openwrt-plugin-ddns
         git_clone https://github.com/Tencent-Cloud-Plugins/tencentcloud-openwrt-plugin-cos && mv -n tencentcloud-openwrt-plugin-cos/tencentcloud_cos ./luci-app-tencentcloud-cos; rm -rf tencentcloud-openwrt-plugin-cos
@@ -186,7 +185,6 @@ jobs:
         git_clone https://github.com/NateLol/luci-app-oled  lucioled && mv lucioled/luci-app-oled ./;rm -rf lucioled
         git_clone https://github.com/sundaqiang/openwrt-packages && mv -n openwrt-packages/luci-* ./; rm -rf openwrt-packages
         git_clone https://github.com/vernesong/OpenClash && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash
-        git_clone https://github.com/pymumu/luci-app-smartdns
         git_clone https://github.com/CHN-beta/rkp-ipid
         git_clone https://github.com/Erope/openwrt_nezha nezha && mvdir nezha
         ) &
@@ -231,8 +229,6 @@ jobs:
         (
         git clone https://github.com/sirpdboy/luci-theme-kucat -b js --depth 1
         git_clone https://github.com/QiuSimons/luci-app-daed-next daed1 && mvdir daed1
-        git_clone https://github.com/EkkoG/luci-app-natmap
-        git_clone https://github.com/EkkoG/openwrt-natmap
         git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
         git_clone https://github.com/sirpdboy/luci-app-eqosplus
         git_clone https://github.com/JiaY-shi/fancontrol fanc && mv fanc/{fancontrol,luci-app-fancontrol} ./;rm -rf fanc
@@ -279,7 +275,6 @@ jobs:
         (
         git_clone https://github.com/liudf0716/luci-app-yt-dlp
         git_clone https://github.com/liudf0716/luci-app-kcptun
-        git_clone https://github.com/liudf0716/luci-app-xfrpc
         git_clone https://github.com/liudf0716/luci-app-apfree-wifidog
         git_clone https://github.com/Akimio521/luci-app-gecoosac
         git_clone https://github.com/ilxp/luci-app-ikoolproxy
@@ -359,7 +354,7 @@ jobs:
         net/qBittorrent-static net/phtunnel net/frp net/headscale \
         net/uugamebooster net/verysync net/vlmcsd net/dnsforwarder net/tcpping net/netatalk net/pgyvpn
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
-        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/miniupnpd net/p910nd net/ddns-scripts net/smartdns net/curl \
+        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/miniupnpd net/p910nd net/ddns-scripts net/curl \
         net/ariang net/tailscale
         ) &
         (
