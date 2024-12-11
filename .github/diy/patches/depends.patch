@@ -46,21 +46,6 @@
  PKG_VERSION:=5.2
  PKG_RELEASE:=5
 
---- a/msmtp/Makefile
-+++ b/msmtp/Makefile
-@@ -46,7 +46,7 @@ endef
- 
- define Package/msmtp
- $(call Package/msmtp/Default)
--  DEPENDS+= +libgnutls +ca-bundle
-+  DEPENDS+= +libgnutls +ca-bundle +libopenssl
-   TITLE+= (with SSL support)
-   VARIANT:=ssl
-   DEFAULT_VARIANT:=1
- 
- define Package/luci-app-homeassistant/conffiles
- /etc/config/homeassistant
-
 --- a/k3screenctrl/Makefile
 +++ b/k3screenctrl/Makefile
 @@ -19,7 +19,7 @@ TARGET_CFLAGS+= -D_GNU_SOURCE
