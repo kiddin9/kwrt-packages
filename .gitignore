@@ -41,10 +41,8 @@
 /dns-proxy
 /ddns-scripts_*
 /asterisk-chan-quectel
-/sing-box
 /ntfs3-mount
 /accel-ppp
 /aic8800
-/xray-core
 /luci-app-apinger
 /luci-app-keepalived
