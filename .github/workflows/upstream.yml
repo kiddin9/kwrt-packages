@@ -507,7 +507,8 @@ jobs:
         bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
         bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
         bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
-        
+        ) &
+        (
         #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
         sed -i 's/+rclone\( \|$\)/+rclone +fuse-utils\1/g' luci-app-rclone/Makefile
         sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
