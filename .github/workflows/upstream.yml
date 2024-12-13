@@ -299,7 +299,6 @@ jobs:
         git_clone https://github.com/tanghammer/luci-app-switchtools
         ) &
         (
-        git_clone https://github.com/jackpang960/luci-app-hypermodem
         git_clone https://github.com/wangqn/luci-app-nut
         git_clone https://github.com/kingyond/luci-app-accesscontrol-plus accesscontrol-plus && mv accesscontrol-plus/luci-app-accesscontrol-plus ./;rm -rf accesscontrol-plus
         git_clone https://github.com/4IceG/luci-app-lite-watchdog lite-watchdog && mv lite-watchdog/luci-app-lite-watchdog ./;rm -rf lite-watchdog
