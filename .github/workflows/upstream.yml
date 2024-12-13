@@ -232,7 +232,7 @@ jobs:
         git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
         git_clone https://github.com/sirpdboy/luci-app-eqosplus
         git_clone https://github.com/JiaY-shi/fancontrol fanc && mv fanc/{fancontrol,luci-app-fancontrol} ./;rm -rf fanc
-        git_clone https://github.com/Siriling/5G-Modem-Support && mv -n 5G-Modem-Support/{luci-app-modem,luci-app-cpe,luci-app-sms-tool} ./;rm -rf 5G-Modem-Support
+        git_clone https://github.com/Siriling/5G-Modem-Support && mvdir 5G-Modem-Support
         git_clone https://github.com/danchexiaoyang/luci-app-syncthing
         git_clone https://github.com/aa65535/openwrt-dist-luci
         git_clone https://github.com/morytyann/OpenWrt-msd && mvdir OpenWrt-msd
