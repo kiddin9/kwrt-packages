@@ -48,7 +48,7 @@ if [ -n "$NOTIFY" ]; then
 	json_load "$NOTIFY_PARAM"
 	json_add_string comment "$COMMENT"
 	json_add_string text "$_text"
-	$NOTIFY "$(json_dump)"
+	$NOTIFY "$(json_dump)" &
 fi
 if [ -n "$DDNS" ]; then
 	_hostype="$(jsonfilter -qs "$DDNS_PARAM" -e '@["hostype"]')"
@@ -61,7 +61,7 @@ if [ -n "$DDNS" ]; then
 	json_add_string https_svcparams "$_svcparams"
 	json_add_string ip "$ip"
 	json_add_int port "$port"
-	$DDNS "$(json_dump)"
+	$DDNS "$(json_dump)" &
 fi
 
 [ -n "${CUSTOM_SCRIPT}" ] && {

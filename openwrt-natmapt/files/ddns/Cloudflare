@@ -23,7 +23,7 @@ http_request() {
 }
 
 start() {
-	local retry='--connect-timeout 3 --retry 3'
+	local retry='--connect-timeout 3 --retry 8'
 	#$CURL $retry -L -X GET \
 	#	--url "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 	#	-H "Authorization: Bearer ${TOKEN}" \
