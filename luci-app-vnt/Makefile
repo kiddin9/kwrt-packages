@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 
 LUCI_TITLE:=LuCI support for vnt
-LUCI_DEPENDS:=+luci-lib-fs +kmod-tun
+LUCI_DEPENDS:=+kmod-tun
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-vnt

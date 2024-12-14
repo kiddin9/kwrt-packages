@@ -1,4 +1,3 @@
-local fs = require "luci.fs"
 local http = luci.http
 local nixio = require "nixio"
 
@@ -104,8 +103,8 @@ stunhost = s:taboption("privacy",DynamicList, "stunhost", translate("stun服务�
 	translate("使用stun服务探测客户端NAT类型，不同类型有不同的打洞策略，最多三个，超过将被忽略<br>已内置谷歌 QQ 可不填，一些<a href='https://github.com/heiher/natmap/issues/18#issue-1580804352' target='_blank'>免费stun服务器</a>"))
 stunhost.placeholder = "stun.qq.com:3478"
 
-local model = fs.readfile("/proc/device-tree/model") or ""
-local hostname = fs.readfile("/proc/sys/kernel/hostname") or ""
+local model = nixio.fs.readfile("/proc/device-tree/model") or ""
+local hostname = nixio.fs.readfile("/proc/sys/kernel/hostname") or ""
 model = model:gsub("\n", "")
 hostname = hostname:gsub("\n", "")
 local device_name = (model ~= "" and model) or (hostname ~= "" and hostname) or "OpenWrt"
@@ -553,7 +552,7 @@ public_key.cfgvalue = function(self, section)
     return nixio.fs.readfile("/tmp/vnts_key/public_key.pem") or ""
 end
 public_key.write = function(self, section, value)
-    fs.writefile("/tmp/vnts_key/public_key.pem", value:gsub("\r\n", "\n"))
+    nixio.fs.writefile("/tmp/vnts_key/public_key.pem", value:gsub("\r\n", "\n"))
 end
 
 private_key = s:taboption("pri",TextValue, "private_key", translate("private私钥"),
@@ -564,7 +563,7 @@ private_key.cfgvalue = function(self, section)
     return nixio.fs.readfile("/tmp/vnts_key/private_key.pem") or ""
 end
 private_key.write = function(self, section, value)
-    fs.writefile("/tmp/vnts_key/private_key.pem", value:gsub("\r\n", "\n"))
+    nixio.fs.writefile("/tmp/vnts_key/private_key.pem", value:gsub("\r\n", "\n"))
 end
 
 local vnts_status = luci.sys.exec("ps | grep vnts | grep -v grep")
