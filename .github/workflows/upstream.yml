@@ -354,18 +354,14 @@ jobs:
         net/qBittorrent-static net/phtunnel net/frp net/headscale \
         net/uugamebooster net/verysync net/vlmcsd net/dnsforwarder net/tcpping net/netatalk net/pgyvpn
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
-        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts net/curl \
+        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
         net/ariang net/tailscale
         ) &
         (
-        git_sparse_clone openwrt-24.10 "https://github.com/openwrt/openwrt" \
-        package/base-files package/system/opkg package/network/services/ppp \
-        package/network/services/dnsmasq package/network/config/wifi-scripts
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/luci" applications/luci-app-aria2 \
         applications/luci-app-ddns applications/luci-app-package-manager \
         applications/luci-app-ksmbd applications/luci-app-samba4 applications/luci-app-watchcat applications/luci-app-upnp \
-        applications/luci-app-transmission applications/luci-app-filemanager modules/luci-base modules/luci-mod-network \
-        modules/luci-mod-status modules/luci-mod-system
+        applications/luci-app-transmission applications/luci-app-filemanager
         ) &
 
         (
@@ -386,9 +382,8 @@ jobs:
         git_sparse_clone master "https://github.com/xiaoqingfengATGH/feeds-xiaoqingfeng" homeredirect luci-app-homeredirect
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/immortalwrt" \
         package/kernel/rtl8189es package/emortal/autocore package/emortal/automount \
-        package/network/utils/fullconenat package/emortal/cpufreq package/network/utils/fullconenat-nft package/network/utils/nftables \
-        package/network/config/firewall package/network/config/firewall4 package/system/fstools \
-        package/utils/mhz package/libs/libnftnl package/firmware/wireless-regdb 
+        package/network/utils/fullconenat package/emortal/cpufreq package/network/utils/fullconenat-nft \
+        package/utils/mhz
         ) &
         (
         git_sparse_clone master "https://github.com/x-wrt/com.x-wrt" luci-app-macvlan luci-app-xwan
@@ -513,20 +508,11 @@ jobs:
         sed -i 's/\(+luci-compat\)/\1 +luci-theme-argon/' luci-app-argon-config/Makefile
         sed -i 's/ +uhttpd-mod-ubus//' luci-app-packet-capture/Makefile
         sed -i '/boot()/,+2d' ddns-scripts/files/etc/init.d/ddns
-        sed -i "/DISTRIB_DESCRIPTION/c\DISTRIB_DESCRIPTION=\"%D %C by Kiddin'\"" base-files/files/etc/openwrt_release
         sed -i "s/default n/default y/" dockerd/Config.in
         sed -i "/+uhttpd/d" ariang/Makefile
-        sed -i -e '$a /etc/bench.log' \
-        -e '/\/etc\/profile/d' \
-        -e '/\/etc\/shinit/d' \
-        base-files/files/lib/upgrade/keep.d/base-files-essential
-        sed -i -e '/^\/etc\/profile/d' \
-        -e '/^\/etc\/shinit/d' \
-        base-files/Makefile
         sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-webui.ini
         sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-cgi_io.ini
         sed -i '/limit-as/c\limit-as = 5000' uwsgi/files-luci-support/luci-webui.ini
-        sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/' uwsgi/files/uwsgi.init
         mkdir -p luci-app-passwall/root/www/luci-static/passwall luci-app-passwall2/root/www/luci-static/passwall2 luci-app-ssr-plus/root/www/luci-static/shadowsocksr
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall/root/www/luci-static/passwall/
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall2/root/www/luci-static/passwall2/
