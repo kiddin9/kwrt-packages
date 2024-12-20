@@ -10,8 +10,6 @@ LUCI_TITLE:=LuCI JS Support for easyconfig transfer statistics
 MAINTAINER:=Rafał Wabik <4Rafal@gmail.com>
 LUCI_DESCRIPTION:=LuCI JS interface for the easyconfig transfer statistics.
 LUCI_DEPENDS:=
-PKG_VERSION:=1.0.7
-PKG_RELEASE:=4
 LUCI_PKGARCH:=all
 
 
