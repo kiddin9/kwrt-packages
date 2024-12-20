@@ -278,7 +278,6 @@ $lang = $_GET['lang'] ?? 'en';
 .container-sm.container-bg.callout.border {
   padding: 12px 15px; 
   min-height: 70px; 
-  display: flex;
   margin-bottom: 15px;
 }
 
@@ -725,6 +724,11 @@ let IP = {
         let timezone = data.timezone || "";
         let asn = data.asn || "";
 
+        let areaDisplay = [country, region, city].filter(Boolean).join(" ");
+        if (region === city) {
+            areaDisplay = `${country} ${region}`; 
+        }
+
         let ipSupport;
         const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
         const ipv6Regex = /^[a-fA-F0-9:]+$/;
@@ -767,7 +771,7 @@ let IP = {
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">地区:</span>
-                                    <span class="detail-value">${country} ${region} ${city}</span>
+                                    <span class="detail-value">${areaDisplay}</span>
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">运营商:</span>

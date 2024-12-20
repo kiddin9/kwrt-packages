@@ -1,7 +1,6 @@
-# NATMap by EHfive <https://github.com/EHfive/einat-ebpf>
-# Copyright (C) 2024 Anya Lin <https://github.com/muink>
+# SPDX-License-Identifier: MIT
 #
-# This is free software, licensed under the MIT license
+# Copyright (C) 2024 Anya Lin <https://github.com/muink>
 
 include $(TOPDIR)/rules.mk
 

@@ -1,16 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2023-2024 Anya Lin
-#
-# This is free software, licensed under the Apache-2.0 license.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2023-2024 Anya Lin <hukk1996@gmail.com>
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=go-stun
 PKG_UPSTREAM_VERSION:=0.1.4
-PKG_UPSTREAM_GIT7VER:=d32c135f5e509d278e95ba9945849903f966a91f
-PKG_VERSION:=0.1.5
-PKG_RELEASE:=3
+PKG_UPSTREAM_GITHASH:=d32c135f5e509d278e95ba9945849903f966a91f
+PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH))
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/ccding/go-stun.git

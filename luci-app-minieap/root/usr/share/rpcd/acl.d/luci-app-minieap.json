@@ -1,0 +1,11 @@
+{
+	"luci-app-minieap": {
+		"description": "Luci support for MiniEAP",
+		"read": {
+			"uci": [ "minieap" ]
+		},
+		"write": {
+			"uci": [ "minieap" ]
+		}
+	}
+}

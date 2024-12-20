@@ -3,38 +3,50 @@
 # Copyright 2020 BlackYau <blackyau426@gmail.com>
 # GNU General Public License v3.0
 
-START=99
+LOG_PATH="/usr/lib/suselogin"
+LOG_FILE="/tmp/log/suselogin/login.log"
+SCRIPT_NAME="login.sh"
+SCRIPT="$LOG_PATH/$SCRIPT_NAME"
 
+log() {
+	echo "$(date "+%Y-%m-%d %H:%M:%S"): $1"
+}
 
-start()
-{
-	if [ ! -d /tmp/log/suselogin ];then
+start() {
+
+	{
 		mkdir -p /tmp/log/suselogin
-	fi
-	rm -rf /tmp/log/suselogin/login.log
-	state=`pgrep -f "/usr/lib/suselogin/login.sh"`
-	if [ ! -z "$state" ]; then
+	} >$LOG_FILE
+
+	if pgrep -f "$SCRIPT" >/dev/null; then
+		log "已启动，准备重新启动"
 		restart
 	else
-		/usr/lib/suselogin/login.sh &
+		$SCRIPT &
+		log "已启动"
 	fi
-    echo "$(date "+%Y-%m-%d %H:%M:%S"): 已启动"
 }
 
-stop()
-{
-	kill -9 `pgrep -f "/usr/lib/suselogin/login.sh"` 2>/dev/null
-    echo "$(date "+%Y-%m-%d %H:%M:%S"): 已停止"
+stop() {
+	if pgrep -f "$SCRIPT" >/dev/null; then
+		kill $(pgrep -f "$SCRIPT") 2>/dev/null
+		log "已停止"
+	else
+		log "服务未运行"
+	fi
 }
 
-restart()
-{
+restart() {
 	stop
 	sleep 1
 	start
-	echo "$(date "+%Y-%m-%d %H:%M:%S"): 已重新启动"
 }
 
-disable(){
-	rm -rf /tmp/log/suselogin/* && echo '已清空日志'
+disable() {
+	if [ -d /tmp/log/suselogin ]; then
+		rm -rf /tmp/log/suselogin/*
+		log "已清空日志"
+	else
+		log "日志目录不存在"
+	fi
 }

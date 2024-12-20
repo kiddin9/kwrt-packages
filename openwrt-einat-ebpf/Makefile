@@ -1,12 +1,16 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Copyright (C) 2024 Anya Lin <hukk1996@gmail.com>
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
-PKG_UPSTREAM_GIT7VER:=
-PKG_VERSION:=0.1.5
-PKG_RELEASE:=19
+PKG_UPSTREAM_GITHASH:=
+PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
+PKG_RELEASE:=20
 
-ifeq ($(PKG_UPSTREAM_GIT7VER),)
+ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
 PKG_HASH:=skip
 

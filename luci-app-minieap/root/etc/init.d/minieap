@@ -1,0 +1,34 @@
+#!/bin/sh /etc/rc.common
+START=93
+
+run_minieap()
+{
+    local enable
+    local username
+    local password
+    local nic
+    config_get_bool enable $1 enable
+    config_get username $1 username
+    config_get password $1 password
+    config_get nic $1 nic
+
+    if [ $enable ] && [ $username ] && [ $password ] && [ $nic ]; then
+        /bin/ash -c "minieap -k2 -b3"
+    fi
+}
+
+start()
+{
+    config_load minieap
+    config_foreach run_minieap minieap
+}
+
+stop()
+{
+    /bin/ash -c "killall -3 minieap"
+}
+
+restart()
+{
+	start
+}

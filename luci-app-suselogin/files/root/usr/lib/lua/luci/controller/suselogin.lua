@@ -2,10 +2,12 @@
 -- GNU General Public License v3.0
 
 
-module("luci.controller.suselogin", package.seeall)
+local controller = {}
 
-function index()
-        entry({"admin", "services", "suselogin"},firstchild(), _("川轻化web"), 100).dependent = false
-        entry({"admin", "services", "suselogin", "general"}, cbi("suselogin"), _("配置"), 1)
-        entry({"admin", "services", "suselogin", "log"}, form("suseloginlog"), _("运行日志"), 2)
+function controller.index()
+    entry({"admin", "network", "suselogin"}, firstchild(), _("SUSE Login"), 100).dependent = false
+    entry({"admin", "network", "suselogin", "general"}, cbi("suselogin"), _("Base Setting"), 1)
+    entry({"admin", "network", "suselogin", "log"}, form("suseloginlog"), _("Log"), 2)
 end
+
+return controller

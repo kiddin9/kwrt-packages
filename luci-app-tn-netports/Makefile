@@ -1,9 +1,8 @@
-# Copyright (C) 2021 Tano Systems (https://github.com/tano-systems/luci-app-tn-netports)
-# Copyright (C) 2022 muink <https://github.com/muink>
+# SPDX-License-Identifier: MIT
 #
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2022-2024 muink <https://github.com/muink>
+# Copyright (C) 2021 Tano Systems <https://github.com/tano-systems>
+
 include $(TOPDIR)/rules.mk
 
 LUCI_NAME:=luci-app-tn-netports
@@ -13,6 +12,9 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+luabitop
 
 LUCI_DESCRIPTION:=Network ports status LuCI application
+
+PKG_MAINTAINER:=Anya Lin <hukk1996@gmail.com>
+PKG_LICENSE:=MIT
 
 define Package/$(LUCI_NAME)/conffiles
 /etc/config/luci_netports

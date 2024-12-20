@@ -1,0 +1,21 @@
+{
+	"luci-app-antiblock": {
+		"description": "Grant UCI and RPC access to LuCI app AntiBlock",
+		"read": {
+			"ubus": {
+				"luci.antiblock": [
+					"read_urls",
+					"write_urls"
+				]
+			},
+			"uci": [
+				"antiblock"
+			]
+		},
+		"write": {
+			"uci": [
+				"antiblock"
+			]
+		}
+	}
+}

@@ -17,6 +17,8 @@ DISTRIB_ARCH = nil
 
 LOG_FILE = "/tmp/log/passwall2.log"
 CACHE_PATH = "/tmp/etc/passwall2_tmp"
+TMP_PATH = "/tmp/etc/" .. appname
+TMP_IFACE_PATH = TMP_PATH .. "/iface"
 
 function log(...)
 	local result = os.date("%Y-%m-%d %H:%M:%S: ") .. table.concat({...}, " ")
@@ -25,6 +27,15 @@ function log(...)
 		f:write(result .. "\n")
 		f:close()
 	end
+end
+
+function set_cache_var(key, val)
+	sys.call(string.format('/usr/share/passwall2/app.sh set_cache_var %s "%s"', key, val))
+end
+function get_cache_var(key)
+	local val = sys.exec(string.format('echo -n $(/usr/share/passwall2/app.sh get_cache_var %s)', key))
+	if val == "" then val = nil end
+	return val
 end
 
 function exec_call(cmd)
@@ -96,8 +107,8 @@ end
 
 function curl_proxy(url, file, args)
 	--使用代理
-	local socks_server = luci.sys.exec("[ -f /tmp/etc/passwall2/acl/default/SOCKS_server ] && echo -n $(cat /tmp/etc/passwall2/acl/default/SOCKS_server) || echo -n ''")
-	if socks_server ~= "" then
+	local socks_server = get_cache_var("GLOBAL_SOCKS_server")
+	if socks_server and socks_server ~= "" then
 		if not args then args = {} end
 		local tmp_args = clone(args)
 		tmp_args[#tmp_args + 1] = "-x socks5h://" .. socks_server
@@ -192,6 +203,28 @@ function repeat_exist(table, value)
 	end
 	if count > 1 then
 		return true
+	end
+	return false
+end
+
+function remove(...)
+	for index, value in ipairs({...}) do
+		if value and #value > 0 and value ~= "/" then
+			sys.call(string.format("rm -rf %s", value))
+		end
+	end
+end
+
+function is_install(package)
+	if package and #package > 0 then
+		local file_path = "/usr/lib/opkg/info"
+		local file_ext = ".control"
+		local has = sys.call("[ -d " .. file_path .. " ]")
+		if has == 0 then
+			file_path = "/lib/apk/packages"
+			file_ext = ".list"
+		end
+		return sys.call(string.format('[ -s "%s/%s%s" ]', file_path, package, file_ext)) == 0
 	end
 	return false
 end
@@ -334,6 +367,26 @@ function get_domain_from_url(url)
 		return domain
 	end
 	return url
+end
+
+function get_node_name(node_id)
+	local e
+	if type(node_id) == "table" then
+		e = node_id
+	else
+		e = uci:get_all(appname, node_id)
+	end
+	if e then
+		if e.type and e.remarks then
+			if e.protocol and (e.protocol == "_balancing" or e.protocol == "_shunt" or e.protocol == "_iface") then
+				local type = e.type
+				if type == "sing-box" then type = "Sing-Box" end
+				local remark = "%s：[%s] " % {type .. " " .. i18n.translatef(e.protocol), e.remarks}
+				return remark
+			end
+		end
+	end
+	return ""
 end
 
 function get_valid_nodes()

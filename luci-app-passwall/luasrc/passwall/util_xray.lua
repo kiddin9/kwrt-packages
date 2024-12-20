@@ -48,7 +48,7 @@ end
 
 function gen_outbound(flag, node, tag, proxy_table)
 	local result = nil
-	if node and node ~= "nil" then
+	if node then
 		local node_id = node[".name"]
 		if tag == nil then
 			tag = node_id
@@ -82,7 +82,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 						"127.0.0.1", --bind
 						new_port, --socks port
 						config_file, --config file
-						(proxy_tag and proxy_tag ~= "nil" and relay_port) and tostring(relay_port) or "" --relay port
+						(proxy_tag and relay_port) and tostring(relay_port) or "" --relay port
 					)
 				))
 				node = {}
@@ -95,7 +95,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 		else
 			if node.flow == "xtls-rprx-vision" then
 			else
-				if proxy_tag and proxy_tag ~= "nil" then
+				if proxy_tag then
 					node.proxySettings = {
 						tag = proxy_tag,
 						transportLayer = true
@@ -404,7 +404,7 @@ function gen_config_server(node)
 		}
 	}
 
-	if node.outbound_node and node.outbound_node ~= "nil" then
+	if node.outbound_node then
 		local outbound = nil
 		if node.outbound_node == "_iface" and node.outbound_node_iface then
 			outbound = {
@@ -417,7 +417,7 @@ function gen_config_server(node)
 					}
 				}
 			}
-			sys.call("mkdir -p /tmp/etc/passwall/iface && touch /tmp/etc/passwall/iface/" .. node.outbound_node_iface)
+			sys.call(string.format("mkdir -p %s && touch %s/%s", api.TMP_IFACE_PATH, api.TMP_IFACE_PATH, node.outbound_node_iface))
 		else
 			local outbound_node_t = uci:get_all("passwall", node.outbound_node)
 			if node.outbound_node == "_socks" or node.outbound_node == "_http" then
@@ -735,7 +735,7 @@ function gen_config(var)
 			-- fallback node
 			local fallback_node_tag = nil
 			local fallback_node_id = _node.fallback_node
-			if fallback_node_id == "" or fallback_node_id == "nil" then fallback_node_id = nil end
+			if not fallback_node_id or fallback_node_id == "" then fallback_node_id = nil end
 			if fallback_node_id then
 				local is_new_node = true
 				for _, outbound in ipairs(outbounds) do
@@ -780,9 +780,30 @@ function gen_config(var)
 
 		local function set_outbound_detour(node, outbound, outbounds_table, shunt_rule_name)
 			if not node or not outbound or not outbounds_table then return nil end
-			local default_out_tag = outbound.tag
+			local default_outTag = outbound.tag
+			local last_insert_outbound
 
-			if node.to_node then
+			if node.chain_proxy == "1" and node.preproxy_node then
+				if outbound["_flag_proxy_tag"] then
+					--Ignore
+				else
+					local preproxy_node = uci:get_all(appname, node.preproxy_node)
+					if preproxy_node then
+						local preproxy_outbound = gen_outbound(nil, preproxy_node)
+						if preproxy_outbound then
+							preproxy_outbound.tag = preproxy_node[".name"] .. ":" .. preproxy_node.remarks
+							outbound.tag = preproxy_outbound.tag .. " -> " .. outbound.tag
+							outbound.proxySettings = {
+								tag = preproxy_outbound.tag,
+								transportLayer = true
+							}
+							last_insert_outbound = preproxy_outbound
+							default_outTag = outbound.tag
+						end
+					end
+				end
+			end
+			if node.chain_proxy == "2" and node.to_node then
 				local to_node = uci:get_all(appname, node.to_node)
 				if to_node then
 					local to_outbound = gen_outbound(nil, to_node)
@@ -799,11 +820,11 @@ function gen_config(var)
 							transportLayer = true
 						}
 						table.insert(outbounds_table, to_outbound)
-						default_out_tag = to_outbound.tag
+						default_outTag = to_outbound.tag
 					end
 				end
 			end
-			return default_out_tag
+			return default_outTag, last_insert_outbound
 		end
 
 		if node.protocol == "_shunt" then
@@ -825,7 +846,7 @@ function gen_config(var)
 					return "blackhole", nil
 				elseif _node_id == "_default" then
 					return "default", nil
-				elseif _node_id:find("Socks_") then
+				elseif _node_id and _node_id:find("Socks_") then
 					local socks_id = _node_id:sub(1 + #"Socks_")
 					local socks_node = uci:get_all(appname, socks_id) or nil
 					local socks_tag
@@ -901,11 +922,14 @@ function gen_config(var)
 					local outbound_tag
 					if outbound then
 						outbound.tag = outbound.tag .. ":" .. _node.remarks
-						outbound_tag = set_outbound_detour(_node, outbound, outbounds, rule_name)
+						outbound_tag, last_insert_outbound = set_outbound_detour(_node, outbound, outbounds, rule_name)
 						if rule_name == "default" then
 							table.insert(outbounds, 1, outbound)
 						else
 							table.insert(outbounds, outbound)
+						end
+						if last_insert_outbound then
+							table.insert(outbounds, last_insert_outbound)
 						end
 					end
 					return outbound_tag, nil
@@ -926,7 +950,7 @@ function gen_config(var)
 						}
 						outbound_tag = outbound.tag
 						table.insert(outbounds, outbound)
-						sys.call("touch /tmp/etc/passwall/iface/" .. _node.iface)
+						sys.call(string.format("mkdir -p %s && touch %s/%s", api.TMP_IFACE_PATH, api.TMP_IFACE_PATH, _node.iface))
 					end
 					return outbound_tag, nil
 				end
@@ -1075,14 +1099,17 @@ function gen_config(var)
 				}
 				table.insert(outbounds, outbound)
 				COMMON.default_outbound_tag = outbound.tag
-				sys.call("touch /tmp/etc/passwall/iface/" .. node.iface)
+				sys.call(string.format("mkdir -p %s && touch %s/%s", api.TMP_IFACE_PATH, api.TMP_IFACE_PATH, node.iface))
 			end
 		else
 			local outbound = gen_outbound(flag, node, nil, { fragment = xray_settings.fragment == "1" or nil, noise = xray_settings.fragment == "1" or nil })
 			if outbound then
 				outbound.tag = outbound.tag .. ":" .. node.remarks
-				COMMON.default_outbound_tag = set_outbound_detour(node, outbound, outbounds)
+				COMMON.default_outbound_tag, last_insert_outbound = set_outbound_detour(node, outbound, outbounds)
 				table.insert(outbounds, outbound)
+				if last_insert_outbound then
+					table.insert(outbounds, last_insert_outbound)
+				end
 			end
 			routing = {
 				domainStrategy = "AsIs",
@@ -1369,6 +1396,9 @@ function gen_config(var)
 		end
 
 		for index, value in ipairs(config.outbounds) do
+			if not value["_flag_proxy_tag"] and value["_id"] and value.server and value.server_port then
+				sys.call(string.format("echo '%s' >> %s", value["_id"], api.TMP_PATH .. "/direct_node_list"))
+			end
 			for k, v in pairs(config.outbounds[index]) do
 				if k:find("_") == 1 then
 					config.outbounds[index][k] = nil

@@ -11,11 +11,11 @@ LUCI_DEPENDS:=@(x86_64||aarch64) +curl +opkg +luci-lib-ipkg +tar +libuci-lua +mo
 LUCI_EXTRA_DEPENDS:=luci-lib-taskd (>=1.0.19)
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=0.1.26-4
+PKG_VERSION:=0.1.27-3
 # PKG_RELEASE MUST be empty for luci.mk
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 
-ISTORE_UI_VERSION:=0.1.26
+ISTORE_UI_VERSION:=0.1.27
 ISTORE_UI_RELEASE:=2
 PKG_HASH:=skip
 

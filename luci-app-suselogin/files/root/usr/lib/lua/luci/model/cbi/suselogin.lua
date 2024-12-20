@@ -4,7 +4,7 @@
 
 require("luci.sys")
 
-m = Map("suselogin", translate("轻化工校园网认证"), translate("自动连接网络,支持断线自动重连"))
+m = Map("suselogin", translate("校园网认证"), translate("自动连接网络,支持断线自动重连"))
 
 s = m:section(TypedSection, "login", "")
 s.addremove = false
@@ -20,10 +20,10 @@ pass.password = true
 pass.rmempty = false
 
 isp = s:option(ListValue, "isp", translate("运营商"))
-isp:value("%E5%AE%9C%E5%AE%BE%E7%94%B5%E4%BF%A1", translate("宜宾电信互联网"))
-isp:value("%E5%AE%9C%E5%AE%BE%E7%A7%BB%E5%8A%A8", translate("宜宾移动互联网"))
+isp:value("%E5%AE%9C%E5%AE%BE%E7%94%B5%E4%BF%A1", translate("电信互联网"))
+isp:value("%E5%AE%9C%E5%AE%BE%E7%A7%BB%E5%8A%A8", translate("移动互联网"))
 isp:value("%E6%A0%A1%E5%9B%AD%E7%BD%91", translate("校园网"))
-isp:value("%E5%AE%9C%E5%AE%BE%E8%81%94%E9%80%9A", translate("宜宾联通互联网"))
+isp:value("%E5%AE%9C%E5%AE%BE%E8%81%94%E9%80%9A", translate("联通互联网"))
 
 interval = s:option(Value, "interval", translate("间隔时间"), translate("每隔多少时间(≥1)检测一下网络是否连接正常，如果网络异常则会尝试连接(单位:分钟)"))
 interval.default = 5

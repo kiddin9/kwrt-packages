@@ -1,16 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2023-2024 muink
-#
-# This is free software, licensed under the Apache-2.0 license.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2023-2024 muink <https://github.com/muink>
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stuntman
 PKG_UPSTREAM_VERSION:=1.2.17
-PKG_UPSTREAM_GIT7VER:=cc5b875b3ac34b08b831ce34463b3474d412ac98
-PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GIT7VER))
-PKG_RELEASE:=3
+PKG_UPSTREAM_GITHASH:=cc5b875b3ac34b08b831ce34463b3474d412ac98
+PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH))
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/muink/stunserver.git

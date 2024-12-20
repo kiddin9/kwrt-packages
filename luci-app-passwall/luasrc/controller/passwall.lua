@@ -167,13 +167,13 @@ end
 function get_now_use_node()
 	local path = "/tmp/etc/passwall/acl/default"
 	local e = {}
-	local data, code, msg = nixio.fs.readfile(path .. "/TCP.id")
-	if data then
-		e["TCP"] = util.trim(data)
+	local tcp_node = api.get_cache_var("ACL_GLOBAL_TCP_node")
+	if tcp_node then
+		e["TCP"] = tcp_node
 	end
-	local data, code, msg = nixio.fs.readfile(path .. "/UDP.id")
-	if data then
-		e["UDP"] = util.trim(data)
+	local udp_node = api.get_cache_var("ACL_GLOBAL_UDP_node")
+	if udp_node then
+		e["UDP"] = udp_node
 	end
 	luci.http.prepare_content("application/json")
 	luci.http.write_json(e)
@@ -325,8 +325,8 @@ function connect_status()
 	local chn_list = uci:get(appname, "@global[0]", "chn_list") or "direct"
 	local gfw_list = uci:get(appname, "@global[0]", "use_gfw_list") or "1"
 	local proxy_mode = uci:get(appname, "@global[0]", "tcp_proxy_mode") or "proxy"
-	local socks_server = luci.sys.exec("[ -f /tmp/etc/passwall/acl/default/TCP_SOCKS_server ] && echo -n $(cat /tmp/etc/passwall/acl/default/TCP_SOCKS_server) || echo -n ''")
-	if socks_server ~= "" then
+	local socks_server = api.get_cache_var("GLOBAL_TCP_SOCKS_server")
+	if socks_server and socks_server ~= "" then
 		if (chn_list == "proxy" and gfw_list == "0" and proxy_mode ~= "proxy" and baidu ~= nil) or (chn_list == "0" and gfw_list == "0" and proxy_mode == "proxy") then
 		-- 中国列表+百度 or 全局
 			url = "-x socks5h://" .. socks_server .. " " .. url
@@ -420,8 +420,8 @@ end
 
 function clear_all_nodes()
 	uci:set(appname, '@global[0]', "enabled", "0")
-	uci:set(appname, '@global[0]', "tcp_node", "nil")
-	uci:set(appname, '@global[0]', "udp_node", "nil")
+	uci:delete(appname, '@global[0]', "tcp_node")
+	uci:delete(appname, '@global[0]', "udp_node")
 	uci:foreach(appname, "socks", function(t)
 		uci:delete(appname, t[".name"])
 		uci:set_list(appname, t[".name"], "autoswitch_backup_node", {})
@@ -430,8 +430,8 @@ function clear_all_nodes()
 		uci:delete(appname, t[".name"])
 	end)
 	uci:foreach(appname, "acl_rule", function(t)
-		uci:set(appname, t[".name"], "tcp_node", "default")
-		uci:set(appname, t[".name"], "udp_node", "default")
+		uci:delete(appname, t[".name"], "tcp_node")
+		uci:delete(appname, t[".name"], "udp_node")
 	end)
 	uci:foreach(appname, "nodes", function(node)
 		uci:delete(appname, node['.name'])
@@ -444,11 +444,11 @@ end
 function delete_select_nodes()
 	local ids = luci.http.formvalue("ids")
 	string.gsub(ids, '[^' .. "," .. ']+', function(w)
-		if (uci:get(appname, "@global[0]", "tcp_node") or "nil") == w then
-			uci:set(appname, '@global[0]', "tcp_node", "nil")
+		if (uci:get(appname, "@global[0]", "tcp_node") or "") == w then
+			uci:delete(appname, '@global[0]', "tcp_node")
 		end
-		if (uci:get(appname, "@global[0]", "udp_node") or "nil") == w then
-			uci:set(appname, '@global[0]', "udp_node", "nil")
+		if (uci:get(appname, "@global[0]", "udp_node") or "") == w then
+			uci:delete(appname, '@global[0]', "udp_node")
 		end
 		uci:foreach(appname, "socks", function(t)
 			if t["node"] == w then
@@ -469,10 +469,20 @@ function delete_select_nodes()
 		end)
 		uci:foreach(appname, "acl_rule", function(t)
 			if t["tcp_node"] == w then
-				uci:set(appname, t[".name"], "tcp_node", "default")
+				uci:delete(appname, t[".name"], "tcp_node")
 			end
 			if t["udp_node"] == w then
-				uci:set(appname, t[".name"], "udp_node", "default")
+				uci:delete(appname, t[".name"], "udp_node")
+			end
+		end)
+		uci:foreach(appname, "nodes", function(t)
+			if t["preproxy_node"] == w then
+				uci:delete(appname, t[".name"], "preproxy_node")
+				uci:delete(appname, t[".name"], "chain_proxy")
+			end
+			if t["to_node"] == w then
+				uci:delete(appname, t[".name"], "to_node")
+				uci:delete(appname, t[".name"], "chain_proxy")
 			end
 		end)
 		uci:delete(appname, w)

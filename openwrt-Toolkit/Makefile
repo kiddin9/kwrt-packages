@@ -1,16 +1,15 @@
+# SPDX-License-Identifier: GPL-2.0
 #
+# Copyright (C) 2023-2024 muink <https://github.com/muink>
 # Copyright (C) 2015-2017 wongsyrone
-#
-# This is free software, licensed under the GNU General Public License v3.
-# See /LICENSE for more information.
-#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=Toolkit
 PKG_UPSTREAM_VERSION:=0.4.0.2
-PKG_UPSTREAM_GIT7VER:=631954eac283e38822c47e3122e9e2a3ac5984c6
-PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GIT7VER))
-PKG_RELEASE:=1
+PKG_UPSTREAM_GITHASH:=631954eac283e38822c47e3122e9e2a3ac5984c6
+PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH))
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/muink/Toolkit.git

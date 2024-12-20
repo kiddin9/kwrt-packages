@@ -1,22 +1,19 @@
+# SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2023-2024 muink
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2023-2024 Anya Lin <hukk1996@gmail.com>
+
 include $(TOPDIR)/rules.mk
-#go env
 
 PKG_NAME:=alwaysonline
 PKG_UPSTREAM_VERSION:=1.2.0
-PKG_UPSTREAM_GIT7VER:=a12e3bdcbef1711c9ed5451d012015b54328045b
-PKG_VERSION:=1.2.1
-PKG_RELEASE:=5
+PKG_UPSTREAM_GITHASH:=a12e3bdcbef1711c9ed5451d012015b54328045b
+PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH))
+PKG_RELEASE:=6
 UCI_VERSION:=0.2024.07.31
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/Jamesits/alwaysonline.git
-PKG_SOURCE_VERSION:=49edb52c9c7d5df7acd4df1815abefe3ff140edd
+PKG_SOURCE_VERSION:=206292ca68e4d6c81b215163a7bbd0cd2eb36860
 PKG_MIRROR_HASH:=skip
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.gz

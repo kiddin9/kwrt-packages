@@ -1,9 +1,6 @@
+# SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2020 muink <https://github.com/muink>
-#
-# This is free software, licensed under the MIT License
-# See /LICENSE for more information.
-#
+# Copyright (C) 2020-2024 muink <https://github.com/muink>
 
 include $(TOPDIR)/rules.mk
 
@@ -13,6 +10,9 @@ LUCI_TITLE:=LuCI for MAC address randomizer
 LUCI_DEPENDS:=+bash +rgmac +getopt
 
 LUCI_DESCRIPTION:=Assign a random MAC address to the designated interface on every time boot.
+
+PKG_MAINTAINER:=Anya Lin <hukk1996@gmail.com>
+PKG_LICENSE:=MIT
 
 define Package/$(LUCI_NAME)/conffiles
 /etc/config/change-mac
