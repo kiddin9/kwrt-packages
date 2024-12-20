@@ -7,5 +7,7 @@ uci -q batch <<-EOF >/dev/null
 	commit ucitrack
 EOF
 
+grep -q "frp 'common'" /etc/config/frpc || cp -f etc/config/frpc-opkg /etc/config/frpc
+
 rm -f /tmp/luci-indexcache
 exit 0
