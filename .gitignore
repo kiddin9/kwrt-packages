@@ -13,8 +13,9 @@
 /luci-app-ttyd
 /luci-app-serverchan
 /luci-app-eqos
-/luci-app-webdav
+/luci-app-webdavf
 /luci-app-baidupcs-web
+/luci-app-softether
 /mentohust
 /subweb
 /wget
