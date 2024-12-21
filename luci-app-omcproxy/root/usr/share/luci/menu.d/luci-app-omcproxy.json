@@ -1,0 +1,13 @@
+{
+	"admin/services/omcproxy": {
+		"title": "omcproxy",
+		"action": {
+			"type": "view",
+			"path": "omcproxy"
+		},
+		"depends": {
+			"acl": [ "luci-app-omcproxy" ],
+			"fs": { "/etc/config/omcproxy": "file" }
+		}
+	}
+}

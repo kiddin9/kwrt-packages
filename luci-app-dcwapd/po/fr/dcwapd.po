@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-02-01 22:49+0000\n"
+"Last-Translator: ButterflyOfFire <boffire@users.noreply.hosted.weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/openwrt/"
+"luciapplicationsdcwapd/fr/>\n"
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.4-dev\n"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:68
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:120
+msgid "Bridge"
+msgstr "Passerelle"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:93
+msgid "Channel Sets"
+msgstr "Ensemble des canaux"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:49
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:131
+msgid "Data Channels"
+msgstr "Canaux de données"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:49
+msgid "Define data channels over which outbound filtered packets will flow."
+msgstr ""
+"Définissez les canaux de données sur lesquels les paquets filtrés sortants "
+"seront acheminés."
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:145
+msgid ""
+"Define filter rules to apply to outbound packets. Matching packets will flow "
+"over the data channel."
+msgstr ""
+"Définissez les règles de filtrage à appliquer aux paquets sortants. Les "
+"paquets correspondants passeront sur le canal de données."
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:93
+msgid "Define primary channels and their corresponding data channels."
+msgstr ""
+"Définissez les canaux principaux et leurs canaux de données correspondants."
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:178
+msgid "Destination port"
+msgstr "Port de destination"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:27
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:28
+msgid "Dual Channel Wi-Fi AP Daemon"
+msgstr "Démon de l'AP Wi-Fi à double canal"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:28
+#: applications/luci-app-dcwapd/root/usr/share/luci/menu.d/luci-app-dcwapd.json:3
+msgid "Dual Channel WiFi"
+msgstr "Wifi double canal"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:38
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:100
+msgid "Enable"
+msgstr "Activer"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:184
+msgid "Filter Sets"
+msgstr "Ensembles de filtres"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:145
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:197
+msgid "Filters"
+msgstr "Filtres"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:31
+msgid "General"
+msgstr "Général"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:31
+msgid "General Settings"
+msgstr "Réglages généraux"
+
+#: applications/luci-app-dcwapd/root/usr/share/rpcd/acl.d/luci-app-dcwapd.json:3
+msgid "Grant UCI access for luci-app-dcwapd"
+msgstr "Donner l'accès UCI à luci-app-dcwapd"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:79
+msgid "Interfaces"
+msgstr "Interfaces"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:191
+msgid "MAC Address"
+msgstr "Adresse MAC"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:151
+msgid "Packet size"
+msgstr "Taille du paquet"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:169
+msgid "Protocol"
+msgstr "Protocole"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:54
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:106
+msgid "SSID"
+msgstr "SSID"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:184
+msgid "Select filters to apply to matching MAC addresses."
+msgstr "Sélectionnez les filtres à appliquer aux adresses MAC correspondantes."
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:157
+msgid "Source IP"
+msgstr "Adresse IP source"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:163
+msgid "Source port"
+msgstr "Port source"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:44
+msgid "Specify the temporary directory for dcwapd file storage."
+msgstr ""
+"Indiquez le répertoire temporaire pour le stockage des fichiers dcwapd."
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:44
+msgid "Temp Directory"
+msgstr "Répertoire temporaire"
+
+#: applications/luci-app-dcwapd/htdocs/luci-static/resources/view/dcwapd/dcwapd.js:28
+msgid ""
+"With %s you can use two simultaneous Wi-Fi connections to decrease wireless "
+"traffic congestion and increase throughput."
+msgstr ""
+
+#~ msgid ""
+#~ "With <abbr title=\"Dual Channel Wi-Fi AP Daemon\">Dual Channel WiFi</"
+#~ "abbr> you can use two simultaneous Wi-Fi connections to decrease wireless "
+#~ "traffic congestion and increase throughput."
+#~ msgstr ""
+#~ "Avec <abbr title=\"Dual Channel Wi-Fi AP Daemon\">Dual Channel WiFi</"
+#~ "abbr>, vous pouvez utiliser deux connexions Wi-Fi simultanées pour "
+#~ "réduire la congestion de la connexion sans fil et en augmenter le débit."

@@ -1,0 +1,11 @@
+{
+	"luci-app-asterisk": {
+		"description": "Grant UCI access for luci-app-asterisk",
+		"read": {
+			"uci": [ "asterisk" ]
+		},
+		"write": {
+			"uci": [ "asterisk" ]
+		}
+	}
+}

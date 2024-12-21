@@ -1,11 +1,39 @@
 {
 	"luci-app-attendedsysupgrade": {
-		"description": "Grant UCI access for luci-app-attendedsysupgrade",
+		"description": "Grant UCI access to LuCI app attendedsysupgrade",
 		"read": {
-			"uci": [ "attendedsysupgrade" ]
+			"ubus": {
+				"rpc-sys": [
+					"upgrade_start",
+					"packagelist"
+				],
+				"system": [
+					"board",
+					"info"
+				],
+				"uci": [
+					"get"
+				]
+			},
+			"file": {
+				"/sys/firmware/efi": [ "list" ]
+			},
+			"uci": [
+				"attendedsysupgrade"
+			]
 		},
 		"write": {
-			"uci": [ "attendedsysupgrade" ]
+			"cgi-io": [
+				"upload"
+			],
+			"ubus": {
+				"uci": [
+					"set", "commit"
+				]
+			},
+			"uci": [
+				"attendedsysupgrade"
+			]
 		}
 	}
 }

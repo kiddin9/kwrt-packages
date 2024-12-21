@@ -1,0 +1,1221 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-11-17 11:08+0000\n"
+"Last-Translator: Matthaiks <kitynska@gmail.com>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/openwrt/"
+"luciapplicationspbr/pl/>\n"
+"Language: pl\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.9-dev\n"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:240
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:358
+msgid "%s"
+msgstr "%s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:316
+msgid "%s binary cannot be found"
+msgstr "Nie można znaleźć pliku binarnego %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:48
+msgid ""
+"%sWARNING:%s Please make sure to check the %sREADME%s before changing "
+"anything in this section! Change any of the settings below with extreme "
+"caution!%s"
+msgstr ""
+"%sOSTRZEŻENIE:%s Przed zmianą czegokolwiek w tej sekcji należy sprawdzić "
+"%sREADME%s! Ostrożnie zmieniaj dowolne z poniższych ustawień!%s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:40
+msgid "Active"
+msgstr "Aktywna"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:116
+msgid "AdGuardHome ipset"
+msgstr "ipset AdGuardHome"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:168
+msgid "Add"
+msgstr "Dodaj"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:225
+msgid "Add Ignore Target"
+msgstr "Dodaj ignoruj cel"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:227
+msgid ""
+"Adds 'ignore' to the list of interfaces for policies. See the %sREADME%s for "
+"details."
+msgstr "Dodaje 'ignoruj' do listy interfejsów zasad. Szczegóły w %sREADME%s."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:46
+msgid "Advanced Configuration"
+msgstr "Zaawansowana konfiguracja"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:143
+msgid ""
+"Allows to specify the list of interface names (in lower case) to be "
+"explicitly supported by the service. Can be useful if your OpenVPN tunnels "
+"have dev option other than tun* or tap*."
+msgstr ""
+"Pozwala określić listę nazw interfejsów (pisanych małymi literami), które "
+"mają być jawnie obsługiwane przez usługę. Może być przydatne, jeśli tunele "
+"OpenVPN mają opcję dev inną niż tun* lub tap*."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:155
+msgid ""
+"Allows to specify the list of interface names (in lower case) to be ignored "
+"by the service. Can be useful if running both VPN server and VPN client on "
+"the router."
+msgstr ""
+"Pozwala określić listę nazw interfejsów (pisanych małymi literami), które "
+"mają być ignorowane przez usługę. Może być przydatne, jeśli na routerze "
+"działa zarówno serwer i klient VPN."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:43
+msgid "Basic Configuration"
+msgstr "Podstawowa konfiguracja"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:312
+msgid "Chain"
+msgstr "Łańcuch"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:405
+msgid "Command failed: '%s'"
+msgstr "Polecenie nie powiodło się: '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:71
+msgid "Condensed output"
+msgstr "Skondensowane wyjście"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:313
+msgid "Config (%s) validation failure"
+msgstr "Błąd konfiguracji (%s)"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:68
+msgid "Controls both system log and console output verbosity."
+msgstr ""
+"Kontroluje szczegółowość dziennika systemowego i danych wyjściowych konsoli."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:393
+msgid "Custom User File Includes"
+msgstr "Własne pliki użytkownika"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:361
+msgid "Custom user file '%s' not found or empty"
+msgstr "Plik użytkownika '%s' nie został znaleziony lub jest pusty"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:331
+msgid "DNS Policies"
+msgstr "Zasady DNS"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:384
+msgid "DSCP Tag"
+msgstr "Znacznik DSCP"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:371
+msgid "DSCP Tagging"
+msgstr "Oznaczanie DSCP"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:176
+msgid "Default ICMP Interface"
+msgstr "Domyślny interfejs ICMP"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:410
+msgid "Default fw4 chain '%s' is missing"
+msgstr "Brakuje domyślnego łańcucha '%s' fw4"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:409
+msgid "Default fw4 table '%s' is missing"
+msgstr "Brakuje domyślnej tablicy '%s' fw4"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:545
+msgid "Disable"
+msgstr "Wyłącz"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:114
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:134
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:233
+msgid "Disabled"
+msgstr "Wyłączone"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:539
+msgid "Disabling %s service"
+msgstr "Wyłączanie usługi %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:243
+msgid "Display these protocols in protocol column in Web UI."
+msgstr "Wyświetl te protokoły w kolumnie interfejsu Web UI."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:266
+msgid ""
+"Dnsmasq instance (%s) targeted in settings, but it doesn't have its own "
+"confdir"
+msgstr ""
+"Instancja Dnsmasq (%s) wskazana w ustawieniach, ale nie ma własnego confdir"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:120
+msgid "Dnsmasq ipset"
+msgstr "ipset Dnsmasq"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:124
+msgid "Dnsmasq nft set"
+msgstr "nft set Dnsmasq"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:85
+msgid "Do not enforce policies when their gateway is down"
+msgstr "Nie egzekwuj zasad niedziałającej bramy"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:592
+msgid "Donate to the Project"
+msgstr "Przekaż darowiznę na rzecz projektu"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:526
+msgid "Enable"
+msgstr "Włącz"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:135
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:234
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:265
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:345
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:406
+msgid "Enabled"
+msgstr "Włączone"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:520
+msgid "Enabling %s service"
+msgstr "Włączanie usługi %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:363
+msgid "Error running custom user file '%s'"
+msgstr "Błąd podczas uruchamiania pliku użytkownika '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:434
+msgid "Errors encountered, please check the %sREADME%s"
+msgstr "Wystąpiły błędy. Sprawdź %sREADME%s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:210
+msgid ""
+"FW Mask used by the service. High mask is used to avoid conflict with SQM/"
+"QoS. Change with caution together with"
+msgstr ""
+"Maska FW używana przez usługę. Wysoka maska służy do uniknięcia konfliktu z "
+"SQM/QoS. Ostrożnie zmieniać wraz z"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:401
+msgid "Failed to download '%s'"
+msgstr "Nie udało się pobrać '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:399
+msgid "Failed to download '%s', HTTPS is not supported"
+msgstr "Nie udało się pobrać '%s', HTTPS nie jest obsługiwany"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:394
+msgid "Failed to install fw4 nft file '%s'"
+msgstr "Nie udało się zainstalować pliku nft fw4 '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:360
+msgid "Failed to reload '%s'"
+msgstr "Nie udało się przeładować '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:390
+msgid "Failed to resolve '%s'"
+msgstr "Nie udało się rozwiązać '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:359
+msgid "Failed to set up '%s'"
+msgstr "Nie udało się skonfigurować '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:367
+msgid "Failed to set up any gateway"
+msgstr "Nie skonfigurowano żadnej bramy"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:177
+msgid "Force the ICMP protocol interface."
+msgstr "Wymuszenie interfejsu protokołu ICMP."
+
+#: applications/luci-app-pbr/root/usr/share/rpcd/acl.d/luci-app-pbr.json:3
+msgid "Grant UCI and file access for luci-app-pbr"
+msgstr "Przyznaj luci-app-pbr dostęp do UCI i plików"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:132
+msgid "IPv6 Support"
+msgstr "Obsługa IPv6"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:153
+msgid "Ignored Interfaces"
+msgstr "Ignorowane interfejsy"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:52
+msgid "Inactive"
+msgstr "Nieaktywna"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:54
+msgid "Inactive (Disabled)"
+msgstr "Nieaktywna (wyłączona)"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:407
+msgid "Incompatible custom user file detected '%s'"
+msgstr "Wykryto niezgodny niestandardowy plik użytkownika '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:263
+msgid ""
+"Incompatible nft calls detected in user include file, disabling fw4 nft file "
+"support"
+msgstr ""
+"Wykryto niezgodne wywołania nft w pliku dołączanym przez użytkownika, "
+"wyłączenie obsługi plików nft fw4"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:169
+msgid "Insert"
+msgstr "Wstaw"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:385
+msgid "Insertion failed for IPv4 for policy '%s'"
+msgstr "Wstawianie IPv4 nie powiodło się dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:382
+msgid "Insertion failed for both IPv4 and IPv6 for policy '%s'"
+msgstr "Wstawianie IPv4, jak i IPv6 nie powiodło się dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:238
+msgid "Installed AdGuardHome (%s) doesn't support 'ipset_file' option."
+msgstr "Zainstalowany AdGuardHome (%s) nie obsługuje opcji 'ipset_file'."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:321
+msgid "Interface"
+msgstr "Interfejs"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:353
+msgid "Interface '%s' has no assigned DNS"
+msgstr "Interfejs '%s' nie ma przypisanego DNS"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:254
+msgid "Invalid OpenVPN config for %s interface"
+msgstr "Nieprawidłowa konfiguracja OpenVPN dla interfejsu %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:392
+msgid "Invalid OpenVPN config for '%s' interface"
+msgstr "Nieprawidłowa konfiguracja OpenVPN dla interfejsu '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:271
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:352
+msgid "Local addresses / devices"
+msgstr "Lokalne adresy/urządzenia"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:277
+msgid "Local ports"
+msgstr "Porty lokalne"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:376
+msgid "Mismatched IP family between in policy '%s'"
+msgstr "Niedopasowana rodzina adresów IP w polityce '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:65
+msgid "Mode"
+msgstr "Tryb"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:269
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:349
+msgid "Name"
+msgstr "Nazwa"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:252
+msgid ""
+"Name, interface and at least one other field are required. Multiple local "
+"and remote addresses/devices/domains and ports can be space separated. "
+"Placeholders below represent just the format/syntax and will not be used if "
+"fields are left blank. For more information on options, check the %sREADME%s."
+msgstr ""
+"Nazwa, interfejs i co najmniej jedno inne pole są wymagane. Wiele lokalnych "
+"i zdalnych adresów/urządzeń/domen i portów może być rozdzielonych spacją. "
+"Poniższe symbole zastępcze reprezentują tylko format/składnię i nie będą "
+"używane, jeśli pola pozostaną puste. Aby uzyskać więcej informacji o "
+"opcjach, sprawdź %sREADME%s."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:333
+msgid ""
+"Name, local address and remote DNS fields are required. Multiple local "
+"addresses/devices can be space separated. For more information on options, "
+"check the %sREADME%s."
+msgstr ""
+"Pola nazwy, adresu lokalnego i zdalnego DNS są wymagane. Wiele adresów "
+"lokalnych/urządzeń może być rozdzielonych spacją. Aby uzyskać więcej "
+"informacji o opcjach, sprawdź %sREADME%s."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:179
+msgid "No Change"
+msgstr "Bez zmian"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:188
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:58
+msgid "Not installed or not found"
+msgstr "Nie zainstalowano lub nie znaleziono"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:67
+msgid "Output verbosity"
+msgstr "Szczegółowość danych wyjściowych"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:411
+msgid "Path"
+msgstr "Ścieżka"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:215
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:600
+msgid "Please %sdonate%s to support development of this project."
+msgstr "Przekaż %sdarowiznę%s w celu wsparcia rozwoju tego projektu."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:101
+msgid "Please check the %sREADME%s before changing this option."
+msgstr "Przed zmianą tej opcji, sprawdź %sREADME%s ."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:270
+msgid ""
+"Please set 'dhcp.%%s.force=1' to speed up service start-up %s(more info)%s"
+msgstr ""
+"Ustaw 'dhcp.%%s.force=1', aby przyspieszyć uruchomienie usługi %s(więcej "
+"informacji)%s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:248
+msgid "Please unset 'chain' or set 'chain' to 'PREROUTING' for policy '%s'"
+msgstr "Usuń lub ustaw 'chain' na 'PREROUTING' dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:251
+msgid "Please unset 'chain' or set 'chain' to 'prerouting' for policy '%s'"
+msgstr "Usuń lub ustaw 'chain' na 'prerouting' dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:245
+msgid "Please unset 'proto' or set 'proto' to 'all' for policy '%s'"
+msgstr "Usuń lub ustaw 'proto' na 'all' dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:242
+msgid "Please unset 'src_addr', 'src_port' and 'dest_port' for policy '%s'"
+msgstr "Usuń 'src_addr', 'src_port' i 'dest_port' dla polityki '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:250
+msgid "Policies"
+msgstr "Reguły"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:356
+msgid "Policy '%s' has an unknown interface"
+msgstr "Polityka '%s' ma nieznany interfejs"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:351
+msgid "Policy '%s' has no assigned DNS"
+msgstr "Polityka '%s' nie ma przypisanego DNS"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:350
+msgid "Policy '%s' has no assigned interface"
+msgstr "Polityka '%s' nie ma przypisanego interfejsu"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:348
+msgid "Policy '%s' has no source/destination parameters"
+msgstr "Polityka '%s' nie ma parametrów źródła/przeznaczenia"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:396
+msgid ""
+"Policy '%s' refers to URL which can't be downloaded in 'secure_reload' mode"
+msgstr ""
+"Polityka '%s' odnosi się do adresu URL, którego nie można pobrać w trybie "
+"'secure_reload'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:10
+msgid "Policy Based Routing"
+msgstr "Trasowanie oparte na politykach"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:40
+msgid "Policy Based Routing - Configuration"
+msgstr "Trasowanie oparte na politykach - Konfiguracja"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:161
+msgid "Policy Based Routing - Status"
+msgstr "Trasowanie oparte na politykach - Stan"
+
+#: applications/luci-app-pbr/root/usr/share/luci/menu.d/luci-app-pbr.json:3
+msgid "Policy Routing"
+msgstr "Trasowanie wg polityk"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:295
+msgid "Protocol"
+msgstr "Protokół"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:388
+msgid "Received empty tid/mark or interface name when setting up routing"
+msgstr ""
+"Otrzymano pustą wartość tid/mark lub nazwę interfejsu podczas konfigurowania "
+"trasowania"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:336
+msgid "Refer to https://docs.openwrt.melmac.net/pbr/#procd_wan_interface"
+msgstr "Zobacz https://docs.openwrt.melmac.net/pbr/#procd_wan_interface"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:359
+msgid "Remote DNS"
+msgstr "Zdalny DNS"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:283
+msgid "Remote addresses / domains"
+msgstr "Zdalne adresy/domeny"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:289
+msgid "Remote ports"
+msgstr "Porty zdalne"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:411
+msgid "Required binary '%s' is missing"
+msgstr "Brak wymaganego pliku binarnego '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:368
+msgid "Resolver '%s'"
+msgstr "Resolwer '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:324
+msgid "Resolver set (%s) is not supported on this system"
+msgstr "Zestaw resolwera (%s) nie jest obsługiwany w tym systemie"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:235
+msgid "Resolver set (%s) is not supported on this system."
+msgstr "Zestaw resolwera (%s) nie jest obsługiwany w tym systemie."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:318
+msgid ""
+"Resolver set support (%s) requires ipset, but ipset binary cannot be found"
+msgstr ""
+"Obsługa zestawu resolwera (%s) wymaga ipset, ale nie można znaleźć pliku "
+"binarnego ipset"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:321
+msgid ""
+"Resolver set support (%s) requires nftables, but nft binary cannot be found"
+msgstr ""
+"Obsługa zestawu resolwera (%s) wymaga nftables, ale nie można znaleźć pliku "
+"binarnego nft"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:488
+msgid "Restart"
+msgstr "Restartuj"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:482
+msgid "Restarting %s service"
+msgstr "Ponowne uruchamianie usługi %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:165
+msgid "Rule Create option"
+msgstr "Opcja tworzenia reguł"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:395
+msgid ""
+"Run the following user files after setting up but before restarting DNSMASQ. "
+"See the %sREADME%s for details."
+msgstr ""
+"Uruchom następujące pliki użytkownika po skonfigurowaniu, ale przed ponownym "
+"uruchomieniem Dnsmasq. Zobacz %sREADME%s, aby uzyskać szczegółowe informacje."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:170
+msgid "Running"
+msgstr "Działa"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:80
+msgid "See the %sREADME%s for details."
+msgstr "Zobacz %sREADME%s, aby uzyskać szczegółowe informacje."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:166
+msgid "Select Add for -A/add and Insert for -I/Insert."
+msgstr "Wybierz Dodaj dla -A/add oraz Wstaw dla -I/Insert."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:571
+msgid "Service Control"
+msgstr "Kontrola usługi"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:419
+msgid "Service Errors"
+msgstr "Błędy usługi"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:197
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:208
+msgid "Service FW Mask"
+msgstr "Maska FW usługi"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:202
+msgid "Service Gateways"
+msgstr "Bramy usług"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:165
+msgid "Service Status"
+msgstr "Status usługi"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:283
+msgid "Service Warnings"
+msgstr "Ostrzeżenia usługi"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:373
+msgid ""
+"Set DSCP tags (in range between 1 and 63) for specific interfaces. See the "
+"%sREADME%s for details."
+msgstr ""
+"Ustaw tagi DSCP (w zakresie od 1 do 63) dla określonych interfejsów. Zobacz "
+"%sREADME%s, aby uzyskać szczegółowe informacje."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:370
+msgid "Skipping IPv6 policy '%s' as IPv6 support is disabled"
+msgstr "Pominięto politykę IPv6 '%s', ponieważ obsługa IPv6 jest wyłączona"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:469
+msgid "Start"
+msgstr "Uruchom"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:463
+msgid "Starting %s service"
+msgstr "Uruchamianie usługi %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:193
+msgid ""
+"Starting (WAN) FW Mark for marks used by the service. High starting mark is "
+"used to avoid conflict with SQM/QoS. Change with caution together with"
+msgstr ""
+"Początkowy (WAN) znacznik FW dla znaczników używanych przez usługę. Wysoki "
+"znak początkowy jest używany, aby uniknąć konfliktu z SQM/QoS. Ostrożnie "
+"zmieniać wraz z"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:63
+msgid "Status"
+msgstr "Status"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:507
+msgid "Stop"
+msgstr "Zatrzymaj"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:184
+msgid "Stopped (Disabled)."
+msgstr "Zatrzymana (wyłączona)."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:182
+msgid "Stopped."
+msgstr "Zatrzymano."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:501
+msgid "Stopping %s service"
+msgstr "Zatrzymywanie usługi %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:79
+msgid "Strict enforcement"
+msgstr "Ścisłe egzekwowanie"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:86
+msgid "Strictly enforce policies when their gateway is down"
+msgstr "Ściśle egzekwuj zasady dla niedziałającej bramy"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:141
+msgid "Supported Interfaces"
+msgstr "Obsługiwane interfejsy"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:242
+msgid "Supported Protocols"
+msgstr "Wspierane protokoły"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:70
+msgid "Suppress/No output"
+msgstr "Tłumienie/Brak wyjścia"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:362
+msgid "Syntax error in custom user file '%s'"
+msgstr "Błąd składni w niestandardowym pliku użytkownika '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:206
+msgid "The %s indicates default gateway. See the %sREADME%s for details."
+msgstr ""
+"%s oznacza domyślną bramę. Zobacz %sREADME%s w celu uzyskania szczegółowych "
+"informacji."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:333
+msgid ""
+"The %s interface not found, you need to set the 'pbr.config."
+"procd_wan_interface' option"
+msgstr ""
+"Nie znaleziono interfejsu %s. Należy ustawić opcję 'pbr.config."
+"procd_wan_interface'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:96
+msgid "The %s is not supported on this system."
+msgstr "Funkcja %s nie jest obsługiwana w tym systemie."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:330
+msgid "The %s service failed to discover WAN gateway"
+msgstr "Usługa %s nie wykryła bramy WAN"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:327
+msgid "The %s service is currently disabled"
+msgstr "Usługa %s jest obecnie wyłączona"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:92
+msgid "The %s support is unknown."
+msgstr "Obsługa %s jest nieznana."
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:257
+msgid "The WebUI application (luci-app-pbr) is outdated, please update it"
+msgstr "Aplikacja WebUI (luci-app-pbr) jest nieaktualna, zaktualizuj ją"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:403
+msgid "The file:// schema requires curl, but it's not detected on this system"
+msgstr "Schemat file:// wymaga curl, ale nie jest on wykrywany w tym systemie"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:339
+msgid "The ipset name '%s' is longer than allowed 31 characters"
+msgstr "Nazwa ipset '%s' jest dłuższa niż dozwolone 31 znaków"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:342
+msgid "The nft set name '%s' is longer than allowed 255 characters"
+msgstr "Nazwa zestawu nft '%s' jest dłuższa niż dozwolone 255 znaków"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:260
+msgid "The principal package (pbr) is outdated, please update it"
+msgstr "Pakiet główny (pbr) jest nieaktualny, zaktualizuj go"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:345
+msgid "Unexpected exit or service termination: '%s'"
+msgstr "Nieoczekiwane wyjście lub zakończenie usługi: '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:413
+msgid "Unknown IPv6 Link type for device '%s'"
+msgstr "Nieznany typ łącza IPv6 dla urządzenia '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:431
+msgid "Unknown error!"
+msgstr "Nieznany błąd!"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:373
+msgid "Unknown packet mark for interface '%s'"
+msgstr "Nieznany znacznik pakietu dla interfejsu '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:379
+msgid "Unknown protocol in policy '%s'"
+msgstr "Nieznany protokół w polityce '%s'"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:295
+msgid "Unknown warning"
+msgstr "Nieznane ostrzeżenie"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:365
+msgid ""
+"Use of 'curl' is detected in custom user file '%s', but 'curl' isn't "
+"installed"
+msgstr ""
+"Wykryto użycie 'curl' w niestandardowym pliku użytkownika '%s', ale 'curl' "
+"nie jest zainstalowany"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:111
+msgid "Use resolver set support for domains"
+msgstr "Użyj obsługi set resolwera dla domen"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:72
+msgid "Verbose output"
+msgstr "Pełne dane wyjściowe"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:64
+msgid "Version"
+msgstr "Wersja"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:168
+msgid "Version %s"
+msgstr "Wersja %s"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:191
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:214
+msgid "WAN Table FW Mark"
+msgstr "Znacznik FW tablicy WAN"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:61
+msgid "Web UI Configuration"
+msgstr "Konfiguracja Web UI"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/pbr/overview.js:304
+msgid "all"
+msgstr "wszystko"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:174
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:44
+msgid "fw4 nft file mode"
+msgstr "tryb pliku nft fw4"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:172
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:42
+msgid "iptables mode"
+msgstr "tryb iptables"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/pbr/status.js:176
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:46
+msgid "nft mode"
+msgstr "tryb nft"
+
+#: applications/luci-app-pbr/htdocs/luci-static/resources/view/status/include/72_pbr.js:48
+msgid "unknown"
+msgstr "nieznana"
+
+#~ msgid ""
+#~ "Dnsmasq instance (%s) targeted in settings, but it doesn't have its own "
+#~ "confdir."
+#~ msgstr ""
+#~ "Instancja Dnsmasq (%s) wskazana w ustawieniach, ale nie ma własnego "
+#~ "confdir."
+
+#~ msgid ""
+#~ "Incompatible nft calls detected in user include file, disabling fw4 nft "
+#~ "file support."
+#~ msgstr ""
+#~ "Wykryto niezgodne wywołania nft w pliku dołączanym przez użytkownika, "
+#~ "wyłączenie obsługi plików nft fw4."
+
+#~ msgid ""
+#~ "The %s inteface not found, you need to set the 'pbr.config."
+#~ "procd_wan_interface' option"
+#~ msgstr ""
+#~ "Nie znaleziono interfejsu %s. Musisz ustawić opcję 'pbr.config."
+#~ "procd_wan_interface'"
+
+#~ msgid "Command failed: %s"
+#~ msgstr "Polecenie nie powiodło się: %s"
+
+#~ msgid "Errors encountered, please check the %sREADME%s!"
+#~ msgstr "Napotkano błędy, sprawdź %sREADME%s!"
+
+#~ msgid "Failed to download '%s'!"
+#~ msgstr "Nie udało się pobrać '%s'!"
+
+#~ msgid "Failed to download '%s', HTTPS is not supported!"
+#~ msgstr "Nie udało się pobrać '%s', protokół HTTPS nie jest obsługiwany!"
+
+#~ msgid ""
+#~ "Name, interface and at least one other field are required. Multiple local "
+#~ "and remote addresses/devices/domains and ports can be space separated. "
+#~ "Placeholders below represent just the format/syntax and will not be used "
+#~ "if fields are left blank."
+#~ msgstr ""
+#~ "Nazwa, interfejs i co najmniej jedno dodatkowe pole są wymagane. Wiele "
+#~ "lokalnych i zdalnych adresów/urządzeń/domen i portów można oddzielić "
+#~ "spacjami. Poniższe symbole zastępcze reprezentują tylko format/składnię i "
+#~ "nie będą używane, jeśli pola pozostaną puste."
+
+#~ msgid ""
+#~ "Policy '%s' refers to URL which can't be downloaded in 'secure_reload' "
+#~ "mode!"
+#~ msgstr ""
+#~ "Zasada '%s' odnosi się do adresu URL, którego nie można pobrać w trybie "
+#~ "'secure_reload'!"
+
+#~ msgid "The WebUI application is outdated (version %s), please update it"
+#~ msgstr ""
+#~ "Aplikacja interfejsu WWW jest nieaktualna (wersja %s), zaktualizuj ją"
+
+#~ msgid ""
+#~ "The file:// schema requires curl, but it's not detected on this system!"
+#~ msgstr "Schemat file:// wymaga curl, ale nie jest wykrywany w tym systemie!"
+
+#~ msgid "Failed to resolve %s"
+#~ msgstr "Nie udało się rozwiązać %s"
+
+#~ msgid "Insertion failed for IPv4 for policy %s"
+#~ msgstr "Wstawienie nie powiodło się dla IPv4 dla zasady %s"
+
+#~ msgid "Insertion failed for both IPv4 and IPv6 for policy %s"
+#~ msgstr ""
+#~ "Wstawienie nie powiodło się zarówno dla IPv4, jak i IPv6 dla zasady %s"
+
+#~ msgid "Mismatched IP family between in policy %s"
+#~ msgstr "Niezgodna rodzina adresów IP w zasadach %s"
+
+#~ msgid "Resolver %s"
+#~ msgstr "Resolwer %s"
+
+#~ msgid "Running (version: %s using iptables)"
+#~ msgstr "Uruchomiona (wersja: %s z użyciem iptables)"
+
+#~ msgid "Running (version: %s using nft)"
+#~ msgstr "Uruchomiona (wersja: %s z użyciem nft)"
+
+#~ msgid "Running (version: %s)"
+#~ msgstr "Uruchomiona (wersja: %s)"
+
+#~ msgid "Starting (WAN) Table ID number for tables created by the service."
+#~ msgstr ""
+#~ "Początkowy (WAN) numer identyfikatora tabeli dla tabel utworzonych przez "
+#~ "usługę."
+
+#~ msgid "Stopped (Disabled)"
+#~ msgstr "Zatrzymana (wyłączona)"
+
+#~ msgid "Stopped (version: %s)"
+#~ msgstr "Zatrzymana (wersja: %s)"
+
+#~ msgid "The nft set name '%s' is longer than allowed 31 characters"
+#~ msgstr "Nazwa zestawu nft '%s' jest dłuższa niż dozwolone 31 znaków"
+
+#~ msgid "Unknown Error!"
+#~ msgstr "Nieznany błąd!"
+
+#~ msgid "Unknown Warning."
+#~ msgstr "Nieznane ostrzeżenie."
+
+#~ msgid "Unknown protocol in policy %s"
+#~ msgstr "Nieznany protokół w zasadzie %s"
+
+#~ msgid "WAN Table ID"
+#~ msgstr "Identyfikator tabeli WAN"
+
+#~ msgid "%s binary cannot be found!"
+#~ msgstr "Nie można znaleźć binarnego %s!"
+
+#~ msgid "Config (%s) validation failure!"
+#~ msgstr "Błąd sprawdzania poprawności konfiguracji (%s)!"
+
+#~ msgid "Custom user file '%s' not found or empty!"
+#~ msgstr ""
+#~ "Niestandardowy plik użytkownika '%s' nie został znaleziony lub jest pusty!"
+
+#~ msgid "Error running custom user file '%s'!"
+#~ msgstr "Błąd podczas uruchamiania niestandardowego pliku użytkownika '%s'!"
+
+#~ msgid "Failed to reload '%s'!"
+#~ msgstr "Nie udało się załadować ponownie '%s'!"
+
+#~ msgid "Failed to set up '%s'!"
+#~ msgstr "Nie udało się ustawić '%s'!"
+
+#~ msgid "Failed to set up any gateway!"
+#~ msgstr "Nie udało się skonfigurować żadnej bramy!"
+
+#~ msgid "Policy '%s' has an unknown interface!"
+#~ msgstr "Zasada '%s' ma nieznany interfejs!"
+
+#~ msgid "Policy '%s' has no assigned interface!"
+#~ msgstr "Zasada '%s' nie ma przypisanego interfejsu!"
+
+#~ msgid "Policy '%s' has no source/destination parameters!"
+#~ msgstr "Zasada '%s' nie ma parametrów źródła/przeznaczenia!"
+
+#~ msgid "Resolver set (%s) is not supported on this system!"
+#~ msgstr "set resolwera (%s) nie jest obsługiwany w tym systemie!"
+
+#~ msgid ""
+#~ "Resolver set support (%s) requires ipset, but ipset binary cannot be "
+#~ "found!"
+#~ msgstr ""
+#~ "Obsługa set resolwera (%s) wymaga ipset, ale nie można znaleźć pliku "
+#~ "binarnego ipset!"
+
+#~ msgid ""
+#~ "Resolver set support (%s) requires nftables, but nft binary cannot be "
+#~ "found!"
+#~ msgstr ""
+#~ "Obsługa set resolwera (%s) wymaga nftables, ale nie można znaleźć pliku "
+#~ "binarnego nft!"
+
+#~ msgid "Syntax error in custom user file '%s'!"
+#~ msgstr "Błąd składni w niestandardowym pliku użytkownika '%s'!"
+
+#~ msgid "The %s service failed to discover WAN gateway!"
+#~ msgstr "Usługa %s nie wykryła bramy WAN!"
+
+#~ msgid "The %s service is currently disabled!"
+#~ msgstr "Usługa %s jest obecnie wyłączona!"
+
+#~ msgid "The ipset name '%s' is longer than allowed 31 characters!"
+#~ msgstr "Nazwa ipset '%s' jest dłuższa niż dozwolone 31 znaków!"
+
+#~ msgid "The nft set name '%s' is longer than allowed 31 characters!"
+#~ msgstr "Nazwa nft set '%s' jest dłuższa niż dozwolone 31 znaków!"
+
+#~ msgid "Unexpected exit or service termination: '%s'!"
+#~ msgstr "Nieoczekiwane wyjście lub zakończenie usługi: '%s'!"
+
+#~ msgid "Unknown Warning!"
+#~ msgstr "Nieznane ostrzeżenie!"
+
+#~ msgid ""
+#~ "Use of 'curl' is detected in custom user file '%s', but 'curl' isn't "
+#~ "installed!"
+#~ msgstr ""
+#~ "Użycie 'curl' zostało wykryte w niestandardowym pliku użytkownika '%s', "
+#~ "ale 'curl' nie jest zainstalowany!"
+
+#~ msgid "ip-full binary cannot be found!"
+#~ msgstr "Nie można znaleźć pliku binarnego ip-full!"
+
+#~ msgid "%s (disabled)"
+#~ msgstr "%s (wyłączone)"
+
+#~ msgid "%s (strict mode)"
+#~ msgstr "%s (tryb ścisły)"
+
+#~ msgid "%s is not installed or not found"
+#~ msgstr "%s nie jest zainstalowany lub nie znaleziono"
+
+#~ msgid "Add IGNORE Target"
+#~ msgstr "Dodaj cel IGNORE"
+
+#~ msgid ""
+#~ "Adds `IGNORE` to the list of interfaces for policies, allowing you to "
+#~ "skip further processing by VPN Policy Routing."
+#~ msgstr ""
+#~ "Dodaje `IGNORE` do listy interfejsów dla polityk, pozwalając na "
+#~ "pominięcie dalszego przetwarzania przez VPN Policy Routing."
+
+#~ msgid "Append"
+#~ msgstr "Dodaj"
+
+#~ msgid "Boot Time-out"
+#~ msgstr "Limit czasu rozruchu"
+
+#~ msgid "Comment"
+#~ msgstr "Komentarz"
+
+#~ msgid ""
+#~ "Comment, interface and at least one other field are required. Multiple "
+#~ "local and remote addresses/devices/domains and ports can be space "
+#~ "separated. Placeholders below represent just the format/syntax and will "
+#~ "not be used if fields are left blank."
+#~ msgstr ""
+#~ "Komentarz, interfejs i co najmniej jedno inne pole są wymagane. Wiele "
+#~ "lokalnych i zdalnych adresów/urządzeń/domen i portów może być "
+#~ "oddzielonych spacją. Poniższe pola przedstawiają tylko format/składnie i "
+#~ "nie będą używane, jeśli pola pozostaną puste."
+
+#~ msgid "Configuration"
+#~ msgstr "Konfiguracja"
+
+#~ msgid "DNSMASQ ipset"
+#~ msgstr "DNSMASQ ipset"
+
+#~ msgid "Grant UCI and file access for luci-app-vpn-policy-routing"
+#~ msgstr "Przyznaj dostęp do plików i UCI dla luci-app-vpn-policy-routing"
+
+#~ msgid "IPTables rule option"
+#~ msgstr "Opcja reguł IPTables"
+
+#~ msgid "Loading"
+#~ msgstr "Ładowanie"
+
+#~ msgid "Select Append for -A and Insert for -I."
+#~ msgstr "Wybierz opcję Dołącz do -A i Wstaw dla -I."
+
+#~ msgid "Service Status [%s %s]"
+#~ msgstr "Stan usługi [%s %s]"
+
+#~ msgid "Show Chain Column"
+#~ msgstr "Pokaż kolumnę łańcucha"
+
+#~ msgid "Show Enable Column"
+#~ msgstr "Pokaż kolumnę włączenia"
+
+#~ msgid "Show Protocol Column"
+#~ msgstr "Pokaż kolumnę protokołu"
+
+#~ msgid "Show Up/Down Buttons"
+#~ msgstr "Pokaż przyciski w górę/w dół"
+
+#~ msgid ""
+#~ "Shows the Up/Down buttons for policies, allowing you to move a policy up "
+#~ "or down in the list."
+#~ msgstr ""
+#~ "Pokazuje przyciski w górę/w dół dla zasad, umożliwiając przenoszenie "
+#~ "zasad w górę lub w dół na liście."
+
+#~ msgid ""
+#~ "Shows the chain column for policies, allowing you to assign a PREROUTING, "
+#~ "FORWARD, INPUT or OUTPUT chain to a policy."
+#~ msgstr ""
+#~ "Pokazuje kolumnę łańcucha dla zasad, umożliwiając przypisanie do zasad "
+#~ "łańcucha PREROUTING, FORWARD, INPUT lub OUTPUT."
+
+#~ msgid ""
+#~ "Shows the enable checkbox column for policies, allowing you to quickly "
+#~ "enable/disable specific policy without deleting it."
+#~ msgstr ""
+#~ "Pokazuje kolumnę pola wyboru włączania dla polityk, pozwalając na szybkie "
+#~ "włączenie/wyłączenie konkretnej polityki bez jej usuwania."
+
+#~ msgid ""
+#~ "Shows the protocol column for policies, allowing you to assign a specific "
+#~ "protocol to a policy."
+#~ msgstr ""
+#~ "Pokazuje kolumnę protokołu dla polityk, pozwalając na przypisanie "
+#~ "konkretnego protokołu do danej polityki."
+
+#~ msgid "Stopped"
+#~ msgstr "Zatrzymany"
+
+#~ msgid "The ipset option for local policies"
+#~ msgstr "Opcja ipset dla zasad lokalnych"
+
+#~ msgid "The ipset option for remote policies"
+#~ msgstr "Opcja ipset dla zasad zdalnych"
+
+#~ msgid ""
+#~ "Time (in seconds) for service to wait for WAN gateway discovery on boot."
+#~ msgstr ""
+#~ "Czas (w sekundach) oczekiwania serwisu na wykrycie bramy WAN podczas "
+#~ "rozruchu."
+
+#~ msgid "Use ipset command"
+#~ msgstr "Użyj polecenia ipset"
+
+#~ msgid "Use resolver's ipset for domains"
+#~ msgstr "Użyj ipset narzędzia do rozpoznawania nazw dla domen"
+
+#~ msgid "VPN"
+#~ msgstr "VPN"
+
+#~ msgid "VPN Policy Routing"
+#~ msgstr "Polityka trasowania sieci VPN"
+
+#~ msgid "VPN and WAN Policy-Based Routing"
+#~ msgstr "Polityka trasowania oparta na VPN i WAN"
+
+#~ msgid "WAN"
+#~ msgstr "WAN"
+
+#~ msgid ""
+#~ "Add an ip rule, not an iptables entry for policies with just the local "
+#~ "address. Use with caution to manipulte policies priorities."
+#~ msgstr ""
+#~ "Dodaj regułę IP, a nie wpis iptables dla zasad z tylko adresem lokalnym. "
+#~ "Używaj ostrożnie, aby manipulować priorytetami polityk."
+
+#~ msgid "Append local IP Tables rules"
+#~ msgstr "Dodaj lokalne zasady dotyczące tabel IP"
+
+#~ msgid "Append remote IP Tables rules"
+#~ msgstr "Dodaj reguły zdalnych tabel IP"
+
+#~ msgid "IP Rules Support"
+#~ msgstr "Obsługa reguł IP"
+
+#~ msgid ""
+#~ "Special instructions to append iptables rules for local IPs/netmasks/"
+#~ "devices."
+#~ msgstr ""
+#~ "Specjalne instrukcje dotyczące dołączania reguł iptables dla lokalnych IP/"
+#~ "masek-sieci/urządzeń."
+
+#~ msgid ""
+#~ "Special instructions to append iptables rules for remote IPs/netmasks."
+#~ msgstr ""
+#~ "Specjalne instrukcje dotyczące dołączania reguł iptables dla zdalnych IP/"
+#~ "masek sieciowych."
+
+#~ msgid ""
+#~ "The %s represents the default gateway. See the %sREADME%s for details."
+#~ msgstr ""
+#~ "%s reprezentuje bramę domyślną. Szczegółowe informacje można znaleźć w "
+#~ "%sREADME%s."
+
+#~ msgid "Use DNSMASQ ipset"
+#~ msgstr "Użyj DNSMASQ ipset"
+
+#~ msgid ""
+#~ "Checkmark represents the default gateway. See the %sREADME%s for details."
+#~ msgstr ""
+#~ "Znacznik wyboru reprezentuje bramę domyślną. Zobacz%sREADME%s aby uzyskać "
+#~ "szczegółowe informacje."
+
+#~ msgid "Grant UCI access for luci-app-vpn-policy-routing"
+#~ msgstr "Przyznaj dostęp UCI do routingu luci-app-vpn-policy-routing"
+
+#~ msgid ""
+#~ "%sWARNING:%s Please make sure to check the <a href=\"%s\" "
+#~ "target=\"_blank\">README</a> before changing anything in this section! "
+#~ "Change any of the settings below with extreme caution!%s"
+#~ msgstr ""
+#~ "%sOSTRZEŻENIE:%s Proszę sprawdzić <a href=\"%s\" "
+#~ "target=\"_blank\">README</a> przed zmianą czegokolwiek w tej sekcji! "
+#~ "Zmień którekolwiek z poniższych ustawień z wielką ostrożnością! %s"
+
+#~ msgid ""
+#~ "Checkmark represents the default gateway. See the <a href=\"%s\" "
+#~ "target=\"_blank\">README</a> for details."
+#~ msgstr ""
+#~ "Znacznik wyboru reprezentuje bramę domyślną. Zobacz <a href=\"%s\" "
+#~ "target=\"_blank\">README</a> aby uzyskać szczegółowe informacje."
+
+#~ msgid ""
+#~ "Please check the <a href=\"%s\" target=\"_blank\">README</a> before "
+#~ "changing this option."
+#~ msgstr ""
+#~ "Proszę sprawdzić <a href=\"%s\" target=\"_blank\">README</a> przed zmianą "
+#~ "tej opcji."
+
+#~ msgid ""
+#~ "Run the following user files after setting up but before restarting "
+#~ "DNSMASQ. See the <a href=\"%s\" target=\"_blank\">README</a> for details."
+#~ msgstr ""
+#~ "Po skonfigurowaniu, ale przed ponownym uruchomieniem DNSMASQ, należy "
+#~ "uruchomić następujące pliki użytkownika. Zobacz <a href=\"%s\" "
+#~ "target=\"_blank\">README</a> po szczegóły."
+
+#~ msgid "See the <a href=\"%s\" target=\"_blank\">README</a> for details."
+#~ msgstr ""
+#~ "Zobacz <a href=\"%s\" target=\"_blank\">README</a> aby uzyskać "
+#~ "szczegółowe informacje."
+
+#~ msgid ""
+#~ "Set DSCP tags (in range between 1 and 63) for specific interfaces. See "
+#~ "the <a href=\"%s\" target=\"_blank\">README</a> for details."
+#~ msgstr ""
+#~ "Ustaw znaczniki DSCP (w zakresie od 1 do 63) dla określonych interfejsów. "
+#~ "Szczegółowe informacje można znaleźć w polu <a href=\"%s\" "
+#~ "target=\"_blank\">README</a>."
+
+#~ msgid "(strict mode)"
+#~ msgstr "(tryb ścisły)"
+
+#~ msgid "Checkmark represents the default gateway. See the"
+#~ msgstr "Znacznik wyboru reprezentuje bramę domyślną. Patrz"
+
+#~ msgid "Please check the"
+#~ msgstr "Proszę sprawdzić"
+
+#~ msgid "Please make sure to check the"
+#~ msgstr "Upewnij się, że należy sprawdzić"
+
+#~ msgid "README"
+#~ msgstr "Plik readme"
+
+#~ msgid "Reload"
+#~ msgstr "Przeładuj"
+
+#~ msgid ""
+#~ "Run the following user files after setting up but before restarting "
+#~ "DNSMASQ. See the"
+#~ msgstr ""
+#~ "Uruchom następujące pliki użytkownika po skonfigurowaniu, ale przed "
+#~ "ponownym uruchomieniem DNSMASQ. Patrz"
+
+#~ msgid "See the"
+#~ msgstr "Zobacz"
+
+#~ msgid ""
+#~ "Set DSCP tags (in range between 1 and 63) for specific interfaces. See the"
+#~ msgstr ""
+#~ "Ustaw znaczniki DSCP (w zakresie od 1 do 63) dla określonych interfejsów. "
+#~ "Patrz"
+
+#~ msgid "WARNING:"
+#~ msgstr "OSTRZEŻENIE:"
+
+#~ msgid ""
+#~ "before changing anything in this section! Change any of the settings "
+#~ "below with extreme caution!"
+#~ msgstr ""
+#~ "przed zmianą czegokolwiek w tej sekcji! Z wielką ostrożnością zmień "
+#~ "którekolwiek z poniższych ustawień!"
+
+#~ msgid "before changing this option."
+#~ msgstr "przed zmianą tej opcji."
+
+#~ msgid "for details."
+#~ msgstr "dla szczegółów."
+
+#~ msgid "is not installed or not found"
+#~ msgstr "nie jest zainstalowany lub nie znaleziono"

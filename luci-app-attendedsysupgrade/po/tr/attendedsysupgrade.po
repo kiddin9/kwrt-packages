@@ -1,0 +1,388 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-03-31 19:53+0000\n"
+"Last-Translator: Oğuz Han <h4n.3545@gmail.com>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/openwrt/"
+"luciapplicationsattendedsysupgrade/tr/>\n"
+"Language: tr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5-dev\n"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:21
+msgid "Address"
+msgstr "Adres"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:22
+msgid "Address of the sysupgrade server"
+msgstr "sysupgrade sunucusunun adresi"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:50
+msgid "Advanced Mode"
+msgstr "Gelişmiş Mod"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:11
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:610
+#: applications/luci-app-attendedsysupgrade/root/usr/share/luci/menu.d/luci-app-attendedsysupgrade.json:3
+msgid "Attended Sysupgrade"
+msgstr "Katılımlı Sysupgrade"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:12
+msgid "Attendedsysupgrade Configuration."
+msgstr "Attendedsysupgrade Yapılandırması."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:519
+msgid "Board Name / Profile"
+msgstr "Pano İsmi / Profil"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:124
+msgid "Build Date"
+msgstr "Sürüm tarihi"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:201
+msgid "Building Firmware..."
+msgstr "Firmware oluşturuluyor..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:67
+msgid "Calculating package hash"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:164
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:534
+msgid "Cancel"
+msgstr "İptal"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:35
+msgid "Client"
+msgstr "İstemci"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:245
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:382
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:437
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:571
+msgid "Close"
+msgstr "Kapat"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:70
+msgid "Completed generating firmware image"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/root/usr/share/luci/menu.d/luci-app-attendedsysupgrade.json:24
+msgid "Configuration"
+msgstr "Yapılandırma"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:431
+msgid "Could not reach API at \"%s\". Please try again later."
+msgstr ""
+"\"%s\" konumunda API'ye ulaşılamadı. Lütfen daha sonra tekrar deneyiniz."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:527
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:625
+msgid "Currently running: %s - %s"
+msgstr "Şu anda çalışıyor: %s - %s"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:297
+msgid "Download"
+msgstr "İndir"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:135
+msgid "Download firmware image"
+msgstr "Firmware imajını indir"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:74
+msgid "Downloading ImageBuilder archive"
+msgstr "ImageBuilder arşivi indiriliyor"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:343
+msgid "Downloading firmware from server to browser"
+msgstr "Firmware sunucudan tarayıcıya indiriliyor"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:339
+msgid "Downloading..."
+msgstr "İndiriliyor..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:249
+msgid "Error building the firmware image"
+msgstr "Firmware imajı oluşturulurken hata oluştu"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:427
+msgid "Error connecting to upgrade server"
+msgstr "Yükseltme sunucusuna bağlanırken hata oluştu"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:380
+msgid "Error during download of firmware. Please try again"
+msgstr "Firmware indirilmesi sırasında hata oldu. Lütfen tekrar deneyin"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:71
+msgid "Failed to generate firmware image"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:126
+msgid "Filename"
+msgstr "Dosya Adı"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:128
+msgid "Filesystem"
+msgstr "Dosya sistemi"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:68
+msgid "Generating firmware image"
+msgstr "Ürün yazılımı dosyası oluşturuluyor"
+
+#: applications/luci-app-attendedsysupgrade/root/usr/share/rpcd/acl.d/luci-app-attendedsysupgrade.json:3
+msgid "Grant UCI access to LuCI app attendedsysupgrade"
+msgstr "LuCI attendedsysupgrade uygulamasına UCI erişimi verin"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:174
+msgid "Install firmware image"
+msgstr "Firmware imajını yükle"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:389
+msgid "Installing the sysupgrade. Do not unpower device!"
+msgstr "Sysupgrade yükleniyor. Cihazın gücünü kesmeyin!"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:385
+msgid "Installing..."
+msgstr "Yükleniyor..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:160
+msgid "Keep settings and retain the current configuration"
+msgstr "Ayarları ve mevcut yapılandırmayı koruyun"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:524
+msgid "New firmware upgrade available"
+msgstr "Yeni yükseltme mevcut"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:562
+msgid "No upgrade available"
+msgstr "Yeni yükseltme mevcut değil"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:30
+msgid ""
+"Other ASU server instances that rebuild a requested image. Allows to compare "
+"checksums and verify that the results are the same."
+msgstr ""
+"İstenen görüntüyü yeniden oluşturan diğer ASU sunucusu örnekleri. Sağlama "
+"toplamlarını karşılaştırmaya ve sonuçların aynı olduğunu doğrulamaya olanak "
+"tanır."
+
+#: applications/luci-app-attendedsysupgrade/root/usr/share/luci/menu.d/luci-app-attendedsysupgrade.json:15
+msgid "Overview"
+msgstr "Genel bakış"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:520
+msgid "Packages"
+msgstr "Paketler"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:227
+msgid "Please report the error message and request"
+msgstr "Lütfen hata mesajını ve isteği bildirin"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:120
+msgid "Profile"
+msgstr "Profil"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:205
+msgid "Progress: %s%% %s"
+msgstr "İlerleme: %s%% %s"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:191
+msgid "Queued..."
+msgstr "Kuyrukta..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:28
+msgid "Rebuilders"
+msgstr "Yeniden Oluşturucular"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:138
+msgid "Rebuilds"
+msgstr "Yeniden oluşturmalar"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:63
+msgid "Received build request"
+msgstr "Oluşturma isteği alındı"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:229
+msgid "Request Data:"
+msgstr "İstenilen Veri:"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:556
+msgid "Request firmware image"
+msgstr "Firmware imajını iste"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:195
+msgid "Request in build queue position %s"
+msgstr "%s oluşturma kuyruğu konumunda istek"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:114
+msgid "SHA256"
+msgstr "SHA256"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:636
+msgid "Search for firmware upgrade"
+msgstr "Yazılım yükseltmesi için arayın"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:42
+msgid "Search for new sysupgrades on opening the tab"
+msgstr "Sekmeyi açarken yeni sysupgrade'leri arayın"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:41
+msgid "Search on opening"
+msgstr "Açılışta ara"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:418
+msgid "Searching for an available sysupgrade of %s - %s"
+msgstr "%s - %s arasında kullanılabilir bir sysupgrade aranıyor"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:414
+msgid "Searching..."
+msgstr "Aranıyor..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:15
+msgid "Server"
+msgstr "Sunucu"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:223
+msgid "Server response: %s"
+msgstr "Sunucu cevabı: %s"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:75
+msgid "Setting Up ImageBuilder"
+msgstr "ImageBuilder'ı Ayarlama"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:64
+msgid "Setting up ImageBuilder"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/configuration.js:51
+msgid "Show advanced options like package list modification"
+msgstr "Paket listesi değişikliği gibi gelişmiş seçenekleri göster"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:69
+msgid "Signing images"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:179
+msgid "Successfully created firmware image"
+msgstr "Firmware imajı başarıyla oluşturuldu"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:122
+msgid "Target"
+msgstr "Hedef"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:614
+msgid ""
+"The attended sysupgrade service allows to easily upgrade vanilla and custom "
+"firmware images."
+msgstr ""
+"Katılımlı sysupgrade hizmeti, resmi ve özel yapım firmware imajlarını "
+"kolayca yükseltmenize olanak tanır."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:565
+msgid "The device runs the latest firmware version %s - %s"
+msgstr "Cihaz en son donanım yazılımı sürümünü %s - %s çalıştırıyor"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:620
+msgid ""
+"This is done by building a new firmware on demand via an online service."
+msgstr ""
+"Bu, talep üzerine çevrimiçi bir hizmet aracılığıyla yeni bir firmware "
+"oluşturularak yapılır."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:365
+msgid "Uploading firmware from browser to device"
+msgstr "Firmware tarayıcıdan cihaza yükleniyor"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:361
+msgid "Uploading..."
+msgstr "Karşıya yükleniyor..."
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:66
+msgid "Validating package selection"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:65
+msgid "Validating revision"
+msgstr ""
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:112
+msgid "Version"
+msgstr "Versiyon"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:377
+msgid "Wrong checksum"
+msgstr "Hatalı checksum"
+
+#: applications/luci-app-attendedsysupgrade/htdocs/luci-static/resources/view/attendedsysupgrade/overview.js:504
+msgid "[installed] %s"
+msgstr "[kurulu] %s"
+
+#~ msgid "Validate package selection"
+#~ msgstr "Paket seçimini doğrula"
+
+#~ msgid "10% Received build request"
+#~ msgstr "10% Alınan derleme isteği"
+
+#~ msgid "20% Downloading ImageBuilder archive"
+#~ msgstr "20% ImageBuilder arşivi indiriliyor"
+
+#~ msgid "40% Setting Up ImageBuilder"
+#~ msgstr "40% ImageBuilder yükleniyor"
+
+#~ msgid "60% Validate package selection"
+#~ msgstr "60% Paket seçimi doğrulanıyor"
+
+#~ msgid "80% Generating firmware image"
+#~ msgstr "80% Firmware imajı oluşturuluyor"
+
+#~ msgid "Progress: %s"
+#~ msgstr "İlerleme: %s"
+
+#~ msgid "Building firmware sysupgrade image"
+#~ msgstr "Sistem yükseltme firmware imajı oluşturuluyor"
+
+#~ msgid "Error building the sysupgrade"
+#~ msgstr "sysupgrade oluşturulurken hata meydana geldi"
+
+#~ msgid "File"
+#~ msgstr "Dosya"
+
+#~ msgid "Install Sysupgrade"
+#~ msgstr "Sysupgrade'i yükleyin"
+
+#~ msgid "New upgrade available"
+#~ msgstr "Yeni yükseltme mevcut"
+
+#~ msgid "Request Sysupgrade"
+#~ msgstr "Sysupgrade iste"
+
+#~ msgid "Request to server:"
+#~ msgstr "Sunucuya istek:"
+
+#~ msgid "Search for sysupgrade"
+#~ msgstr "Sysupgrade ara"
+
+#~ msgid "Successfully created sysupgrade image"
+#~ msgstr "Sysupgrade görüntüsü başarıyla oluşturuldu"
+
+#~ msgid "Request in build queue position %d"
+#~ msgstr "İsteğin inşa kuyruğundaki sırası %d"
+
+#~ msgid "Searching for an available sysupgrade"
+#~ msgstr "Kullanılabilir bir sistem yükseltmesi aranıyor"
+
+#~ msgid "The device runs the latest firmware version"
+#~ msgstr "Cihaz en son firmware sürümünü çalıştırıyor"
+
+#~ msgid "Building the sysupgrade image"
+#~ msgstr "Sistem yükseltme görüntüsünü oluşturma"
+
+#~ msgid "Request in build queue"
+#~ msgstr "Derleme kuyruğundaki istek"
+
+#~ msgid "Advances Mode"
+#~ msgstr "Gelişmiş Modu"
+
+#~ msgid "attended sysupgrade via rpcd and luci"
+#~ msgstr "rpcd ve luci ile etkileşimli sistem yükseltme"

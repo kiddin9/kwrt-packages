@@ -1,0 +1,11 @@
+{
+	"luci-app-bmx7": {
+		"description": "Grant UCI access for luci-app-bmx7",
+		"read": {
+			"uci": [ "luci-bmx7" ]
+		},
+		"write": {
+			"uci": [ "luci-bmx7" ]
+		}
+	}
+}
