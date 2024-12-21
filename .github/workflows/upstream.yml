@@ -393,7 +393,7 @@ jobs:
         mv -f applications luciapp
         rm -rf luciapp/{luci-app-qbittorrent,luci-app-zerotier,luci-app-cpufreq,luci-app-e2guardian,luci-app-aliyundrive-fuse,luci-app-syncdial,luci-app-firewall}
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/luci" applications protocols/luci-proto-minieap protocols/luci-proto-quectel themes/luci-theme-argon
-        rm -rf applications/luci-app-frp*
+        rm -rf applications/{luci-app-frp*,luci-app-shadowsocks-libev}
         mv -n luciapp/!(luci-app-filetransfer|luci-app-ksmbd) applications/; rm -rf luciapp
 
         for ipk in $(ls -d applications/!(luci-app-rclone)/); do
