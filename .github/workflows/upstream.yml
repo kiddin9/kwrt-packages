@@ -395,13 +395,6 @@ jobs:
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/luci" applications protocols/luci-proto-minieap protocols/luci-proto-quectel themes/luci-theme-argon
         rm -rf applications/luci-app-frp*
         mv -n luciapp/* applications/; rm -rf luciapp
-        git_sparse_clone master "https://github.com/immortalwrt/luci" applications/luci-app-filebrowser-go
-
-        for ipk in $(ls -d applications/!(luci-app-rclone|luci-app-filebrowser)/); do
-        	if [[ $(ls $ipk/po | wc -l) -gt 4 ]]; then
-            rm -rf $ipk
-        	fi
-        done
 
         git_sparse_clone master "https://github.com/coolsnowwolf/lede" package/lean package/network/services/shellsync package/qca/shortcut-fe
 
