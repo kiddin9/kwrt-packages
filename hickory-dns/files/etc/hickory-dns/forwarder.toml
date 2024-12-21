@@ -3,7 +3,7 @@ listen_addrs_ipv6 = ["::1"]
 [[zones]]
 zone = "."
 
-zone_type = "Forward"
+zone_type = "External"
 stores = { type = "forward", name_servers = [
         { socket_addr = "[2400:3200:baba::1]:853", protocol = "quic", trust_negative_responses = false, tls_dns_name = "dns.alidns.com" },
         { socket_addr = "[2400:3200::1]:853", protocol = "quic", trust_negative_responses = false, tls_dns_name = "dns.alidns.com" },
