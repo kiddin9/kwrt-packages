@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-subconverter
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 PKG_MAINTAINER:= James <yangzhaojava@gmail.com>
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=LICENSE

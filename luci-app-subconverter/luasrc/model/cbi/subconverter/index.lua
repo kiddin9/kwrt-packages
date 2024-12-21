@@ -2,6 +2,7 @@
 
 local sys = require("luci.sys")
 local fs = require("nixio.fs")
+local http = require("luci.http")
 
 local function basename(filename)
 	return filename:match("(.+)%..+$") or filename
@@ -48,6 +49,15 @@ o.cfgvalue    = function(...)
 		color = 'green'
 	end
     return string.format('<span style="color:%s;">%s</span>',color,content)
+end
+
+o = s:option(DummyValue, "version", translate("Version"))
+o.readonly=true
+o.rmempty = true
+o.rawhtml = true
+o.cfgvalue  = function(...)
+	local version = sys.exec("curl http://127.0.0.1:25500/version")
+    return string.format('<span>%s</span>',version)
 end
 
 o = s:option(ListValue, "client", translate("Client"))

@@ -52,3 +52,6 @@ msgstr "运行中"
 
 msgid "Clear Subscribe Address"
 msgstr "清空订阅信息"
+
+msgid "Version"
+msgstr "版本号"
