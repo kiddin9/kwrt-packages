@@ -1,9 +1,0 @@
-{
-	"title": "UnixSock",
-	"category": "output",
-	"legend": [
-		["SocketFile", "SocketGroup", "SocketPerms"],
-		[],
-		[]
-	]
-}

@@ -1,9 +1,0 @@
-{
-	"title": "Snmp6",
-	"category": "network",
-	"legend": [
-		[],
-		["IgnoreSelected"],
-		["Interfaces"]
-	]
-}

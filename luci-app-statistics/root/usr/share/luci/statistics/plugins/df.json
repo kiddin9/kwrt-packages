@@ -1,9 +1,0 @@
-{
-	"title": "Disk Space Usage",
-	"category": "general",
-	"legend": [
-		[],
-		["IgnoreSelected", "ValuesPercentage"],
-		["Devices", "MountPoints", "FSTypes"]
-	]
-}

@@ -1,9 +1,0 @@
-{
-	"title": "Wireless",
-	"category": "network",
-	"legend": [
-		[],
-		["IgnoreSelected"],
-		["Interfaces"]
-	]
-}

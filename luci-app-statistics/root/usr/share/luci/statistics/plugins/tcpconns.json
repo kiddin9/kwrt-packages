@@ -1,9 +1,0 @@
-{
-	"title": "TCP Connections",
-	"category": "network",
-	"legend": [
-		[],
-		["ListeningPorts", "AllPortsSummary"],
-		["LocalPorts", "RemotePorts"]
-	]
-}

@@ -1,9 +1,0 @@
-{
-	"title": "CSV Output",
-	"category": "output",
-	"legend": [
-		["DataDir"],
-		["StoreRates"],
-		[]
-	]
-}

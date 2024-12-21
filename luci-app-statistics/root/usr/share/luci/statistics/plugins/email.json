@@ -1,9 +1,0 @@
-{
-	"title": "Email",
-	"category": "general",
-	"legend": [
-		["SocketFile", "SocketGroup", "SocketPerms", "MaxConns"],
-		[],
-		[]
-	]
-}

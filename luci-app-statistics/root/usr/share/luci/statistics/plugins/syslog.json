@@ -1,9 +1,0 @@
-{
-   "title": "Syslog",
-   "category": "output",
-   "legend": [
-       ["LogLevel","NotifyLevel"],
-       [],
-       []
-   ]
-}
