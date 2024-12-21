@@ -396,6 +396,12 @@ jobs:
         rm -rf applications/luci-app-frp*
         mv -n luciapp/* applications/; rm -rf luciapp
 
+        for ipk in $(ls -d applications/!(luci-app-rclone)/); do
+        	if [[ $(ls $ipk/po | wc -l) -gt 4 ]]; then
+            rm -rf $ipk
+        	fi
+        done
+
         git_sparse_clone master "https://github.com/coolsnowwolf/lede" package/lean package/network/services/shellsync package/qca/shortcut-fe
 
     - name: Delete duplicated packages
