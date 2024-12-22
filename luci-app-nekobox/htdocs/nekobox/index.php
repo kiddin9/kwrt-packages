@@ -543,7 +543,7 @@ $singbox_log_content = readLogFile($singbox_log);
 <?php
 $isNginx = false;
 if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
-    $isNginx = true;
+    $isNginx = false;
 }
 ?>
 
