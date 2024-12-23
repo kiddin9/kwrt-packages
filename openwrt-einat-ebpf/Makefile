@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=20
+PKG_RELEASE:=21
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
@@ -51,6 +51,14 @@ TARGET_PATH_PKG:=$(LLVM_PATH):$(TARGET_PATH_PKG)
 # $(TOPDIR)/feeds/packages/lang/rust/rust-values.mk
 # RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||mips||mipsel||mips64||mips64el||mipsel||powerpc64||riscv64||x86_64)
 EINAT_EBPF_RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||powerpc64||riscv64||x86_64) # Architectures other than x86_64 and aarch64 have not been tested.
+
+ifeq ($(ARCH),arm)
+  CONFIG_EINAT_EBPF_BINDGEN:=y
+else ifeq ($(ARCH),i386)
+  CONFIG_EINAT_EBPF_BINDGEN:=y
+else ifeq ($(ARCH),i686)
+  CONFIG_EINAT_EBPF_BINDGEN:=y
+endif
 
 define Package/$(PKG_NAME)
   SECTION:=net
