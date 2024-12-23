@@ -21,18 +21,3 @@
          entry({"admin", "network_guide"}, call("networkguide_index"), _("NetworkGuide"), 2)
          entry({"admin", "network_guide", "pages"}, call("quickstart_index", {index={"admin", "network_guide", "pages"}})).leaf = true
          if nixio.fs.access("/usr/lib/lua/luci/view/quickstart/main_dev.htm") then
-
---- a/luci-app-quickstart/root/usr/share/luci/menu.d/luci-app-quickstart.json
-+++ /dev/null
-@@ -1,10 +0,0 @@
--{
--	"admin/quickstart/*": {
--		"title": "QuickStart",
--		"order": 1,
--		"action": {
--			"type": "template",
--			"path": "quickstart/home"
--		}
--	}
--}
-\ No newline at end of file
