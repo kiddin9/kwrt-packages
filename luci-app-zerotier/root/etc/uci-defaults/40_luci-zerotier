@@ -1,8 +1,5 @@
 #!/bin/sh
-if [ ! "$(grep "sample_config" /etc/config/zerotier)" ]; then
-	rm -f /etc/config/zerotier
-	mv -f /etc/config/zerotier-opkg /etc/config/zerotier
-fi
+grep -q "sample_config" /etc/config/zerotier || cp -f /etc/config/zerotier-opkg /etc/config/zerotier
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@zerotier[-1]

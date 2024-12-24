@@ -106,27 +106,12 @@ return view.extend({
 		o.depends('auth_server_mode', 'cloud');
 		o.depends('auth_server_mode', 'bypass');
 
-		o = s.taboption('basic', form.FileUpload, 'auth_server_offline_page', _('Upload offline Page'),
-						_('The offline page of the authentication server.'));
-		o.rmempty = false;
-		o.optional = true
-		o.datatype = 'file';
-		o.root_directory = '/etc/wifidogx';
-		o.depends('auth_server_mode', 'local');
-
-		o = s.taboption('basic', form.Value, 'auth_server_offline_file', _('Offline Page Full Path'),
-						_('The full path of the uploaded offline page.'));
-		o.rmempty = false;
-		o.datatype = 'string';
-		o.optional = true;
-		o.placeholder = '/etc/wifidogx/';
-		o.depends('auth_server_mode', 'local');
-
 		o = s.taboption('basic', form.Value, 'local_portal', _('Local Portal'),
 						_('The local portal url.'));
 		o.rmempty = false;
 		o.datatype = 'string';
 		o.optional = true;
+		o.placeholder = 'http://www.example.com';
 		o.depends('auth_server_mode', 'local');
 
 		o = s.taboption('basic', form.ListValue, 'log_level', _('Log Level'),
