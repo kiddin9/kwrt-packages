@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.arch }}-${{ matrix.branch }}-${{ matrix.branch }} build
+    name: ${{ matrix.arch }}-${{ matrix.branch }}-${{ matrix.package }} build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,11 +28,11 @@ jobs:
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
           FEEDNAME: kiddin9
-          PACKAGES: ${{ matrix.branch }}
+          PACKAGES: ${{ matrix.package }}
           NO_REFRESH_CHECK: true
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.branch }}_${{ matrix.arch }}-${{ matrix.branch }}
+          name: ${{ matrix.package }}_${{ matrix.arch }}-${{ matrix.branch }}
           path: bin/packages/${{ matrix.arch }}/kiddin9
