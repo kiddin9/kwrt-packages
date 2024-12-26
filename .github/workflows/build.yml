@@ -1,0 +1,34 @@
+name: Build Packages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.arch }}-${{ matrix.branch }} build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - riscv64_riscv64
+        branch:
+          - openwrt-24.10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        uses: openwrt/gh-action-sdk@main
+        env:
+          ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
+          FEEDNAME: mihomo
+          PACKAGES: luci-app-mihomo
+          NO_REFRESH_CHECK: true
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: mihomo_${{ matrix.arch }}-${{ matrix.branch }}
+          path: bin/packages/${{ matrix.arch }}/mihomo
