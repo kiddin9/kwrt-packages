@@ -466,7 +466,7 @@ $razordVersion = getRazordVersion();
             <div class="modal-body">
                 <div class="form-group">
                     <label for="singboxVersionSelectForChannelTwo">选择版本</label>
-                    <select id="singboxVersionSelectForChannelTwo" class="form-control">
+                    <select id="singboxVersionSelectForChannelTwo" class="form-select">
                         <option value="preview" selected>预览版</option>  
                         <option value="stable">正式版</option>
                     </select>
@@ -896,7 +896,7 @@ function checkVersion(outputId, updateFiles, currentVersions) {
                         </tr>
                     `);
 
-                    if (file.url === 'update_singbox_preview.php') {
+                    if (file.url === 'update_singbox_core.php') {
                         const select = document.getElementById('singboxVersionSelect');
                         let versionExists = Array.from(select.options).some(option => option.value === newVersion);
 
