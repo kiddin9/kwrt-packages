@@ -11,7 +11,7 @@ PKG_ARCH_VMEASE:=$(ARCH)
 
 PKG_NAME:=vmease
 PKG_VERSION:=0.8.5
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://fw0.koolcenter.com/binary/vmease/
 PKG_HASH:=skip
@@ -44,6 +44,7 @@ define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	[ -f /etc/uci-defaults/vmease ] && /etc/uci-defaults/vmease && rm -f /etc/uci-defaults/vmease
+	exit 0
 fi
 endef
 
