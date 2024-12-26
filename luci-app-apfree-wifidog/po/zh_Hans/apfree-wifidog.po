@@ -338,3 +338,9 @@ msgstr "NAT 白名单"
 
 msgid "The MAC address of the Anti NAT permit."
 msgstr "NAT 白名单设备的 MAC 地址"
+
+msgid "Gateway Subnetv4"
+msgstr "网关 IPv4 子网"
+
+msgid "The ipv4 subnet of the gateway."
+msgstr "网关的 IPv4 子网"

@@ -155,6 +155,12 @@ return view.extend({
 		o.rmempty = false;
 		o.optional = true;
 		
+		o = ss.option(form.Value, 'gateway_subnetv4', _('Gateway Subnetv4'),
+						_('The ipv4 subnet of the gateway.'));
+		o.datatype = 'cidr4';
+		o.rmempty = false;
+		o.optional = false;
+		o.placeholder = '192.168.80.0/24';
 		
 		// advanced settings
 		o = s.taboption('advanced', form.ListValue, 'long_conn_mode', _('Persistent Connection Mode'),
