@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.arch }}-${{ matrix.branch }} build
+    name: ${{ matrix.arch }}-${{ matrix.branch }}-${{ matrix.branch }} build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -14,6 +14,10 @@ jobs:
           - riscv64_riscv64
         branch:
           - openwrt-24.10
+        package:
+          - luci-app-clash
+          - luci-app-diskman
+          - luci-app-mihomo
 
     steps:
       - name: Checkout
@@ -23,12 +27,12 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
-          FEEDNAME: mihomo
-          PACKAGES: luci-app-mihomo
+          FEEDNAME: kiddin9
+          PACKAGES: ${{ matrix.branch }}
           NO_REFRESH_CHECK: true
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: mihomo_${{ matrix.arch }}-${{ matrix.branch }}
-          path: bin/packages/${{ matrix.arch }}/mihomo
+          name: ${{ matrix.branch }}_${{ matrix.arch }}-${{ matrix.branch }}
+          path: bin/packages/${{ matrix.arch }}/kiddin9
