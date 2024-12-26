@@ -1,0 +1,45 @@
+name: Release Packages
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: ${{ matrix.arch }}-${{ matrix.branch }}-${{ matrix.package }} release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - riscv64_riscv64
+        branch:
+          - openwrt-24.10
+        package:
+          - luci-app-clash
+          - luci-app-diskman
+          - luci-app-mihomo
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        uses: openwrt/gh-action-sdk@main
+        env:
+          ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
+          FEEDNAME: kiddin9
+          PACKAGES: ${{ matrix.package }}
+          NO_REFRESH_CHECK: true
+
+      - name: Compress
+        run: |
+          tar -c -z -f ${{ matrix.package }}_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz -C bin/packages/${{ matrix.arch }}/kiddin9 .
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ matrix.package }}_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz
