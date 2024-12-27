@@ -43,11 +43,11 @@ start_vntcli() {
                  mkdir -p "$path"
 		if [ -z "$curltest" ] || [ ! -s "`which curl`" ] ; then
        			tag="$( wget -T 5 -t 3 --user-agent "$user_agent" --max-redirect=0 --output-document=-  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
-       			[ -z "$tag" ] && tag="$( wget -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
+       			[ -z "$tag" ] && tag="$( wget --no-check-certificate -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
        			[ -z "$tag" ] && tag="$( wget --no-check-certificate -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://dl.cnqq.cloudns.ch/https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
    		else
        			tag="$( curl --connect-timeout 3 --user-agent "$user_agent"  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
-       			[ -z "$tag" ] && tag="$( curl -L --connect-timeout 3 --user-agent "$user_agent" -s  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
+       			[ -z "$tag" ] && tag="$( curl -k --connect-timeout 3 --user-agent "$user_agent" -s  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
        			[ -z "$tag" ] && tag="$( curl -Lk --connect-timeout 5 --user-agent "$user_agent" -s  https://dl.cnqq.cloudns.ch/https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
    		fi
 		[ -z "$tag" ] && tag="1.2.15"
@@ -68,13 +68,14 @@ start_vntcli() {
 	     		;;
 	     	esac
 		for proxy in $proxys ; do
-	        	 curl -Lkso /tmp/vnt-cli.tar.gz "${proxy}https://github.com/vnt-dev/vnt/releases/download/${tag}/vnt-${url}-${tag}.tar.gz" || wget --no-check-certificate -q -O /tmp/vnt-cli.tar.gz "${proxy}https://github.com/vnt-dev/vnt/releases/download/${tag}/vnt-${url}-${tag}.tar.gz"
+	        	 curl -Lko /tmp/vnt-cli.tar.gz "${proxy}https://github.com/vnt-dev/vnt/releases/download/${tag}/vnt-${url}-${tag}.tar.gz" || wget --no-check-certificate -O /tmp/vnt-cli.tar.gz "${proxy}https://github.com/vnt-dev/vnt/releases/download/${tag}/vnt-${url}-${tag}.tar.gz"
     			if [ "$?" = 0 ] ; then
 				tar -zxf /tmp/vnt-cli.tar.gz -C $path
 				rm -f /tmp/vnt-cli.tar.gz ${path}/vn-link-cli ${path}/README.md >/dev/null 2>&1
 				chmod +x "$clibin"
  				if [ "$($clibin -h 2>&1 | wc -l)" -gt 3 ]; then
     					echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : ${clibin} 下载成功" >>/tmp/vnt-cli.log
+					break
  				else
    					uci -q set vnt.@vnt-cli[0].enabled=0
    					uci commit vnt
@@ -339,7 +340,10 @@ sleep $((time))
 done
 EOF
   chmod +x /tmp/vnt_check
-  /tmp/vnt_check &
+  procd_open_instance
+  procd_set_param respawn
+  procd_set_param command /tmp/vnt_check
+  procd_close_instance
 fi
 }
 
@@ -380,11 +384,11 @@ start_vnts() {
                 mkdir -p "$path"
 		if [ -z "$curltest" ] || [ ! -s "`which curl`" ] ; then
        			tag="$( wget -T 5 -t 3 --user-agent "$user_agent" --max-redirect=0 --output-document=-  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
-       			[ -z "$tag" ] && tag="$( wget -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
+       			[ -z "$tag" ] && tag="$( wget --no-check-certificate -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
        			[ -z "$tag" ] && tag="$( wget --no-check-certificate -T 5 -t 3 --user-agent "$user_agent" --quiet --output-document=-  https://dl.cnqq.cloudns.ch/https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
    		else
        			tag="$( curl --connect-timeout 3 --user-agent "$user_agent"  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
-       			[ -z "$tag" ] && tag="$( curl -L --connect-timeout 3 --user-agent "$user_agent" -s  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
+       			[ -z "$tag" ] && tag="$( curl -k --connect-timeout 3 --user-agent "$user_agent" -s  https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
        			[ -z "$tag" ] && tag="$( curl -Lk --connect-timeout 5 --user-agent "$user_agent" -s  https://dl.cnqq.cloudns.ch/https://api.github.com/repos/vnt-dev/vnts/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
    		fi
                 [ -z "$tag" ] && tag=v1.2.12
@@ -414,6 +418,7 @@ start_vnts() {
                   	if [ "$(($(/tmp/vnts -h 2>&1 | wc -l)))" -gt 3 ]; then
                     		echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : /tmp/vnts 下载成功" >>/tmp/vnts.log
                     		mv -f /tmp/vnts "$vntsbin"
+				break
                  	else
                      		uci -q set vnt.@vnts[0].enabled=0
                      		uci commit vnt
