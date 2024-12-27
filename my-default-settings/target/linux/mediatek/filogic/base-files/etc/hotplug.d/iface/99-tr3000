@@ -1,0 +1,7 @@
+#!/bin/sh
+
+board=$(board_name)
+
+[ "$board" = "cudy,tr3000-v1" ] && \
+[ "$ACTION" = "ifup" ] && \
+ethtool -s wan autoneg on
