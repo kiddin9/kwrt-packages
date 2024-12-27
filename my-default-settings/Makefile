@@ -10,7 +10,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=my-default-settings
 PKG_VERSION:=2
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -29,7 +29,7 @@ define Package/$(PKG_NAME)/conffiles
 endef
 
 define Build/Prepare
-	chmod -R +x ./files/bin ./files/sbin ./files/etc/profile.d ./files/etc/rc.d ./files/usr/share target/*/{*,}/base-files/{etc/init.d,usr/bin} >/dev/null || true
+	chmod -R +x ./files/bin ./files/sbin ./files/etc/profile.d ./files/etc/rc.d ./files/usr/share diy/*/{*,}/base-files/{etc/init.d,usr/bin} >/dev/null || true
 endef
 
 define Build/Compile
@@ -38,11 +38,11 @@ endef
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
 	echo $(BOARD)$(TARGETID)
-	if [ -d ./target/$(BOARD)/base-files/. ]; then \
-		$(CP) ./target/$(BOARD)/base-files/* $(1)/; \
+	if [ -d ./diy/$(BOARD)/base-files/. ]; then \
+		$(CP) ./diy/$(BOARD)/base-files/* $(1)/; \
 	fi
-	if [ -d ./target/$(TARGETID)/base-files/. ]; then \
-		$(CP) ./target/$(TARGETID)/base-files/* $(1)/; \
+	if [ -d ./diy/$(TARGETID)/base-files/. ]; then \
+		$(CP) ./diy/$(TARGETID)/base-files/* $(1)/; \
 	fi; \
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	po2lmo ./po/zh_Hans/default.po $(1)/usr/lib/lua/luci/i18n/default.zh-cn.lmo
