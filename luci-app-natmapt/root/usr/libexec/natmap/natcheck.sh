@@ -21,8 +21,8 @@ if [ -x "$(command -v stunclient)" ]; then ln -s "$(command -v stunclient)" "$PR
 
 #/etc/init.d/firewall reload >/dev/null 2>&1
 
-udp_result="$(timeout 30 $PROG --protocol udp --mode full --localport $port ${udpstun%:*} ${udpstun#*:} 2>/dev/null)"
-tcp_result="$(timeout 10 $PROG --protocol tcp --mode full --localport $port ${tcpstun%:*} ${udpstun#*:} 2>/dev/null)"
+udp_result="$(timeout 30 $PROG --protocol udp --mode full ${port:+--localport $port} ${udpstun%:*} ${udpstun#*:} 2>/dev/null)"
+tcp_result="$(timeout 10 $PROG --protocol tcp --mode full ${port:+--localport $port} ${tcpstun%:*} ${tcpstun#*:} 2>/dev/null)"
 
 cat <<- EOF
 UDP TEST:
