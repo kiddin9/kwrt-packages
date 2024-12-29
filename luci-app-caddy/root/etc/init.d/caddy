@@ -138,10 +138,6 @@ $filezips
 $filebasicauth
  root * $data_dir
  file_server browse
- 
-header {
-                Content-Type "charset=utf-8"
-        }
         
  $logs
  

@@ -20,11 +20,6 @@ admin $2a$14$RdbOHzJhf5BaapSdlYTCbe.yWY9cEZjyDpfgwStY28K/qsM1tX8tu
  root * /mnt
 #文件服务器 端口12311
  file_server browse
- 
-header {
-#中文字符显示
-                Content-Type "charset=utf-8"
-        }
         
  log {
 #日志 路径/tmp/caddy/requests.log
