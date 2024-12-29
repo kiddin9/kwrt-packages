@@ -347,6 +347,7 @@ jobs:
         (
         git_sparse_clone master "https://github.com/QiuSimons/OpenWrt-Add" luci-app-irqbalance
         git_sparse_clone main "https://github.com/lucikap/Brukamen" luci-app-ua2f
+        git_sparse_clone quick-setup-v1 "https://github.com/stokito/luci" modules/luci-mod-setup-wizard
         git_sparse_clone master "https://github.com/lunatickochiya/Matrix-Action-Openwrt" package/kochiya/brlaser package/kochiya/luci-app-banmac-ipt package/kochiya/luci-app-banmac-nft package/kochiya/luci-app-nvr package/kochiya/luci-app-openvpn-server
         ) &
         (
