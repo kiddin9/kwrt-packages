@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antiblock
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 PKG_LICENSE:=GPL-3.0-or-later
 
 ifeq ("$(wildcard ../antiblock)", "")
@@ -23,7 +23,11 @@ define Package/antiblock
 endef
 
 define Package/antiblock/description
-	DNS proxy add blocked domains ip address to route table.
+AntiBlock program proxies DNS requests. The IP addresses of the specified domains are added to the routing table for routing through the specified interface.
+endef
+
+define Package/antiblock/conffiles
+/etc/config/antiblock
 endef
 
 ifneq ("$(wildcard ../antiblock)", "")
@@ -35,13 +39,13 @@ endif
 
 define Package/antiblock/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/antiblock $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/antiblock $(1)/usr/bin/antiblock
 
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/etc/init.d/antiblock $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/etc/init.d/antiblock $(1)/etc/init.d/antiblock
 
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/etc/config/antiblock $(1)/etc/config/
+	$(INSTALL_CONF) ./files/etc/config/antiblock $(1)/etc/config/antiblock
 endef
 
 $(eval $(call BuildPackage,antiblock))
