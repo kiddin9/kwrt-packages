@@ -4,10 +4,10 @@
 </div>
 <hr/>
 <div align="center">
-  <img alt="License" src="https://img.shields.io/github/license/animegasan/luci-app-droidnet?style=for-the-badge">
-  <img alt="Forks" src="https://img.shields.io/github/forks/animegasan/luci-app-droidnet?style=for-the-badge">
-  <img alt="Release" src="https://img.shields.io/github/v/release/animegasan/luci-app-droidnet?style=for-the-badge">
-  <img alt="Downloads" src="https://img.shields.io/github/downloads/animegasan/luci-app-droidnet/total?style=for-the-badge">
+  <img alt="License" src="https://img.shields.io/github/license/animegasan/luci-app-droidmodem?style=for-the-badge">
+  <img alt="Forks" src="https://img.shields.io/github/forks/animegasan/luci-app-droidmodem?style=for-the-badge">
+  <img alt="Release" src="https://img.shields.io/github/v/release/animegasan/luci-app-droidmodem?style=for-the-badge">
+  <img alt="Downloads" src="https://img.shields.io/github/downloads/animegasan/luci-app-droidmodem/total?style=for-the-badge">
 </div>
 <br/>
 <div align="center">
@@ -17,11 +17,11 @@
 </div>
 <hr/>
 
-DroidNet is an application designed specifically for managing and optimizing network settings on Android modems. With advanced features, DroidNet allows users to have full control over their network connectivity and modem performance, ensuring a better user experience and more stable connections.
+DroidModem is an application designed specifically for managing and optimizing network settings on Android modems. With advanced features, DroidModem allows users to have full control over their network connectivity and modem performance, ensuring a better user experience and more stable connections.
 
 ## 📥 | Install via Terminal
 ```
-curl -s https://raw.githubusercontent.com/animegasan/luci-app-droidnet/master/install | sh
+curl -s https://raw.githubusercontent.com/animegasan/luci-app-droidmodem/master/install | sh
 ```
 
 ## 📱 | Supported Devices
@@ -64,7 +64,7 @@ Tracks network activity on Android modem, automatically restarts networks includ
 Provides comprehensive information about various aspects of Android modem, ensuring access to important details about device performance and connectivity. This includes device details such as model, manufacturer, and operating system version, battery information such as current charge level and battery health, insights about wireless connectivity such as Wi-Fi networks, and information about cellular connectivity such as network provider.
 <details><summary>Screenshoot</summary>
  <p>
-  <img src="https://github.com/animegasan/luci-app-droidnet/assets/14136053/5a1129a5-1106-4e69-8222-848228e43e6b">
+  <img src="https://github.com/animegasan/luci-app-droidmodem/assets/14136053/5a1129a5-1106-4e69-8222-848228e43e6b">
  </p>
 </details>
 
@@ -72,7 +72,7 @@ Provides comprehensive information about various aspects of Android modem, ensur
 Displays IP address of Android modem, status of wireless connection, mobile data, and airplane mode. Ypu can manually enable or disable wireless connection, mobile data, and airplane mode as needed.
 <details><summary>Screenshoot</summary>
  <p>
-  <img src="https://github.com/animegasan/luci-app-droidnet/assets/14136053/d9451e7a-9117-45b2-8944-9eab5cf97da0">
+  <img src="https://github.com/animegasan/luci-app-droidmodem/assets/14136053/d9451e7a-9117-45b2-8944-9eab5cf97da0">
  </p>
 </details>
 
@@ -83,7 +83,7 @@ Gives full control over power operations of Android modem, allowing management o
 Manage applications installed on Android modem, adding necessary applications to enhance functionality or support specific needs and removing unnecessary applications for optimal device performance.
 <details><summary>Screenshoot</summary>
  <p>
-  <img src="https://github.com/animegasan/luci-app-droidnet/assets/14136053/8ae4f4e4-1e87-4462-9fb1-11c879bcc4d4">
+  <img src="https://github.com/animegasan/luci-app-droidmodem/assets/14136053/8ae4f4e4-1e87-4462-9fb1-11c879bcc4d4">
  </p>
 </details>
 
@@ -92,6 +92,6 @@ View all incoming messages received by Android modem, including sender informati
 
 <details><summary>Screenshoot</summary>
  <p>
-  <img src="https://github.com/animegasan/luci-app-droidnet/assets/14136053/8816329b-f8eb-47a0-a292-bb6bf8073f4d">
+  <img src="https://github.com/animegasan/luci-app-droidmodem/assets/14136053/8816329b-f8eb-47a0-a292-bb6bf8073f4d">
  </p>
 </details>

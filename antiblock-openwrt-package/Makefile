@@ -2,14 +2,16 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antiblock
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=7
-PKG_LICENSE:=GPL-3.0-or-later
+PKG_RELEASE:=8
 
 ifeq ("$(wildcard ../antiblock)", "")
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/karen07/antiblock
-PKG_SOURCE_VERSION:=6ea4fcfdada6a86817cb5d681d35b023a1a18402
+PKG_SOURCE_VERSION:=bd8e4ae4fe066833d63574bad0d6e1989f6e98f0
 endif
+
+PKG_MAINTAINER:=Khachatryan Karen <karen0734@gmail.com>
+PKG_LICENSE:=GPL-3.0-or-later
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -17,13 +19,14 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/antiblock
 	SECTION:=net
 	CATEGORY:=Network
-	DEPENDS:=libcurl kmod-tun
-	TITLE:=DNS proxy add blocked domains ip address to route table.
+	DEPENDS:=+libcurl
+	TITLE:=AntiBlock
 	URL:=https://github.com/karen07/antiblock
 endef
 
 define Package/antiblock/description
-AntiBlock program proxies DNS requests. The IP addresses of the specified domains are added to the routing table for routing through the specified interface.
+AntiBlock program proxies DNS requests.
+The IP addresses of the specified domains are added to the routing table for routing through the specified interface.
 endef
 
 define Package/antiblock/conffiles
