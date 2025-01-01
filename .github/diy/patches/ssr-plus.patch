@@ -13,9 +13,9 @@
 --- a/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 +++ b/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 @@ -26,6 +26,62 @@ function index()
- 	entry({"admin", "services", "shadowsocksr", "reset"}, call("act_reset"))
- 	entry({"admin", "services", "shadowsocksr", "restart"}, call("act_restart"))
  	entry({"admin", "services", "shadowsocksr", "delete"}, call("act_delete"))
+ 	--[[Backup]]
+ 	entry({"admin", "services", "shadowsocksr", "backup"}, call("create_backup")).leaf = true
 +	entry({'admin', 'services', "shadowsocksr", 'ip'}, call('check_ip')) -- 获取ip情况
 +end
 +
