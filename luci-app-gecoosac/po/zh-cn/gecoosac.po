@@ -1,0 +1,53 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "Gecoos AC"
+msgstr "集客AC控制器"
+
+msgid "Batch management Gecoos AP,Default password:admin"
+msgstr "批量集中管理集客 AP，默认密码：admin"
+
+msgid "The current AC version %s, only supports AP 7.5 and below."
+msgstr "当前 AC 版本 %s ，仅支持 AP 7.5 及以下版本。"
+
+msgid "The current AC version %s, only supports AP 7.6 and above."
+msgstr "当前 AC 版本 %s ，仅支持 AP 7.6 及以上版本。"
+
+msgid "The AC program does not exist, please check."
+msgstr "AC 程序不存在，请检查。"
+
+msgid "Global Settings"
+msgstr "全局设置"
+
+msgid "Enabled AC"
+msgstr "启用集客AC"
+
+msgid "Set the AC access port"
+msgstr "设置访问端口"
+
+msgid "Upload dir path"
+msgstr "上传目录"
+
+msgid "The path to upload AP upgrade firmware"
+msgstr "存放AP升级固件的路径"
+
+msgid "Database dir path"
+msgstr "数据库目录"
+
+msgid "The path to store the config database"
+msgstr "存放配置数据库的路径"
+
+msgid "Enable Log"
+msgstr "启用日志"
+
+msgid "The GecoosAC service is running."
+msgstr "集客AC控制器 运行中 "
+
+msgid "The GecoosAC service is not running."
+msgstr "集客AC控制器 未运行"
+
+msgid "Open the mgmt page"
+msgstr "打开管理页面"
+
+msgid "Collecting data..."
+msgstr "收集数据..."

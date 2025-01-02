@@ -1,9 +1,9 @@
 
 config gecoosac 'config'
 	option enabled '0'
-	option program_path '/usr/bin/gecoosac'
+	option program_path '/usr/bin/gecoosac-2.1'
 	option port '60650'
-	option upload_dir '/etc/gecoosac/upload/'
+	option upload_dir '/tmp/gecoosac/upload/'
 	option db_dir '/etc/gecoosac/'
 	option log '0'
 
