@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 xiaorouji
+# Copyright (C) 2022-2025 xiaorouji
 #
 # This is free software, licensed under the GNU General Public License v3.
 
@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-passwall2
 PKG_VERSION:=25.1.1
-PKG_RELEASE:=33
+PKG_RELEASE:=34
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
