@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=luci-app-gecoosac
 
 LUCI_TITLE:=LuCI Support for gecoosac
-LUCI_DEPENDS:=+luci-compat +gecoosac-2.1
+LUCI_DEPENDS:=+luci-compat +gecoosac
 LUCI_PKGARCH:=all
 
 define Package/$(PKG_NAME)/conffiles

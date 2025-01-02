@@ -1,13 +1,27 @@
+<%
+local uci=require"luci.model.uci".cursor()
 
+local isonlyoneprot = uci:get("gecoosac", "config", "isonlyoneprot") or "1"
+local https = uci:get("gecoosac", "config", "https") or "0"
+local port = uci:get("gecoosac", "config", "port") or "60650"
+local m_port = uci:get("gecoosac", "config", "m_port") or "8080"
+local http = "http://"
+if isonlyoneprot == "0" then
+	port = m_port
+	if https == "1" then
+		http = "https://"
+	end
+end
+-%>
 <script type="text/javascript">//<![CDATA[
-var Port = ""
+var Port = "<%=port%>"
+var Http = "<%=http%>"
 XHR.poll(3, '<%=url([[admin]], [[services]], [[gecoosac]], [[status]])%>', null,
 	function(x, data) {
 		var tb = document.getElementById('gecoosac_status');
 		if (data && tb) {
-			Port = data.port;
 			if (data.running) {
-				var links = '<font color=green><%:The GecoosAC service is running.%></font><input class="cbi-button cbi-button-reload " type="button" value="<%:Open the mgmt page%>" onclick="openClient();" />';
+				var links = '<font color=green><%:The GecoosAC service is running.%></font>&nbsp;&nbsp;<input class="cbi-button cbi-button-reload " type="button" value="<%:Open the mgmt page%>" onclick="openClient();" />';
 				tb.innerHTML = links;
 			} else {
 				tb.innerHTML = '<font color=red><%:The GecoosAC service is not running.%></font>';
@@ -17,7 +31,7 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[gecoosac]], [[status]])%>', null,
 );
 
 function openClient() {
-	var url = "http://" + window.location.hostname + ":" + Port;
+	var url = Http + window.location.hostname + ":" + Port;
 	window.open(url);
 }
 //]]>

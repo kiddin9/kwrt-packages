@@ -22,8 +22,29 @@ msgstr "全局设置"
 msgid "Enabled AC"
 msgstr "启用集客AC"
 
-msgid "Set the AC access port"
-msgstr "设置访问端口"
+msgid "Set interface port"
+msgstr "设置接口端口"
+
+msgid "Single Port Mode"
+msgstr "单端口模式"
+
+msgid "Do not enable the independent management port, only use one port for management."
+msgstr "不开启独立管理端口，只使用一个端口进行管理。"
+
+msgid "Set management port"
+msgstr "设置管理端口"
+
+msgid "Enable HTTPS service"
+msgstr "开启 HTTPS 服务"
+
+msgid "A certificate file must be specified, otherwise it will fail to start."
+msgstr "需要指定证书文件，否则开启失败。"
+
+msgid "Specify crt certificate file"
+msgstr "指定 crt 证书文件"
+
+msgid "Specify key certificate file"
+msgstr "指定 key 证书文件"
 
 msgid "Upload dir path"
 msgstr "上传目录"
@@ -41,7 +62,7 @@ msgid "Enable Log"
 msgstr "启用日志"
 
 msgid "The GecoosAC service is running."
-msgstr "集客AC控制器 运行中 "
+msgstr "集客AC控制器 运行中"
 
 msgid "The GecoosAC service is not running."
 msgstr "集客AC控制器 未运行"
