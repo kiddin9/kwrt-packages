@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (C) 2023 muink https://github.com/muink
 #
 # Port update notify script
@@ -23,6 +23,15 @@ start() {
 	json_add_string topic "${TOPIC}"
 	json_add_string message "${text}"
 	json_add_string title "${TITLE}"
+
+	# Add priority and tag option
+	json_add_int priority "${PRIORITY:-3}"
+	json_add_array tags
+	for _t in ${TAGS//,/ }; do
+		json_add_string "" "$_t"
+	done
+	json_close_array
+
 	[ -n "${WACTION}" ] && {
 		json_add_array actions
 			json_add_object
@@ -41,6 +50,6 @@ start() {
 ALL_PARAMS="custom_domain text tokens"
 eval "$(JSON_EXPORT "$1")"; shift
 # All external tokens required
-INIT_GLOBAL_VAR TOPIC TITLE WACTION HTTPS
+INIT_GLOBAL_VAR TOPIC TITLE WACTION HTTPS PRIORITY TAGS
 eval "$tokens"
 start "$@"
