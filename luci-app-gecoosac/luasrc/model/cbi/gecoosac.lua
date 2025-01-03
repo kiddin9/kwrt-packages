@@ -29,12 +29,12 @@ o.rmempty     = false
 
 o = s:option(Flag, "isonlyoneprot", translate("Single Port Mode"), translate("Do not enable the independent management port, only use one port for management."))
 o.default = 1
+o.rmempty = false
 
 o = s:option(Value, "m_port", translate("Set management port"))
 o.placeholder = 8080
 o.default     = 8080
 o.datatype    = "port"
-o.rmempty     = false
 o:depends("isonlyoneprot", false)
 
 o = s:option(Flag, "https", translate("Enable HTTPS service"), translate("A certificate file must be specified, otherwise it will fail to start."))
@@ -42,15 +42,13 @@ o.default = 0
 o:depends("isonlyoneprot", false)
 
 o = s:option(Value, "crt_file", translate("Specify crt certificate file"))
-o.placeholder = "/etc/gecoosac/1.crt"
-o.default     = "/etc/gecoosac/1.crt"
-o.rmempty     = false
+o.placeholder = "/etc/gecoosac/tls/1.crt"
+o.default     = "/etc/gecoosac/tls/1.crt"
 o:depends("https", true)
 
 o = s:option(Value, "key_file", translate("Specify key certificate file"))
-o.placeholder = "/etc/gecoosac/1.key"
-o.default     = "/etc/gecoosac/1.key"
-o.rmempty     = false
+o.placeholder = "/etc/gecoosac/tls/1.key"
+o.default     = "/etc/gecoosac/tls/1.key"
 o:depends("https", true)
 
 o = s:option(Value, "upload_dir", translate("Upload dir path"), translate("The path to upload AP upgrade firmware"))
