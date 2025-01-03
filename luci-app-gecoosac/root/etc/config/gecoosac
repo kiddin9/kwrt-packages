@@ -1,4 +1,3 @@
-
 config gecoosac 'config'
 	option enabled '0'
 	option port '60650'

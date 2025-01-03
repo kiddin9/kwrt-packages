@@ -46,6 +46,7 @@ start_service() {
 	else
 		procd_append_param command -isonlyoneprot "1"
 	fi
+	procd_append_param command -showtip "0"
 	procd_set_param env GIN_MODE=release
 	procd_set_param pidfile /var/run/gecoosac.pid
 	procd_set_param stdout $log
