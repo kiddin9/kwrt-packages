@@ -11,7 +11,7 @@ THEME_TITLE:=Alpha
 
 PKG_NAME:=luci-theme-$(THEME_NAME)
 PKG_VERSION:=3.9.4-beta
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -46,9 +46,13 @@ endef
 
 define Package/luci-theme-$(THEME_NAME)/postinst
 #!/bin/sh
-[ -n "$${IPKG_INSTROOT}" ] || {
-	( . /etc/uci-defaults/30-luci-theme-$(THEME_NAME) ) && rm -f /etc/uci-defaults/30-luci-theme-$(THEME_NAME)
-}
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	if [ -f /etc/uci-defaults/30-luci-theme-$(THEME_NAME) ]; then
+		. /etc/uci-defaults/30-luci-theme-$(THEME_NAME)
+		rm -f /etc/uci-defaults/30-luci-theme-$(THEME_NAME)
+	fi
+fi
+exit 0
 endef
 
 $(eval $(call BuildPackage,luci-theme-$(THEME_NAME)))
