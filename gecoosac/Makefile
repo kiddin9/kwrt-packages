@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gecoosac
 PKG_VERSION:=V2.2.20250103
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 ifeq ($(ARCH),aarch64)
   PKG_ARCH:=ac_linux_arm64
@@ -27,7 +27,7 @@ else
 endif
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(ARCH_PACKAGES)
-PKG_SOURCE_URL:=https://github.com/lwb1978/openwrt-gecoosac/releases/download/V$(PKG_VERSION)/$(PKG_ARCH)?
+PKG_SOURCE_URL:=https://github.com/lwb1978/gecoosac-core/releases/download/V$(PKG_VERSION)/$(PKG_ARCH)?
 UNPACK_CMD=$(CP) $(DL_DIR)/$(PKG_SOURCE) $(PKG_BUILD_DIR)/$(PKG_NAME)
 
 PKG_LICENSE:=AGPL-3.0-only
