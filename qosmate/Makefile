@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qosmate
 PKG_VERSION:=0.5.36
-PKG_RELEASE:=19
+PKG_RELEASE:=20
 
 PKG_MAINTAINER:=Markus Hütter <mh@hudra.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -13,7 +13,7 @@ define Package/qosmate
   SECTION:=net
   CATEGORY:=Base system
   TITLE:=QoSmate - Quality of Service management tool
-  DEPENDS:=+kmod-sched +ip-full +kmod-veth +tc-full +kmod-netem +kmod-sched-ctinfo +kmod-ifb +kmod-sched-cake
+  DEPENDS:=+kmod-sched +ip-full +kmod-veth +tc-full +kmod-netem +kmod-sched-ctinfo +kmod-ifb +kmod-sched-cake +kmod-sched-red
 endef
 
 define Package/qosmate/description
