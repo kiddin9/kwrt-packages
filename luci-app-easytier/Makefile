@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 
 LUCI_TITLE:=LuCI support for EasyTier
-LUCI_DEPENDS:=
+LUCI_DEPENDS:=+kmod-tun
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-easytier
