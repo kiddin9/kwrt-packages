@@ -1,5 +1,4 @@
 #!/bin/sh /etc/rc.common
-# Copyright (C) 2010-2015 OpenWrt.org
 
 START=99
 USE_PROCD=1
@@ -9,15 +8,15 @@ dnsmasq_walk_add() {
 	local listen_IP=$(echo $listen | cut -d ':' -f1)
 	local listen_port=$(echo $listen | cut -d ':' -f2)
 
-	uci set dhcp.$id.noresolv="1" >/dev/null 2>&1
-	uci delete dhcp.$id.server >/dev/null 2>&1
-	uci add_list dhcp.$id.server="$listen_IP#$listen_port" >/dev/null 2>&1
+	uci -q set dhcp.$id.noresolv="1"
+	uci -q delete dhcp.$id.server
+	uci -q add_list dhcp.$id.server="$listen_IP#$listen_port"
 }
 dnsmasq_walk_del() {
 	local id=$1
 
-	uci delete dhcp.$id.noresolv >/dev/null 2>&1
-	uci delete dhcp.$id.server >/dev/null 2>&1
+	uci -q delete dhcp.$id.noresolv
+	uci -q delete dhcp.$id.server
 }
 
 antiblock_walk_add() {
