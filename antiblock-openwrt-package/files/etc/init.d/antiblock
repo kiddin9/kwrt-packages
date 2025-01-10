@@ -3,87 +3,77 @@
 START=99
 USE_PROCD=1
 
-dnsmasq_walk_add() {
-	local id=$1
-	local listen_IP=$(echo $listen | cut -d ':' -f1)
-	local listen_port=$(echo $listen | cut -d ':' -f2)
-
-	uci -q set dhcp.$id.noresolv="1"
-	uci -q delete dhcp.$id.server
-	uci -q add_list dhcp.$id.server="$listen_IP#$listen_port"
-}
-dnsmasq_walk_del() {
-	local id=$1
-
-	uci -q delete dhcp.$id.noresolv
-	uci -q delete dhcp.$id.server
-}
-
-antiblock_walk_add() {
-	local id=$1
-
-	config_get log "$id" log
-	config_get stat "$id" stat
-	config_get url "$id" url
-	config_get file "$id" file
-	config_get output "$id" output
-	config_get DNS "$id" DNS
-	config_get listen "$id" listen
-	config_get VPN_name "$id" VPN_name
-}
-
 start_service() {
 	echo "AntiBlock start"
 
-	log=""
-	stat=""
-	url=""
-	file=""
-	output=""
-	DNS=""
-	listen=""
-	VPN_name=""
-
-	config_load antiblock
-	config_foreach antiblock_walk_add antiblock
+	local log="$(uci -q get antiblock.@antiblock[0].log)"
+	local stat="$(uci -q get antiblock.@antiblock[0].stat)"
+	local url="$(uci -q get antiblock.@antiblock[0].url)"
+	local file="$(uci -q get antiblock.@antiblock[0].file)"
+	local output="$(uci -q get antiblock.@antiblock[0].output)"
+	local DNS="$(uci -q get antiblock.@antiblock[0].DNS)"
+	local listen="$(uci -q get antiblock.@antiblock[0].listen)"
+	local VPN_name="$(uci -q get antiblock.@antiblock[0].VPN_name)"
 
 	procd_open_instance
 
 	procd_set_param command "/usr/bin/antiblock"
 	procd_set_param stdout 1
 
-	if [[ "$log" != "" ]]; then
+	if [ -n "$log" ]; then
 		procd_append_param command -log
 	fi
-	if [[ "$stat" != "" ]]; then
+	if [ -n "$stat" ]; then
 		procd_append_param command -stat
 	fi
-	if [[ "$url" != "" ]]; then
+	if [ -n "$url" ]; then
 		procd_append_param command -url "$url"
 	fi
-	if [[ "$file" != "" ]]; then
+	if [ -n "$file" ]; then
 		procd_append_param command -file "$file"
 	fi
-	if [[ "$output" != "" ]]; then
-		mkdir -p $output
-		procd_append_param command -output $output
+	if [ -n "$output" ]; then
+		mkdir -p "$output"
+		procd_append_param command -output "$output"
 	fi
-	if [[ "$DNS" != "" ]]; then
+	if [ -n "$DNS" ]; then
 		procd_append_param command -DNS "$DNS"
 	fi
-	if [[ "$listen" != "" ]]; then
-		config_load dhcp
-		config_foreach dnsmasq_walk_add dnsmasq
+	if [ -n "$listen" ]; then
+		local listen_IP="$(echo $listen | cut -d ':' -f1)"
+		local listen_port="$(echo $listen | cut -d ':' -f2)"
+
+		local dhcp_noresolv="$(uci -q get dhcp.@dnsmasq[0].noresolv)"
+		local dhcp_server="$(uci -q get dhcp.@dnsmasq[0].server)"
+
+		local dhcp_noresolv_backup="$(uci -q get antiblock.@antiblock[0].dhcp_noresolv_backup)"
+		local dhcp_server_backup="$(uci -q get antiblock.@antiblock[0].dhcp_server_backup)"
+
+		if [ -n "$dhcp_noresolv" ]; then
+			if [ -z "$dhcp_noresolv_backup" ]; then
+				uci -q set antiblock.@antiblock[0].dhcp_noresolv_backup="$dhcp_noresolv"
+			fi
+		fi
+		if [ -n "$dhcp_server" ]; then
+			if [ -z "$dhcp_server_backup" ]; then
+				uci -q set antiblock.@antiblock[0].dhcp_server_backup="$dhcp_server"
+			fi
+		fi
+
+		uci -q set dhcp.@dnsmasq[0].noresolv="1"
+		uci -q delete dhcp.@dnsmasq[0].server
+		uci -q add_list dhcp.@dnsmasq[0].server="$listen_IP#$listen_port"
+
 		procd_append_param command -listen "$listen"
 	fi
-	if [[ "$VPN_name" != "" ]]; then
-		gateway=$(uci get network.$VPN_name.addresses | cut -d '/' -f1)
+	if [ -n "$VPN_name" ]; then
+		local gateway="$(uci -q get network.$VPN_name.addresses | cut -d '/' -f1)"
 		procd_append_param command -gateway "$gateway"
 	fi
 
 	procd_close_instance
 
-	uci commit
+	uci -q commit dhcp.@dnsmasq[0]
 
 	/etc/init.d/dnsmasq restart >/dev/null 2>&1
 }
@@ -91,10 +81,23 @@ start_service() {
 stop_service() {
 	echo "AntiBlock stop"
 
-	config_load dhcp
-	config_foreach dnsmasq_walk_del dnsmasq
+	uci -q delete dhcp.@dnsmasq[0].noresolv
+	uci -q delete dhcp.@dnsmasq[0].server
 
-	uci commit
+	local dhcp_noresolv_backup="$(uci -q get antiblock.@antiblock[0].dhcp_noresolv_backup)"
+	local dhcp_server_backup="$(uci -q get antiblock.@antiblock[0].dhcp_server_backup)"
+
+	if [ -n "$dhcp_noresolv_backup" ]; then
+		uci -q set dhcp.@dnsmasq[0].noresolv="$dhcp_noresolv_backup"
+	fi
+	if [ -n "$dhcp_server_backup" ]; then
+		uci -q add_list dhcp.@dnsmasq[0].server="$dhcp_server_backup"
+	fi
+
+	uci -q delete antiblock.@antiblock[0].dhcp_noresolv_backup
+	uci -q delete antiblock.@antiblock[0].dhcp_server_backup
+
+	uci -q commit dhcp.@dnsmasq[0]
 
 	/etc/init.d/dnsmasq restart >/dev/null 2>&1
 }
