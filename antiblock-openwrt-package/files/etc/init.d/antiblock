@@ -40,29 +40,28 @@ start_service() {
 		procd_append_param command -DNS "$DNS"
 	fi
 	if [ -n "$listen" ]; then
-		local listen_IP="$(echo $listen | cut -d ':' -f1)"
-		local listen_port="$(echo $listen | cut -d ':' -f2)"
+		local forward_backup="$(uci -q get antiblock.@antiblock[0].forward_backup)"
 
-		local dhcp_noresolv="$(uci -q get dhcp.@dnsmasq[0].noresolv)"
-		local dhcp_server="$(uci -q get dhcp.@dnsmasq[0].server)"
+		if [ -z "$forward_backup" ]; then
+			local listen_IP="$(echo $listen | cut -d ':' -f1)"
+			local listen_port="$(echo $listen | cut -d ':' -f2)"
 
-		local dhcp_noresolv_backup="$(uci -q get antiblock.@antiblock[0].dhcp_noresolv_backup)"
-		local dhcp_server_backup="$(uci -q get antiblock.@antiblock[0].dhcp_server_backup)"
+			local dhcp_noresolv="$(uci -q get dhcp.@dnsmasq[0].noresolv)"
+			local dhcp_server="$(uci -q get dhcp.@dnsmasq[0].server)"
 
-		if [ -n "$dhcp_noresolv" ]; then
-			if [ -z "$dhcp_noresolv_backup" ]; then
+			if [ -n "$dhcp_noresolv" ]; then
 				uci -q set antiblock.@antiblock[0].dhcp_noresolv_backup="$dhcp_noresolv"
 			fi
-		fi
-		if [ -n "$dhcp_server" ]; then
-			if [ -z "$dhcp_server_backup" ]; then
+			if [ -n "$dhcp_server" ]; then
 				uci -q set antiblock.@antiblock[0].dhcp_server_backup="$dhcp_server"
 			fi
-		fi
 
-		uci -q set dhcp.@dnsmasq[0].noresolv="1"
-		uci -q delete dhcp.@dnsmasq[0].server
-		uci -q add_list dhcp.@dnsmasq[0].server="$listen_IP#$listen_port"
+			uci -q set dhcp.@dnsmasq[0].noresolv="1"
+			uci -q delete dhcp.@dnsmasq[0].server
+			uci -q add_list dhcp.@dnsmasq[0].server="$listen_IP#$listen_port"
+
+			uci -q set antiblock.@antiblock[0].forward_backup="1"
+		fi
 
 		procd_append_param command -listen "$listen"
 	fi
@@ -81,21 +80,27 @@ start_service() {
 stop_service() {
 	echo "AntiBlock stop"
 
-	uci -q delete dhcp.@dnsmasq[0].noresolv
-	uci -q delete dhcp.@dnsmasq[0].server
+	local forward_backup="$(uci -q get antiblock.@antiblock[0].forward_backup)"
 
-	local dhcp_noresolv_backup="$(uci -q get antiblock.@antiblock[0].dhcp_noresolv_backup)"
-	local dhcp_server_backup="$(uci -q get antiblock.@antiblock[0].dhcp_server_backup)"
+	if [ -n "$forward_backup" ]; then
+		uci -q delete dhcp.@dnsmasq[0].noresolv
+		uci -q delete dhcp.@dnsmasq[0].server
 
-	if [ -n "$dhcp_noresolv_backup" ]; then
-		uci -q set dhcp.@dnsmasq[0].noresolv="$dhcp_noresolv_backup"
+		local dhcp_noresolv_backup="$(uci -q get antiblock.@antiblock[0].dhcp_noresolv_backup)"
+		local dhcp_server_backup="$(uci -q get antiblock.@antiblock[0].dhcp_server_backup)"
+
+		if [ -n "$dhcp_noresolv_backup" ]; then
+			uci -q set dhcp.@dnsmasq[0].noresolv="$dhcp_noresolv_backup"
+		fi
+		if [ -n "$dhcp_server_backup" ]; then
+			uci -q add_list dhcp.@dnsmasq[0].server="$dhcp_server_backup"
+		fi
+
+		uci -q delete antiblock.@antiblock[0].dhcp_noresolv_backup
+		uci -q delete antiblock.@antiblock[0].dhcp_server_backup
+
+		uci -q delete antiblock.@antiblock[0].forward_backup
 	fi
-	if [ -n "$dhcp_server_backup" ]; then
-		uci -q add_list dhcp.@dnsmasq[0].server="$dhcp_server_backup"
-	fi
-
-	uci -q delete antiblock.@antiblock[0].dhcp_noresolv_backup
-	uci -q delete antiblock.@antiblock[0].dhcp_server_backup
 
 	uci -q commit dhcp.@dnsmasq[0]
 
