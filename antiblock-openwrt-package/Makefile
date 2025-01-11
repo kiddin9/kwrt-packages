@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antiblock
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=12
+PKG_RELEASE:=13
 
 ifeq ("$(wildcard ../antiblock)", "")
 PKG_SOURCE_PROTO:=git
@@ -27,8 +27,8 @@ endef
 
 define Package/antiblock/description
   AntiBlock program proxies DNS requests.
-  The IP addresses of the specified domains are added to the routing
-  table for routing through the specified interface.
+  The IP addresses of the specified domains are added to
+  the routing table for routing through the specified interface.
 endef
 
 define Package/antiblock/conffiles

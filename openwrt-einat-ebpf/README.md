@@ -27,6 +27,11 @@ CONFIG_KERNEL_DEBUG_INFO_BTF=y
 You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packages/)  
 And LuCI can be found here [luci-app-einat][]
 
+## Additional Features
+
+Support for enabling additional features at build. Including but not limited to `ipv6, static, ...`</br>
+For details, see [define Package/$(PKG_NAME)/config](https://github.com/muink/openwrt-einat-ebpf/blob/master/Makefile#L84)
+
 ## Build
 
 ```shell

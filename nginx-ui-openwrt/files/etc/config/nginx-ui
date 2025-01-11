@@ -1,0 +1,4 @@
+config nginx-ui 'main'
+    option enabled '1'
+    option http_port '9000'
+    option challenge_port '9180'
