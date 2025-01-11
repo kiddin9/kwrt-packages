@@ -27,7 +27,7 @@ on:
 jobs:
   merge:
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id || github.event.sender.id == '119362912'
-    runs-on: Ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
