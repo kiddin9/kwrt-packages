@@ -27,7 +27,7 @@ on:
 jobs:
   merge:
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id || github.event.sender.id == '119362912'
-    runs-on: Ubuntu-22.04
+    runs-on: Ubuntu-24.04
 
     steps:
     - name: Checkout
@@ -97,6 +97,7 @@ jobs:
         git_clone https://github.com/kiddin9/openwrt-adguardhome && mvdir openwrt-adguardhome
         git_clone https://github.com/kiddin9/luci-app-cloudreve
         git_clone https://github.com/kiddin9/openwrt-clouddrive2 && mvdir openwrt-clouddrive2
+        git_clone https://github.com/kiddin9/nginx-ui-openwrt
         ) &
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
