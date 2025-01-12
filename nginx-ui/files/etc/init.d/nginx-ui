@@ -9,8 +9,7 @@ CONF=/etc/nginx-ui/app.ini
 get_config() {
     config_get_bool enabled $1 enabled 0
     config_get port $1 port 9000
-    config_get username $1 username admin
-    config_get password $1 password admin
+    config_get host $1 host 0.0.0.0
 }
 
 start_service() {
@@ -18,12 +17,23 @@ start_service() {
     config_foreach get_config nginx-ui
     
     [ "$enabled" -eq 0 ] && return 1
+	
+	if [ -f "$CONF" ]; then
+		sed -i "s/^Port = .*/Port = $port/" "$CONF"
+		sed -i "s/^Host = .*/Host = $host/" "$CONF"
+	else
+		mkdir -p "${CONF%/*}"
+		cat > "$CONF" <<-EOF
+		[server]
+		RunMode  = release
+		Port = $port
+		Host = $host
+		EOF
+	fi
     
     procd_open_instance
     procd_set_param command $PROG
-    procd_set_param env PORT="$port" \
-                       USERNAME="$username" \
-                       PASSWORD="$password"
+	procd_append_param command -config "$CONF"
     procd_set_param stderr 1
     procd_set_param stdout 1
     procd_set_param respawn
