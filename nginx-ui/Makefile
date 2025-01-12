@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
 PKG_VERSION:=2.0.0-beta.42
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
@@ -11,9 +11,6 @@ PKG_HASH:=skip
 PKG_BUILD_DEPENDS:=node/host golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
-
-GO_PKG:=github.com/0xJacky/nginx-ui
-GO_PKG_BUILD_PKG:=$(GO_PKG)
 
 PKG_LICENSE:=AGPL-3.0-only
 PKG_LICENSE_FILES:=LICENSE
@@ -35,7 +32,7 @@ define Package/nginx-ui/description
   Nginx UI is a web interface for Nginx configuration management
 endef
 
-define Package/xray-core/conffiles
+define Package/nginx-ui/conffiles
 /etc/nginx-ui/
 /etc/config/nginx-ui
 endef
