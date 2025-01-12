@@ -1,3 +1,3 @@
 #!/bin/sh
 
-antiblock | grep "Antiblock started"
+antiblock | grep "AntiBlock started"

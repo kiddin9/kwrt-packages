@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
 PKG_VERSION:=2.0.0-beta.42
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
@@ -28,7 +28,7 @@ define Package/nginx-ui
   SUBMENU:=Web Servers/Proxies
   TITLE:=Web UI for Nginx
   URL:=https://nginxui.com
-  DEPENDS:=@(aarch64||arm||x86_64) +nginx-ssl +libsqlite3
+  DEPENDS:=+nginx-ssl
 endef
 
 define Package/nginx-ui/description
@@ -55,8 +55,8 @@ define Build/Compile
 	export GOARCH=$(GOARCH) && \
 	export CGO_ENABLED=1 && \
 	go build -tags=jsoniter \
-		-ldflags "-w --extldflags '-static' -X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(date +%s)'" \
-		-o dist/nginx-ui -v main.go
+		-ldflags "-w --extldflags '-static' -X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(shell date +%s)'" \
+		-o $(PKG_BUILD_DIR)/nginx-ui -v main.go
 endef
 
 define Package/nginx-ui/install
