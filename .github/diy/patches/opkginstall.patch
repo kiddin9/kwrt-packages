@@ -37,7 +37,16 @@
  					}), ' ',
  					E('label', { 'for': 'overwrite-cb' }), ' ',
  					_('Allow overwriting conflicting package files')
-@@ -1024,6 +1025,8 @@ function handlePkg(ev)
+@@ -970,7 +971,7 @@ function handleRemove(ev)
+ 		desc || '',
+ 		E('div', { 'style': 'display:flex; justify-content:space-between; flex-wrap:wrap' }, [
+ 			E('label', { 'class': 'cbi-checkbox', 'style': 'float:left' }, [
+-				E('input', { 'id': 'autoremove-cb', 'type': 'checkbox', 'checked': 'checked', 'name': 'autoremove', 'disabled': isReadonlyView || L.hasSystemFeature('apk') }), ' ',
++				E('input', { 'id': 'autoremove-cb', 'type': 'checkbox', 'checked': 'checked', 'name': 'autoremove' || L.hasSystemFeature('apk') }), ' ',
+ 				E('label', { 'for': 'autoremove-cb' }), ' ',
+ 				_('Automatically remove unused dependencies')
+ 			]),
+@@ -1029,6 +1030,8 @@ function handlePkg(ev)
  			if (res.pkmcmd)
  				dlg.appendChild(E('pre', [ res.pkmcmd ]));
  
@@ -46,7 +55,7 @@
  			if (res.stdout)
  				dlg.appendChild(E('pre', [ res.stdout ]));
  
-@@ -1051,6 +1054,10 @@ function handlePkg(ev)
+@@ -1056,6 +1059,10 @@ function handlePkg(ev)
  							resolveFn(res);
  					}, this, res)
  				}, _('Dismiss'))));
@@ -57,7 +66,7 @@
  		}).catch(function(err) {
  			ui.addNotification(null, E('p', _('Unable to execute <em>%s %s</em> command: %s').format(L.hasSystemFeature('apk') ? 'apk' : 'opkg', cmd, err)));
  			ui.hideModal();
-@@ -1145,6 +1152,42 @@ return view.extend({
+@@ -1150,6 +1157,42 @@ return view.extend({
  	},
  
  	render: function(listData) {
@@ -100,7 +109,7 @@
  		var query = decodeURIComponent(L.toArray(location.search.match(/\bquery=([^=]+)\b/))[1] || '');
  
  		var view = E([], [
-@@ -1186,6 +1229,7 @@ return view.extend({
+@@ -1191,6 +1234,7 @@ return view.extend({
  					E('label', {}, _('Actions') + ':'), ' ',
  					E('span', { 'class': 'control-group' }, [
  						E('button', { 'class': 'btn cbi-button-positive', 'data-command': 'update', 'click': handlePkg, 'disabled': isReadonlyView }, [ _('Update lists…') ]), ' ',
@@ -108,7 +117,7 @@
  						E('button', { 'class': 'btn cbi-button-action', 'click': handleUpload, 'disabled': isReadonlyView }, [ _('Upload Package…') ]), ' ',
  						E('button', { 'class': 'btn cbi-button-neutral', 'click': handleConfig }, [ _('Configure %s').format(L.hasSystemFeature('apk') ? 'apk' : 'opkg') ])
  					])
-@@ -1271,7 +1315,17 @@ return view.extend({
+@@ -1276,7 +1320,17 @@ return view.extend({
  		]);
  
  		requestAnimationFrame(function() {
