@@ -1,0 +1,17 @@
+{
+    "luci-app-nginx-ui": {
+        "description": "Grant UCI access for luci-app-nginx-ui",
+        "read": {
+            "ubus": {
+                "service": [ "list" ]
+            },
+            "uci": [ "nginx-ui" ]
+        },
+        "write": {
+            "ubus": {
+                "service": [ "list" ]
+            },
+            "uci": [ "nginx-ui" ]
+        }
+    }
+}
