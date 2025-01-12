@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
 PKG_VERSION:=2.0.0-beta.42
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
@@ -11,6 +11,9 @@ PKG_HASH:=skip
 PKG_BUILD_DEPENDS:=node/host golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
+
+GO_PKG:=github.com/0xJacky/nginx-ui
+GO_PKG_BUILD_PKG:=$(GO_PKG)
 
 PKG_LICENSE:=AGPL-3.0-only
 PKG_LICENSE_FILES:=LICENSE
@@ -25,7 +28,7 @@ define Package/nginx-ui
   SUBMENU:=Web Servers/Proxies
   TITLE:=Web UI for Nginx
   URL:=https://nginxui.com
-  DEPENDS:=+nginx-ssl +libsqlite3
+  DEPENDS:=@(aarch64||arm||x86_64) +nginx +libsqlite3
 endef
 
 define Package/nginx-ui/description
@@ -52,21 +55,25 @@ endef
 
 define Build/Compile
 	cd $(PKG_BUILD_DIR) && \
-		export GOOS=linux && \
-		export GOARCH=$(GOLANG_ARCH) && \
-		export CGO_ENABLED=1 && \
-		export CC=$(TARGET_CC) && \
-		export CXX=$(TARGET_CXX) && \
-		export BUILD_TIME=$(shell date +%s) && \
-		export PKG_CONFIG=$(PKG_CONFIG_HOST) && \
-		export CFLAGS="$(TARGET_CFLAGS)" && \
-		export LDFLAGS="$(TARGET_LDFLAGS)" && \
-		export CGO_CFLAGS="$(TARGET_CFLAGS)" && \
-		export CGO_LDFLAGS="$(TARGET_LDFLAGS)" && \
-		go build -tags=jsoniter \
-			-ldflags "-s -w \
-				-X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(BUILD_TIME)'" \
-			-o $(PKG_BUILD_DIR)/nginx-ui -v main.go
+	export GOOS=linux && \
+	export GOARCH=$(GOARCH) && \
+	export CGO_ENABLED=1 && \
+	export CC=$(TARGET_CC) && \
+	export CXX=$(TARGET_CXX) && \
+	export GOARM=$(GOARM) && \
+	export GOMIPS=$(GOMIPS) && \
+	export BUILD_TIME=$(shell date +%s) && \
+	export PKG_CONFIG=$(PKG_CONFIG) && \
+	export CFLAGS="$(TARGET_CFLAGS)" && \
+	export LDFLAGS="$(TARGET_LDFLAGS)" && \
+	export CGO_CFLAGS="$(TARGET_CFLAGS)" && \
+	export CGO_LDFLAGS="$(TARGET_LDFLAGS)" && \
+	export CGO_ENABLED=1 && \
+	export GO111MODULE=on && \
+	go build -tags=jsoniter \
+		-ldflags "-s -w \
+			-X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(BUILD_TIME)'" \
+		-o $(PKG_BUILD_DIR)/nginx-ui -v
 endef
 
 define Package/nginx-ui/install
@@ -74,10 +81,6 @@ define Package/nginx-ui/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/nginx-ui
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/etc/nginx/sites-available
-	$(INSTALL_DIR) $(1)/etc/nginx/sites-enabled
-	$(INSTALL_DIR) $(1)/etc/nginx/streams-available
-	$(INSTALL_DIR) $(1)/etc/nginx/streams-enabled
 	
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nginx-ui $(1)/usr/bin/
 	$(INSTALL_CONF) ./files/etc/config/nginx-ui $(1)/etc/config/
