@@ -2,28 +2,59 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
 PKG_VERSION:=2.0.0-beta.42
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
-PKG_SOURCE:=nginx-ui-linux-64.tar.gz
-PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/releases/download/v$(PKG_VERSION)/
+PKG_SOURCE:=v$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
 PKG_HASH:=skip
 
-PKG_MAINTAINER:=kiddin9
-PKG_LICENSE:=GPL-3.0-or-later
+PKG_BUILD_DEPENDS:=node/host golang/host
+PKG_BUILD_PARALLEL:=1
+PKG_USE_MIPS16:=0
+
+PKG_LICENSE:=AGPL-3.0-only
 PKG_LICENSE_FILES:=LICENSE
+PKG_MAINTAINER:=Kiddin9
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/golang.mk
 
 define Package/nginx-ui
   SECTION:=net
   CATEGORY:=Network
+  SUBMENU:=Web Servers/Proxies
   TITLE:=Web UI for Nginx
   URL:=https://nginxui.com
-  DEPENDS:=+nginx
+  DEPENDS:=+nginx-ssl
 endef
 
 define Package/nginx-ui/description
   Nginx UI is a web interface for Nginx configuration management
+endef
+
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	
+	# 设置 GOPATH
+	$(INSTALL_DIR) $(PKG_BUILD_DIR)/go
+	export GOPATH=$(PKG_BUILD_DIR)/go
+	
+	# 准备前端构建环境
+	cd $(PKG_BUILD_DIR)/app && \
+		npm install && \
+		npm run build
+endef
+
+define Build/Compile
+	cd $(PKG_BUILD_DIR) && \
+		export GOOS=linux && \
+		export GOARCH=$(GOLANG_ARCH) && \
+		export CGO_ENABLED=0 && \
+		export BUILD_TIME=$(shell date +%s) && \
+		go build -tags=jsoniter \
+			-ldflags "-s -w \
+				-X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(BUILD_TIME)'" \
+			-o $(PKG_BUILD_DIR)/nginx-ui -v main.go
 endef
 
 define Package/nginx-ui/install
