@@ -5,7 +5,7 @@
 'require network';
 'require validation';
 
-var callLuciDHCPLeases = rpc.declare({
+const callLuciDHCPLeases = rpc.declare({
 	object: 'luci-rpc',
 	method: 'getDHCPLeases',
 	expect: { '': {} }
@@ -29,7 +29,7 @@ return baseclass.extend({
 		ev.currentTarget.disabled = true;
 		ev.currentTarget.blur();
 
-		var cfg = uci.add('dhcp', 'host');
+		let cfg = uci.add('dhcp', 'host');
 		uci.set('dhcp', cfg, 'name', lease.hostname);
 		uci.set('dhcp', cfg, 'ip', lease.ipaddr);
 		uci.set('dhcp', cfg, 'mac', [lease.macaddr.toUpperCase()]);
@@ -41,35 +41,35 @@ return baseclass.extend({
 
 	renderLeases: function(data) {
 		// Filter to show only IPv4 leases
-		var leases = Array.isArray(data[0].dhcp_leases) ? data[0].dhcp_leases : [],
-		    machints = data[1].getMACHints(false),
-		    hosts = uci.sections('dhcp', 'host'),
-		    isReadonlyView = !L.hasViewPermission();
+		let leases = Array.isArray(data[0].dhcp_leases) ? data[0].dhcp_leases : [];
+		let machints = data[1].getMACHints(false);
+		let hosts = uci.sections('dhcp', 'host');
+		let isReadonlyView = !L.hasViewPermission();
 
 		// Store MAC addresses for static leases
-		for (var i = 0; i < hosts.length; i++) {
-			var host = hosts[i];
+		for (let i = 0; i < hosts.length; i++) {
+			let host = hosts[i];
 
 			if (host.mac) {
-				var macs = L.toArray(host.mac);
-				for (var j = 0; j < macs.length; j++) {
-					var mac = macs[j].toUpperCase();
+				let macs = L.toArray(host.mac);
+				for (let j = 0; j < macs.length; j++) {
+					let mac = macs[j].toUpperCase();
 					this.isMACStatic[mac] = true;
 				}
 			}
-		};
+		}
 
 		// Count connected devices (IPv4 clients)
-		var connectedDevicesCount = leases.length;
+		let connectedDevicesCount = leases.length;
 
 		// Create a styled div to display the total connected devices count
-		var totalDevicesRow = E('div', { 'class': 'device-count' }, [
+		let totalDevicesRow = E('div', { 'class': 'device-count' }, [
 			E('h3', { 'class': 'connected-title' }, 'Connected Devices (IPv4)'),
 			E('div', { 'class': 'connected-count' }, connectedDevicesCount) // Count displayed prominently
 		]);
 
 		// Table to display active IPv4 leases
-		var table = E('table', { 'id': 'status_leases', 'class': 'table leases' }, [
+		let table = E('table', { 'id': 'status_leases', 'class': 'table leases' }, [
 			E('tr', { 'class': 'tr table-titles' }, [
 				E('th', { 'class': 'th' }, _('Hostname')),
 				E('th', { 'class': 'th' }, _('IPv4 Address')),
@@ -81,7 +81,7 @@ return baseclass.extend({
 
 		// Update the table with active IPv4 leases
 		cbi_update_table(table, leases.map(L.bind(function(lease) {
-			var exp, rows;
+			let exp, rows;
 
 			if (lease.expires === false)
 				exp = E('em', _('unlimited'));
@@ -90,8 +90,8 @@ return baseclass.extend({
 			else
 				exp = '%t'.format(lease.expires);
 
-			var hint = lease.macaddr ? machints.filter(function(h) { return h[0] == lease.macaddr })[0] : null,
-			    host = null;
+			let hint = lease.macaddr ? machints.filter(h => h[0] == lease.macaddr)[0] : null;
+			let host = null;
 
 			if (hint && lease.hostname && lease.hostname != hint[1])
 				host = '%s (%s)'.format(lease.hostname, hint[1]);
@@ -106,7 +106,7 @@ return baseclass.extend({
 			];
 
 			if (!isReadonlyView && lease.macaddr != null) {
-				var mac = lease.macaddr.toUpperCase();
+				let mac = lease.macaddr.toUpperCase();
 				rows.push(E('button', {
 					'class': 'cbi-button cbi-button-apply',
 					'click': L.bind(this.handleCreateStaticLease, this, lease),

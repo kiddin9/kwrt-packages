@@ -6,215 +6,215 @@
 
 // Add custom stylesheet
 document.querySelector('head').appendChild(E('link', {
-    'rel': 'stylesheet',
-    'type': 'text/css',
-    'href': L.resource('view/rdash/css/custom.css')
+	'rel': 'stylesheet',
+	'type': 'text/css',
+	'href': L.resource('view/rdash/css/custom.css')
 }));
 
 // RPC call to get system board info (for model name)
-var callSystemBoard = rpc.declare({
-    object: 'system',
-    method: 'board'
+const callSystemBoard = rpc.declare({
+	object: 'system',
+	method: 'board'
 });
 
 // Set a default value for device model
-var deviceModelName = 'Router';
+let deviceModelName = 'Router';
 
 // Track the active polling interval so we can clear it when switching icons
-var activeInterval = null;
+let activeInterval = null;
 
 // Function to create an icon with label and optional badge
 function createIcon(src, title, onClick, clickedSrc, label, showBadge) {
-    var iconDiv = E('div', { 'class': 'icon-container', 'title': title, 'style': 'position: relative;' });
+	let iconDiv = E('div', { 'class': 'icon-container', 'title': title, 'style': 'position: relative;' });
 
-    // Create the image for the icon
-    var iconImg = E('img', {
-        'src': L.resource('view/rdash/icons/' + src),
-        'class': 'icon',
-        'data-inactive': src,
-        'data-active': clickedSrc
-    });
-    iconDiv.appendChild(iconImg);
+	// Create the image for the icon
+	let iconImg = E('img', {
+		'src': L.resource('view/rdash/icons/' + src),
+		'class': 'icon',
+		'data-inactive': src,
+		'data-active': clickedSrc
+	});
+	iconDiv.appendChild(iconImg);
 
-    // Create the label for the icon
-    var iconLabel = E('div', { 'class': 'icon-label' }, [label]);
-    iconDiv.appendChild(iconLabel);
+	// Create the label for the icon
+	let iconLabel = E('div', { 'class': 'icon-label' }, [label]);
+	iconDiv.appendChild(iconLabel);
 
-    // Optionally add a badge
-    var badge;
-    if (showBadge) {
-        badge = E('span', {
-            'class': 'notification-badge',
-            'style': 'display: none;' // Hide it initially
-        }, ['0']);
-        iconDiv.appendChild(badge);
-    }
+	// Optionally add a badge
+	let badge;
+	if (showBadge) {
+		badge = E('span', {
+			'class': 'notification-badge',
+			'style': 'display: none;' // Hide it initially
+		}, ['0']);
+		iconDiv.appendChild(badge);
+	}
 
-    // Add click event handler
-    iconDiv.addEventListener('click', function () {
-        resetIcons();
-        iconImg.src = L.resource('view/rdash/icons/' + clickedSrc);
-        iconLabel.classList.add('active'); // Add active class to the label
-        onClick(badge);
-    });
+	// Add click event handler
+	iconDiv.addEventListener('click', function () {
+		resetIcons();
+		iconImg.src = L.resource('view/rdash/icons/' + clickedSrc);
+		iconLabel.classList.add('active'); // Add active class to the label
+		onClick(badge);
+	});
 
-    return { iconDiv, badge }; // Return both iconDiv and badge (badge can be undefined)
+	return { iconDiv, badge }; // Return both iconDiv and badge (badge can be undefined)
 }
 
 // Function to reset icons and labels
 function resetIcons() {
-    var allIcons = document.querySelectorAll('.icon-container img');
-    allIcons.forEach(function (icon) {
-        icon.src = L.resource('view/rdash/icons/' + icon.getAttribute('data-inactive'));
-    });
+	let allIcons = document.querySelectorAll('.icon-container img');
+	allIcons.forEach(function (icon) {
+		icon.src = L.resource('view/rdash/icons/' + icon.getAttribute('data-inactive'));
+	});
 
-    var allLabels = document.querySelectorAll('.icon-label');
-    allLabels.forEach(function (label) {
-        label.classList.remove('active');
-    });
+	let allLabels = document.querySelectorAll('.icon-label');
+	allLabels.forEach(function (label) {
+		label.classList.remove('active');
+	});
 
-    // Ensure the DHCP badge is visible
-    var dhcpBadge = document.querySelector('.dhcp-badge');
-    if (dhcpBadge) {
-        dhcpBadge.style.display = 'block';
-    }
+	// Ensure the DHCP badge is visible
+	let dhcpBadge = document.querySelector('.dhcp-badge');
+	if (dhcpBadge) {
+		dhcpBadge.style.display = 'block';
+	}
 
-    // Clear any existing polling interval when switching icons
-    if (activeInterval) {
-        clearInterval(activeInterval);
-        activeInterval = null;
-    }
+	// Clear any existing polling interval when switching icons
+	if (activeInterval) {
+		clearInterval(activeInterval);
+		activeInterval = null;
+	}
 }
 
 // Main view rendering
 return view.extend({
-    render: function () {
-        var container = E('div', { 'class': 'dashboard-container' });
-        var detailContainer = E('div', { 'id': 'detail-container', 'class': 'detail-container' });
+	render: function () {
+		let container = E('div', { 'class': 'dashboard-container' });
+		let detailContainer = E('div', { 'id': 'detail-container', 'class': 'detail-container' });
 
-        // Fetch device model name first
-        return callSystemBoard().then(function(boardInfo) {
-            if (boardInfo.model) {
-                deviceModelName = boardInfo.model;
-            }
+		// Fetch device model name first
+		return callSystemBoard().then(function(boardInfo) {
+			if (boardInfo.model) {
+				deviceModelName = boardInfo.model;
+			}
 
-            // Internet connection icon
-            let internetIcon = createIcon('internet.svg', _('Internet Connection'), function (badge) {
-                L.require('view.rdash.include.d_internet').then(function (internet) {
-                    startPolling([internet], [detailContainer]);
-                    updateInternetBadge(badge);
+			// Internet connection icon
+			let internetIcon = createIcon('internet.svg', _('Internet Connection'), function (badge) {
+				L.require('view.rdash.include.d_internet').then(function (internet) {
+					startPolling([internet], [detailContainer]);
+					updateInternetBadge(badge);
 
-                    // Clear any existing interval and set a new one for Internet
-                    if (activeInterval) clearInterval(activeInterval);
-                    activeInterval = setInterval(function() {
-                        startPolling([internet], [detailContainer]);
-                        updateInternetBadge(badge);
-                    }, 15000);  // 15000 milliseconds = 15 seconds
-                });
-            }, 'internet_active.svg', _('Internet'), true); 
-            internetIcon.badge.classList.add('internet-badge'); 
-            container.appendChild(internetIcon.iconDiv);
+					// Clear any existing interval and set a new one for Internet
+					if (activeInterval) clearInterval(activeInterval);
+					activeInterval = setInterval(function() {
+						startPolling([internet], [detailContainer]);
+						updateInternetBadge(badge);
+					}, 15000);  // 15000 milliseconds = 15 seconds
+				});
+			}, 'internet_active.svg', _('Internet'), true); 
+			internetIcon.badge.classList.add('internet-badge'); 
+			container.appendChild(internetIcon.iconDiv);
 
-            container.appendChild(createSeparator());
+			container.appendChild(createSeparator());
 
-            // Device details icon (now with fetched model name)
-            let devicesIcon = createIcon('devices.svg', _('Device Details'), function () {
-                L.require('view.rdash.include.d_devices').then(function (devices) {
-                    startPolling([devices], [detailContainer]);
+			// Device details icon (now with fetched model name)
+			let devicesIcon = createIcon('devices.svg', _('Device Details'), function () {
+				L.require('view.rdash.include.d_devices').then(function (devices) {
+					startPolling([devices], [detailContainer]);
 
-                    // Clear any existing interval as devices icon doesn't need refreshing
-                    if (activeInterval) clearInterval(activeInterval);
-                    activeInterval = setInterval(function() {
-                        startPolling([devices], [detailContainer]);
-                    }, 5000);  // 15000 milliseconds = 15 seconds
-                });
-            }, 'devices_active.svg', deviceModelName, false); 
-            container.appendChild(devicesIcon.iconDiv);
+					// Clear any existing interval as devices icon doesn't need refreshing
+					if (activeInterval) clearInterval(activeInterval);
+					activeInterval = setInterval(function() {
+						startPolling([devices], [detailContainer]);
+					}, 5000);  // 15000 milliseconds = 15 seconds
+				});
+			}, 'devices_active.svg', deviceModelName, false); 
+			container.appendChild(devicesIcon.iconDiv);
 
-            container.appendChild(createSeparator());
+			container.appendChild(createSeparator());
 
-            // DHCP information icon
-            let dhcpIcon = createIcon('dhcp.svg', _('DHCP Information'), function (badge) {
-                L.require('view.rdash.include.d_dhcp').then(function (dhcp) {
-                    startPolling([dhcp], [detailContainer]);
-                    updateDhcpBadge(badge);
+			// DHCP information icon
+			let dhcpIcon = createIcon('dhcp.svg', _('DHCP Information'), function (badge) {
+				L.require('view.rdash.include.d_dhcp').then(function (dhcp) {
+					startPolling([dhcp], [detailContainer]);
+					updateDhcpBadge(badge);
 
-                    // Clear any existing interval and set a new one for DHCP
-                    if (activeInterval) clearInterval(activeInterval);
-                    activeInterval = setInterval(function() {
-                        startPolling([dhcp], [detailContainer]);
-                        updateDhcpBadge(badge);
-                    }, 15000);  // 15000 milliseconds = 15 seconds
-                });
-            }, 'dhcp_active.svg', _('Clients'), true); 
-            dhcpIcon.badge.classList.add('dhcp-badge'); 
-            container.appendChild(dhcpIcon.iconDiv);
+					// Clear any existing interval and set a new one for DHCP
+					if (activeInterval) clearInterval(activeInterval);
+					activeInterval = setInterval(function() {
+						startPolling([dhcp], [detailContainer]);
+						updateDhcpBadge(badge);
+					}, 15000);  // 15000 milliseconds = 15 seconds
+				});
+			}, 'dhcp_active.svg', _('Clients'), true); 
+			dhcpIcon.badge.classList.add('dhcp-badge'); 
+			container.appendChild(dhcpIcon.iconDiv);
 
-            // Initial updates for DHCP and Internet badges
-            updateDhcpBadge(dhcpIcon.badge);
-            updateInternetBadge(internetIcon.badge);
+			// Initial updates for DHCP and Internet badges
+			updateDhcpBadge(dhcpIcon.badge);
+			updateInternetBadge(internetIcon.badge);
 
-            return E('div', {}, [container, detailContainer]);
-        });
-    }
+			return E('div', {}, [container, detailContainer]);
+		});
+	}
 });
 
 // Helper functions
 function createSeparator() {
-    return E('div', { 'class': 'separator' });
+	return E('div', { 'class': 'separator' });
 }
 
 function updateDhcpBadge(badge) {
-    L.require('view.rdash.include.d_dhcp').then(function (dhcp) {
-        dhcp.load().then(function (data) {
-            var leases = data[0].dhcp_leases || [];
-            var connectedClients = leases.length;
-            if (badge) {
-                badge.textContent = connectedClients;
-                badge.style.display = 'block';
-            }
-        });
-    });
+	L.require('view.rdash.include.d_dhcp').then(function (dhcp) {
+		dhcp.load().then(function (data) {
+			let leases = data[0].dhcp_leases || [];
+			let connectedClients = leases.length;
+			if (badge) {
+				badge.textContent = connectedClients;
+				badge.style.display = 'block';
+			}
+		});
+	});
 }
 
 function updateInternetBadge(badge) {
-    network.getWANNetworks().then(function (data) {
-        var connected = data[0] && data[0].isUp();
-        if (badge) {
-            var badgeIcon = connected ? 'yes.svg' : 'no.svg';
-            badge.style.backgroundImage = `url(${L.resource('view/rdash/icons/' + badgeIcon)})`;
-            badge.style.backgroundSize = 'cover';
-            badge.textContent = '';
-            badge.style.display = 'block';
-        }
-    });
+	network.getWANNetworks().then(function (data) {
+		let connected = data[0] && data[0].isUp();
+		if (badge) {
+			let badgeIcon = connected ? 'yes.svg' : 'no.svg';
+			badge.style.backgroundImage = `url(${L.resource('view/rdash/icons/' + badgeIcon)})`;
+			badge.style.backgroundSize = 'cover';
+			badge.textContent = '';
+			badge.style.display = 'block';
+		}
+	});
 }
 
 function startPolling(includes, containers) {
-    var step = function () {
-        return network.flushCache().then(function () {
-            return invokeIncludesLoad(includes);
-        }).then(function (results) {
-            for (var i = 0; i < includes.length; i++) {
-                if (includes[i].failed) continue;
-                var content = includes[i].render ? includes[i].render(results[i]) : includes[i].content;
-                if (content) {
-                    containers[i].parentNode.style.display = '';
-                    containers[i].parentNode.classList.add('fade-in');
-                    dom.content(containers[i], content);
-                }
-            }
-        });
-    };
-    step();
+	let step = function () {
+		return network.flushCache().then(function () {
+			return invokeIncludesLoad(includes);
+		}).then(function (results) {
+			for (let i = 0; i < includes.length; i++) {
+				if (includes[i].failed) continue;
+				let content = includes[i].render ? includes[i].render(results[i]) : includes[i].content;
+				if (content) {
+					containers[i].parentNode.style.display = '';
+					containers[i].parentNode.classList.add('fade-in');
+					dom.content(containers[i], content);
+				}
+			}
+		});
+	};
+	step();
 }
 
 function invokeIncludesLoad(includes) {
-    return Promise.all(includes.map(function (include) {
-        return include.load().catch(function (err) {
-            include.failed = true;
-            console.error('Error loading include:', err);
-        });
-    }));
+	return Promise.all(includes.map(function (include) {
+		return include.load().catch(function (err) {
+			include.failed = true;
+			console.error('Error loading include:', err);
+		});
+	}));
 }
 
