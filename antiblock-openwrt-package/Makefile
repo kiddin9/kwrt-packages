@@ -2,17 +2,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antiblock
 PKG_VERSION:=2.0.0
-PKG_RELEASE:=15
+PKG_RELEASE:=16
 
 ifeq ("$(wildcard ../antiblock)", "")
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/karen07/antiblock
-PKG_SOURCE_VERSION:=f97a9790ae2310e0cb0fa97786974f0cecfda789
+PKG_SOURCE_VERSION:=86fd68b15888674e04720c4407e527a9a241ac82
 PKG_MIRROR_HASH:=skip
 endif
 
 PKG_MAINTAINER:=Khachatryan Karen <karen0734@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
+PKG_LICENSE_FILES:=LICENSE
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
