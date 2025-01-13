@@ -390,6 +390,7 @@ jobs:
         (
         git_sparse_clone master "https://github.com/x-wrt/com.x-wrt" luci-app-macvlan luci-app-xwan
         git_sparse_clone master "https://github.com/obsy/packages" oscam luci-proto-wwan
+        git_sparse_clone add-info-dashboard-package "https://github.com/tp82d1/luci" modules/luci-mod-rdash
         ) &
         git_sparse_clone master "https://github.com/coolsnowwolf/luci" applications libs/luci-lib-fs
         mv -f applications luciapp
