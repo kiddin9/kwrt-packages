@@ -7,14 +7,16 @@ eBPF-based Endpoint-Independent NAT
 - Target Linux kernel >= 5.15
 - Target Linux kernel has the following kernel configuration enabled
 ```
+CONFIG_BPF_EVENTS=y
 CONFIG_DEBUG_KERNEL=y
 CONFIG_DEBUG_INFO=y
 CONFIG_DEBUG_INFO_REDUCED=n
 CONFIG_DEBUG_INFO_BTF=y
 ```
-- You can install `kmod-ikconfig`, use command `zcat /proc/config.gz | grep -E "(CONFIG_DEBUG_KERNEL|CONFIG_DEBUG_INFO|CONFIG_DEBUG_INFO_REDUCED|CONFIG_DEBUG_INFO_BTF)"` to confirm
+- You can install `kmod-ikconfig`, use command `zcat /proc/config.gz | grep -E "(CONFIG_BPF_EVENTS|CONFIG_DEBUG_KERNEL|CONFIG_DEBUG_INFO|CONFIG_DEBUG_INFO_REDUCED|CONFIG_DEBUG_INFO_BTF|CONFIG_BPF_SYSCALL|CONFIG_BPF_JIT)"` to confirm
 - If it does not match, you need add the following configuration to the `.config` and rebuild the target kernel
 ```
+CONFIG_KERNEL_BPF_EVENTS=y
 CONFIG_KERNEL_DEBUG_KERNEL=y
 CONFIG_KERNEL_DEBUG_INFO=y
 CONFIG_KERNEL_DEBUG_INFO_REDUCED=n
