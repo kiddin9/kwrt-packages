@@ -11,9 +11,9 @@
 
 --- a/luci-app-passwall/Makefile
 +++ b/luci-app-passwall/Makefile
-@@ -35,7 +35,29 @@ LUCI_PKGARCH:=all
+@@ -36,7 +36,29 @@ LUCI_PKGARCH:=all
  LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-nohup +curl \
- 	+chinadns-ng +dns2socks +dns2tcp +dnsmasq-full +ip-full \
+ 	+chinadns-ng +dns2socks +dnsmasq-full +ip-full \
  	+libuci-lua +lua +luci-compat +luci-lib-jsonc \
 -	+microsocks +resolveip +tcping
 +	+microsocks +resolveip +tcping \
@@ -42,7 +42,7 @@
  
  define Package/$(PKG_NAME)/config
  menu "Configuration"
-@@ -65,7 +87,6 @@ config PACKAGE_$(PKG_NAME)_Nftables_Transparent_Proxy
+@@ -71,7 +93,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Geoview
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy
  	bool "Include Haproxy"
@@ -50,7 +50,7 @@
  	default y if aarch64||arm||i386||x86_64
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria
-@@ -81,19 +102,15 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
+@@ -87,19 +108,15 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client
  	bool "Include Shadowsocks Libev Client"
@@ -70,7 +70,7 @@
  	default y if aarch64
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server
-@@ -104,8 +121,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server
+@@ -110,8 +127,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client
  	bool "Include ShadowsocksR Libev Client"
@@ -79,7 +79,7 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
-@@ -115,17 +130,15 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
+@@ -121,7 +136,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
  	bool "Include Simple-Obfs (Shadowsocks Plugin)"
@@ -87,10 +87,7 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_SingBox
- 	bool "Include Sing-Box"
- 	select PACKAGE_sing-box
--	default y if aarch64||arm||i386||x86_64
-+	default n
+@@ -131,7 +145,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_SingBox
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
  	bool "Include Trojan-Plus"
@@ -98,7 +95,7 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_tuic_client
-@@ -142,14 +155,11 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Geodata
+@@ -148,14 +161,11 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Geodata
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
  	bool "Include V2ray-Plugin (Shadowsocks Plugin)"
