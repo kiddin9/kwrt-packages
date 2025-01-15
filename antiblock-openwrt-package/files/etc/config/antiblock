@@ -1,5 +1,6 @@
 
-#config antiblock
+#config antiblock 'config'
+	#option enabled '0'
 	#At least one parameters needs to be filled:
 		#option url 'https://antifilter.download/list/domains.lst'
 		#option file '/root/my_urls.txt'
