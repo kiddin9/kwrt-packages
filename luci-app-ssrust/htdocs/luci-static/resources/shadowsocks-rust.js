@@ -61,14 +61,14 @@ function ucival_to_bool(val) {
 }
 
 return baseclass.extend({
-	values_actions: function(o) {
+	values_actions(o) {
 		o.value('bypass');
 		o.value('forward');
 		if (o.option !== 'dst_default') {
 			o.value('checkdst');
 		}
 	},
-	values_redir: function(o, xmode) {
+	values_redir(o, xmode) {
 		uci.sections('shadowsocks-rust', 'ss_redir', function(sdata) {
 			var disabled = ucival_to_bool(sdata['disabled']),
 				sname = sdata['.name'],
@@ -80,7 +80,7 @@ return baseclass.extend({
 		o.value('', '<unset>');
 		o.default = '';
 	},
-	values_serverlist: function(o) {
+	values_serverlist(o) {
 		uci.sections('shadowsocks-rust', 'server', function(sdata) {
 			var sname = sdata['.name'],
 				server = sdata['server'],
@@ -92,7 +92,7 @@ return baseclass.extend({
 			}
 		});
 	},
-	values_ip4addr: function(o, netDevs) {
+	values_ip4addr(o, netDevs) {
 		netDevs.forEach(function(v) {
 			v.getIPAddrs().forEach(function(a) {
 				var host = a.split('/')[0];
@@ -100,7 +100,7 @@ return baseclass.extend({
 			});
 		});
 	},
-	values_ip6addr: function(o, netDevs) {
+	values_ip6addr(o, netDevs) {
 		netDevs.forEach(function(v) {
 			v.getIP6Addrs().forEach(function(a) {
 				var host = a.split('/')[0];
@@ -108,11 +108,11 @@ return baseclass.extend({
 			});
 		});
 	},
-	values_ipaddr: function(o, netDevs) {
+	values_ipaddr(o, netDevs) {
 		this.values_ip4addr(o, netDevs)
 		this.values_ip6addr(o, netDevs)
 	},
-	options_client: function(s, tab, netDevs) {
+	options_client(s, tab, netDevs) {
 		var o = s.taboption(tab, form.ListValue, 'server', _('Remote server'));
 		this.values_serverlist(o);
 		o = s.taboption(tab, form.Value, 'local_address', _('Local address'));
@@ -122,7 +122,7 @@ return baseclass.extend({
 		o = s.taboption(tab, form.Value, 'local_port', _('Local port'));
 		o.datatype = 'port';
 	},
-	options_server: function(s, opts) {
+	options_server(s, opts) {
 		var o, optfunc,
 			tab = opts && opts.tab || null;
 
@@ -196,7 +196,7 @@ return baseclass.extend({
 		});
 		o.modalonly = true;
 	},
-	options_common: function(s, tab) {
+	options_common(s, tab) {
 		var o = s.taboption(tab, form.ListValue, 'mode', _('Mode of operation'));
 		modes.forEach(function(m) {
 			o.value(m);
@@ -214,10 +214,10 @@ return baseclass.extend({
 		s.taboption(tab, form.Flag, 'no_delay', _('Enable TCP_NODELAY'));
 		s.taboption(tab, form.Flag, 'reuse_port', _('Enable SO_REUSEPORT'));
 	},
-	ucival_to_bool: function(val) {
+	ucival_to_bool(val) {
 		return ucival_to_bool(val);
 	},
-	cfgvalue_overview: function(sdata) {
+	cfgvalue_overview(sdata) {
 		var stype = sdata['.type'],
 			lines = [];
 
@@ -237,7 +237,7 @@ return baseclass.extend({
 
 		return lines;
 	},
-	cfgvalue_overview_: function(sdata, lines, names) {
+	cfgvalue_overview_(sdata, lines, names) {
 		names.forEach(function(n) {
 			var v = sdata[n];
 			if (v) {
@@ -257,7 +257,7 @@ return baseclass.extend({
 			}
 		});
 	},
-	option_install_package: function(s, tab) {
+	option_install_package(s, tab) {
 		var bin = s.sectiontype.replace('_', ''),
 			opkg_package = 'shadowsocks-rust-' + bin, o;
 		if (tab) {
@@ -273,7 +273,7 @@ return baseclass.extend({
 				'?query=' + opkg_package, '_blank', 'noopener');
 		};
 	},
-	parse_uri: function(uri) {
+	parse_uri(uri) {
 		var scheme = 'ss://';
 		if (uri && uri.indexOf(scheme) === 0) {
 			var atPos = uri.indexOf('@'), hashPos = uri.lastIndexOf('#'), tag;

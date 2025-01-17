@@ -7,11 +7,11 @@ return view.extend({
 	handleSave: null,
 	handleReset: null,
 
-	load: function() {
+	load() {
 		return uci.load('netdata');
 	},
 
-	render: function() {
+	render() {
 		var port = uci.get_first('netdata', 'netdata', 'port') || '19999',
 			ssl = uci.get_first('netdata', 'netdata', 'enable_ssl') || '0',
 			nginx = uci.get_first('netdata', 'netdata', 'nginx_support') || '0';

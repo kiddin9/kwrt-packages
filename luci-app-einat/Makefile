@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2024 Anya Lin <https://github.com/muink>
+# Copyright (C) 2024-2025 Anya Lin <https://github.com/muink>
 
 include $(TOPDIR)/rules.mk
 

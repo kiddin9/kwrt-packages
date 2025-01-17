@@ -8,11 +8,11 @@
 'require network';
 'require tools.widgets as widgets';
 
-var conf = 'natmap';
-var natmap_instance = 'natmap';
-var nattest_fw_rulename = 'natmap-natest';
-var nattest_result_path = '/tmp/natmap-natBehavior';
-var etc_path = '/etc/natmap';
+const conf = 'natmap';
+const natmap_instance = 'natmap';
+const nattest_fw_rulename = 'natmap-natest';
+const nattest_result_path = '/tmp/natmap-natBehavior';
+const etc_path = '/etc/natmap';
 
 const callServiceList = rpc.declare({
 	object: 'service',
@@ -28,7 +28,7 @@ const callHostHints = rpc.declare({
 });
 
 function getInstances() {
-	return L.resolveDefault(callServiceList(conf), {}).then(function(res) {
+	return L.resolveDefault(callServiceList(conf), {}).then((res) => {
 		try {
 			return res[conf].instances || {};
 		} catch (e) {}
@@ -37,44 +37,44 @@ function getInstances() {
 }
 
 function getStatus() {
-	return getInstances().then(function(instances) {
-		var promises = [];
-		var status = {};
-		for (var key in instances) {
-			var i = instances[key];
+	return getInstances().then((instances) => {
+		let promises = [];
+		let status = {};
+		for (let key in instances) {
+			let i = instances[key];
 			if (i.running && i.pid) {
-				var f = '/var/run/natmap/' + i.pid + '.json';
-				(function(k) {
-					promises.push(fs.read(f).then(function(res) {
+				let f = '/var/run/natmap/' + i.pid + '.json';
+				((k) => {
+					promises.push(fs.read(f).then((res) => {
 						status[k] = JSON.parse(res);
-					}).catch(function(e){}));
+					}).catch((e) =>{}));
 				})(key);
 			}
 		}
-		return Promise.all(promises).then(function() { return status; });
+		return Promise.all(promises).then(() => { return status; });
 	});
 }
 
 function transformHostHints(family, hosts, html) {
-	var choice_values = [],
-		choice_labels = {},
-		ip6addrs = {},
-		ipaddrs = {};
+	let choice_values = [];
+	let choice_labels = {};
+	let ip6addrs = {};
+	let ipaddrs = {};
 
-	for (var mac in hosts) {
-		L.toArray(hosts[mac].ipaddrs || hosts[mac].ipv4).forEach(function(ip) {
+	for (let mac in hosts) {
+		L.toArray(hosts[mac].ipaddrs || hosts[mac].ipv4).forEach((ip) => {
 			ipaddrs[ip] = hosts[mac].name || mac;
 		});
 
-		L.toArray(hosts[mac].ip6addrs || hosts[mac].ipv6).forEach(function(ip) {
+		L.toArray(hosts[mac].ip6addrs || hosts[mac].ipv6).forEach((ip) => {
 			ip6addrs[ip] = hosts[mac].name || mac;
 		});
 	}
 
 	if (!family || family == 'ipv4') {
-		L.sortedKeys(ipaddrs, null, 'addr').forEach(function(ip) {
-			var val = ip,
-				txt = ipaddrs[ip];
+		L.sortedKeys(ipaddrs, null, 'addr').forEach((ip) => {
+			let val = ip;
+			let txt = ipaddrs[ip];
 
 			choice_values.push(val);
 			choice_labels[val] = html ? E([], [ val, ' (', E('strong', {}, [txt]), ')' ]) : '%s (%s)'.format(val, txt);
@@ -82,9 +82,9 @@ function transformHostHints(family, hosts, html) {
 	}
 
 	if (!family || family == 'ipv6') {
-		L.sortedKeys(ip6addrs, null, 'addr').forEach(function(ip) {
-			var val = ip,
-				txt = ip6addrs[ip];
+		L.sortedKeys(ip6addrs, null, 'addr').forEach((ip) => {
+			let val = ip;
+			let txt = ip6addrs[ip];
 
 			choice_values.push(val);
 			choice_labels[val] = html ? E([], [ val, ' (', E('strong', {}, [txt]), ')' ]) : '%s (%s)'.format(val, txt);
@@ -95,7 +95,7 @@ function transformHostHints(family, hosts, html) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 	return Promise.all([
 		getStatus(),
 		network.getWANNetworks(),
@@ -110,15 +110,15 @@ return view.extend({
 	]);
 	},
 
-	render: function(res) {
-		var status = res[0],
-			wans = res[1],
-			has_stunclient = res[2] ? res[2].path : null,
-			nattest_result = res[3] ? res[3].trim() : '',
-			hosts = res[4],
-			scripts_client = res[5] ? res[5] : [],
-			scripts_notify = res[6] ? res[6] : [],
-			scripts_ddns = res[7] ? res[7] : [];
+	render(res) {
+		const status = res[0];
+		const wans = res[1];
+		const has_stunclient = res[2] ? res[2].path : null;
+		const nattest_result = res[3] ? res[3].trim() : '';
+		const hosts = res[4];
+		const scripts_client = res[5] ? res[5] : [];
+		const scripts_notify = res[6] ? res[6] : [];
+		const scripts_ddns = res[7] ? res[7] : [];
 
 		let m, s, o;
 
@@ -132,8 +132,8 @@ return view.extend({
 		o.inputstyle = 'apply';
 		o.onclick = function() {
 			return fs.exec('/etc/init.d/natmap', ['reload', ''])
-				.then(function(res) { return window.location = window.location.href.split('#')[0] })
-				.catch(function(e) { ui.addNotification(null, E('p', e.message), 'error') });
+				.then((res) => { return window.location = window.location.href.split('#')[0] })
+				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 
 		o = s.option(form.Flag, 'enable', _('Enable'));
@@ -180,13 +180,13 @@ return view.extend({
 			let fw_forwards = uci.sections(conf, 'redirect');
 			let fw_rules = uci.sections(conf, 'rule');
 
-			for (var i = 0; i < fw_forwards.length; i++) {
+			for (let i = 0; i < fw_forwards.length; i++) {
 				let sid = fw_forwards[i]['.name'];
 				if (value == uci.get(conf, sid, 'src_dport'))
 					return _('This port is already used');
 			};
 
-			for (var i = 0; i < fw_rules.length; i++) {
+			for (let i = 0; i < fw_rules.length; i++) {
 				let sid = fw_rules[i]['.name'];
 				if (uci.get(conf, sid, 'name') == nattest_fw_rulename)
 					continue;
@@ -207,7 +207,7 @@ return view.extend({
 			let found = false;
 			let fwcfg = 'firewall';
 			let rules = uci.sections(fwcfg, 'rule');
-			for (var i = 0; i < rules.length; i++) {
+			for (let i = 0; i < rules.length; i++) {
 				let sid = rules[i]['.name'];
 				if (uci.get(fwcfg, sid, 'name') == nattest_fw_rulename) {
 					found = sid;
@@ -219,7 +219,7 @@ return view.extend({
 			if(wans) {
 				let def_wan = wans[0].getName();
 				let zones = uci.sections(fwcfg, 'zone');
-				for (var i = 0; i < zones.length; i++) {
+				for (let i = 0; i < zones.length; i++) {
 					let sid = zones[i]['.name'];
 					if (uci.get(fwcfg, sid, 'masq') == 1) {
 						wan_zone = uci.get(fwcfg, sid, 'name');
@@ -227,7 +227,7 @@ return view.extend({
 					}
 				}
 			} else {
-				for (var i = 0; i < rules.length; i++) {
+				for (let i = 0; i < rules.length; i++) {
 					let sid = rules[i]['.name'];
 					if (uci.get(fwcfg, sid, 'src')) {
 						wan_zone = uci.get(fwcfg, sid, 'src');
@@ -264,8 +264,8 @@ return view.extend({
 			let tcp_stun_host = uci.get_first(conf, 'global', 'def_tcp_stun');
 
 			return fs.exec('/usr/libexec/natmap/natcheck.sh', [udp_stun_host + ':3478', tcp_stun_host + ':3478', test_port, nattest_result_path])
-				.then(function(res) { return window.location = window.location.href.split('#')[0] })
-				.catch(function(e) { ui.addNotification(null, E('p', e.message), 'error') });
+				.then((res) => { return window.location = window.location.href.split('#')[0] })
+				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 
 		if (nattest_result.length) {
@@ -321,8 +321,8 @@ return view.extend({
 		o.value('0', 'TCP');
 		o.value('1', 'UDP');
 		o.textvalue = function(section_id) {
-			var cval = this.cfgvalue(section_id);
-			var i = this.keylist.indexOf(cval);
+			let cval = this.cfgvalue(section_id);
+			let i = this.keylist.indexOf(cval);
 			return this.vallist[i];
 		};
 
@@ -331,12 +331,12 @@ return view.extend({
 		o.value('ipv4', _('IPv4'));
 		o.value('ipv6', _('IPv6'));
 		o.textvalue = function(section_id) {
-			var cval = this.cfgvalue(section_id);
-			var i = this.keylist.indexOf(cval);
+			let cval = this.cfgvalue(section_id);
+			let i = this.keylist.indexOf(cval);
 			return this.vallist[i];
 		};
 		o.validate = function(section_id, value) {
-			var opt = this.section.getOption('forward_target').getUIElement(section_id),
+			let opt = this.section.getOption('forward_target').getUIElement(section_id),
 			choices = transformHostHints(value, hosts, true);
 
 			opt.clearChoices();
@@ -378,13 +378,13 @@ return view.extend({
 		o.default = o.disabled;
 		o.rmempty = false;
 		o.textvalue = function(section_id) {
-			var cval = this.cfgvalue(section_id) || this.default;
-			var mode = L.bind(function() {
+			let cval = this.cfgvalue(section_id) || this.default;
+			let mode = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				let i = this.keylist.indexOf(cval);
 				return [this.vallist[i], cval];
 			}, s.getOption('forward_mode'))
-			var loopback = L.bind(function() {
+			let loopback = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? ' L' : '';
 			}, s.getOption('natloopback'))
@@ -437,14 +437,14 @@ return view.extend({
 		o.depends('forward', '1');
 
 		((labels) => {
-			for (var val in labels)
+			for (let val in labels)
 				o.value(val, labels[val]);
 		})(transformHostHints(null, hosts, false)[1]);
 
 		o.textvalue = function(section_id) {
-			var cval = this.cfgvalue(section_id);
-			var i = this.keylist.indexOf(cval);
-			var enforward = L.bind(function() {
+			let cval = this.cfgvalue(section_id);
+			let i = this.keylist.indexOf(cval);
+			let enforward = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
 			}, s.getOption('forward'))
@@ -457,16 +457,16 @@ return view.extend({
 		o.retain = true;
 		o.depends('forward', '1');
 		o.textvalue = function(section_id) {
-			var cval = this.cfgvalue(section_id) || this.default;
-			var enforward = L.bind(function() {
+			let cval = this.cfgvalue(section_id) || this.default;
+			let enforward = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
 			}, s.getOption('forward'))
-			var refresh = L.bind(function() {
+			let refresh = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
 			}, s.getOption('refresh'))
-			var cltname = L.bind(function() {
+			let cltname = L.bind(function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				let i = this.keylist.indexOf(cval);
 				return this.vallist[i];
@@ -488,10 +488,10 @@ return view.extend({
 		o.depends('refresh', '1');
 		o.modalonly = true;
 
-		if (scripts_client.length) {
-			for (var i = 0; i < scripts_client.length; i++)
-				o.value(etc_path + '/client/' + scripts_client[i].name, scripts_client[i].name);
-		};
+		if (scripts_client.length)
+			scripts_client.forEach((script) => {
+				o.value(etc_path + '/client/' + script.name, script.name);
+			});
 
 		o = s.taboption('forward', form.ListValue, 'clt_scheme', _('URI Scheme'));
 		o.value('http', 'HTTP');
@@ -525,14 +525,14 @@ return view.extend({
 		o = s.option(form.DummyValue, '_external_ip', _('External IP'));
 		o.modalonly = false;
 		o.textvalue = function(section_id) {
-			var s = status[section_id];
+			let s = status[section_id];
 			if (s) return s.ip;
 		};
 
 		o = s.option(form.DummyValue, '_external_port', _('External Port'));
 		o.modalonly = false;
 		o.textvalue = function(section_id) {
-			var s = status[section_id];
+			let s = status[section_id];
 			if (s) return s.port;
 		};
 
@@ -546,10 +546,10 @@ return view.extend({
 		o.rmempty = false;
 		o.modalonly = true;
 
-		if (scripts_notify.length) {
-			for (var i = 0; i < scripts_notify.length; i++)
-				o.value(etc_path + '/notify/' + scripts_notify[i].name, scripts_notify[i].name);
-		};
+		if (scripts_notify.length)
+			scripts_notify.forEach((script) => {
+				o.value(etc_path + '/notify/' + script.name, script.name);
+			});
 
 		o = s.taboption('notify', form.DynamicList, 'notify_tokens', _('Tokens'),
 			_('The KEY required by the script above. ' +
@@ -582,10 +582,10 @@ return view.extend({
 		o.rmempty = false;
 		o.modalonly = true;
 
-		if (scripts_ddns.length) {
-			for (var i = 0; i < scripts_ddns.length; i++)
-				o.value(etc_path + '/ddns/' + scripts_ddns[i].name, scripts_ddns[i].name);
-		};
+		if (scripts_ddns.length)
+			scripts_ddns.forEach((script) => {
+				o.value(etc_path + '/ddns/' + script.name, script.name);
+			});
 
 		o = s.taboption('ddns', form.DynamicList, 'ddns_tokens', _('Tokens'),
 			_('The KEY required by the script above. ' +
@@ -721,7 +721,7 @@ return view.extend({
 		o.inputstyle = 'apply';
 		o.onclick = function(ev, section_id) {
 			return fs.exec('/etc/init.d/natmap', ['reload', section_id])
-				.catch(function(e) { ui.addNotification(null, E('p', e.message), 'error') });
+				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 		o.editable = true;
 		o.modalonly = false;

@@ -8,11 +8,11 @@
 'require rpc';
 'require form';
 
-var mntpkgs = '/mnt/packagesync';
-var mntreg = RegExp(/\/mnt\/packagesync/);
-var conf = 'packagesync';
-var release = 'release';
-var instance = 'sync';
+const mntpkgs = '/mnt/packagesync';
+const mntreg = RegExp(/\/mnt\/packagesync/);
+const conf = 'packagesync';
+const release = 'release';
+const instance = 'sync';
 
 const callServiceList = rpc.declare({
 	object: 'service',
@@ -23,8 +23,8 @@ const callServiceList = rpc.declare({
 
 function getServiceStatus() {
 	return L.resolveDefault(callServiceList(conf), {})
-		.then(function (res) {
-			var isrunning = false;
+		.then((res) => {
+			let isrunning = false;
 			try {
 				isrunning = res[conf]['instances'][instance]['running'];
 			} catch (e) { }
@@ -37,7 +37,7 @@ return view.extend({
 //	handleSave: null,
 //	handleReset: null,
 
-	load: function() {
+	load() {
 	return Promise.all([
 		L.resolveDefault(fs.read('/var/packagesync/releaseslist'), null),
 		L.resolveDefault(fs.read('/var/packagesync/targetslist'), null),
@@ -50,9 +50,9 @@ return view.extend({
 	]);
 	},
 
-	poll_status: function(nodes, stat) {
-		var isRunning = stat[0],
-			view = nodes.querySelector('#sync_status');
+	poll_status(nodes, stat) {
+		const isRunning = stat[0];
+		let view = nodes.querySelector('#sync_status');
 
 		if (isRunning) {
 			view.innerHTML = "<span style=\"color:green;font-weight:bold\">" + _("SYNC IN PROGRESS") + "</span>";
@@ -62,18 +62,18 @@ return view.extend({
 		return;
 	},
 
-	render: function(res) {
-		var releaseslist = res[0] ? res[0].trim().split("\n") : [],
-			targetslist = res[1] ? res[1].trim().split("\n") : [],
-			pkgarchslist = res[2] ? res[2].trim().split("\n") : [],
-			locked = res[3].path,
-			usedname = res[4].stdout ? res[4].stdout.trim().split("\n") : [],
-			storages = res[5].stdout ? res[5].stdout.trim().split("\n") : [],
-			isRunning = res[6];
+	render(res) {
+		const releaseslist = res[0] ? res[0].trim().split("\n") : [];
+		const targetslist = res[1] ? res[1].trim().split("\n") : [];
+		const pkgarchslist = res[2] ? res[2].trim().split("\n") : [];
+		const locked = res[3].path;
+		const usedname = res[4].stdout ? res[4].stdout.trim().split("\n") : [];
+		const storages = res[5].stdout ? res[5].stdout.trim().split("\n") : [];
+		const isRunning = res[6];
 
-		var storage = [];
+		let storage = [];
 		if (storages.length) {
-			for (var i = 1; i < storages.length; i++) {
+			for (let i = 1; i < storages.length; i++) {
 				if (storages[i].match(mntreg)) {
 					storage = storages[i].trim().split(/\s+/, 7);
 					break;
@@ -119,10 +119,10 @@ return view.extend({
 		o.rmempty = false;
 		o.validate = function(section, value) {
 			if (usedname.length)
-				for (var i = 0; i < usedname.length; i++)
+				for (let i = 0; i < usedname.length; i++)
 					if (usedname[i] == value)
 						return _('The Name %h is already used').format(value);
-        
+
 			return true;
 		};
 		o.write = function(section, value) {
@@ -136,12 +136,12 @@ return view.extend({
 		if ((! storage.length) || locked)
 			o.readonly = true;
 		o.onclick = function() {
-			window.setTimeout(function() {
+			window.setTimeout(() => {
 				window.location = window.location.href.split('#')[0];
 			}, L.env.apply_display * 500);
 
 			return fs.exec('/etc/init.d/packagesync', ['start'])
-				.catch(function(e) { ui.addNotification(null, E('p', e.message), 'error') });
+				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 
 		o = s.option(form.ListValue, 'bwlimit', _('Bandwidth Limit'));
@@ -222,8 +222,8 @@ return view.extend({
 			let precontent = document.getElementById('cleanup-output');
 
 			return fs.exec('/etc/init.d/packagesync', ['cleanup'])
-				.then(function(res) { dom.content(precontent, [ res.stdout.trim().length ? res.stdout.trim() : _('no objects need to remove.'), res.stderr ? res.stderr : '' ]) })
-				.catch(function(err) { ui.addNotification(null, E('p', err.message), 'error') });
+				.then((res) => { dom.content(precontent, [ res.stdout.trim().length ? res.stdout.trim() : _('no objects need to remove.'), res.stderr ? res.stderr : '' ]) })
+				.catch((err) => { ui.addNotification(null, E('p', err.message), 'error') });
 		};
 
 		o = s.option(form.DummyValue, '_removable_versions', '　');
@@ -235,7 +235,7 @@ return view.extend({
 		s = m.section(form.GridSection, '_storage');
 
 		s.render = L.bind(function(view, section_id) {
-			var table = E('table', { 'class': 'table cbi-section-table', 'id': 'storage_device' }, [
+			let table = E('table', { 'class': 'table cbi-section-table', 'id': 'storage_device' }, [
 				E('tr', { 'class': 'tr table-titles' }, [
 					E('th', { 'class': 'th' }, _('Filesystem')),
 					E('th', { 'class': 'th' }, _('Type')),
@@ -247,7 +247,7 @@ return view.extend({
 					E('th', { 'class': 'th cbi-section-actions' }, '')
 				])
 			]);
-			var rows = [];
+			let rows = [];
 			if (storage.length) {
 				storage[5] = E('div', { 'class': 'cbi-progressbar', 'title': storage[5], 'style': 'min-width:8em !important' }, E('div', { 'style': 'width:' + storage[5] }))
 				//storage[5] = E('div', { 'class': 'cbi-progressbar', 'title': storage[3] + ' / ' + storage[2] + ' (' + storage[5] + ')', 'style': 'min-width:8em !important' }, [
@@ -271,7 +271,7 @@ return view.extend({
 		o.rmempty = false;
 		o.validate = function(section_id, value) {
 			let ss = uci.sections(conf, release);
-			for (var i = 0; i < ss.length; i++) {
+			for (let i = 0; i < ss.length; i++) {
 				let sid = ss[i]['.name'];
 				if (sid == section_id)
 					continue;
@@ -292,15 +292,15 @@ return view.extend({
 		o.write = function() {};
 		o.onclick = function() {
 			return fs.exec('/etc/init.d/packagesync', ['getinfo'])
-				.then(function(res) { return window.location.reload() })
-				.catch(function(e) { ui.addNotification(null, E('p', e.message), 'error') });
+				.then((res) => { return window.location.reload() })
+				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 
 		o = s.option(form.Value, 'version', _('Version'));
 		o.rmempty = false;
 
 		if (releaseslist.length) {
-			for (var i = 0; i < releaseslist.length; i++)
+			for (let i = 0; i < releaseslist.length; i++)
 				o.value(releaseslist[i]);
 		};
 
@@ -309,7 +309,7 @@ return view.extend({
 		o.rmempty = false;
 
 		if (targetslist.length) {
-			for (var i = 0; i < targetslist.length; i++)
+			for (let i = 0; i < targetslist.length; i++)
 				o.value(targetslist[i]);
 		};
 
@@ -322,7 +322,7 @@ return view.extend({
 		o.rmempty = false;
 
 		if (pkgarchslist.length) {
-			for (var i = 0; i < pkgarchslist.length; i++)
+			for (let i = 0; i < pkgarchslist.length; i++)
 				o.value(pkgarchslist[i]);
 		};
 

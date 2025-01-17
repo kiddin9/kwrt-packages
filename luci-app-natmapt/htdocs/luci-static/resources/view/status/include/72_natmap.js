@@ -4,8 +4,8 @@
 'require uci';
 'require rpc';
 
-var conf = 'natmap';
-var natmap_instance = 'natmap';
+const conf = 'natmap';
+const natmap_instance = 'natmap';
 
 const callServiceList = rpc.declare({
 	object: 'service',
@@ -15,7 +15,7 @@ const callServiceList = rpc.declare({
 });
 
 function getInstances() {
-	return L.resolveDefault(callServiceList(conf), {}).then(function(res) {
+	return L.resolveDefault(callServiceList(conf), {}).then((res) => {
 		try {
 			return res[conf].instances || {};
 		} catch (e) {}
@@ -24,37 +24,37 @@ function getInstances() {
 }
 
 function getStatus() {
-	return getInstances().then(function(instances) {
-		var promises = [];
-		var status = {};
-		for (var key in instances) {
-			var i = instances[key];
+	return getInstances().then((instances) => {
+		let promises = [];
+		let status = {};
+		for (let key in instances) {
+			let i = instances[key];
 			if (i.running && i.pid) {
-				var f = '/var/run/natmap/' + i.pid + '.json';
-				(function(k) {
-					promises.push(fs.read(f).then(function(res) {
+				let f = '/var/run/natmap/' + i.pid + '.json';
+				((k) => {
+					promises.push(fs.read(f).then((res) => {
 						status[k] = JSON.parse(res);
-					}).catch(function(e){}));
+					}).catch((e) => {}));
 				})(key);
 			}
 		}
-		return Promise.all(promises).then(function() { return status; });
+		return Promise.all(promises).then(() => { return status; });
 	});
 }
 
 return baseclass.extend({
 	title: _('Active NATMap Portmap'),
 
-	load: function() {
+	load() {
 		return Promise.all([
 			getStatus()
 		]);
 	},
 
-	render: function(res) {
-		var status = res[0];
+	render(res) {
+		const status = res[0];
 
-		var table = E('table', { 'class': 'table cbi-section-table', 'id': 'natmap_status_table' }, [
+		let table = E('table', { 'class': 'table cbi-section-table', 'id': 'natmap_status_table' }, [
 			E('tr', { 'class': 'tr table-titles' }, [
 				E('th', { 'class': 'th' }, _('Name')),
 				E('th', { 'class': 'th' }, _('Protocol')),
@@ -66,7 +66,7 @@ return baseclass.extend({
 			])
 		]);
 
-        var rows = [];
+        let rows = [];
 		if (status) {
 			Object.keys(status).forEach(sid => {
 				rows.push([

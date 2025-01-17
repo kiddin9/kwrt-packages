@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
 #
-# Copyright (C) 2024 Anya Lin <hukk1996@gmail.com>
+# Copyright (C) 2024-2025 Anya Lin <hukk1996@gmail.com>
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mihomo
 PKG_VERSION:=1.19.1
-PKG_RELEASE:=13
+PKG_RELEASE:=14
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/metacubex/mihomo/tar.gz/v$(PKG_VERSION)?

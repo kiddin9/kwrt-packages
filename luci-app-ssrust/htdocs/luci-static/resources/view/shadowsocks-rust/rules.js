@@ -14,7 +14,7 @@ function src_dst_option(s /*, ... */) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 		return Promise.all([
 			L.resolveDefault(fs.stat('/usr/share/ssrules'), null),
 			uci.load(conf).then(function() {
@@ -24,7 +24,7 @@ return view.extend({
 			})
 		]);
 	},
-	render: function(stats) {
+	render(stats) {
 		let m, s, o;
 
 		m = new form.Map(conf, _('Redir Rules'),

@@ -48,7 +48,7 @@ function handleAction(action, ev) {
 }
 
 return view.extend({
-	load: function() {
+	load() {
 	return Promise.all([
 		getServiceStatus(),
 		L.resolveDefault(fs.stat('/usr/bin/einat'), null),
@@ -56,7 +56,7 @@ return view.extend({
 	]);
 	},
 
-	poll_status: function(nodes, stat) {
+	poll_status(nodes, stat) {
 		var isRunning = stat[0],
 			view = nodes.querySelector('#service_status');
 
@@ -68,7 +68,7 @@ return view.extend({
 		return;
 	},
 
-	render: function(res) {
+	render(res) {
 		var isRunning = res[0],
 			has_einat = res[1] ? res[1].path : null
 

@@ -8,7 +8,7 @@
 var conf = 'shadowsocks-rust';
 
 return view.extend({
-	render: function() {
+	render() {
 		let m, s, o;
 
 		m = new form.Map(conf, _('Remote Servers'),
@@ -69,7 +69,7 @@ return view.extend({
 
 		return m.render();
 	},
-	addFooter: function() {
+	addFooter() {
 		var p = '#edit=';
 		if (location.hash.indexOf(p) === 0) {
 			var section_id = location.hash.substring(p.length);

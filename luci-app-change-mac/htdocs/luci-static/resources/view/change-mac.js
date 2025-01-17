@@ -19,7 +19,7 @@ return view.extend({
 //		expect: { result: false }
 //	}),
 
-	load: function() {
+	load() {
 	return Promise.all([
 		L.resolveDefault(fs.stat('/usr/bin/rgmac'), {}),
 		uci.load('network'),
@@ -27,48 +27,48 @@ return view.extend({
 	]);
 	},
 
-	handleCommand: function(exec, args) {
-		var buttons = document.querySelectorAll('.diag-action > .cbi-button');
+	handleCommand(exec, args) {
+		let buttons = document.querySelectorAll('.diag-action > .cbi-button');
 
-		for (var i = 0; i < buttons.length; i++)
+		for (let i = 0; i < buttons.length; i++)
 			buttons[i].setAttribute('disabled', 'true');
 
-		return fs.exec(exec, args).then(function(res) {
-			var out = document.querySelector('.command-output');
+		return fs.exec(exec, args).then((res) => {
+			let out = document.querySelector('.command-output');
 				out.style.display = '';
 
 			dom.content(out, [ res.stdout || '', res.stderr || '' ]);
-		}).catch(function(err) {
+		}).catch((err) => {
 			ui.addNotification(null, E('p', [ err ]))
-		}).finally(function() {
-			for (var i = 0; i < buttons.length; i++)
+		}).finally(() => {
+			for (let i = 0; i < buttons.length; i++)
 				buttons[i].removeAttribute('disabled');
 		});
 	},
 
-	handleQueryOUI: function(ev, cmd) {
-		var addr = ev.currentTarget.parentNode.previousSibling.value;
+	handleQueryOUI(ev, cmd) {
+		const addr = ev.currentTarget.parentNode.previousSibling.value;
 
 		return this.handleCommand('rgmac', [ '-e', addr ]);
 	},
 
-	handleQueryVendor: function(ev, cmd) {
+	handleQueryVendor(ev, cmd) {
 
 		return this.handleCommand('rgmac', [ '-lrouter' ]);
 	},
 
-//	handleAction: function(name, action, ev) {
-//		return this.callInitAction(name, action).then(function(success) {
+//	handleAction(name, action, ev) {
+//		return this.callInitAction(name, action).then((success) => {
 //			if (success != true)
 //				throw _('Command failed');
 //
 //			return true;
-//		}).catch(function(e) {
+//		}).catch((e) => {
 //			ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/%s %s" action: %s').format(name, action, e)));
 //		});
 //	},
 
-	handleAction: function(m, action, ev) {
+	handleAction(m, action, ev) {
 		m.save();
 		uci.save();
 		uci.apply();
@@ -78,12 +78,12 @@ return view.extend({
 		return fs.exec('/etc/init.d/change-mac', [action])
 			.then(L.bind(uci.unload, uci, 'change-mac'))
 			.then(L.bind(m.render, m))
-			.catch(function(e) { ui.addNotification(null, E('p', e.message)) });
+			.catch((e) => { ui.addNotification(null, E('p', e.message)) });
 	},
 
-	render: function(res) {
-		var has_rgmac = res[0].path,
-			oui_be_queried = uci.get('change-mac', '@change-mac[0]', 'mac_type_specific') || '74:D0:2B';
+	render(res) {
+		const has_rgmac = res[0].path;
+		const oui_be_queried = uci.get('change-mac', '@change-mac[0]', 'mac_type_specific') || '74:D0:2B';
 
 		let m, s, o;
 
