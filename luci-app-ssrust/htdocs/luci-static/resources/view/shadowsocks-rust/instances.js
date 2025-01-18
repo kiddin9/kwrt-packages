@@ -19,7 +19,7 @@ const callServiceList = rpc.declare({
 });
 
 return view.extend({
-	render(stats) {
+	render: function(stats) {
 		let m, s, o;
 
 		m = new form.Map(conf,
@@ -48,7 +48,7 @@ return view.extend({
 			});
 			var selectEl = E('select', {
 				class: 'cbi-input-select',
-				change(ev) {
+				change: function(ev) {
 					ev.target.parentElement.nextElementSibling.nextElementSibling
 						.toggleAttribute('disabled', ev.target.value === '_dummy');
 				}

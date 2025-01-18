@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2022-2025 muink <https://github.com/muink>
+# Copyright (C) 2022-2024 muink <https://github.com/muink>
 # Copyright (C) 2021 Tano Systems <https://github.com/tano-systems>
 
 include $(TOPDIR)/rules.mk

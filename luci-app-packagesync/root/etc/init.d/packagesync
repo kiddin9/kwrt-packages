@@ -157,7 +157,7 @@ getinfo() {
 validate_section_config "$SCONFIG" define_global
 local rawhtml stables releases targets pkgarchs download_url="${GLOBAL_download_url:-$DOWNLOAD_URL}"
 # Versions
-rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url")"
+rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url/")"
 stables="$( \
 echo "$rawhtml" | sed -n '/Stable Release/,/Development Snapshots/p' \
 | sed -n '/<ul>/,/<\/ul>/p' | grep 'OpenWrt' \
@@ -168,8 +168,12 @@ echo "$rawhtml" | sed -n '/Release Archive/,/\$/p' \
 | sed -n '/<ul>/,/<\/ul>/p' | grep 'OpenWrt' \
 | sed -E "s|.+\breleases/([^/]+)/.+|\1|g" \
 )"
+mkdir -p "${RELEASES_LIST%/*}" 2>/dev/null
+echo -e "Releases:"
+echo -e "$stables\n$releases"
+echo -e "$stables\n$releases" > "$RELEASES_LIST"
 # Targets
-rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url/$URLHREF_RELEASES/$(head -n1 <<< "$stables")/$URLHREF_VERS_TARGETS")"
+rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url/$URLHREF_RELEASES/$(head -n1 <<< "$stables")/$URLHREF_VERS_TARGETS/")"
 targets="$( \
 echo "$rawhtml" \
 | sed -n '/<table>/,/<\/table>/p' | grep '<a href=' \
@@ -185,21 +189,17 @@ for target in $targets; do
 	for subtarget in $subtargets; do sed "s|^|$target/|" <<< "$subtarget"; done
 done \
 )"
+mkdir -p "${TARGETS_LIST%/*}" 2>/dev/null
+echo "Targets:"
+echo "$fulltargets"
+echo "$fulltargets" > "$TARGETS_LIST"
 # Archs
-rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url/$URLHREF_RELEASES/$(head -n1 <<< "$stables")/$URLHREF_VERS_PACKAGES")"
+rawhtml="$(curl --connect-timeout 10 --retry 3 -sSL "$download_url/$URLHREF_RELEASES/$(head -n1 <<< "$stables")/$URLHREF_VERS_PACKAGES/")"
 pkgarchs="$( \
 echo "$rawhtml" \
 | sed -n '/<table>/,/<\/table>/p' | grep '<a href=' \
 | sed -E "s|.+\bhref=\"([^/]+)/.+|\1|g" \
 )"
-mkdir -p "${RELEASES_LIST%/*}" 2>/dev/null
-echo -e "Releases:"
-echo -e "$stables\n$releases"
-echo -e "$stables\n$releases" > "$RELEASES_LIST"
-mkdir -p "${TARGETS_LIST%/*}" 2>/dev/null
-echo "Targets:"
-echo "$fulltargets"
-echo "$fulltargets" > "$TARGETS_LIST"
 mkdir -p "${PKGARCHS_LIST%/*}" 2>/dev/null
 echo "PKGArchs:"
 echo "$pkgarchs"

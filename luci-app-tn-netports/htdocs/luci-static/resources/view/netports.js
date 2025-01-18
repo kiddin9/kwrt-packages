@@ -9,13 +9,13 @@ return view.extend({
 //	handleSave: null,
 //	handleReset: null,
 
-	load() {
+	load: function() {
 		return Promise.all([
 			uci.load('luci_netports')
 		]);	
 	},
 
-	render(data) {
+	render: function(data) {
 
 		let m, s, o;
 

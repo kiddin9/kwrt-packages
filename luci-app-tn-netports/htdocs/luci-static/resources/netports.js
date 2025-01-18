@@ -44,7 +44,7 @@ const svgCollapse =
 	'329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"/></svg>';
 
 var NetPorts = L.Class.extend({
-	NetPorts(inputConfig) {
+	NetPorts: function(inputConfig) {
 		var config = {
 			targetElement: null,
 			tblCellClasses: 'top left',
@@ -198,7 +198,7 @@ var NetPorts = L.Class.extend({
 
 			out_ifname = ntm.length > 1;
 
-			ntm.forEach((n) => {
+			ntm.forEach(function(n) {
 				var ifname = '';
 
 				z += '<div class="ifacebox netports-ifacebox">';
@@ -297,7 +297,7 @@ var NetPorts = L.Class.extend({
 
 			var rows = tableElement.querySelectorAll('.tr.netports-extra');
 
-			rows.forEach((row) => {
+			rows.forEach(function(row) {
 				row.style.display =
 					(config.hModeExpanded) ? "table-row" : "none";
 			});
@@ -445,7 +445,7 @@ var NetPorts = L.Class.extend({
 				/* Vertical mode */
 				var titles = [];
 
-				dataTitles.forEach((t) => {
+				dataTitles.forEach(function(t) {
 					if (t.vModeDisable)
 						return;
 
@@ -504,10 +504,10 @@ var NetPorts = L.Class.extend({
 			var n = 0;
 
 			if (config.mode == NetPortsMode.V) {
-				data.forEach((port) => {
+				data.forEach(function(port) {
 					var tcells = []
 
-					dataTitles.forEach((t) => {
+					dataTitles.forEach(function(t) {
 						if (t.vModeDisable)
 							return;
 
@@ -537,14 +537,14 @@ var NetPorts = L.Class.extend({
 			}
 			else {
 				if (data.length) {
-					dataTitles.forEach((t) => {
+					dataTitles.forEach(function(t) {
 						if (t.hModeDisable)
 							return;
 
 						var tcells = []
 
 						tcells.push(E('td', { 'class': 'td ' + config.tblCellClasses }, t.title))
-						data.forEach((port) => {
+						data.forEach(function(port) {
 							tcells.push(E('td', { 'class': 'td ' + config.tblCellClasses }, t.fmtFunc(port)));
 						});
 

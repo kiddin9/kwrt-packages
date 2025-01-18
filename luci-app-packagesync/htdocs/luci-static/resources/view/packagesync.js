@@ -291,7 +291,7 @@ return view.extend({
 		o.modalonly = true;
 		o.write = function() {};
 		o.onclick = function() {
-			return fs.exec('/etc/init.d/packagesync', ['getinfo'])
+			return fs.exec_direct('/etc/init.d/packagesync', ['getinfo'])
 				.then((res) => { return window.location.reload() })
 				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
