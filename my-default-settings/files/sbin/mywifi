@@ -38,6 +38,7 @@ board_name() {
 			uci -q set wireless.${radio}.channel='6'
 		fi
 			uci -q set wireless.default_${radio}.device="${radio}"
+			SSID_PASSWD="${SSID_PASSWD:-$(uci -q get wireless.default_${radio}.key)}"
 			if [ "${SSID_PASSWD}" ]; then
 				uci -q set wireless.default_${radio}.encryption='psk2'
 				uci -q set wireless.default_${radio}.key="${SSID_PASSWD}"
@@ -56,7 +57,7 @@ done
 	if [[ "$(cat /etc/config/wireless)" ]]; then
 		. /etc/openwrt_release
 		SSID="$(uci -q get wizard.default.wifi_ssid || uci -q get system.@system[0].hostname || echo Kwrt)"
-		SSID_PASSWD="$(uci -q get wizard.default.wifi_key)"
+		SSID_PASSWD="$(uci -q get wizard.default.wifi_key) || "
 		sed -i '/option disabled/d' /etc/config/wireless
 
 		[ "$(uci -q get wireless.radio1.band)" == "5g" ] && uci -q set wireless.radio0.band="2g"
