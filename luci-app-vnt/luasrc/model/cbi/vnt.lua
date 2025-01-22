@@ -215,6 +215,15 @@ disable_stats = s:taboption("privacy",Flag, "disable_stats", translate("启用�
 	translate("记录vnt使用的流量统计信息"))
 disable_stats.rmempty = false
 
+vnt_forward = s:taboption("privacy",MultiValue, "vnt_forward", translate("访问控制"),
+	translate("设置不同网络区域之间的流量允许规则"))
+vnt_forward:value("vntfwlan", translate("允许从虚拟网络 VNT 到局域网 lan 的流量"))
+vnt_forward:value("vntfwwan", translate("允许从虚拟网络 VNT 到广域网 wan 的流量"))
+vnt_forward:value("lanfwvnt", translate("允许从局域网 lan 到虚拟网络 VNT 的流量"))
+vnt_forward:value("wanfwvnt", translate("允许从广域网 wan 到虚拟网络 VNT 的流量"))
+vnt_forward.default = "vntfwlan vntfwwan lanfwvnt"
+vnt_forward.rmempty = true
+
 check = s:taboption("privacy",Flag, "check", translate("通断检测"),
         translate("开启通断检测后，可以指定对端的设备IP，当所有指定的IP都ping不通时将会重启vnt程序"))
 

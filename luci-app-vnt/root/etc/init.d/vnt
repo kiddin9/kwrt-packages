@@ -6,6 +6,7 @@ USE_PROCD=1
 size="$(df -k | awk '/\/overlay$/ {sub(/K$/, "", $4); print $4}')"
 [ -z "$size" ] && size="$(df -k /usr/bin | awk 'NR==2 {print $(NF-2) }')"
 curltest=`which curl`
+user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 
 start_vntcli() {
                 local cfg="$1"
@@ -251,6 +252,7 @@ EOF
 	           else
                       vnt_tcp_port="$client_port"
                     fi
+		    echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 添加端口放行规则，放行TCP端口 $vnt_tcp_port" >>/tmp/vnt-cli.log
 	            uci -q delete firewall.vntcli
 		    uci set firewall.vntcli=rule
 		    uci set firewall.vntcli.name="vntcli"
@@ -261,7 +263,7 @@ EOF
 		    uci set firewall.vntcli.enabled="1"
 	        fi
 		#vnt_ip="$($clibin --info | awk -F 'Virtual ip:' {'print $2'} | tr -d ' \n')"
-                if [ -z "$(uci -q get network.VNT)" ];  then				
+		if [ -z "$(uci -q get network.VNT)" ];  then				
 			uci set network.VNT='interface'
 			if [ -z "$ipaddr" ]; then
 				uci set network.VNT.proto='none'
@@ -272,8 +274,10 @@ EOF
 			fi
                         uci set network.VNT.device=$vnt_tun
                         uci set network.VNT.device=$vnt_tun
+			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 添加网络接口 VNT ，绑定虚拟网卡$vnt_tun " >>/tmp/vnt-cli.log
 		fi
                 if [ -z "$(uci -q get firewall.vntzone)" ];  then
+				echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 添加防火墙规则，开启IP动态伪装 MSS钳制" >>/tmp/vnt-cli.log
 				uci set firewall.vntzone='zone'
 				uci set firewall.vntzone.input='ACCEPT'
 				uci set firewall.vntzone.output='ACCEPT'
@@ -283,21 +287,43 @@ EOF
 				uci set firewall.vntzone.name='VNT'
 				uci set firewall.vntzone.network='VNT'
 		fi
-                uci set firewall.vntfwlan=forwarding
-		uci set firewall.vntfwlan.dest='lan'
-		uci set firewall.vntfwlan.src='VNT'
-                uci set firewall.vntfwwan=forwarding
-		uci set firewall.vntfwwan.dest='wan'
-		uci set firewall.vntfwwan.src='VNT'
-                uci set firewall.lanfwvnt=forwarding
-		uci set firewall.lanfwvnt.dest='VNT'
-		uci set firewall.lanfwvnt.src='lan'
-                uci set firewall.wanfwvnt=forwarding
-		uci set firewall.wanfwvnt.dest='VNT'
-		uci set firewall.wanfwvnt.src='wan'
+		vnt_forward="$(uci -q get vnt.@vnt-cli[0].vnt_forward)"
+		if [ "${vnt_forward//vntfwlan/}" != "$vnt_forward" ]; then
+			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 允许从虚拟网络 VNT 到局域网 lan 的流量" >>/tmp/vnt-cli.log
+			uci set firewall.vntfwlan=forwarding
+			uci set firewall.vntfwlan.dest='lan'
+			uci set firewall.vntfwlan.src='VNT'
+		else
+			uci -q delete firewall.vntfwlan
+		fi
+                if [ "${vnt_forward//vntfwwan/}" != "$vnt_forward" ]; then
+			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 允许从虚拟网络 VNT 到广域网 wan 的流量" >>/tmp/vnt-cli.log
+			uci set firewall.vntfwwan=forwarding
+			uci set firewall.vntfwwan.dest='wan'
+			uci set firewall.vntfwwan.src='VNT'
+		else
+			uci -q delete firewall.vntfwwan
+		fi
+                if [ "${vnt_forward//lanfwvnt/}" != "$vnt_forward" ]; then
+			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 允许从局域网 lan 到虚拟网络 VNT 的流量" >>/tmp/vnt-cli.log
+			uci set firewall.lanfwvnt=forwarding
+			uci set firewall.lanfwvnt.dest='VNT'
+			uci set firewall.lanfwvnt.src='lan'
+		else
+			uci -q delete firewall.lanfwvnt
+		fi
+                if [ "${vnt_forward//wanfwvnt/}" != "$vnt_forward" ]; then
+			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 允许从广域网 wan 到虚拟网络 VNT 的流量" >>/tmp/vnt-cli.log
+			uci set firewall.wanfwvnt=forwarding
+			uci set firewall.wanfwvnt.dest='VNT'
+			uci set firewall.wanfwvnt.src='wan'
+		else
+			uci -q delete firewall.wanfwvnt
+		fi
+                
                 [ -n "$(uci changes network)" ] && uci commit network && /etc/init.d/network reload >/dev/null 2>&1
 		[ -n "$(uci changes firewall)" ] && uci commit firewall && /etc/init.d/firewall reload >/dev/null 2>&1
-		[ "$forward" = "0" ] || sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1
+		#[ "$forward" = "0" ] || sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1
                 [ ! -z "$checkip" ] && check
                 echo `date +%s` > /tmp/vnt_time
                 
@@ -508,7 +534,7 @@ EOF
 		procd_set_param stderr 1
 		procd_set_param respawn
 		procd_close_instance
- 
+ 		echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : 防火墙放行服务器服务端口$server_port" >>/tmp/vnt-cli.log
                 uci -q delete firewall.vnts
 		uci set firewall.vnts=rule
 		uci set firewall.vnts.name="vnts"
@@ -518,6 +544,7 @@ EOF
 		uci set firewall.vnts.dest_port="$server_port"
 		uci set firewall.vnts.enabled="1"
                 if [ "$web" = "1" ] && [ "$web_wan" = "1" ] ; then
+		   echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : 防火墙放行服务器WEB端口$web_port" >>/tmp/vnt-cli.log
                    uci -q delete firewall.vntsweb
 		   uci set firewall.vntsweb=rule
 		   uci set firewall.vntsweb.name="vnts_web"
