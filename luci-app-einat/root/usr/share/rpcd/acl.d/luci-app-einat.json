@@ -6,7 +6,8 @@
 				"/etc/init.d/einat reload": [ "exec" ]
 			},
 			"ubus": {
-				"service": [ "list" ]
+				"service": [ "list" ],
+				"luci.einat": [ "*" ]
 			},
 			"uci": ["einat"]
 		},

@@ -1,0 +1,34 @@
+#!/usr/bin/ucode
+
+'use strict';
+
+import { access, popen } from 'fs';
+
+const methods = {
+	get_features: {
+		call: function() {
+			let features = {};
+
+			const fd = popen('/usr/bin/einat -v');
+			if (fd) {
+				for (let line = fd.read('line'); length(line); line = fd.read('line')) {
+					let ver = match(trim(line), /version: (\S+)/);
+					if (ver)
+						features.version = ver[1];
+					let feats = match(trim(line), /features: (\S+)/);
+					if (feats)
+						features.features = split(feats[1], ',');
+					let build_feats = match(trim(line), /build_features: (\S+)/);
+					if (build_feats)
+						features.build_features = split(build_feats[1], ',');
+				}
+
+				fd.close();
+			}
+
+			return features;
+		}
+	}
+};
+
+return { 'luci.einat': methods };

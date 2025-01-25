@@ -9,8 +9,8 @@
 'require network';
 'require tools.widgets as widgets';
 
-var conf = 'einat';
-var instance = 'einat';
+const conf = 'einat';
+const instance = 'einat';
 
 const callServiceList = rpc.declare({
 	object: 'service',
@@ -25,10 +25,16 @@ const callRcInit = rpc.declare({
 	params: ['name', 'action']
 });
 
+const callGetFeatures = rpc.declare({
+	object: 'luci.einat',
+	method: 'get_features',
+	expect: { '': {} }
+});
+
 function getServiceStatus() {
 	return L.resolveDefault(callServiceList(conf), {})
-		.then(function (res) {
-			var isrunning = false;
+		.then((res) => {
+			let isrunning = false;
 			try {
 				isrunning = res[conf]['instances'][instance]['running'];
 			} catch (e) { }
@@ -52,13 +58,14 @@ return view.extend({
 	return Promise.all([
 		getServiceStatus(),
 		L.resolveDefault(fs.stat('/usr/bin/einat'), null),
+		callGetFeatures(),
 		uci.load('einat')
 	]);
 	},
 
 	poll_status(nodes, stat) {
-		var isRunning = stat[0],
-			view = nodes.querySelector('#service_status');
+		const isRunning = stat[0];
+		let view = nodes.querySelector('#service_status');
 
 		if (isRunning) {
 			view.innerHTML = "<span style=\"color:green;font-weight:bold\">" + instance + " - " + _("SERVER RUNNING") + "</span>";
@@ -69,8 +76,9 @@ return view.extend({
 	},
 
 	render(res) {
-		var isRunning = res[0],
-			has_einat = res[1] ? res[1].path : null
+		const isRunning = res[0];
+		const has_einat = res[1] ? res[1].path : null;
+		const features = res[2];
 
 		let m, s, o;
 
@@ -78,7 +86,7 @@ return view.extend({
 
 		s = m.section(form.NamedSection, '_status');
 		s.anonymous = true;
-		s.render = function (section_id) {
+		s.render = function(section_id) {
 			return E('div', { class: 'cbi-section' }, [
 				E('div', { id: 'service_status' }, _('Collecting data ...'))
 			]);
@@ -113,8 +121,10 @@ return view.extend({
 
 		o = s.option(form.ListValue, 'bpf_loader', _('BPF loading backend'));
 		o.value('', _('Default'));
-		o.value('aya', _('aya'));
-		o.value('libbpf', _('libbpf'));
+		if (features.features.includes('aya'))
+			o.value('aya', _('aya'));
+		if (features.features.includes('libbpf'))
+			o.value('libbpf', _('libbpf'));
 
 		o = s.option(form.Flag, 'nat44', _('NAT44'));
 		o.default = o.disabled;
