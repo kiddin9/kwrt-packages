@@ -1,25 +1,8 @@
-body {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
-  overflow-y: scroll;
+[data-bs-theme=light] .navtop {
+    background: #fff;
+    box-shadow: 0 0 2rem 0 rgba(33,37,41,.1);
 }
-.container-bg {
-  filter: drop-shadow(0.5px 2px 4px black);
-}
-.col-8 {
-  width: 100%;
-}
-.nav {
-  justify-content: center;
-}
-.form-control{
-  font-family: Andale Mono, monospace;
-}
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+
+[data-bs-theme=dark] .navtop {
+    background: #222E3C;
 }

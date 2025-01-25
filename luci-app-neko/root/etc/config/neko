@@ -1,3 +1,4 @@
+
 config neko 'cfg'
 	option enabled '0'
 	option php_server '0'
@@ -5,3 +6,8 @@ config neko 'cfg'
 	option delay '2'
 	option theme 'darkpink.css'
 	option selected_config '/etc/neko/config/nosignal2.yaml'
+	option core_mode 'mihomo'
+	option show_ip '1'
+	option show_isp '1'
+	option show_luci '1'
+

@@ -8,7 +8,7 @@ return view.extend({
 	},
 	render: function() {
 		return E('iframe', {
-			src: window.location.protocol + "//" + window.location.hostname + '/nekoclash/manager.php',
+			src: window.location.protocol + "//" + window.location.hostname + '/nekoclash/configs.php',
 			style: 'width: 100%; min-height: 95vh; border: none; border-radius: 5px; resize: vertical;'
 		});
 	},

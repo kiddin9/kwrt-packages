@@ -1,16 +1,113 @@
 <?php
+/**
+ * MIT License
+ *
+ * Copyright (c) 2024 Nosignal <https://github.com/nosignals>
+ * 
+ * Contributors:
+ * - bobbyunknown <https://github.com/bobbyunknown>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 include './cfg.php';
 $tmpdata = $neko_www."/lib/tmp.txt";
-if(isset($_POST['url'])){
+
+if(isset($_POST['url'])) {
     $dt = $_POST['url'];
+    
+    // Cek apakah ini adalah subscription URL
+    if (strpos($dt, '/sub/') !== false) {
+        // Gunakan curl untuk mengambil konten
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $dt);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $content = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode == 200 && !empty($content)) {
+            // Decode base64
+            $decoded = base64_decode($content);
+            if ($decoded) {
+                // Split multiple configs
+                $configs = explode("\n", $decoded);
+                $outcfg = "";
+                
+                foreach ($configs as $config) {
+                    if (empty(trim($config))) continue;
+                    
+                    $basebuff = parse_url($config);
+                    if (!$basebuff || !isset($basebuff['scheme'])) continue;
+                    
+                    // Buat temporary file untuk setiap config
+                    $tmpfile = $tmpdata . "_" . uniqid();
+                    
+                    if ($basebuff['scheme'] == "vmess") {
+                        parseVmess($basebuff, $tmpfile);
+                    } else if (in_array($basebuff['scheme'], ["vless", "trojan", "ss"])) {
+                        parseUrl($basebuff, $tmpfile);
+                    }
+                    
+                    // Gabungkan hasil
+                    if (file_exists($tmpfile)) {
+                        $outcfg .= shell_exec("cat $tmpfile") . "\n";
+                        shell_exec("rm -f $tmpfile");
+                    }
+                }
+                
+                // Simpan hasil gabungan
+                exec("echo \"$outcfg\" > $tmpdata");
+                echo $outcfg;
+                shell_exec("rm -f $tmpdata");
+                exit;
+            }
+        }
+        
+        echo "ERROR: Cannot fetch subscription content";
+        exit;
+    }
+    
+    // Kode existing untuk single URL
     $basebuff = parse_url($dt);
+    if (!$basebuff || !isset($basebuff['scheme'])) {
+        echo "ERROR: Invalid URL format!";
+        exit;
+    }
+    
     $tmp = $basebuff['scheme']."://";
     if ($basebuff['scheme'] == "vless") parseUrl($basebuff,$tmpdata);
     else if ($basebuff['scheme'] == "vmess") parseVmess($basebuff,$tmpdata);
     else if ($basebuff['scheme'] == "trojan") parseUrl($basebuff,$tmpdata);
     else if ($basebuff['scheme'] == "ss") parseUrl($basebuff,$tmpdata);
     else exec("echo \"ERROR, PLEASE CHECK YOUR URL!\ntrojan://...\nvless://...\nss://...\nvmess://...\nYOU ENTERED : $tmp\" > $tmpdata");
+    
+    if (file_exists($tmpdata)) {
+        $strdata = shell_exec("cat $tmpdata");
+        echo $strdata;
+        shell_exec("rm -f $tmpdata");
+    } else {
+        echo "Error: Could not create output file";
+    }
+    exit;
 }
 function parseVmess($base,$tmpdata){
     $decoded = base64_decode($base['host']);
@@ -28,6 +125,7 @@ function parseVmess($base,$tmpdata){
         $urlparsed['security'] = isset($arrjs['type']) ? $arrjs['type'] : '';
         $urlparsed['sni'] = isset($arrjs['host']) ? $arrjs['host'] : '';
         $urlparsed['tls'] = isset($arrjs['tls']) ? $arrjs['tls'] : '';
+        $urlparsed['serviceName'] = isset($arrjs['path']) ? $arrjs['path'] : '';
         printcfg($urlparsed,$tmpdata);
     } else exec("echo \"DECODING FAILED!\nPLEASE CHECK YOUR URL!\" > $tmpdata");
 }
@@ -210,37 +308,3 @@ function printcfg($data,$tmpdata){
 $strdata = shell_exec("cat $tmpdata");
 shell_exec("rm -f $tmpdata");
 ?>
-<!doctype html>
-<html lang="en" data-bs-theme="<?php echo substr($neko_theme,0,-4) ?>">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>yamlconv - Neko</title>
-    <link rel="icon" href="./assets/img/favicon.png">
-    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./assets/css/custom.css" rel="stylesheet">
-    <link href="./assets/theme/<?php echo $neko_theme ?>" rel="stylesheet">
-    <script type="text/javascript" src="./assets/js/feather.min.js"></script>
-    <script type="text/javascript" src="./assets/js/jquery-2.1.3.min.js"></script>
-  </head>
-  <body class="container-bg">
-    <div class="container text-center justify-content-md-center mb-3"></br>
-        <form action="yamlconv.php" method="post">
-            <div class="container text-center justify-content-md-center">
-                <div class="row justify-content-md-center">
-                    <div class="col input-group mb-3 justify-content-md-center">
-                        <input type="text" class="form-control" name="url" placeholder="Paste Here">
-                        <input class="btn btn-info col-2" type="submit" value="Convert">
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div class="container mb-3">
-            <textarea name="dt" class="form-control" rows="16"><?php echo $strdata ?></textarea>
-        </div>
-        <div>
-            <a>Supported : </br>TROJAN(GFW, WS TLS/NTLS, GRPC)</br>VMESS(WS TLS/NTLS, HTTP, H2, GRPC)</br>VLESS(WS TLS/NTLS, XTLS, GRPC)</br>SS(DIRECT, OBFS, V2RAY/XRAY-PLUGIN)</a>
-        </div>
-    </div>
-  </body>
-</html>

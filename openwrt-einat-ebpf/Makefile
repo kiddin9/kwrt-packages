@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=27
+PKG_RELEASE:=28
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
@@ -18,7 +18,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_UPSTREAM_VERSION).tar.gz
 else
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/EHfive/einat-ebpf.git
-PKG_SOURCE_VERSION:=3681b3487a196bd9c234401b9e012330c5c02b8e
+PKG_SOURCE_VERSION:=c761bd7f20b4b9bf57adb95c1719769d27345639
 PKG_MIRROR_HASH:=skip
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.gz
@@ -119,6 +119,8 @@ RUST_PKG_FEATURES:=$(subst $(space),$(comma),$(strip \
 ))
 
 #export EINAT_BPF_CFLAGS="-I/usr/include/aarch64-linux-gnu"
+
+Build/Compile=$(call Build/Compile/Cargo,,--locked)
 
 define Package/$(PKG_NAME)/conffiles
 /etc/config/einat

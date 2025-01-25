@@ -4,30 +4,47 @@
 START=99
 
 BIN="/etc/neko/core/neko"
+SINGBOX="/etc/neko/core/singbox"
 
 start() {
-	sleep 1 && $BIN -s
+	core_mode=$(uci -q get neko.cfg.core_mode)
+	sleep 1
+	
+	if [ "$core_mode" = "singbox" ]; then
+		$SINGBOX -s
+	else
+		$BIN -s
+	fi
+
 	if [ "$(uci -q get neko.cfg.php_server)" = "1" ]; then
 		$BIN -p
 	fi
 }
 
 restart() {
-	$BIN -r
-}
-
-stop_service() {
-	if [ "$(uci -q get neko.cfg.php_server)" = "1" ]; then
-		$BIN -c
+	core_mode=$(uci -q get neko.cfg.core_mode)
+	
+	if [ "$core_mode" = "singbox" ]; then
+		$SINGBOX -r
 	else
-		$BIN -k
+		$BIN -r
 	fi
 }
 
 stop() {
+	core_mode=$(uci -q get neko.cfg.core_mode)
+	
 	if [ "$(uci -q get neko.cfg.php_server)" = "1" ]; then
 		$BIN -c
 	else
-		$BIN -k
+		if [ "$core_mode" = "singbox" ]; then
+			$SINGBOX -k
+		else
+			$BIN -k
+		fi
 	fi
+}
+
+stop_service() {
+	stop
 }

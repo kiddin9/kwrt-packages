@@ -1,0 +1,168 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "/etc/neko/singbox-cache.db",
+      "store_rdrc": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "/etc/neko/ui/",
+      "secret": "anu"
+    }
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "system-dns",
+        "address": "local",
+        "detour": "direct-out"
+      },
+      {
+        "tag": "Internet-dns",
+        "address": "8.8.8.8",
+        "detour": "Internet"
+      }
+    ],
+    "rules": [
+      {
+        "domain_suffix": [".lan"],
+        "server": "system-dns"
+      }
+    ],
+    "final": "Internet-dns",
+    "strategy": "prefer_ipv4",
+    "independent_cache": true,
+    "reverse_mapping": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "interface_name": "Meta",
+      "stack": "system",
+      "auto_route": true,
+      "strict_route": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "address": [
+        "172.18.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "mtu": 1400
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct-out"
+    },
+    {
+      "type": "block",
+      "tag": "block-out"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "type": "selector",
+      "tag": "Internet",
+      "outbounds": [
+        "direct-out",
+        "Trojan-WS",
+        "Vmess-WS",
+        "Vless-WS"
+      ],
+      "default": "Trojan-WS"
+    },
+    {
+      "type": "trojan",
+      "tag": "Trojan-WS",
+      "server": "CDN-SERVER",
+      "server_port": 443,
+      "password": "IPTUNNELS-PASSWORD",
+      "tls": {
+        "enabled": true,
+        "server_name": "IPTUNNELS-SERVER",
+        "insecure": true,
+        "utls": {
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/trojan-ws",
+        "headers": {
+          "Host": "IPTUNNELS-SERVER"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "Vmess-WS",
+      "server": "CDN-SERVER",
+      "server_port": 443,
+      "uuid": "IPTUNNELS-UUID",
+      "security": "auto",
+      "tls": {
+        "enabled": true,
+        "server_name": "IPTUNNELS-SERVER",
+        "insecure": true,
+        "utls": {
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vmess-ws",
+        "headers": {
+          "Host": "IPTUNNELS-SERVER"
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "Vless-WS",
+      "server": "CDN-SERVER",
+      "server_port": 443,
+      "uuid": "IPTUNNELS-UUID",
+      "tls": {
+        "enabled": true,
+        "server_name": "IPTUNNELS-SERVER",
+        "insecure": true,
+        "utls": {
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vless-ws",
+        "headers": {
+          "Host": "IPTUNNELS-SERVER"
+        }
+      }
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "geosite": [
+          "rule-streaming",
+          "rule-sosmed"
+        ],
+        "outbound": "Internet"
+      }
+    ],
+    "final": "Internet",
+    "auto_detect_interface": true
+  }
+}

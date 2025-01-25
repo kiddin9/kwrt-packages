@@ -1,0 +1,181 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2024 Nosignal <https://github.com/nosignals>
+# 
+# Contributors:
+# - bobbyunknown <https://github.com/bobbyunknown>
+#
+# https://opensource.org/license/mit
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+neko_dir="/etc/neko"
+neko_tmp_dir="$neko_dir/tmp"
+neko_core="$neko_dir/core"
+singbox_bin="/usr/bin/sing-box"
+reload_bin="$neko_dir/core/reload"
+neko_www="/www/nekoclash"
+singbox_config="$neko_dir/config/singbox.json"
+
+tun_device="Meta"
+id="200"
+
+singbox_log="$neko_tmp_dir/singbox_log.txt"
+singbox_pid_path="$neko_tmp_dir/singbox_pid.txt"
+neko_status=`uci -q get neko.cfg.enabled`
+log="$neko_tmp_dir/log.txt"
+
+logs() {
+    local msg="[ `date +%T` ] $1"
+    echo "$msg"
+    if [ -z $2 ]; then
+        echo "$msg" >> $log
+        echo "$msg" >> $singbox_log
+    elif [ $2 -eq 2 ]; then
+        echo "$msg" > $log
+        echo "$msg" > $singbox_log
+    elif [ $2 -eq 3 ]; then
+        echo "$msg" >> $log
+        echo "$msg" >> $singbox_log
+        exit 1
+    fi
+}
+
+singbox_start(){
+    logs "Starting Sing-box" 2
+    
+    if [ ! -f "$singbox_config" ]; then
+        logs "- Error: Config file not found at $singbox_config" 3
+    fi
+
+    mkdir -p /dev/net
+    [ ! -L /dev/net/tun ] && ln -s /dev/tun /dev/net/tun
+    
+    sysctl -w net.ipv4.ip_forward=1
+    sysctl -w net.ipv6.conf.all.forwarding=1
+
+    cp $singbox_config $neko_dir/singbox.json
+    
+    logs "- Setting up TUN mode"
+    ip rule add fwmark ${id} table ${id} 2>/dev/null
+    ip route add default dev ${tun_device} table ${id} 2>/dev/null
+    
+    $neko_core/tun -s >> $log
+    
+    if [ -f $singbox_pid_path ] ; then
+        logs "- Sing-box is Running. Killing PID : `cat $singbox_pid_path`"
+        kill `cat $singbox_pid_path`
+        rm $singbox_pid_path
+        logs "- Retry Starting Sing-box..."
+    fi
+    
+    if [ -f $singbox_bin ] ; then
+        rpid=`pgrep sing-box`
+        if [[ -n $rpid ]] ; then
+            kill $rpid 
+        fi
+        rm -f $singbox_log
+        logs "- Starting Sing-box Service"
+        
+        $singbox_bin run -D $neko_dir -C $neko_dir --disable-color >> $singbox_log 2>&1 &
+        sleep 2
+        singbox_pid=`pgrep sing-box`
+        
+        if [[ -z $singbox_pid ]]; then
+            logs "- Failed to start Sing-box"
+            rm -f $neko_dir/singbox.json
+            exit 1
+        fi
+        
+        sleep 1
+        if ! ip link show ${tun_device} >/dev/null 2>&1; then
+            logs "- TUN interface failed to start"
+            exit 1
+        fi
+        
+        logs "- Sing-box Started. PID : $singbox_pid"
+        echo $singbox_pid > $singbox_pid_path
+        uci set neko.cfg.enabled='1'
+        uci commit neko
+        service neko enable
+        $reload_bin "$neko_version" > /dev/null 2>&1 &
+    else
+        logs "- Sing-box binary not found at $singbox_bin"
+    fi
+    logs "Done"
+}
+
+singbox_stop(){
+    logs "Disable Sing-box" 2
+
+    ip rule del fwmark ${id} table ${id} 2>/dev/null
+    ip route del default dev ${tun_device} table ${id} 2>/dev/null
+
+    logs "- Cleaning up TUN mode"
+    $neko_core/tun -k >> $log
+    
+    if [ -f $singbox_pid_path ] ; then
+        logs "- Killing Sing-box PID : `cat $singbox_pid_path`"
+        logs "- Restarting Firewall"
+        /etc/init.d/firewall restart
+        kill `cat $singbox_pid_path`
+        rm $singbox_pid_path
+        rm -f $neko_dir/singbox.json
+        rpid=`pgrep sing-box`
+        if [[ -n $rpid ]] ; then
+            kill $rpid 
+        fi
+        logs "Sing-box has been Disabled"
+    else
+        logs "Sing-box is not Running"
+    fi
+    uci set neko.cfg.enabled='0'
+    uci commit neko
+    service neko disable
+}
+
+singbox_restart(){
+    logs "Restarting Sing-box" 2
+    singbox_stop
+    sleep 1
+    singbox_start
+    logs "Restarting Sing-box - Done"
+}
+
+while getopts ":skrh" signal ; do
+    case $signal in
+        s)
+            singbox_start
+            ;;
+        k)
+            singbox_stop
+            ;;
+        r)
+            singbox_restart
+            ;;
+        h)
+            echo "Sing-box Control Script"
+            echo "      -s : Start Sing-box"
+            echo "      -k : Kill/Stop Sing-box"
+            echo "      -r : Restart Sing-box"
+            echo "      -h : help (this text)"
+            echo "Please Use ROOT User"
+            ;;
+    esac
+done

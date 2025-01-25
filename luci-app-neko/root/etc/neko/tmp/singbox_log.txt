@@ -1,0 +1,5 @@
+[ 13:44:45 ] Disable Sing-box
+[ 13:44:45 ] - Cleaning up TUN mode
+[ 13:44:45 ] - Killing Sing-box PID : 3735
+[ 13:44:45 ] - Restarting Firewall
+[ 13:44:45 ] Sing-box has been Disabled

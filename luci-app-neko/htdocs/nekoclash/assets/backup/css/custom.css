@@ -1,0 +1,39 @@
+body {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+  overflow-y: scroll;
+}
+.container-bg {
+  filter: drop-shadow(0.5px 2px 4px black);
+}
+.col-8 {
+  width: 100%;
+}
+.nav {
+  justify-content: center;
+}
+.form-control{
+  font-family: Andale Mono, monospace;
+}
+.btn svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+h1 svg {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+

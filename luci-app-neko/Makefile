@@ -6,8 +6,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_MAINTAINER:=nosignal <https://github.com/nosignals/neko>
 PKG_NAME:=luci-app-neko
-PKG_VERSION:=1.2.2-beta
-PKG_RELEASE:=4
+PKG_VERSION:=1.2.3-beta
+PKG_RELEASE:=5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -16,7 +16,7 @@ define Package/$(PKG_NAME)
 	SUBMENU:=3. Applications
 	TITLE:=LuCI support for mihomo
 	PKGARCH:=all
-	DEPENDS:=+kmod-tun +bash +curl +jq +mihomo +php8-fastcgi
+	DEPENDS:=+kmod-tun +bash +curl +jq +mihomo +sing-box +php8 +php8-mod-curl +php8-fastcgi
 endef
 
 define Package/$(PKG_NAME)/description
@@ -60,6 +60,8 @@ define Package/$(PKG_NAME)/postinst
 	if [ -f "/tmp/neko/neko.bak" ]; then
 		cp -rf "/tmp/neko/geoip.metadb" "/etc/neko/geoip.metadb"
 		cp -rf "/tmp/neko/geosite.db" "/etc/neko/geosite.db"
+		cp -rf "/tmp/neko/geoip.dat" "/etc/neko/geoip.dat"
+		cp -rf "/tmp/neko/geosite.dat" "/etc/neko/geosite.dat"
 
 		cp -rf /tmp/neko/config/* "/etc/neko/config/"
 		cp -rf /tmp/neko/proxy_provider/* "/etc/neko/proxy_provider/"

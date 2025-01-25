@@ -1,10 +1,26 @@
 {
 	"luci-app-neko": {
-		"description": "Grant UCI access for luci-app-neko",
+		"description": "Grant access to Neko procedures",
 		"read": {
+			"file": {
+				"/etc/init.d/neko": [ "exec" ],
+				"/etc/neko/tmp/singbox_pid.txt": [ "read", "stat" ],
+				"/etc/neko/tmp/neko_pid.txt": [ "read", "stat" ]
+			},
+			"ubus": {
+				"file": [ "read", "exec" ],
+				"service": [ "list" ]
+			},
 			"uci": [ "neko" ]
 		},
 		"write": {
+			"file": {
+				"/etc/init.d/neko": [ "exec" ]
+			},
+			"ubus": {
+				"file": [ "write", "exec" ],
+				"service": [ "list" ]
+			},
 			"uci": [ "neko" ]
 		}
 	}

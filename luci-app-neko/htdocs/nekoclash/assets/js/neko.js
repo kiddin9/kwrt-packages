@@ -1,37 +1,66 @@
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function () {
     var pth = window.location.pathname;
+    
     if (pth === "/nekoclash/settings.php"){
-        $.get("./lib/log.php?data=neko_ver", function (result) {
-            $('#cliver').html(result);
-        });
-        $.get("./lib/log.php?data=core_ver", function (result) {
-            $('#corever').html(result);
-        });
+        const cliver = document.getElementById('cliver');
+        const corever = document.getElementById('corever');
+        
+        if (cliver && corever) {
+            fetch("./lib/log.php?data=neko_ver")
+                .then(response => response.text())
+                .then(result => {
+                    cliver.innerHTML = result;
+                });
+            fetch("./lib/log.php?data=core_ver")
+                .then(response => response.text())
+                .then(result => {
+                    corever.innerHTML = result;
+                });
+        }
     }
-    else{
-        setInterval(function() {
-            $.get("./lib/log.php?data=neko", function (result) {
-                $('#logs').html(result);
-            });
-            $.get("./lib/log.php?data=bin", function (result) {
-                $('#bin_logs').html(result);
-            });
-            $(document).ready(function () {
-                $.ajaxSetup({ cache: false });
-                var textarea = document.getElementById("logs");
-                textarea.scrollTop = textarea.scrollHeight;
-            });
-        }, 1000);
-        setInterval(function() {
-            $(document).ready(function() {
-                $.ajaxSetup({ cache: false });
-            });
-            $.get("./lib/up.php", function (result) {
-                $('#uptotal').html(result);
-            });
-            $.get("./lib/down.php", function (result) {
-                $('#downtotal').html(result);
-            });
-        }, 1000);
+    else {
+        const logs = document.getElementById("logs");
+        const binLogs = document.getElementById("bin_logs");
+        const uptotal = document.getElementById("uptotal");
+        const downtotal = document.getElementById("downtotal");
+        
+        if (logs || binLogs) {
+            setInterval(function() {
+                if (logs) {
+                    fetch("./lib/log.php?data=neko")
+                        .then(response => response.text())
+                        .then(result => {
+                            logs.innerHTML = result;
+                            logs.scrollTop = logs.scrollHeight;
+                        });
+                }
+                if (binLogs) {
+                    fetch("./lib/log.php?data=bin")
+                        .then(response => response.text())
+                        .then(result => {
+                            binLogs.innerHTML = result;
+                        });
+                }
+            }, 1000);
+        }
+
+        if (uptotal || downtotal) {
+            setInterval(function() {
+                if (uptotal) {
+                    fetch("./lib/up.php")
+                        .then(response => response.text())
+                        .then(result => {
+                            uptotal.innerHTML = result;
+                        });
+                }
+                if (downtotal) {
+                    fetch("./lib/down.php")
+                        .then(response => response.text())
+                        .then(result => {
+                            downtotal.innerHTML = result;
+                        });
+                }
+            }, 1000);
+        }
     }
 });
