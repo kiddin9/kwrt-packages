@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=29
+PKG_RELEASE:=30
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
@@ -71,21 +71,6 @@ else ifeq ($(ARCH),i386)
   CONFIG_EINAT_EBPF_BINDGEN:=y
 else ifeq ($(ARCH),i686)
   CONFIG_EINAT_EBPF_BINDGEN:=y
-else ifeq ($(ARCH),mips)
-  PKG_BUILD_DEPENDS:=
-  Build/Compile:=
-else ifeq ($(ARCH),mipsel)
-  PKG_BUILD_DEPENDS:=
-  Build/Compile:=
-else ifeq ($(ARCH),mips64)
-  PKG_BUILD_DEPENDS:=
-  Build/Compile:=
-else ifeq ($(ARCH),mips64el)
-  PKG_BUILD_DEPENDS:=
-  Build/Compile:=
-else ifeq ($(ARCH),mipsel)
-  PKG_BUILD_DEPENDS:=
-  Build/Compile:=
 endif
 
 define Package/$(PKG_NAME)
