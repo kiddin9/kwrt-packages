@@ -1,5 +1,5 @@
 #!/bin/sh /etc/rc.common
-# Copyright (C) 2023 muink
+# Copyright (C) 2023-2025 muink
 #
 # depends rgmac
 
@@ -101,6 +101,7 @@ start_instance() {
 
 	procd_open_instance "$CONFIG_NAME"
 	procd_set_param command "$PROG" -port 80
+	procd_append_param command --disable-dns-server
 	procd_append_param command -ipv4 "${tun_addr4%/*}" -ipv6 "${tun_addr6%/*}"
 	procd_append_param netdev "br-lan"
 	procd_append_param netdev "$tun_name"
