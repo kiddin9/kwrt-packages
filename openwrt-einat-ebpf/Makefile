@@ -6,9 +6,9 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
-PKG_UPSTREAM_GITHASH:=
+PKG_UPSTREAM_GITHASH:=a82259a97da1cb7e61412ecd8276fc6e7be80cc5
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=32
+PKG_RELEASE:=33
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
@@ -62,16 +62,8 @@ TARGET_PATH_PKG:=$(LLVM_PATH):$(TARGET_PATH_PKG)
 
 # Platform-specific features
 # $(TOPDIR)/feeds/packages/lang/rust/rust-values.mk
-# RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||mips||mipsel||mips64||mips64el||mipsel||powerpc64||riscv64||x86_64)
+# RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||mips||mipsel||mips64||mips64el||powerpc64||riscv64||x86_64)
 EINAT_EBPF_RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||powerpc64||riscv64||x86_64) # Architectures other than x86_64 and aarch64 have not been tested.
-#
-ifeq ($(ARCH),arm)
-  CONFIG_EINAT_EBPF_BINDGEN:=y
-else ifeq ($(ARCH),i386)
-  CONFIG_EINAT_EBPF_BINDGEN:=y
-else ifeq ($(ARCH),i686)
-  CONFIG_EINAT_EBPF_BINDGEN:=y
-endif
 
 define Package/$(PKG_NAME)
   SECTION:=net
@@ -107,12 +99,14 @@ define Package/$(PKG_NAME)/config
 
 		config EINAT_EBPF_BACKEND_LIBBPF
 			bool "Enable libbpf backend"
+			default y if (aarch64 || x86_64)
 			default n
 			help
 			  Add fallback BPF loading backend: "libbpf".
 
 		config EINAT_EBPF_BINDGEN
 			bool "Enable bindgen"
+			default y if (arm || i386 || i686)
 			default n
 			help
 			  Bindgen for libbpf headers, required on 32-bit

@@ -7,7 +7,11 @@ import { access, popen } from 'fs';
 const methods = {
 	get_features: {
 		call: function() {
-			let features = {};
+			let features = {
+				version: null,
+				features: [],
+				build_features: []
+			};
 
 			const fd = popen('/usr/bin/einat -v');
 			if (fd) {

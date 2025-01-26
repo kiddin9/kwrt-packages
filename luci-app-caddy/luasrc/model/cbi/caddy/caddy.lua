@@ -11,13 +11,13 @@ o = s:option(Flag, "enabled", translate("Enabled"))
 o.rmempty = false
 o.default = 0
 
-o = s:option(Button, "btnrm", translate("版本"))
-o.inputtitle = translate("检测更新")
-o.description = translate("点击按钮开始检测更新，上方状态栏显示")
+o = s:option(Button, "btnrm", translate("重启"))
+o.inputtitle = translate("重启")
+o.description = translate("在没有修改参数的情况下快速重新启动一次")
 o.inputstyle = "apply"
 o:depends("enabled", "1")
 o.write = function()
-  os.execute("rm -rf /tmp/caddy*.tag /tmp/caddy*.newtag")
+  os.execute("/etc/init.d/caddy restart")
 end
 
 e=s:option(ListValue,"cmd",translate("启动方式"),

@@ -1,6 +1,6 @@
 diff -rNu a/cmd/caddy/main.go b/cmd/caddy/main.go
---- a/cmd/caddy/main.go	2024-12-31 01:51:55.000000000 +0800
-+++ b/cmd/caddy/main.go	2025-01-08 16:49:38.626639274 +0800
+--- a/cmd/caddy/main.go	2025-01-08 22:43:27.000000000 +0800
++++ b/cmd/caddy/main.go	2025-01-10 23:27:24.294288916 +0800
 @@ -33,6 +33,8 @@
  
  	// plug in Caddy modules here
@@ -11,8 +11,8 @@ diff -rNu a/cmd/caddy/main.go b/cmd/caddy/main.go
  
  func main() {
 diff -rNu a/go.mod b/go.mod
---- a/go.mod	2024-12-31 01:51:55.000000000 +0800
-+++ b/go.mod	2025-01-08 16:50:51.908455686 +0800
+--- a/go.mod	2025-01-08 22:43:27.000000000 +0800
++++ b/go.mod	2025-01-10 23:28:28.420082314 +0800
 @@ -7,6 +7,7 @@
  require (
  	github.com/BurntSushi/toml v1.4.0
@@ -20,7 +20,7 @@ diff -rNu a/go.mod b/go.mod
 +	github.com/aksdb/caddy-cgi/v2 v2.2.5
  	github.com/alecthomas/chroma/v2 v2.14.0
  	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
- 	github.com/caddyserver/certmagic v0.21.5
+ 	github.com/caddyserver/certmagic v0.21.6
 @@ -18,6 +19,7 @@
  	github.com/klauspost/compress v1.17.11
  	github.com/klauspost/cpuid/v2 v2.2.9
@@ -48,8 +48,8 @@ diff -rNu a/go.mod b/go.mod
  	github.com/dlclark/regexp2 v1.11.0 // indirect
  	github.com/felixge/httpsnoop v1.0.4 // indirect
 diff -rNu a/go.sum b/go.sum
---- a/go.sum	2024-12-31 01:51:55.000000000 +0800
-+++ b/go.sum	2025-01-08 16:50:51.908455686 +0800
+--- a/go.sum	2025-01-08 22:43:27.000000000 +0800
++++ b/go.sum	2025-01-10 23:28:28.420082314 +0800
 @@ -42,6 +42,8 @@
  github.com/Microsoft/go-winio v0.6.0/go.mod h1:cTAf44im0RAYeL23bpB+fzCyDH2MJiz2BO69KH/soAE=
  github.com/OneOfOne/xxhash v1.2.2 h1:KMrpdQIwFcEqXDklaen+P1axHaj9BSKzvpUUfnHldSE=
