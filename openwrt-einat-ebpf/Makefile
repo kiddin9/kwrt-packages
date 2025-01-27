@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.5
 PKG_UPSTREAM_GITHASH:=a82259a97da1cb7e61412ecd8276fc6e7be80cc5
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=34
+PKG_RELEASE:=35
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
@@ -106,7 +106,7 @@ define Package/$(PKG_NAME)/config
 
 		config EINAT_EBPF_BINDGEN
 			bool "Enable bindgen"
-			default y if (arm || i386 || i686)
+			default y if !ARCH_64BIT
 			default n
 			help
 			  Bindgen for libbpf headers, required on 32-bit

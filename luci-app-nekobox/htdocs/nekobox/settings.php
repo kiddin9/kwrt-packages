@@ -508,11 +508,12 @@ $razordVersion = getRazordVersion();
                         <option value="v1.11.0-beta.10">v1.11.0-beta.10</option>
                         <option value="v1.11.0-beta.15">v1.11.0-beta.15</option>
                         <option value="v1.11.0-beta.20">v1.11.0-beta.20</option>
+                        <option value="v1.11.0-rc.1">v1.11.0-rc.1</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="manualVersionInput" class="form-label">输入自定义版本</label> 
-                    <input type="text" id="manualVersionInput" class="form-control w-100" value="例如：v1.11.0-beta.12">
+                    <input type="text" id="manualVersionInput" class="form-control w-100" value="v1.11.0-rc.1">
                 </div>
                 <button type="button" class="btn btn-secondary mt-2" onclick="addManualVersion()">添加版本</button>
             </div>
@@ -726,7 +727,7 @@ $razordVersion = getRazordVersion();
           </div>
             <div class="mb-3 form-check">
               <input type="checkbox" class="form-check-input" id="enableSnowEffect" name="enableSnowEffect" <?php echo $enableSnow ? 'checked' : ''; ?>>
-              <label class="form-check-label" for="enableSnowEffect">启用雪花动画（启用会生成动画CSS，禁用必须二次勾选禁用开关，无需保存主题，右上角会提示勾选状态有显示问题清除浏览器缓存）</label>
+              <label class="form-check-label" for="enableSnowEffect">启用雪花动画（Ctrl + F6快捷键启用/禁用）</label>
           </div>
           <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="useBackgroundImage" name="useBackgroundImage">
@@ -827,15 +828,32 @@ $razordVersion = getRazordVersion();
 
 <script>
 document.getElementById('enableSnowEffect').addEventListener('change', function() {
-    var isChecked = this.checked;
+    toggleSnowEffect(this.checked);
+});
+
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.code === 'F6') {
+        var checkbox = document.getElementById('enableSnowEffect');
+        checkbox.checked = !checkbox.checked;  
+        toggleSnowEffect(checkbox.checked);
+
+        var message = checkbox.checked ? '已启用雪花效果' : '已禁用雪花效果';
+        showNotification(message);
+    }
+});
+
+function toggleSnowEffect(isChecked) {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'save_snow_status.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send('enableSnowEffect=' + (isChecked ? '1' : '0'));
-    
     var message = isChecked ? '已启用' : '已禁用';
     console.log(message);
-    
+    showNotification(message);
+}
+
+function showNotification(message) {
     var notification = document.createElement('div');
     notification.style.position = 'fixed';
     notification.style.top = '10px';
@@ -846,13 +864,11 @@ document.getElementById('enableSnowEffect').addEventListener('change', function(
     notification.style.borderRadius = '5px';
     notification.style.zIndex = '9999';
     notification.innerText = message;
-    
     document.body.appendChild(notification);
-    
     setTimeout(function() {
         notification.style.display = 'none';
-    }, 5000);
-});
+    }, 5000); 
+}
 </script>
 
 <div class="modal fade" id="filesModal" tabindex="-1" aria-labelledby="filesModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -1514,11 +1530,11 @@ document.getElementById('checkSingboxButton').addEventListener('click', function
         finalPuernyaVersion = puernyaVersion; 
     }
 
-    if (singBoxVersion && /^v/.test(singBoxVersion) && /alpha|beta/.test(singBoxVersion)) {
+    if (singBoxVersion && /^v/.test(singBoxVersion) && /-.+/.test(singBoxVersion)) {
         finalCompileVersion = singBoxVersion;
     }
 
-    if (singBoxVersion && /alpha|beta/.test(singBoxVersion) && puernyaVersion !== '1.10.0-alpha.29-067c81a7' && !/^v/.test(singBoxVersion)) {
+    if (singBoxVersion && /-.+/.test(singBoxVersion) && puernyaVersion !== '1.10.0-alpha.29-067c81a7' && !/^v/.test(singBoxVersion)) {
         finalPreviewVersion = singBoxVersion;  
     }
 
