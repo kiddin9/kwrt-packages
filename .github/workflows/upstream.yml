@@ -521,6 +521,7 @@ jobs:
         echo "#page>div:first-child{display:none}
         button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
         sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' tailscale/Makefile
+        ) &
         
         sed -i \
           -e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' \
@@ -528,10 +529,8 @@ jobs:
           -e 's/php7/php8/g' \
           -e 's/+docker\( \|$\)/+docker +dockerd /g' \
           -e 's/URL:=@IMMORTALWRT/URL:=https:\/\/mirror2.immortalwrt.org\/sources/g' \
-          */Makefile
-        sed -i \
           -e 's?include .*/luci.mk?include $(TOPDIR)/feeds/luci/luci.mk?' \
-          luci-*/Makefile
+          */Makefile
         ) &
         
         while [[ ! -f /tmp/ok ||  ! -f /tmp/ok2 ]]; do
