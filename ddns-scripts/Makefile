@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ddns-scripts
 PKG_VERSION:=2.8.2
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_LICENSE:=GPL-2.0
 
@@ -146,12 +146,22 @@ endef
 
 define Package/ddns-scripts-dnspod
   $(call Package/ddns-scripts/Default)
-  TITLE:=Extension for DNSPod API
-  DEPENDS:=ddns-scripts +curl +bind-host +openssl-util
+  TITLE:=Extension for dnspod.cn API
+  DEPENDS:=ddns-scripts +curl
 endef
 
 define Package/ddns-scripts-dnspod/description
-  Dynamic DNS Client scripts extension for Tencent Cloud API V3 (require curl)
+  Dynamic DNS Client scripts extension for dnspod.cn API (require curl)
+endef
+
+define Package/ddns-scripts-dnspod-v3
+  $(call Package/ddns-scripts/Default)
+  TITLE:=Extension for dnspod.tencentcloudapi.com (aka: dnspod.cn) API v3
+  DEPENDS:=ddns-scripts +curl +openssl-util
+endef
+
+define Package/ddns-scripts-dnspod-v3/description
+  Dynamic DNS Client scripts extension for dnspod.tencentcloudapi.com API v3 (require curl)
 endef
 
 define Package/ddns-scripts-aliyun
@@ -163,7 +173,6 @@ endef
 define Package/ddns-scripts-aliyun/description
   Dynamic DNS Client scripts extension for aliyun.com API (require curl)
 endef
-
 
 define Package/ddns-scripts-noip
   $(call Package/ddns-scripts/Default)
@@ -394,7 +403,8 @@ define Package/ddns-scripts-services/install
 	rm $(1)/usr/share/ddns/default/freedns.42.pl.json
 	rm $(1)/usr/share/ddns/default/godaddy.com-v1.json
 	rm $(1)/usr/share/ddns/default/digitalocean.com-v2.json
-	rm $(1)/usr/share/ddns/default/dnspod-tencent-cloud.json
+	rm $(1)/usr/share/ddns/default/dnspod.cn.json
+	rm $(1)/usr/share/ddns/default/dnspod.cn-v3.json
 	rm $(1)/usr/share/ddns/default/aliyun.com.json
 	rm $(1)/usr/share/ddns/default/no-ip.com.json
 	rm $(1)/usr/share/ddns/default/bind-nsupdate.json
@@ -539,7 +549,7 @@ define Package/ddns-scripts-dnspod/install
 		$(1)/usr/lib/ddns
 
 	$(INSTALL_DIR) $(1)/usr/share/ddns/default
-	$(INSTALL_DATA) ./files/usr/share/ddns/default/dnspod-tencent-cloud.json \
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/dnspod.cn.json \
 		$(1)/usr/share/ddns/default/
 endef
 
@@ -551,6 +561,23 @@ fi
 exit 0
 endef
 
+define Package/ddns-scripts-dnspod-v3/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_dnspod_cn_v3.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/dnspod.cn-v3.json \
+		$(1)/usr/share/ddns/default/
+endef
+
+define Package/ddns-scripts-dnspod-v3/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
 
 define Package/ddns-scripts-aliyun/install
 	$(INSTALL_DIR) $(1)/usr/lib/ddns
@@ -569,7 +596,6 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 fi
 exit 0
 endef
-
 
 define Package/ddns-scripts-noip/install
 	$(INSTALL_DIR) $(1)/usr/lib/ddns
@@ -790,6 +816,7 @@ $(eval $(call BuildPackage,ddns-scripts-freedns))
 $(eval $(call BuildPackage,ddns-scripts-godaddy))
 $(eval $(call BuildPackage,ddns-scripts-digitalocean))
 $(eval $(call BuildPackage,ddns-scripts-dnspod))
+$(eval $(call BuildPackage,ddns-scripts-dnspod-v3))
 $(eval $(call BuildPackage,ddns-scripts-aliyun))
 $(eval $(call BuildPackage,ddns-scripts-noip))
 $(eval $(call BuildPackage,ddns-scripts-nsupdate))
