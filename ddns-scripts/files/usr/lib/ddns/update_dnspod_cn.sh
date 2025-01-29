@@ -1,255 +1,137 @@
 #!/bin/sh
 
-# author: starsunyzl
-# see https://github.com/starsunyzl/ddns-scripts-dnspod for more details
+# Check inputs
+[ -z "$username" ] && write_log 14 "Configuration error! [User name] cannot be empty"
+[ -z "$password" ] && write_log 14 "Configuration error! [Password] cannot be empty"
 
-. /usr/share/libubox/jshn.sh
+# Check external tools
+[ -n "$CURL_SSL" ] || write_log 13 "Dnspod communication require cURL with SSL support. Please install"
+[ -n "$CURL_PROXY" ] || write_log 13 "cURL: libcurl compiled without Proxy support"
 
-[ -z "$CURL" ] && [ -z "$CURL_SSL" ] && write_log 14 "DNSPod communication require cURL with SSL support. Please install"
-[ -z "$domain" ] && write_log 14 "Service section not configured correctly! Missing 'domain'"
-[ -z "$username" ] && write_log 14 "Service section not configured correctly! Missing SecretId as 'username'"
-[ -z "$password" ] && write_log 14 "Service section not configured correctly! Missing SecretKey as 'password'"
-[ $use_https -eq 0 ] && use_https=1  # force HTTPS
+# Declare variables
+#local __URLBASE __HOST __DOMAIN __TYPE __CMDBASE __POST __POST1 __RECIP __RECID __TTL
+__URLBASE="https://dnsapi.cn"
 
-# split __HOST __DOMAIN from $domain
-# given data:
-# example.com or @example.com for "domain record"
-# host.sub@example.com for a "host record"
-local __HOST="$(printf %s "$domain" | cut -d@ -f1)"
-local __DOMAIN="$(printf %s "$domain" | cut -d@ -f2)"
+# Get host and domain from $domain
+[ "${domain:0:2}" = "@." ] && domain="${domain/./}"      # host
+[ "$domain" = "${domain/@/}" ] && domain="${domain/./@}" # host with no sperator
+__HOST="${domain%%@*}"
+__DOMAIN="${domain#*@}"
+[ -z "$__HOST" -o "$__HOST" = "$__DOMAIN" ] && __HOST=@
 
-# __DOMAIN = the base domain i.e. example.com
-# __HOST   = host.sub if updating a host record or
-# __HOST   = "@" for a domain record
-[ -z "$__HOST" -o "$__HOST" = "$__DOMAIN" ] && __HOST="@"
+# Set record type
+[ $use_ipv6 = 0 ] && __TYPE=A || __TYPE=AAAA
 
-local __SECRET_ID="$username"
-local __SECRET_KEY="$password"
-local __RECORD_ID="$param_enc"
-local __RECORD_TYPE="A"
-[ $use_ipv6 -eq 1 ] && __RECORD_TYPE="AAAA"
-
-sha256() {
-  local __MSG="$1"
-  printf "$__MSG" | openssl sha256 | sed "s/^.* //"
+# Build base command
+build_command() {
+	__CMDBASE="$CURL -Ss"
+	# bind host/IP
+	if [ -n "$bind_network" ]; then
+		local __DEVICE
+		network_get_physdev __DEVICE $bind_network || write_log 13 "Can not detect local device using 'network_get_physdev $bind_network' - Error: '$?'"
+		write_log 7 "Force communication via device '$__DEVICE'"
+		__CMDBASE="$__CMDBASE --interface $__DEVICE"
+	fi
+	# Force IP version
+	if [ $force_ipversion = 1 ]; then
+		[ $use_ipv6 = 0 ] && __CMDBASE="$__CMDBASE -4" || __CMDBASE="$__CMDBASE -6"
+	fi
+	# Set CA
+	if [ $use_https = 1 ]; then
+		if [ "$cacert" = IGNORE ]; then
+			__CMDBASE="$__CMDBASE --insecure"
+		elif [ -f "$cacert" ]; then
+			__CMDBASE="$__CMDBASE --cacert $cacert"
+		elif [ -d "$cacert" ]; then
+			__CMDBASE="$__CMDBASE --capath $cacert"
+		elif [ -n "$cacert" ]; then
+			write_log 14 "No valid certificate(s) found at '$cacert' for HTTPS communication"
+		fi
+	fi
+	# Set if no proxy (might be an error with .wgetrc or env)
+	[ -z "$proxy" ] && __CMDBASE="$__CMDBASE --noproxy '*'"
+	__CMDBASE="$__CMDBASE -d"
 }
 
-hmac_sha256_plainkey() {
-  local __KEY="$1"
-  local __MSG="$2"
-  printf "$__MSG" | openssl sha256 -hmac "$__KEY" | sed "s/^.* //"
-}
-
-hmac_sha256_hexkey() {
-  local __KEY="$1"
-  local __MSG="$2"
-  printf "$__MSG" | openssl sha256 -mac hmac -macopt "hexkey:$__KEY" | sed "s/^.* //"
-}
-
-build_request_param() {
-  # API function name and JSON parameters
-  local __REQUEST_ACTION="$1"
-  local __REQUEST_BODY="$2"
-
-  # __REQUEST_HOST and __REQUEST_CONTENT_TYPE must be lowercase
-  # Generally all APIs under the same __REQUEST_SERVICE have the same __REQUEST_VERSION,
-  # if they are different, you need to put __REQUEST_VERSION in the parameter of this function
-  local __REQUEST_HOST="dnspod.tencentcloudapi.com"
-  local __REQUEST_SERVICE="dnspod"
-  local __REQUEST_VERSION="2021-03-23"
-  local __REQUEST_CONTENT_TYPE="application/json"  # ; charset=utf-8
-  local __REQUEST_DATE="$(date -u +%Y-%m-%d)"
-  local __REQUEST_TIMESTAMP="$(date -u +%s)"
-
-  local __HASHED_REQUEST_PAYLOAD="$(sha256 "$__REQUEST_BODY")"
-  local __CANONICAL_REQUEST="$(cat <<EOF
-POST
-/
-
-content-type:$__REQUEST_CONTENT_TYPE
-host:$__REQUEST_HOST
-
-content-type;host
-$__HASHED_REQUEST_PAYLOAD
-EOF
-)"
-  local __HASHED_CANONICAL_REQUEST="$(sha256 "$__CANONICAL_REQUEST")"
-  local __STRING_TO_SIGN="$(cat <<EOF
-TC3-HMAC-SHA256
-$__REQUEST_TIMESTAMP
-$__REQUEST_DATE/$__REQUEST_SERVICE/tc3_request
-$__HASHED_CANONICAL_REQUEST
-EOF
-)"
-
-  local __SECRET_DATE="$(hmac_sha256_plainkey "TC3$__SECRET_KEY" "$__REQUEST_DATE")"
-  local __SECRET_SERVICE="$(hmac_sha256_hexkey "$__SECRET_DATE" "$__REQUEST_SERVICE")"
-  local __SECRET_SIGNING="$(hmac_sha256_hexkey "$__SECRET_SERVICE" "tc3_request")"
-  local __SIGNATURE="$(hmac_sha256_hexkey "$__SECRET_SIGNING" "$__STRING_TO_SIGN")"
-
-  local __AUTHORIZATION="TC3-HMAC-SHA256 Credential=$__SECRET_ID/$__REQUEST_DATE/$__REQUEST_SERVICE/tc3_request, SignedHeaders=content-type;host, Signature=$__SIGNATURE"
-
-  local __REQUEST_PARAM="-H 'Authorization: $__AUTHORIZATION' -H 'Content-Type: $__REQUEST_CONTENT_TYPE' -H 'Host: $__REQUEST_HOST' -H 'X-TC-Action: $__REQUEST_ACTION' -H 'X-TC-Version: $__REQUEST_VERSION' -H 'X-TC-Timestamp: $__REQUEST_TIMESTAMP' -d '$__REQUEST_BODY'"
-  printf %s "$__REQUEST_PARAM"
-}
-
+# Dnspod API
 dnspod_transfer() {
-  local __URL="$1"
-  local __PARAM="$2"
-  local __ERR=0
-  local __CNT=0  # error counter
-  local __PROG __RUNPROG
+	__CNT=0
+	case "$1" in
+	0) __A="$__CMDBASE '$__POST' $__URLBASE/Record.List" ;;
+	1) __A="$__CMDBASE '$__POST1' $__URLBASE/Record.Create" ;;
+	2) __A="$__CMDBASE '$__POST1&record_id=$__RECID&ttl=$__TTL' $__URLBASE/Record.Modify" ;;
+	esac
 
-  # Use ip_network as default for bind_network if not separately specified
-  [ -z "$bind_network" ] && [ "$ip_source" = "network" ] && [ "$ip_network" ] && bind_network="$ip_network"
-
-  __PROG="$CURL -RsS -o $DATFILE --stderr $ERRFILE"
-  __PROG="$__PROG $__PARAM"
-  # check HTTPS support
-  [ -z "$CURL_SSL" -a $use_https -eq 1 ] && \
-    write_log 13 "cURL: libcurl compiled without https support"
-  # force network/interface-device to use for communication
-  if [ -n "$bind_network" ]; then
-    local __DEVICE
-    network_get_device __DEVICE $bind_network || \
-      write_log 13 "Can not detect local device using 'network_get_device $bind_network' - Error: '$?'"
-    write_log 7 "Force communication via device '$__DEVICE'"
-    __PROG="$__PROG --interface $__DEVICE"
-  fi
-  # force ip version to use
-  if [ $force_ipversion -eq 1 ]; then
-    [ $use_ipv6 -eq 0 ] && __PROG="$__PROG -4" || __PROG="$__PROG -6"  # force IPv4/IPv6
-  fi
-  # set certificate parameters
-  if [ $use_https -eq 1 ]; then
-    if [ "$cacert" = "IGNORE" ]; then  # idea from Ticket #15327 to ignore server cert
-      __PROG="$__PROG --insecure"  # but not empty better to use "IGNORE"
-    elif [ -f "$cacert" ]; then
-      __PROG="$__PROG --cacert $cacert"
-    elif [ -d "$cacert" ]; then
-      __PROG="$__PROG --capath $cacert"
-    elif [ -n "$cacert" ]; then    # it's not a file and not a directory but given
-      write_log 14 "No valid certificate(s) found at '$cacert' for HTTPS communication"
-    fi
-  fi
-  # disable proxy if no set (there might be .wgetrc or .curlrc or wrong environment set)
-  # or check if libcurl compiled with proxy support
-  if [ -z "$proxy" ]; then
-    __PROG="$__PROG --noproxy '*'"
-  elif [ -z "$CURL_PROXY" ]; then
-    # if libcurl has no proxy support and proxy should be used then force ERROR
-    write_log 13 "cURL: libcurl compiled without Proxy support"
-  fi
-
-  __RUNPROG="$__PROG '$__URL'"  # build final command
-  __PROG="cURL"      # reuse for error logging
-
-  while : ; do
-    write_log 7 "#> $__RUNPROG"
-    eval $__RUNPROG      # DO transfer
-    __ERR=$?      # save error code
-    [ $__ERR -eq 0 ] && return 0  # no error leave
-    [ -n "$LUCI_HELPER" ] && return 1  # no retry if called by LuCI helper script
-
-    write_log 3 "$__PROG Error: '$__ERR'"
-    write_log 7 "$(cat $ERRFILE)"    # report error
-
-    [ $VERBOSE -gt 1 ] && {
-      # VERBOSE > 1 then NO retry
-      write_log 4 "Transfer failed - Verbose Mode: $VERBOSE - NO retry on error"
-      return 1
-    }
-
-    __CNT=$(( $__CNT + 1 ))  # increment error counter
-    # if error count > retry_count leave here
-    [ $retry_count -gt 0 -a $__CNT -gt $retry_count ] && \
-      write_log 14 "Transfer failed after $retry_count retries"
-
-    write_log 4 "Transfer failed - retry $__CNT/$retry_count in $RETRY_SECONDS seconds"
-    sleep $RETRY_SECONDS &
-    PID_SLEEP=$!
-    wait $PID_SLEEP  # enable trap-handler
-    PID_SLEEP=0
-  done
-  # we should never come here there must be a programming error
-  write_log 12 "Error in 'dnspod_transfer()' - program coding error"
+	write_log 7 "#> $__A"
+	while ! __TMP=$(eval $__A 2>&1); do
+		write_log 3 "[$__TMP]"
+		if [ $VERBOSE -gt 1 ]; then
+			write_log 4 "Transfer failed - detailed mode: $VERBOSE - Do not try again after an error"
+			return 1
+		fi
+		__CNT=$(($__CNT + 1))
+		[ $retry_count -gt 0 -a $__CNT -gt $retry_count ] && write_log 14 "Transfer failed after $retry_count retries"
+		write_log 4 "Transfer failed - $__CNT Try again in $RETRY_SECONDS seconds"
+		sleep $RETRY_SECONDS &
+		PID_SLEEP=$!
+		wait $PID_SLEEP
+		PID_SLEEP=0
+	done
+	__ERR=$(jsonfilter -s "$__TMP" -e "@.status.code")
+	[ $__ERR = 1 ] && return 0
+	[ $__ERR = 10 ] && [ $1 = 0 ] && return 0
+	__TMP=$(jsonfilter -s "$__TMP" -e "@.status.message")
+	local A="$(date +%H%M%S) ERROR : [$__TMP] - Terminate process"
+	logger -p user.err -t ddns-scripts[$$] $SECTION_ID: ${A:15}
+	printf "%s\n" " $A" >>$LOGFILE
+	exit 1
 }
 
-local __REQUEST_URL="https://dnspod.tencentcloudapi.com"
-local __REQUEST_BODY="{\"Domain\": \"$__DOMAIN\", \"Subdomain\": \"$__HOST\", \"RecordType\": \"$__RECORD_TYPE\"}"
-local __REQUEST_PARAM="$(build_request_param "DescribeRecordList" "$__REQUEST_BODY")"
+# Add record
+add_domain() {
+	dnspod_transfer 1
+	printf "%s\n" " $(date +%H%M%S)       : Record add successfully: [$([ "$__HOST" = @ ] || echo $__HOST.)$__DOMAIN],[IP:$__IP]" >>$LOGFILE
+	return 0
+}
 
-dnspod_transfer "$__REQUEST_URL" "$__REQUEST_PARAM" || return 1
+# Modify record
+update_domain() {
+	dnspod_transfer 2
+	printf "%s\n" " $(date +%H%M%S)       : Record modified successfully: [$([ "$__HOST" = @ ] || echo $__HOST.)$__DOMAIN],[IP:$__IP],[TTL:$__TTL]" >>$LOGFILE
+	return 0
+}
 
-write_log 7 "DescribeRecordList answered:\n$(cat $DATFILE)"
+# Get DNS record
+describe_domain() {
+	ret=0
+	__POST="login_token=$username,$password&format=json&domain=$__DOMAIN&sub_domain=$__HOST"
+	__POST1="$__POST&value=$__IP&record_type=$__TYPE&record_line_id=0"
+	dnspod_transfer 0
+	__TMP=$(jsonfilter -s "$__TMP" -e "@.records[@.type='$__TYPE' && @.line_id='0']")
+	if [ -z "$__TMP" ]; then
+		printf "%s\n" " $(date +%H%M%S)       : Record not exist: [$([ "$__HOST" = @ ] || echo $__HOST.)$__DOMAIN]" >>$LOGFILE
+		ret=1
+	else
+		__RECIP=$(jsonfilter -s "$__TMP" -e "@.value")
+		if [ "$__RECIP" != "$__IP" ]; then
+			__RECID=$(jsonfilter -s "$__TMP" -e "@.id")
+			__TTL=$(jsonfilter -s "$__TMP" -e "@.ttl")
+			printf "%s\n" " $(date +%H%M%S)       : Record needs to be updated: [Record IP:$__RECIP] [Local IP:$__IP]" >>$LOGFILE
+			ret=2
+		fi
+	fi
+}
 
-json_init
-json_load_file $DATFILE
-
-local __ERROR
-json_select Response
-json_get_var __ERROR Error
-[ -n "$__ERROR" ] && return 1
-
-local __LIST_IDX=1
-local __RECORD_ID_TMP __RECORD_VALUE __RECORD_LINE_ID
-if json_is_a RecordList array; then
-  json_select RecordList
-  while json_is_a $__LIST_IDX object; do
-    json_select $__LIST_IDX
-    json_get_var __RECORD_ID_TMP RecordId
-    write_log 7 "RecordId: $__RECORD_ID_TMP"
-
-    json_get_var __RECORD_VALUE Value
-    write_log 7 "RecordValue: $__RECORD_VALUE"
-
-    json_get_var __RECORD_LINE_ID LineId
-    write_log 7 "RecordLineId: $__RECORD_LINE_ID"
-
-    json_select ..
-    __LIST_IDX=$(( __LIST_IDX + 1 ))
-
-    [ -n "$__RECORD_ID" -a "$__RECORD_ID" = "$__RECORD_ID_TMP" ] && break
-  done
+build_command
+describe_domain
+if [ $ret = 1 ]; then
+	sleep 3
+	add_domain
+elif [ $ret = 2 ]; then
+	sleep 3
+	update_domain
+else
+	printf "%s\n" " $(date +%H%M%S)       : Record needs not update: [Record IP:$__RECIP] [Local IP:$__IP]" >>$LOGFILE
 fi
 
-[ -z "$__RECORD_ID_TMP" -o -z "$__RECORD_LINE_ID" ] && {
-  write_log 3 "Failed to get RecordId or RecordLineId"
-  return 1
-}
-
-if [ -z "$__RECORD_ID" ]; then
-  if [ $__LIST_IDX -gt 2 ]; then
-    write_log 3 "Get multiple RecordId, one of which must be configured in the 'param_enc' option"
-    return 1
-  fi
-  __RECORD_ID="$__RECORD_ID_TMP"
-elif [ "$__RECORD_ID" != "$__RECORD_ID_TMP" ]; then
-  write_log 3 "The configured RecordId was not found in the fetched record"
-  return 1
-fi
-
-[ -n "$__RECORD_VALUE" -a "$__RECORD_VALUE" = "$__IP" ] && {
-  write_log 6 "IP is already up to date"
-  return 0
-}
-
-# RecordLineId is a string type
-__REQUEST_BODY="{\"Domain\": \"$__DOMAIN\", \"SubDomain\": \"$__HOST\", \"RecordLine\": \"unused\", \"RecordLineId\": \"$__RECORD_LINE_ID\", \"RecordId\": $__RECORD_ID, \"RecordType\": \"$__RECORD_TYPE\", \"Value\": \"$__IP\"}"
-__REQUEST_PARAM="$(build_request_param "ModifyRecord" "$__REQUEST_BODY")"
-
->$DATFILE
->$ERRFILE
-dnspod_transfer "$__REQUEST_URL" "$__REQUEST_PARAM" || return 1
-
-write_log 7 "ModifyRecord answered:\n$(cat $DATFILE)"
-
-json_init
-json_load_file $DATFILE
-
-json_select Response
-json_get_var __ERROR Error
-[ -n "$__ERROR" ] && return 1
-
-json_get_var __RECORD_ID_TMP RecordId
-[ -n "$__RECORD_ID_TMP" ] && return 0 || return 1
+return 0
