@@ -4,8 +4,8 @@
 		"read": {
 			"ubus": {
 				"luci.antiblock": [
-					"read_urls",
-					"write_urls"
+					"read_domains",
+					"write_domains"
 				]
 			},
 			"uci": [
