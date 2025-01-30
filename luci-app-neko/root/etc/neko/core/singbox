@@ -137,7 +137,7 @@ singbox_stop(){
         kill `cat $singbox_pid_path`
         rm $singbox_pid_path
         rm -f $neko_dir/singbox.json
-        rpid=`pgrep sing-box`
+        rpid=`pgrep sing-box|reload`
         if [[ -n $rpid ]] ; then
             kill $rpid 
         fi

@@ -8,7 +8,7 @@
 . /usr/share/libubox/jshn.sh
 
 read_urls() {
-    file_path="$(uci get antiblock.@antiblock[0].file 2>/dev/null)"
+    file_path="$(uci -q get antiblock.config.file)"
 
     json_init
     if [ -n "$file_path" ]; then
@@ -31,7 +31,7 @@ read_urls() {
 }
 
 write_urls() {
-    file_path="$(uci get antiblock.@antiblock[0].file 2>/dev/null)"
+    file_path="$(uci -q get antiblock.config.file)"
 
     if [ -n "$file_path" ]; then
         if [ -f "$file_path" ]; then
