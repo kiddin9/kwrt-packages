@@ -104,4 +104,4 @@ return view.extend({
     handleSave: null,
     handleSaveApply: null,
     handleReset: null
-})
+});
