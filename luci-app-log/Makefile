@@ -9,6 +9,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=luci-app-log-viewer
 LUCI_TITLE:=Advanced syslog and kernel log (tail, search, etc)
 LUCI_PKGARCH:=all
+#LUCI_PKGARCH:=noarch
 PKG_LICENSE:=MIT
 
 #include $(TOPDIR)/feeds/luci/luci.mk

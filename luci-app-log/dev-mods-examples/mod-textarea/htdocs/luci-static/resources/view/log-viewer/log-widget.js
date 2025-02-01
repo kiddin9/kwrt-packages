@@ -32,7 +32,7 @@ return baseclass.extend({
 			let logTextarea = E('textarea', {
 				'id'        : 'syslog',
 				'class'     : 'cbi-input-textarea',
-				'style'     : 'width:100% !important; margin-bottom:1em; resize:horizontal; font-size:12px; font-family:monospace !important',
+				'style'     : 'width:100% !important; margin-bottom:1em; resize:none; font-size:12px; font-family:monospace !important',
 				'readonly'  : 'readonly',
 				'wrap'      : 'off',
 				'rows'      : this.rowsDefault,
@@ -63,7 +63,7 @@ return baseclass.extend({
 			};
 
 			logTextarea.value = lines;
-			logTextarea.rows  = (logdataArrayLen < this.rowsDefault) ? this.rowsDefault : logdataArrayLen;
+			logTextarea.rows  = ((logdataArrayLen + 1) < this.rowsDefault) ? this.rowsDefault : logdataArrayLen + 1;
 
 			let levelsStatString = '';
 			if((Object.values(this.logLevelsStat).reduce((s,c) => s + c, 0)) > 0) {

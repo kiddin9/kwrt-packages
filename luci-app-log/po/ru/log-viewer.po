@@ -17,6 +17,9 @@ msgstr ""
 msgid "All"
 msgstr "Все"
 
+msgid "All entries"
+msgstr "Все записи"
+
 msgid "Apply"
 msgstr "Применить"
 
@@ -53,12 +56,6 @@ msgstr "Фильтр - рег.выражение"
 msgid "Filter settings"
 msgstr "Настройки фильтра"
 
-msgid "Get all entries"
-msgstr "Все записи"
-
-msgid "Get more entries"
-msgstr "Больше записей"
-
 msgid "Host"
 msgstr "Хост"
 
@@ -94,6 +91,9 @@ msgstr "Сообщение"
 
 msgid "Message filter"
 msgstr "Фильтр сообщений"
+
+msgid "More entries"
+msgstr "Больше записей"
 
 msgid "No entries available..."
 msgstr "Нет доступных записей..."

@@ -7,6 +7,9 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+msgid "All entries"
+msgstr ""
+
 msgid "Apply"
 msgstr ""
 
@@ -43,12 +46,6 @@ msgstr ""
 msgid "Filter settings"
 msgstr ""
 
-msgid "Get all entries"
-msgstr ""
-
-msgid "Get more entries"
-msgstr ""
-
 msgid "Host"
 msgstr ""
 
@@ -83,6 +80,9 @@ msgid "Message"
 msgstr ""
 
 msgid "Message filter"
+msgstr ""
+
+msgid "More entries"
 msgstr ""
 
 msgid "No entries available..."
