@@ -341,7 +341,6 @@ jobs:
         git_clone https://github.com/xptsp/openwrt-ympd
         git_clone https://github.com/xptsp/openwrt-peanut
         git_clone https://github.com/calfeche13/luci-app-public-ip-monitor
-        git_clone https://github.com/miaoermua/luci-app-leigod-acc leigod-acc1 && mvdir leigod-acc1
         git_clone https://github.com/vison-v/luci-app-nginx-proxy
         ) &
         (
