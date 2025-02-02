@@ -7,11 +7,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mkdir($targetDir, 0777, true);
         }
 
-        $allowedFileTypes = ['image/jpeg', 'image/png', 'video/mp4']; 
         $maxFileSize = 1024 * 1024 * 1024; 
 
         $uploadedFiles = [];
         $fileErrors = [];
+
+        function cleanFilename($filename) {
+            $filename = preg_replace('/[^a-zA-Z0-9\-_\.]/', '', $filename); 
+            return $filename; 
+        }
 
         foreach ($_FILES['imageFile']['name'] as $key => $fileName) {
             $fileTmpName = $_FILES['imageFile']['tmp_name'][$key];
@@ -19,18 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileError = $_FILES['imageFile']['error'][$key];
             $fileType = $_FILES['imageFile']['type'][$key];
 
-            if ($fileError === UPLOAD_ERR_OK) {
-                if (!in_array($fileType, $allowedFileTypes)) {
-                    $fileErrors[] = "文件 '$fileName' 类型不允许上传！";
-                    continue;
-                }
+            $cleanFileName = cleanFilename($fileName);
 
+            if ($fileError === UPLOAD_ERR_OK) {
                 if ($fileSize > $maxFileSize) {
                     $fileErrors[] = "文件 '$fileName' 大小超出限制！";
                     continue;
                 }
 
-                $uniqueFileName = uniqid() . '-' . basename($fileName);
+                $uniqueFileName = uniqid() . '-' . basename($cleanFileName);
                 $targetFile = $targetDir . $uniqueFileName;
                 $uploadedFilePath = '/nekobox/assets/Pictures/' . $uniqueFileName;
 
