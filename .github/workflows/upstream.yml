@@ -354,7 +354,7 @@ jobs:
         net/qBittorrent-static net/phtunnel net/headscale \
         net/uugamebooster net/verysync net/vlmcsd net/dnsforwarder net/tcpping net/netatalk net/pgyvpn
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
-        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/zerotier net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
+        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
         net/ariang net/tailscale net/frp libs/libx264 libs/libdvbcsa
         ) &
         (
@@ -366,7 +366,7 @@ jobs:
 
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/sub-web net/dnsproxy net/haproxy net/cdnspeedtest net/vsftpd \
+        net/sub-web net/dnsproxy net/haproxy net/cdnspeedtest net/vsftpd net/zerotier \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/cloudreve net/daed \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server net/speedtest-go \
