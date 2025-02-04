@@ -2,7 +2,9 @@
 
 START=60
 
-EXTRA_COMMANDS="makeconfig makegfwlist health"
+extra_command "makeconfig"
+extra_command "makegfwlist"
+extra_command "health"
 
 CRON_FILE=/etc/crontabs/root
 PID_PATH=/var/run/dnsforwarder
@@ -23,11 +25,11 @@ del_cron()
 	/etc/init.d/cron restart
 }
 
-fixturboacc(){
-    dns=$(uci get turboacc.config.dns_caching 2>/dev/null)
+fixflowoffload(){
+    dns=$(uci get flowoffload.@flow[0].dns 2>/dev/null)
     if [ $dns -eq 1 ];  then
-        uci set turboacc.config.dns_caching=0 && uci commit turboacc
-        /etc/init.d/turboacc restart
+        uci set flowoffload.@flow[0].dns=0 && uci commit flowoffload
+        /etc/init.d/flowoffload restart
     fi
 }
 
@@ -172,7 +174,7 @@ start()
         exit
     fi
     makeconfig
-	fixturboacc
+	fixflowoffload	
     dnsforwarder -f $DNSFORWARDER_CONF -d
 	sleep 10
     mkdir -p ${PID_PATH}

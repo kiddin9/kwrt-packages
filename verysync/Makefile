@@ -1,6 +1,6 @@
 # SPDX-Identifier-License: GPL-3.0-only
 #
-# Copyright (C) 2021 ImmortalWrt.org
+# Copyright (C) 2022 ImmortalWrt.org
 
 include $(TOPDIR)/rules.mk
 
@@ -29,7 +29,7 @@ endif
 
 PKG_NAME:=verysync
 PKG_VERSION:=2.17.0
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-linux-$(PKG_ARCH_VERYSYNC)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dl.verysync.com/releases/v$(PKG_VERSION)/ \
