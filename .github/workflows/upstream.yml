@@ -368,15 +368,15 @@ jobs:
 
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/sub-web net/dnsproxy net/amule net/softethervpn5 net/haproxy net/cdnspeedtest net/vsftpd net/zerotier \
-        net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/cloudreve net/daed \
+        net/sub-web net/amule net/haproxy net/cdnspeedtest net/zerotier \
+        net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
-        net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server net/speedtest-go \
-        net/dns-forwarder net/ipset-lists net/ShadowVPN net/cloudflared net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
-        libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 libs/libtorrent-rasterbar \
-        libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp sound/spotifyd \
-        utils/qt6tools utils/cpulimit utils/sendat utils/exfatprogs utils/filebrowser utils/cups utils/cups-bjnp utils/joker net/udp2raw net/msd_lite \
-        multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl devel/go-rice admin/gotop
+        net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
+        net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
+        libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
+        libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
+        utils/qt6tools utils/cpulimit utils/sendat utils/filebrowser utils/cups utils/cups-bjnp utils/joker \
+        multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl sound/spotifyd devel/go-rice admin/gotop
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
