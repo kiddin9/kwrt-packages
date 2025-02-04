@@ -354,6 +354,7 @@ jobs:
         net/qBittorrent-static net/phtunnel net/headscale \
         net/uugamebooster net/verysync net/vlmcsd net/dnsforwarder net/tcpping net/netatalk net/pgyvpn
         ) &
+        (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
         utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
         net/ariang net/tailscale net/frp libs/libx264 libs/libdvbcsa
