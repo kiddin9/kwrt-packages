@@ -6,7 +6,9 @@
 				"service": [ "list" ]
 			},
 			"file": {
-				"/etc/init.d/wifidogx": [ "exec" ]
+				"/etc/init.d/wifidogx": [ "exec" ],
+				"/usr/bin/wdctlx": [ "exec" ],
+				"/usr/bin/aw-bpfctl": [ "exec" ]
 			},
 			"uci": ["wifidogx"]
 		},

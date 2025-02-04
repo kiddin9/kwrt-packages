@@ -53,8 +53,7 @@ return view.extend({
 		s.tab('basic', _('Basic Settings'));
 		s.tab('gateway', _('Gateway Settings'));
 		s.tab('advanced', _('Advanced Settings'));
-		s.tab('rule', _('Rule Settings')); 
-		s.tab('status', _('Status'));
+		s.tab('rule', _('Rule Settings'));
 
 		// basic settings
 		o = s.taboption('basic', form.Flag, 'enabled', _('Enable'), _('Enable apfree-wifidog service.'));
@@ -326,71 +325,6 @@ return view.extend({
 				return renderStatus(isRunning);
 			});
 		};
-
-	
-		// add poll to update the status
-		pollData:L.Poll.add(function() {
-			return L.resolveDefault(getServiceStatus()).then(function(isRunning) {
-				var table = document.getElementById('wifidogx-status');
-				if (isRunning) {
-					return fs.exec('/etc/init.d/wifidogx', ['status']).then(function (res) {
-						if (res.code === 0) {
-							var lines = res.stdout.split('\n');
-							var status = {};
-							lines.forEach(function(line) {
-								if (line.startsWith('Version:')) {
-									status.version = line.split(':')[1].trim();
-								} else if (line.startsWith('Uptime:')) {
-									status.uptime = line.split(':')[1].trim();
-								} else if (line.startsWith('Internet Connectivity:')) {
-									status.internetConnectivity = line.split(':')[1].trim() === 'yes';
-								} else if (line.startsWith('Auth server reachable:')) {
-									status.authServerReachable = line.split(':')[1].trim() === 'yes';
-								} else if (line.startsWith('Authentication servers:')) {
-									status.authServers = [];
-									var serverLines = lines.slice(lines.indexOf(line) + 1);
-									serverLines.forEach(function(serverLine) {
-										if (serverLine.startsWith('  Host:')) {
-											status.authServers.push(serverLine.split(':')[1].trim());
-										}
-									});
-								}
-							});
-							
-							var trows = [];
-							trows.push([_('Version'), status.version]);
-							trows.push([_('Uptime'), status.uptime]);
-							trows.push([_('Internet Connectivity'), status.internetConnectivity ? 'Yes' : 'No']);
-							trows.push([_('Auth server reachable'), status.authServerReachable ? 'Yes' : 'No']);
-							trows.push([_('Authentication servers'), status.authServers.join('<br>')]);
-
-							cbi_update_table(table, trows, E('em', _('No information available')));
-						}	
-					});
-				} else {
-					cbi_update_table(table, [], E('em', _('No information available')));
-				}
-			});
-		}, 2);
-
-		o = s.taboption('status', form.DummyValue, 'detail');
-		o.rawhtml = true;
-		o.render = function() {
-			// add table to show the detail status of wifidogx
-			var table = E('table', { 'class': 'table' , 'id': 'wifidogx-status'}, [
-				E('tr', { 'class': 'tr table-titles' }, [
-					E('th', { 'class': 'th' }, _('Information')),
-					E('th', { 'class': 'th' }, _('Value')),
-				])
-			]);
-
-			cbi_update_table(table, [], E('em', { 'class': 'spinning' }, _('Collecting data...')))
-
-			// get wifidogx version
-			return E('div', {'class': 'cbi-section cbi-tblsection'}, [
-				E('h3', _('Status')), table]);
-		};
-		this.pollData;
 		
 		s = m.section(form.GridSection, 'group',  _('Group Define'));
 		s.addremove = true;
