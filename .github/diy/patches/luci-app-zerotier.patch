@@ -1,8 +1,0 @@
---- a/luci-app-zerotier/root/etc/uci-defaults/40_luci-zerotier
-+++ b/luci-app-zerotier/root/etc/uci-defaults/40_luci-zerotier
-@@ -1,4 +1,5 @@
- #!/bin/sh
-+grep -q "sample_config" /etc/config/zerotier || cp -f /etc/config/zerotier-opkg /etc/config/zerotier
- 
- uci -q batch <<-EOF >/dev/null
- 	delete ucitrack.@zerotier[-1]
