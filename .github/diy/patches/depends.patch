@@ -138,3 +138,15 @@
 +LUCI_DEPENDS:=+einat-ebpf
  
  LUCI_DESCRIPTION:=eBPF-based Endpoint-Independent NAT
+
+--- a/luci-app-rclone/Makefile
++++ b/luci-app-rclone/Makefile
+@@ -9,7 +9,7 @@ PKG_VERSION:=1.4.1
+ PKG_RELEASE:=4
+ 
+ LUCI_TITLE:=LuCI support for Rclone
+-LUCI_DEPENDS:=+rclone-config \
++LUCI_DEPENDS:=+rclone-config fuse-utils \
+               +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-webui:rclone-webui-react \
+               +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-ng:rclone-ng
+
