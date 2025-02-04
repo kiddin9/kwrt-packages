@@ -56,3 +56,23 @@
  
  	# Remove existing link or folder
  	rm -f $CONFIG_PATH/networks.d/*.conf
+
+--- a/luci-app-zerotier/root/etc/uci-defaults/40_luci-zerotier
++++ b/luci-app-zerotier/root/etc/uci-defaults/40_luci-zerotier
+@@ -1,4 +1,5 @@
+ #!/bin/sh
++grep -q "sample_config" /etc/config/zerotier || cp -f /etc/config/zerotier-opkg /etc/config/zerotier
+ 
+ uci -q batch <<-EOF >/dev/null
+ 	delete ucitrack.@zerotier[-1]
+
+--- a/zerotier/Makefile
++++ b/zerotier/Makefile
+@@ -77,7 +77,6 @@ ifeq ($(CONFIG_ZEROTIER_ENABLE_SELFTEST),y)
+ 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zerotier-selftest $(1)/usr/bin/
+ endif
+ 
+-	$(CP) ./files/* $(1)/
+ endef
+ 
+ $(eval $(call BuildPackage,zerotier))
