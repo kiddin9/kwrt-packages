@@ -519,7 +519,6 @@ jobs:
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-ssr-plus/root/www/luci-static/shadowsocksr/
         echo "#page>div:first-child{display:none}
         button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
-        sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' tailscale/Makefile
         ) &
         
         (
