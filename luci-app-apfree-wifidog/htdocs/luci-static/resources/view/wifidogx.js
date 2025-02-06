@@ -317,14 +317,6 @@ return view.extend({
 		o.multiple = true;
 		o.nocreate = true;
 		o.setGroupType('wildcard');
-
-		o = s.taboption('status', form.DummyValue, '_status');
-		o.rawhtml = true;
-		o.cfgvalue = function() {
-			return getServiceStatus().then(function (isRunning) {
-				return renderStatus(isRunning);
-			});
-		};
 		
 		s = m.section(form.GridSection, 'group',  _('Group Define'));
 		s.addremove = true;
@@ -353,7 +345,7 @@ return view.extend({
 		o.value('1', _('Domain Group'));
 		o.value('2', _('MAC Group'));
 		o.value('3', _('Wildcard Domain Group'));
-		o.defaulValue = '1';
+		o.defaultValue = '1';
 
 		o = s.option(form.DynamicList, 'domain_name', _('Domain Name'), _('The domain name of the group.'));
 		o.depends('g_type', '1');
