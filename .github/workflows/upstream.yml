@@ -280,6 +280,7 @@ jobs:
         git_clone https://github.com/liudf0716/luci-app-kcptun
         git_clone https://github.com/liudf0716/luci-app-apfree-wifidog
         git_clone https://github.com/ilxp/luci-app-ikoolproxy
+        git_clone https://github.com/animegasan/luci-app-droidmodem
         git_clone https://github.com/animegasan/luci-app-droidnet
         git_clone https://github.com/animegasan/luci-app-ipinfo
         git_clone https://github.com/animegasan/luci-app-dnsleaktest
