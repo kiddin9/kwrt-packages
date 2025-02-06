@@ -327,6 +327,7 @@ jobs:
         git_clone https://github.com/danielaskdd/luci-app-smartvpn
         git_clone https://github.com/hequan2017/luci-app-forcedata
         git_clone https://github.com/sbwml/luci-app-openai opai && mvdir opai
+        git_clone https://github.com/AngelaCooljx/luci-theme-material3
         ) &
         (
         git_clone https://github.com/kiddin9/luci-app-syscontrol
