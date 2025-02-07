@@ -11,7 +11,7 @@
 		}
 	},
 	"admin/status/wifidogx": {
-		"title": "Bandwidth Monitor",
+		"title": "Auth User",
 		"order": 2,
 		"action": {
 			"type": "alias",

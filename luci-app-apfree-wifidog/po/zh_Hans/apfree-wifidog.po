@@ -344,3 +344,102 @@ msgstr "网关 IPv4 子网"
 
 msgid "The ipv4 subnet of the gateway."
 msgstr "网关的 IPv4 子网"
+
+#~ msgid "Down. (Bytes / Pkts.)"
+#~ msgstr "下载（字节 / 数据包）"
+
+#~ msgid "Download (Bytes / Packets)"
+#~ msgstr "下载（字节 / 数据包）"
+
+#~ msgid "Up. (Bytes / Pkts.)"
+#~ msgstr "上传（字节 / 数据包）"
+
+#~ msgid "Upload (Bytes / Packets)"
+#~ msgstr "上传（字节 / 数据包）"
+
+msgid "Speed Distribution"
+msgstr "主机速度"
+
+msgid "Download Speed (Bit/s)"
+msgstr "下载速度（位/秒）"
+
+msgid "Upload Speed (Bit/s)"
+msgstr "上传速度（位/秒）"
+
+msgid "Download Speed / Host"
+msgstr "下载速度 / 主机"
+
+msgid "Upload Speed / Host"
+msgstr "上传速度 / 主机"
+
+msgid "Traffic History"
+msgstr "流量统计"
+
+msgid "Network Speed Monitor"
+msgstr "网络速度监控"
+
+msgid "Auth User Speed Monitor"
+msgstr "认证用户网络流速监控"
+
+msgid "<big id=\"speed-host\">0</big> hosts"
+msgstr "主机：<big id=\"speed-host\">0</big>"
+
+msgid "<big id=\"speed-rx-max\">0</big> upload speed"
+msgstr "总上传速度：<big id=\"speed-rx-max\">0</big>"
+
+msgid "<big id=\"speed-tx-max\">0</big> download speed"
+msgstr "总下载速度：<big id=\"speed-tx-max\">0</big>"
+
+msgid "<big id=\"ipv6-speed-host\">0</big> hosts"
+msgstr "主机：<big id=\"ipv6-speed-host\">0</big>"
+
+msgid "<big id=\"ipv6-speed-rx-max\">0</big> upload speed"
+msgstr "总上传速度：<big id=\"ipv6-speed-rx-max\">0</big>"
+
+msgid "<big id=\"ipv6-speed-tx-max\">0</big> download speed"
+msgstr "总下载速度：<big id=\"ipv6-speed-tx-max\">0</big>"
+
+msgid "<big id=\"layer7-speed-most-rx\">0</big> cause the most download"
+msgstr "下载量最大的协议：<big id=\"layer7-speed-most-rx\">0</big>"
+
+msgid "<big id=\"layer7-speed-most-tx\">0</big> cause the most upload"
+msgstr "上传量最大的协议：<big id=\"layer7-speed-most-tx\">0</big>"
+
+msgid "<big id=\"layer7-speed-total\">0</big> different application protocols"
+msgstr "应用层协议计数：<big id=\"layer7-speed-total\">0</big>"
+
+msgid "L7 Protocol Support"
+msgstr "应用层协议支持"
+
+msgid "Initial traffic"
+msgstr "初始流量"
+
+msgid "apfree-wifidog Status"
+msgstr "apfree-wifidog 状态"
+
+msgid "Upload (Bytes)"
+msgstr "上传（字节）"
+
+msgid "Upload (Packets)"
+msgstr "上传（数据包）"
+
+msgid "Download (Bytes)"
+msgstr "下载（字节）"
+
+msgid "Download (Packets)"
+msgstr "下载（数据包）"
+
+msgid "download speed"
+msgstr "下载速度"
+
+msgid "upload speed"
+msgstr "上传速度"
+
+msgid "Display"
+msgstr "主机流速显示"
+
+msgid "Auth User"
+msgstr "认证用户"
+
+msgid "No data recorded yet."
+msgstr "暂无数据"

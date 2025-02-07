@@ -14,8 +14,13 @@ return view.extend({
         // Function to update the status information
         function updateStatus() {
             return fs.exec('/etc/init.d/wifidogx', ['status']).then(function(res) {
-                if (res.code !== 0)
+                if (res.code !== 0 || !res.stdout) {
+                    container.innerHTML = '';
+                    container.appendChild(E('h2', {}, _('apfree-wifidog Status')));
+                    container.appendChild(E('p', {}, _('apfree-wifidog is not running')));
                     return; // error executing command
+                }
+                
                 var lines = res.stdout.split('\n');
                 var status = {};
                 lines.forEach(function(line) {
@@ -39,30 +44,50 @@ return view.extend({
                         }
                     }
                 });
-                // Update container HTML with latest status
+
+                // Create table for status display
                 container.innerHTML = '';
                 container.appendChild(E('h2', {}, _('apfree-wifidog Status')));
-                if (status.version)
-                    container.appendChild(E('div', {}, _('Version: ') + status.version));
-                if (status.uptime)
-                    container.appendChild(E('div', {}, _('Uptime: ') + status.uptime));
-                container.appendChild(E('div', {}, _('Internet Connectivity: ') + (status.internetConnectivity ? _('Yes') : _('No'))));
-                container.appendChild(E('div', {}, _('Auth server reachable: ') + (status.authServerReachable ? _('Yes') : _('No'))));
+                
+                var table = E('table', { 'class': 'table' });
+                
+                // Add table rows
+                var rows = [
+                    [_('Version'), status.version || '-'],
+                    [_('Uptime'), status.uptime || '-'],
+                    [_('Internet Connectivity'), status.internetConnectivity ? _('Yes') : _('No')],
+                    [_('Auth server reachable'), status.authServerReachable ? _('Yes') : _('No')]
+                ];
+
+                rows.forEach(function(row) {
+                    table.appendChild(E('tr', {}, [
+                        E('td', { 'class': 'td left', 'width': '33%' }, [ row[0] ]),
+                        E('td', { 'class': 'td left' }, [ row[1] ])
+                    ]));
+                });
+
+                // Add auth servers if available
                 if (status.authServers && status.authServers.length) {
-                    container.appendChild(E('div', {}, _('Authentication servers:')));
-                    var list = E('ul', {});
-                    status.authServers.forEach(function(srv) {
-                        list.appendChild(E('li', {}, srv));
-                    });
-                    container.appendChild(list);
+                    table.appendChild(E('tr', {}, [
+                        E('td', { 'class': 'td left', 'width': '33%' }, [ _('Authentication servers') ]),
+                        E('td', { 'class': 'td left' }, [
+                            E('ul', { 'class': 'clean-list' }, 
+                                status.authServers.map(function(srv) {
+                                    return E('li', {}, srv);
+                                })
+                            )
+                        ])
+                    ]));
                 }
+
+                container.appendChild(table);
             });
         }
 
         // Poll status every 5 seconds
         L.Poll.add(function() {
             return updateStatus();
-        }, 5000);
+        }, 5);
 
         // Initial update
         updateStatus();
