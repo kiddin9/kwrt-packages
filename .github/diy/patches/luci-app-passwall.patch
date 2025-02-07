@@ -283,7 +283,7 @@ index 000000000000..a00fff9c79b3
 +
 +function resize() {
 +    wW = window.innerWidth;
-+    let lw = document.querySelector(".main-left").offsetWidth;
++    let lw = document.querySelector(".main-left")?.offsetWidth ?? 5;
 +    let statusBar = document.querySelector(".status-bar");
 +    statusBar.style.width = (wW - lw) + 'px';
 +    let flagElement = statusBar.querySelector(".flag");
