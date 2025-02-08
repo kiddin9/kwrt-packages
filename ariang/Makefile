@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ariang
 PKG_VERSION:=1.3.9
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).zip
 PKG_SOURCE_URL:=https://github.com/mayswind/AriaNg/releases/download/$(PKG_VERSION)
@@ -33,6 +33,7 @@ Package/ariang-nginx/description = $(Package/ariang/description)
 
 define Package/ariang
   $(Package/ariang/default)
+  DEPENDS += +uhttpd
   TITLE += for uhttpd webserver
 endef
 
