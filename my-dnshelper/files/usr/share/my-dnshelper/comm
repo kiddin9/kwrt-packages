@@ -55,7 +55,15 @@ sharedir="/usr/share/my-dnshelper"
 Logfile="/tmp/my-dnshelper.log"
 D="date +'%Y-%m-%d %H:%M:%S'"
 RPath="/tmp/my-dnshelper.d"
-DPath="/tmp/dnsmasq.d"
+DEFAULT_DNSMASQ_CFGID="$(uci -q show "dhcp.@dnsmasq[0]" | awk 'NR==1 {split($0, conf, /[.=]/); print conf[2]}')"
+if [ -f "/tmp/etc/dnsmasq.conf.$DEFAULT_DNSMASQ_CFGID" ]; then
+	DNSMASQ_CONF_DIR="$(awk -F '=' '/^conf-dir=/ {print $2}' "/tmp/etc/dnsmasq.conf.$DEFAULT_DNSMASQ_CFGID")"
+	if [ -n "$DNSMASQ_CONF_DIR" ]; then
+		DPath=${DNSMASQ_CONF_DIR%*/}
+	else
+		DPath="/tmp/dnsmasq.d"
+	fi
+fi
 EPath="/etc/my-dnshelper"
 LPath="/var/etc/dnsmasq-my-dnshelper.d"
 TPath="/tmp/dns_tmp"
