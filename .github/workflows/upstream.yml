@@ -507,22 +507,6 @@ jobs:
         bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
         bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
         ) &
-        (
-        #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
-        sed -i 's/ +uhttpd-mod-ubus//' luci-app-packet-capture/Makefile
-        sed -i '/boot()/,+2d' ddns-scripts/files/etc/init.d/ddns
-        sed -i "s/default n/default y/" dockerd/Config.in
-        sed -i "/+uhttpd/d" ariang/Makefile
-        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-webui.ini
-        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-cgi_io.ini
-        sed -i '/limit-as/c\limit-as = 5000' uwsgi/files-luci-support/luci-webui.ini
-        mkdir -p luci-app-passwall/root/www/luci-static/passwall luci-app-passwall2/root/www/luci-static/passwall2 luci-app-ssr-plus/root/www/luci-static/shadowsocksr
-        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall/root/www/luci-static/passwall/
-        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall2/root/www/luci-static/passwall2/
-        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-ssr-plus/root/www/luci-static/shadowsocksr/
-        echo "#page>div:first-child{display:none}
-        button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
-        ) &
         
         (
         sed -i \
@@ -534,7 +518,21 @@ jobs:
           -e 's?include .*/luci.mk?include $(TOPDIR)/feeds/luci/luci.mk?' \
           */Makefile
         ) &
-        
+
+        #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
+        sed -i 's/ +uhttpd-mod-ubus//' luci-app-packet-capture/Makefile
+        sed -i '/boot()/,+2d' ddns-scripts/files/etc/init.d/ddns
+        sed -i "s/default n/default y/" dockerd/Config.in
+        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-webui.ini
+        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-cgi_io.ini
+        sed -i '/limit-as/c\limit-as = 5000' uwsgi/files-luci-support/luci-webui.ini
+        mkdir -p luci-app-passwall/root/www/luci-static/passwall luci-app-passwall2/root/www/luci-static/passwall2 luci-app-ssr-plus/root/www/luci-static/shadowsocksr
+        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall/root/www/luci-static/passwall/
+        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall2/root/www/luci-static/passwall2/
+        cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-ssr-plus/root/www/luci-static/shadowsocksr/
+        echo "#page>div:first-child{display:none}
+        button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
+
         while [[ ! -f /tmp/ok ||  ! -f /tmp/ok2 ]]; do
             echo "wait"
           sleep 1
