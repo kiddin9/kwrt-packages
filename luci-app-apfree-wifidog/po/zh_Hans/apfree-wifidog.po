@@ -384,20 +384,20 @@ msgstr "认证用户网络流速监控"
 msgid "<big id=\"speed-host\">0</big> hosts"
 msgstr "主机：<big id=\"speed-host\">0</big>"
 
-msgid "<big id=\"speed-rx-max\">0</big> upload speed"
-msgstr "总上传速度：<big id=\"speed-rx-max\">0</big>"
+msgid "<big id=\"speed-tx-max\">0</big> upload speed"
+msgstr "总上传速度：<big id=\"speed-tx-max\">0</big>"
 
-msgid "<big id=\"speed-tx-max\">0</big> download speed"
-msgstr "总下载速度：<big id=\"speed-tx-max\">0</big>"
+msgid "<big id=\"speed-rx-max\">0</big> download speed"
+msgstr "总下载速度：<big id=\"speed-rx-max\">0</big>"
 
 msgid "<big id=\"ipv6-speed-host\">0</big> hosts"
 msgstr "主机：<big id=\"ipv6-speed-host\">0</big>"
 
-msgid "<big id=\"ipv6-speed-rx-max\">0</big> upload speed"
-msgstr "总上传速度：<big id=\"ipv6-speed-rx-max\">0</big>"
+msgid "<big id=\"ipv6-speed-tx-max\">0</big> upload speed"
+msgstr "总上传速度：<big id=\"ipv6-speed-tx-max\">0</big>"
 
-msgid "<big id=\"ipv6-speed-tx-max\">0</big> download speed"
-msgstr "总下载速度：<big id=\"ipv6-speed-tx-max\">0</big>"
+msgid "<big id=\"ipv6-speed-rx-max\">0</big> download speed"
+msgstr "总下载速度：<big id=\"ipv6-speed-rx-max\">0</big>"
 
 msgid "<big id=\"layer7-speed-most-rx\">0</big> cause the most download"
 msgstr "下载量最大的协议：<big id=\"layer7-speed-most-rx\">0</big>"
