@@ -18,7 +18,6 @@ DEBUG=0
 LOCK="/var/lock/my-dnshelper.lock"
 SF=$(cd "$(dirname "$0")";pwd)
 EA=`get_cfg_value "enable" "0"`
-AT=`get_cfg_value "app_test"`
 UF=`get_cfg_value "url"`
 UA=`get_cfg_value "allowurl"`
 UH=`get_cfg_value "hostsurl"`
@@ -524,19 +523,6 @@ dnsmasq_rs(){
 rsc_dnsmasq(){
 	local svyes=0
 	dnsmasq_rs
-	[ "$AT" = "1" ] || return 0
-	push_log "Checking DNS..."
-	sh /usr/share/my-dnshelper/testdns
-	local R=$?
-	if [ $R == 1 ];then
-		echo_log "DNS Check ERROR"
-		push_log "DNS Check ERROR. Please check your rules or your system."
-		[ -f $LPath/01.hpsv.conf ] && svyes=1
-		rm -rf $LPath/*
-		[ $svyes -eq 1 -a -s $hpsvconf ] && ln -sf $hpsvconf $LPath/01.hpsv.conf
-		/etc/init.d/dnsmasq restart >/dev/null 2>&1
-	fi
-	push_log "Checking DNS done."
 }
 
 check_dnsmasq(){

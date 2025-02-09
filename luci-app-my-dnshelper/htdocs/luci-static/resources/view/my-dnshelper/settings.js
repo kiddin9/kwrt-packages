@@ -170,10 +170,6 @@ return view.extend({
 		o.rmempty = false;
 		o.default = 'true';
 
-		o = s.option(form.Flag, "app_test", _("Check After Update"));
-		o.rmempty = false;
-		o.default = 'true';
-
 		o = s.option(form.Flag, "dns_check", _("Help to Network Check"));
 		o.rmempty = false;
 		o.default = 'true';
