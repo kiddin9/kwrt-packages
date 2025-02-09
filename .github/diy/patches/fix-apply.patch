@@ -56,16 +56,6 @@
 +      procd_add_reload_trigger "gpoint"
 +}
 
---- a/luci-app-homebridge/files/root/etc/init.d/homebridge
-+++ b/luci-app-homebridge/files/root/etc/init.d/homebridge
-@@ -227,4 +227,7 @@ status(){
- 	fi
- }
- 
-+service_triggers() {
-+      procd_add_reload_trigger "homebridge"
-+}
-
 --- a/luci-app-xupnpd/root/etc/init.d/xupnpd
 +++ b/luci-app-xupnpd/root/etc/init.d/xupnpd
 @@ -19,3 +19,7 @@ start_service() {
@@ -99,8 +89,8 @@
 +      procd_add_reload_trigger "change-mac"
 +}
 
---- a/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
-+++ b/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
+--- a/luci-app-mmdvm/root/etc/init.d/dmrid
++++ b/luci-app-mmdvm/root/etc/init.d/dmrid
 @@ -41,4 +41,8 @@ status() {
      fi
  
