@@ -59,6 +59,10 @@ start_service()
 	procd_close_instance
 }
 
+service_triggers() {
+	procd_add_reload_trigger "phtunnel"
+}
+
 stop_service()
 {
 	echo 'now stop phtunnel'
