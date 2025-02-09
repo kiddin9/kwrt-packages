@@ -47,10 +47,10 @@ getwanif.write = function(self, section)
 	end
 end
 ]]--
-
+--[[
 local apply = luci.http.formvalue("cbi.apply")
 if apply then
 	io.popen("/etc/init.d/sysuh3c restart")
 end
-
+]]--
 return m

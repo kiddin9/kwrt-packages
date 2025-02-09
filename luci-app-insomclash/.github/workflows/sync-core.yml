@@ -1,0 +1,97 @@
+name: Auto Sync Core
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-core:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Get latest release info
+        id: release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const response = await github.rest.repos.getLatestRelease({
+              owner: 'MetaCubeX',
+              repo: 'mihomo'
+            });
+            const assets = response.data.assets;
+            // Ambil versi dari nama file asset pertama
+            const version = assets[0].name.split('-').slice(-1)[0].replace('.gz','');
+            core.setOutput('version', version);
+            // Ambil tanggal rilis
+            const releaseDate = new Date(response.data.published_at);
+            const formattedDate = releaseDate.toISOString().split('T')[0];
+            core.setOutput('date', formattedDate);
+            return response.data;
+
+      - name: Clean existing core files
+        run: |
+          rm -rf core/*
+          mkdir -p core
+
+      - name: Download Linux AMD64 & Compatible Versions
+        run: |
+          # AMD64 Standard
+          curl -L -o core/mihomo-linux-amd64-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-amd64-${{ steps.release.outputs.version }}.gz"
+          
+          # AMD64 Compatible
+          curl -L -o core/mihomo-linux-amd64-compatible-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-amd64-compatible-${{ steps.release.outputs.version }}.gz"
+          
+          # AMD64 Compatible Go120
+          curl -L -o core/mihomo-linux-amd64-compatible-go120-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-amd64-compatible-go120-${{ steps.release.outputs.version }}.gz"
+          
+          # AMD64 Compatible Go122
+          curl -L -o core/mihomo-linux-amd64-compatible-go122-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-amd64-compatible-go122-${{ steps.release.outputs.version }}.gz"
+
+      - name: Download Linux ARM Versions
+        run: |
+          # ARM64
+          curl -L -o core/mihomo-linux-arm64-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-arm64-${{ steps.release.outputs.version }}.gz"
+          
+          # ARMv7
+          curl -L -o core/mihomo-linux-armv7-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-armv7-${{ steps.release.outputs.version }}.gz"
+          
+          # ARMv5
+          curl -L -o core/mihomo-linux-armv5-${{ steps.release.outputs.version }}.gz \
+          "https://github.com/MetaCubeX/mihomo/releases/download/${{ steps.release.outputs.version }}/mihomo-linux-armv5-${{ steps.release.outputs.version }}.gz"
+
+      - name: Create commit message
+        id: commit_msg
+        run: |
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "Sync mihomo core to ${{ steps.release.outputs.version }}
+
+          Auto-sync core files from MetaCubeX/mihomo
+          Release date: ${{ steps.release.outputs.date }}
+          Version: ${{ steps.release.outputs.version }}
+
+          Files updated:
+          - AMD64 (Standard & Compatible)
+          - AMD64 Go120 & Go122
+          - ARM (v5, v7, arm64)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add core/
+          git commit -m "${{ steps.commit_msg.outputs.message }}"
+          git push origin main

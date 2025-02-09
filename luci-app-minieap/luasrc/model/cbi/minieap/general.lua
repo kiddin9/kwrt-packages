@@ -6,10 +6,21 @@ local function is_running(name)
 	end
 end
 
+local function is_online(ipaddr)
+	if ipaddr == "0.0.0.0" or ipaddr == "nil" then
+		return translate("Pinghost not set")
+	end
+	if luci.sys.call("ping -c1 -w1 %s >/dev/null 2>&1" %{ipaddr}) == 0 then
+		return translate("ONLINE")
+	else
+		return translate("NOT ONLINE")
+	end
+end
+
 require("luci.sys")
 
 m = Map("minieap", translate("minieap"))
-m.description = translate("Configure minieap for Ruijie 802.1x Authentication")
+m.description = translate("Configure minieap 802.11x.")
 
 s = m:section(TypedSection, "minieap", translate("Status"))
 s.anonymous = true
@@ -17,6 +28,15 @@ s.anonymous = true
 status = s:option(DummyValue,"_minieap_status", "minieap")
 status.value = "<span id=\"_minieap_status\">%s</span>" %{is_running("minieap")}
 status.rawhtml = true
+
+t = io.popen('uci get minieap.@minieap[0].pinghost')
+netstat = is_online(tostring(t:read("*line")))
+t:close()
+if netstat ~= "" then
+netstatus = s:option(DummyValue,"_network_status", translate("Network Status"))
+netstatus.value = "<span id=\"_network_status\">%s</span>" %{netstat}
+netstatus.rawhtml = true
+end
 
 o = m:section(TypedSection, "minieap", translate("Settings"))
 o.addremove = false
@@ -44,6 +64,19 @@ for k, v in ipairs(luci.sys.net.devices()) do
 	end
 end
 
+pinghost = o:taboption("base", Value, "pinghost", translate("PingHost"))
+pinghost.description = translate("Ping host for drop detection, 0.0.0.0 to turn off this feature.")
+pinghost.default = "0.0.0.0"
+
+pingintval = o:taboption("base", Value, "pingintval", translate("Ping intval"))
+pingintval.description = translate("Interval of each ping. (in second) [default: 30]")
+pingintval.default = "30"
+
+pingcommand = o:taboption("base", Value, "pingcommand", translate("Offline command"))
+pingcommand.description = translate("Run Command when ping failed. [default: minieap -k 1]")
+pingcommand:value("minieap -k 1")
+pingcommand.default = "minieap -k 1"
+
 stage_timeout = o:taboption("advanced", Value, "stage_timeout", translate("Auth Timeout"))
 stage_timeout.description = translate("802.11X auth timeout (in second). [default: 5]")
 stage_timeout.default = "5"
@@ -57,10 +90,10 @@ max_fail.description = translate("Maximum allowed number of failures. [default: 
 max_fail.default = "3"
 
 no_auto_reauth = o:taboption("advanced", ListValue, "no_auto_reauth", translate("Disable auto reauth"))
-no_auto_reauth.description = translate("Disable auto reauth after offline. [default: False]")
+no_auto_reauth.description = translate("Disable auto reauth after offline. [default: True]")
 no_auto_reauth:value(0, translate("False"))
 no_auto_reauth:value(1, translate("True"))
-no_auto_reauth.default = 0
+no_auto_reauth.default = 1
 
 proxy_lan_iface = o:taboption("advanced", Value, "proxy_lan_iface", translate("Proxy LAN's name"))
 proxy_lan_iface.description = translate("Name of LAN interface when use proxy auth. [default: None]")
@@ -88,17 +121,16 @@ plugins = o:taboption("plugins", DynamicList, "module", translate("Plugins list"
 plugins.description = translate("Packets flow through these plug-ins in sequence. Pay attention to the order in the environment where the package plug-in is modified")
 plugins:value("printer", translate("printer: Print length of packets"))
 plugins:value("rjv3", translate('rjv3: Ruijie 802.11X. Support V3 verification algorithm'))
-plugins.default = "rjv3"
 
 heartbeat = o:taboption("ruijie", Value, "heartbeat", translate("Heartbeat interval"))
-heartbeat.description = translate("Interval for sending Heartbeat packets (seconds) [Default: 20]")
-heartbeat.default = "20"
+heartbeat.description = translate("Interval for sending Heartbeat packets (seconds) [Default: 60]")
+heartbeat.default = "60"
 
 eap_bcast_addr = o:taboption("ruijie", ListValue, "eap_bcast_addr", translate("Broadcast address"))
-eap_bcast_addr.description = translate("Broadcast address type when searching for servers [Default: Ruijie private]")
+eap_bcast_addr.description = translate("Broadcast address type when searching for servers [Default: Standard]")
 eap_bcast_addr:value(0, translate("Standard"))
 eap_bcast_addr:value(1, translate("Ruijie private"))
-eap_bcast_addr.default = 1
+eap_bcast_addr.default = 0
 
 dhcp_type = o:taboption("ruijie", ListValue, "dhcp_type", translate("DhcpMode"))
 dhcp_type.description = translate("DHCP method [Default: After certification]")
@@ -117,18 +149,18 @@ service.description = translate("Service From Ruijie Server [Default: internet]"
 service.default = "internet"
 
 version_str = o:taboption("ruijie", Value, "version_str", translate("Version String"))
-version_str.description = translate("Custom version [Default: RG-SU For Linux V1.30]")
-version_str:value("RG-SU For Linux V1.30")
-version_str.default = "RG-SU For Linux V1.30"
+version_str.description = translate("Custom version [Default: RG-SU For Linux V1.0]")
+version_str:value("RG-SU For Linux V1.0")
+version_str.default = "RG-SU For Linux V1.0"
 
 fake_dns1 = o:taboption("ruijie", Value, "fake_dns1", translate("Main DNS server"))
-fake_dns1.description = translate("Custom main DNS server [Default: From System]")
+fake_dns1.description = translate("Custom main DNS server [Default: FromSystem]")
 
 fake_dns2 = o:taboption("ruijie", Value, "fake_dns2", translate("Second DNS server"))
-fake_dns2.description = translate("Custom second DNS server [Default: From System]")
+fake_dns2.description = translate("Custom second DNS server [Default: FromSystem]")
 
 fake_serial = o:taboption("ruijie", Value, "fake_serial", translate("Disk serial"))
-fake_serial.description = translate("Custom disk serial [Default: From boot disk]")
+fake_serial.description = translate("Custom disk serial [Default: From /etc/mtab]")
 
 max_dhcp_count = o:taboption("ruijie", Value, "max_dhcp_count", translate("DHCP try times"))
 max_dhcp_count.description = translate("DHCP try times [Default: 3]")
@@ -137,8 +169,13 @@ max_dhcp_count.default = "3"
 rj_option = o:taboption("ruijie", DynamicList, "rj_option", translate("Custom EAP Options"))
 rj_option.description = translate("Format &lt;type&gt;:&lt;value&gt;[:r]. Add a option type: &lt;type&gt;, value: &lt;value&gt;. :r for replace")
 
+if nixio.fs.mkdir("/etc/minieap.conf.d") == true then
+	nixio.fs.symlink("/etc/minieap.conf.d/minieap.conf.utf8", "/etc/minieap.conf")
+end
+
 local apply = luci.http.formvalue("cbi.apply")
 if apply then
+	luci.sys.call("minieap-conver | sort > /etc/minieap.conf.d/minieap.conf.utf8")
 	io.popen("/etc/init.d/minieap restart")
 end
 

@@ -3,17 +3,51 @@ START=93
 
 run_minieap()
 {
+    kill $(cat /var/log/minieap-ping.pid 2>/dev/null) 2>/dev/null
+
     local enable
     local username
     local password
     local nic
+    local pinghost
     config_get_bool enable $1 enable
     config_get username $1 username
     config_get password $1 password
     config_get nic $1 nic
+    config_get pinghost $1 pinghost
 
     if [ $enable ] && [ $username ] && [ $password ] && [ $nic ]; then
-        /bin/ash -c "minieap -k2 -b3"
+        if [ $pinghost ]; then
+            /bin/ash -c "/usr/sbin/minieap-ping &"
+        fi
+        /bin/ash -c "minieap -b3"
+    else
+        /bin/ash -c "minieap -k"
+    fi
+}
+
+restart_minieap()
+{
+    kill $(cat /var/log/minieap-ping.pid 2>/dev/null) 2>/dev/null
+
+    local enable
+    local username
+    local password
+    local nic
+    local pinghost
+    config_get_bool enable $1 enable
+    config_get username $1 username
+    config_get password $1 password
+    config_get nic $1 nic
+    config_get pinghost $1 pinghost
+
+    if [ $enable ] && [ $username ] && [ $password ] && [ $nic ]; then
+        if [ $pinghost ]; then
+            /bin/ash -c "/usr/sbin/minieap-ping &"
+        fi
+        /bin/ash -c "minieap -k 1"
+    else
+        /bin/ash -c "minieap -k"
     fi
 }
 
@@ -25,10 +59,12 @@ start()
 
 stop()
 {
-    /bin/ash -c "killall minieap"
+    kill $(cat /var/log/minieap-ping.pid 2>/dev/null) 2>/dev/null
+    /bin/ash -c "minieap -k"
 }
 
 restart()
 {
-	start
+    config_load minieap
+    config_foreach restart_minieap minieap
 }

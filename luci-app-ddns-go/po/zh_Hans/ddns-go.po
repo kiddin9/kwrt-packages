@@ -1,62 +1,64 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-msgid "DDNS-GO"
-msgstr "DDNS-GO"
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:55
+msgid "A simple and easy-to-use Dynamic DNS client with IPv6 support."
+msgstr "简单好用的动态 DNS 客户端，支持 IPv6。"
 
-msgid "DDNS-GO automatically obtains your public IPv4 or IPv6 address and resolves it to the corresponding domain name service."
-msgstr "DDNS-GO自动获得你的公网 IPv4 或 IPv6 地址,并解析到对应的域名服务."
-
-msgid "Base Setting"
-msgstr "基本设置"
-
-msgid "Running state"
-msgstr "运行状态"
-
-msgid "DDNS-GO Control panel"
-msgstr "DDNS-GO操作台"
-
-msgid "Log"
-msgstr "日志"
-
-msgid "The DDNS-GO service is running."
-msgstr "DDNS-GO服务已启动"
-
-msgid "The DDNS-GO service is not running."
-msgstr "DDNS-GO服务未启动"
-
-msgid "DDNS-GO Status"
-msgstr "DDNS-GO服务状态"
-
-msgid "Please enable the DDNS-GO service"
-msgstr "请将DDNS-GO服务启用"
-
-msgid "Click the new page to open ddns-go"
-msgstr "点击打开ddns-go后台"
-
-msgid "Set the DDNS-TO access port"
-msgstr "设置访问端口"
-
-msgid "</br>For specific usage, see:"
-msgstr "</br>具体使用方法参见："
-
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:68
 msgid "Collecting data..."
-msgstr "收集数据..."
+msgstr "正在收集数据中..."
 
-msgid "update interval"
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:87
+msgid "Custom DNS server"
+msgstr "自定义 DNS 服务器"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:31
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:36
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:54
+#: applications/luci-app-ddns-go/root/usr/share/luci/menu.d/luci-app-ddns-go.json:3
+msgid "DDNS-Go"
+msgstr "DDNS-Go"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:90
+msgid "Disable WebUI"
+msgstr "禁用 WebUI"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:74
+msgid "Enable"
+msgstr "启用"
+
+#: applications/luci-app-ddns-go/root/usr/share/rpcd/acl.d/luci-app-ddns-go.json:3
+msgid "Grant UCI access for luci-app-ddns-go"
+msgstr "授予 luci-app-ddns-go 访问 UCI 配置的权限"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:78
+msgid "Listen address"
+msgstr "监听地址"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:36
+msgid "NOT RUNNING"
+msgstr "未运行"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:34
+msgid "Open Web Interface"
+msgstr "打开 Web 界面"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:31
+msgid "RUNNING"
+msgstr "运行中"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:93
+msgid "Skip certificate verification"
+msgstr "跳过证书检查"
+
+#: applications/luci-app-ddns-go/htdocs/luci-static/resources/view/ddns-go.js:83
+msgid "Update interval"
 msgstr "更新间隔"
-
-msgid "Skip verifying certificates"
-msgstr "跳过验证证书"
-
-msgid "Compare with service provider N times intervals"
-msgstr "间隔N次与服务商比对"
-
-msgid "Specify DNS resolution server"
-msgstr "指定DNS解析服务器"
-
-msgid "Do not start web services"
-msgstr "不启动web服务"
-
-msgid "Delayed Start (seconds)"
-msgstr "开机延时启动（秒）"

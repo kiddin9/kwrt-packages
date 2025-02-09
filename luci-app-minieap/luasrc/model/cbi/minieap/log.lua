@@ -1,7 +1,7 @@
 local fs = require "nixio.fs"
 
 local f = SimpleForm("minieap",
-	translate("minieap log"),
+	translate("minieap LOG"),
 	translate("Log file:/var/log/minieap.log"))
 
 local o = f:field(Value, "minieap_log")

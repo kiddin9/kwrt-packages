@@ -20,10 +20,6 @@ stop_service() {
 	return 0
 }
 
-service_triggers() {
-	procd_add_reload_trigger "sms_tool"
-}
-
 restart_service() {
     stop_service
     start_service
