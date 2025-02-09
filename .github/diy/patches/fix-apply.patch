@@ -102,3 +102,45 @@
 +service_triggers() {
 +      procd_add_reload_trigger "dmrid"
 +}
+
+--- a/pgyvpn/files/etc/init.d/pgyvpn
++++ b/pgyvpn/files/etc/init.d/pgyvpn
+@@ -105,6 +105,10 @@ start_service()
+ 
+ }
+ 
++service_triggers() {
++	procd_add_reload_trigger "pgyvpn"
++}
++
+ stop_service()
+ {
+ 	#remove p2p firewall
+
+--- a/phtunnel/files/etc/init.d/phtunnel
++++ b/phtunnel/files/etc/init.d/phtunnel
+@@ -59,6 +59,10 @@ start_service()
+ 	procd_close_instance
+ }
+ 
++service_triggers() {
++	procd_add_reload_trigger "phtunnel"
++}
++
+ stop_service()
+ {
+ 	echo 'now stop phtunnel'
+
+--- a/luci-app-sms-tool/root/etc/init.d/smsled
++++ b/luci-app-sms-tool/root/etc/init.d/smsled
+@@ -20,6 +20,10 @@ stop_service() {
+ 	return 0
+ }
+ 
++service_triggers() {
++	procd_add_reload_trigger "sms_tool"
++}
++
+ restart_service() {
+     stop_service
+     start_service
