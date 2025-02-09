@@ -105,8 +105,6 @@ jobs:
         git clone https://github.com/fw876/helloworld && rm -rf helloworld/{v2raya,naiveproxy,chinadns-ng} && mvdir helloworld
         git_clone https://github.com/xiaorouji/openwrt-passwall-packages && mvdir openwrt-passwall-packages
         git_clone https://github.com/Lienol/openwrt-package liep
-        git_clone https://github.com/AutoCONFIG/minieap-openwrt
-        git_clone https://github.com/AutoCONFIG/luci-app-minieap
         git_clone https://github.com/rufengsuixing/luci-app-autoipsetadder
         git_clone https://github.com/NateLol/luci-app-beardropper
         git_clone https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
@@ -119,7 +117,6 @@ jobs:
         git_clone https://github.com/sirpdboy/luci-app-autotimeset
         git_clone https://github.com/sirpdboy/luci-app-lucky oplucky && mv -f oplucky/*/ ./ && rm -rf oplucky
         git_clone https://github.com/sirpdboy/luci-app-partexp
-        git_clone https://github.com/sirpdboy/luci-app-ddns-go ddns-go1 && mvdir ddns-go1
         git_clone https://github.com/sirpdboy/netspeedtest && mv -n netspeedtest/luci-app-netspeedtest ./ ; rm -rf netspeedtest
         git_clone https://github.com/sirpdboy/luci-app-parentcontrol
         git_clone https://github.com/sirpdboy/luci-app-poweroffdevice
@@ -132,7 +129,6 @@ jobs:
         git_clone https://github.com/peter-tank/luci-app-autorepeater
         git_clone https://github.com/brvphoenix/luci-app-wrtbwmon wrtbwmon1 && mvdir wrtbwmon1
         git_clone https://github.com/brvphoenix/wrtbwmon wrtbwmon2 && mvdir wrtbwmon2
-        git_clone https://github.com/LGA1150/openwrt-sysuh3c && mvdir openwrt-sysuh3c
         git_clone https://github.com/gdck/luci-app-cupsd cupsd1 && mv -n cupsd1/luci-app-cupsd ./ ; rm -rf cupsd1
         #git_clone https://github.com/QiuSimons/openwrt-mos && mv -n openwrt-mos/{*mosdns,v2ray-geodata} ./ ; rm -rf openwrt-mos
         git_clone https://github.com/sbwml/luci-app-mosdns openwrt-mos && mv -n openwrt-mos/{*mosdns,v2dat} ./; rm -rf openwrt-mos
@@ -146,10 +142,8 @@ jobs:
         git_clone https://github.com/doushang/luci-app-shortcutmenu luci-shortcutmenu && mv -n luci-shortcutmenu/luci-app-shortcutmenu ./ ; rm -rf luci-shortcutmenu
         git_clone https://github.com/messense/aliyundrive-webdav aliyundrive && mv -n aliyundrive/openwrt/* ./ ; rm -rf aliyundrive
         git_clone https://github.com/sbilly/netmaker-openwrt && mv -n netmaker-openwrt/netmaker ./; rm -rf netmaker-openwrt
-        git_clone https://github.com/lisaac/luci-app-dockerman dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman
         ) &
         (
-        git_clone https://github.com/tbc0309/openwrt-netbird && mv -n openwrt-netbird/netbird ./;rm -rf openwrt-netbird
         git_clone https://github.com/ophub/luci-app-amlogic amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic
         git_clone https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest cloudflarespeedtest && mv -n cloudflarespeedtest/applications/* ./;rm -rf cloudflarespeedtest
         git_clone https://github.com/xiaorouji/openwrt-passwall2 passwall2 && mv -n passwall2/luci-app-passwall2 ./;rm -rf passwall2
@@ -162,23 +156,19 @@ jobs:
         git_clone https://github.com/asvow/luci-app-tailscale
         ) &
         (
-        git_clone https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
         git_clone https://github.com/frainzy1477/luci-app-clash
         git_clone https://github.com/peter-tank/luci-app-fullconenat
         git_clone https://github.com/KFERMercer/luci-app-tcpdump
         git_clone https://github.com/ykxVK8yL5L/pikpak-webdav pikpak && mv -n pikpak/openwrt/* ./;rm -rf pikpak
         git_clone https://github.com/jjm2473/openwrt-apps && rm -rf openwrt-apps/{luci-app-cpufreq,luci-app-ota,luci-alias.mk} && sed -i "s/luci-alias.mk/..\/luci.mk/" openwrt-apps/*/Makefile && mvdir openwrt-apps
-        git_clone https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic
         git_clone https://github.com/lwb1978/openwrt-gecoosac && mvdir openwrt-gecoosac
         ) &
         (
-        git_clone https://github.com/tty228/luci-app-wechatpush
         git_clone https://github.com/ZeaKyX/speedtest-web
         git_clone https://github.com/ZeaKyX/luci-app-speedtest-web
-        git_clone https://github.com/jhonathanc/ps3netsrv-openwrt && mv -n ps3netsrv-openwrt/* ./;rm -rf ps3netsrv-openwrt
         git_clone https://github.com/linkease/openwrt-app-actions
         git_clone https://github.com/Wulnut/luci-app-suselogin
-        git_clone https://github.com/lucikap/luci-app-brukamen && mv -n luci-app-brukamen/{luci*,mentohust,iii/*} ./;rm -rf luci-app-brukamen luci-app-autoshell_*.ipk
+        git_clone https://github.com/lucikap/luci-app-brukamen && mv -n luci-app-brukamen/{luci*,iii/*} ./;rm -rf luci-app-brukamen luci-app-autoshell_*.ipk
         git_clone https://github.com/mchome/openwrt-dogcom
         git_clone https://github.com/yichya/luci-app-xray yichya && mv -f yichya/status ./luci-app-xray-status;mv -f yichya/core ./luci-app-xray;rm -rf yichya
         git_clone https://github.com/rafmilecki/luci-app-xjay
@@ -187,9 +177,7 @@ jobs:
         (
         git_clone https://github.com/honwen/luci-app-aliddns
         git_clone https://github.com/peter-tank/luci-app-dnscrypt-proxy2
-        git_clone https://github.com/NateLol/luci-app-oled  lucioled && mv lucioled/luci-app-oled ./;rm -rf lucioled
         git_clone https://github.com/sundaqiang/openwrt-packages && mv -n openwrt-packages/luci-* ./; rm -rf openwrt-packages
-        git_clone https://github.com/vernesong/OpenClash && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash
         git_clone https://github.com/CHN-beta/rkp-ipid
         git_clone https://github.com/Erope/openwrt_nezha nezha && mvdir nezha
         ) &
@@ -210,10 +198,7 @@ jobs:
         git_clone https://github.com/Hyy2001X/AutoBuild-Packages && rm -rf AutoBuild-Packages/luci-app-adguardhome && mvdir AutoBuild-Packages
         git clone https://github.com/papagaye744/luci-theme-design -b js --depth 1
         git_clone https://github.com/lazywalker/mmdvm-openwrt && rm -rf mmdvm-openwrt/misc && mvdir mmdvm-openwrt
-        git_clone https://github.com/4IceG/luci-app-3ginfo-lite 3ginfol && mvdir 3ginfol
-        git_clone https://github.com/4IceG/luci-app-modemband modemb  && mvdir modemb
         git_clone https://github.com/4IceG/luci-app-at-socat at-socat && mvdir at-socat
-        git_clone https://github.com/4IceG/luci-app-sms-tool-js sms-tool-js && mvdir sms-tool-js
         git_clone https://github.com/4IceG/luci-app-easyconfig-transfer easyconfig && mvdir easyconfig
         git_clone https://github.com/4IceG/luci-app-atcommands atcommands && mvdir atcommands
         ) &
@@ -238,11 +223,8 @@ jobs:
         git_clone https://github.com/JiaY-shi/fancontrol fanc && mv fanc/{fancontrol,luci-app-fancontrol} ./;rm -rf fanc
         git_sparse_clone master "https://github.com/coolsnowwolf/lede" package/wwan package/lean/aic8800 && cp -rf wwan/*/* ./ ; rm -Rf wwan
         git_clone https://github.com/Siriling/5G-Modem-Support && rm -rf 5G-Modem-Support/rooter && mvdir 5G-Modem-Support
-        git_clone https://github.com/danchexiaoyang/luci-app-syncthing
         git_clone https://github.com/aa65535/openwrt-dist-luci
         git_clone https://github.com/morytyann/OpenWrt-msd && mvdir OpenWrt-msd
-        git_clone https://github.com/lwz322/luci-app-k3screenctrl
-        git_clone https://github.com/lwz322/k3screenctrl_build k3screenctrl
         ) &
         (
         git_clone https://github.com/muink/luci-app-dnsproxy
@@ -278,7 +260,6 @@ jobs:
         ) &
         (
         git_clone https://github.com/liudf0716/luci-app-yt-dlp
-        git_clone https://github.com/liudf0716/luci-app-kcptun
         git_clone https://github.com/liudf0716/luci-app-apfree-wifidog
         git_clone https://github.com/ilxp/luci-app-ikoolproxy
         git_clone https://github.com/animegasan/luci-app-droidmodem
@@ -303,7 +284,6 @@ jobs:
         git_clone https://github.com/tanghammer/luci-app-switchtools
         ) &
         (
-        git_clone https://github.com/wangqn/luci-app-nut
         git_clone https://github.com/kingyond/luci-app-accesscontrol-plus accesscontrol-plus && mv accesscontrol-plus/luci-app-accesscontrol-plus ./;rm -rf accesscontrol-plus
         git_clone https://github.com/4IceG/luci-app-lite-watchdog lite-watchdog && mv lite-watchdog/luci-app-lite-watchdog ./;rm -rf lite-watchdog
         git_clone https://github.com/Mitsuhaxy/luci-app-miniproxy
@@ -333,7 +313,7 @@ jobs:
         ) &
         (
         git_clone https://github.com/kiddin9/luci-app-syscontrol
-        # git_clone https://github.com/bobbyunknown/luci-app-insomclash
+        git_clone https://github.com/bobbyunknown/luci-app-insomclash
         git_clone https://github.com/muink/luci-app-ssrust
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/kiddin9/luci-app-qosmate
@@ -346,9 +326,6 @@ jobs:
         git_clone https://github.com/vison-v/luci-app-nginx-proxy
         ) &
         (
-        git_sparse_clone master "https://github.com/QiuSimons/OpenWrt-Add" luci-app-irqbalance
-        git_sparse_clone main "https://github.com/lucikap/Brukamen" luci-app-ua2f
-        git_sparse_clone quick-setup-v1 "https://github.com/stokito/luci" modules/luci-mod-setup-wizard
         git_sparse_clone master "https://github.com/lunatickochiya/Matrix-Action-Openwrt" package/kochiya/brlaser package/kochiya/luci-app-banmac-ipt package/kochiya/luci-app-banmac-nft package/kochiya/luci-app-nvr package/kochiya/luci-app-openvpn-server
         ) &
         (
@@ -360,7 +337,7 @@ jobs:
         (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
         utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
-        net/ariang net/tailscale net/frp libs/libx264 libs/libdvbcsa
+        net/ariang net/tailscale net/frp
         ) &
         (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/luci" applications/luci-app-aria2 \
@@ -371,14 +348,15 @@ jobs:
 
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/sub-web net/amule net/haproxy net/cdnspeedtest net/zerotier \
-        net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
+        net/sub-web net/amule net/haproxy net/cdnspeedtest net/zerotier net/minieap net/ddns-go net/sysuh3c \
+        net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite net/netbird \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
         net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
-        libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
+        net/mentohust net/ps3netsrv net/modemband libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
-        utils/qt6tools utils/cpulimit utils/sendat utils/filebrowser utils/cups utils/cups-bjnp utils/joker \
+        utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups utils/cups-bjnp \
+        utils/phicomm-k3screenctrl utils/joker \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl sound/spotifyd devel/go-rice admin/gotop
         ) &
         (
