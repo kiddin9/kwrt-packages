@@ -15,5 +15,5 @@ start() {
 }
 
 stop() {
-    killall -3 k3screenctrl
+    killall k3screenctrl
 }

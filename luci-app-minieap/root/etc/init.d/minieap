@@ -25,7 +25,7 @@ start()
 
 stop()
 {
-    /bin/ash -c "killall -3 minieap"
+    /bin/ash -c "killall minieap"
 }
 
 restart()

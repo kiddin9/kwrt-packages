@@ -8,5 +8,5 @@ start() {
 }
 
 stop() {
-	killall -3 oscam
+	killall oscam
 }

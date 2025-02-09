@@ -39,5 +39,5 @@ start()
 
 stop()
 {
-	killall -3 sysuh3c >/dev/null 2>&1
+	killall sysuh3c >/dev/null 2>&1
 }
