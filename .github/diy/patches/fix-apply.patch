@@ -89,8 +89,8 @@
 +      procd_add_reload_trigger "change-mac"
 +}
 
---- a/luci-app-mmdvm/root/etc/init.d/dmrid
-+++ b/luci-app-mmdvm/root/etc/init.d/dmrid
+--- a/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
++++ b/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
 @@ -41,4 +41,8 @@ status() {
      fi
  
