@@ -192,7 +192,7 @@ jobs:
         git_clone https://github.com/xptsp/luci-mod-listening-ports
         git_clone https://github.com/xptsp/luci-app-squid-adv
         git_clone https://github.com/xptsp/openwrt-bcrypt-tool
-        git_clone https://github.com/kongfl888/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
+        git_clone https://github.com/kiddin9/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
         ) &
         (
         git_clone https://github.com/honwen/luci-app-shadowsocks-rust
