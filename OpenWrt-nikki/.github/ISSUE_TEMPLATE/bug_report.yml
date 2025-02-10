@@ -1,0 +1,86 @@
+name: Bug Report
+description: "Create a report to help us improve"
+title: "[BUG]"
+labels: ["bug"]
+body:
+  - type: checkboxes
+    id: self_check
+    attributes:
+      label: 自查
+      description: 请按以下步骤自查，如自查后问题仍然存在，再继续提交Issue。
+      options:
+        - label: 已经关闭了DNSMASQ的`DNS 重定向`选项（如无此项请忽略）
+          required: false
+        - label: 已停止运行其他代理插件，并确认环境正常
+          required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      description: 请你确认。
+      options:
+        - label: 我已经查看过Wiki，没有找到解决办法
+          required: true
+        - label: 我已经搜索过Issue，没有找到相关问题
+          required: true
+        - label: 我使用的是通过仓库Release或Feed安装的最新版的插件
+          required: true
+        - label: 这确实是插件的问题，而不是核心/面板/订阅转换服务的问题
+          required: true
+        - label: 我提供的信息里不包含公网IPv4地址、公网IPv6地址、MAC、代理节点等敏感信息
+          required: true
+        - label: 我提供了正确的、有效的、可以帮助DEBUG的信息
+          required: true
+        - label: 我明白如果我不遵循模板填写，Issue将会被关闭
+          required: true
+        - label: 我是为了提交Issue才选择了上述选框，我不知道我在做什么
+          required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: BUG 描述
+      description: 在此描述你的BUG
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: 预期行为
+      description: 你认为的预期行为
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 如何复现
+    validations:
+      required: true
+  - type: textarea
+    id: debug
+    attributes:
+      label: 调试信息
+      description: 在路由器上运行仓库里的debug.sh，将生成的debug.md上传到此处（请勿直接贴出内容，上传前请对敏感信息进行处理）
+    validations:
+      required: true
+  - type: textarea
+    id: app_log
+    attributes:
+      label: 插件日志
+      description: 附上你的插件日志
+    validations:
+      required: true
+  - type: textarea
+    id: core_log
+    attributes:
+      label: 核心日志
+      description: 附上你的核心日志（级别至少为info，建议使用debug）
+    validations:
+      required: true
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: 附加信息
+      description: 你觉得对解决此BUG有帮助的其它信息
+    validations:
+      required: false
