@@ -153,7 +153,6 @@ jobs:
         git_clone https://github.com/linkease/istore && mv -n istore/luci/* ./; rm -rf istore
         git_clone https://github.com/linkease/lcdsimple
         git_clone https://github.com/muink/openwrt-fchomo && mvdir openwrt-fchomo
-        git_clone https://github.com/kiddin9/luci-app-mihomo
         git_clone https://github.com/asvow/luci-app-tailscale
         ) &
         (
@@ -163,6 +162,7 @@ jobs:
         git_clone https://github.com/ykxVK8yL5L/pikpak-webdav pikpak && mv -n pikpak/openwrt/* ./;rm -rf pikpak
         git_clone https://github.com/jjm2473/openwrt-apps && rm -rf openwrt-apps/{luci-app-cpufreq,luci-app-ota,luci-alias.mk} && sed -i "s/luci-alias.mk/..\/luci.mk/" openwrt-apps/*/Makefile && mvdir openwrt-apps
         git_clone https://github.com/lwb1978/openwrt-gecoosac && mvdir openwrt-gecoosac
+        git_clone https://github.com/nikkinikki-org/OpenWrt-nikki
         ) &
         (
         git_clone https://github.com/ZeaKyX/speedtest-web
