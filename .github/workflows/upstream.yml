@@ -336,8 +336,8 @@ jobs:
         net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
         net/uugamebooster net/pgyvpn ‎net/ooniprobe net/polipo net/rosy-file-server \
         net/rsyslog net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater \
-        net/vpnbypass net/vpn-policy-routing sound/forked-daapd utils/audit utils/bandwidthd utils/flent-tools \
-        utils/qfirehose utils/slirp4netns utils/tintin
+        net/vpnbypass net/vpn-policy-routing sound/forked-daapd utils/flent-tools \
+        utils/qfirehose utils/slirp4netns
         ) &
         (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
