@@ -331,9 +331,11 @@ jobs:
         ) &
         (
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
-        multimedia/UnblockNeteaseMusic net/antileech net/go-aliyundrive-webdav \
-        net/qBittorrent-static net/phtunnel net/headscale \
-        net/uugamebooster net/pgyvpn ‎sound/forked-daapd
+        multimedia/UnblockNeteaseMusic net/antileech net/go-aliyundrive-webdav net/gowebdav net/kismet net/mstpd\
+        net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
+        net/uugamebooster net/pgyvpn ‎net/ooniprobe net/quassel-irssi net/polipo net/rosy-file-server \
+        net/rsyslog net/simple-adblock net/snort net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater \
+        net/vpnbypass net/vpn-policy-routing sound/forked-daapd
         ) &
         (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
