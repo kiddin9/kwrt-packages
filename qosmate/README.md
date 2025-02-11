@@ -1,3 +1,7 @@
+The ultimate reward is seeing people benefit and enjoy using this project - no donations needed! But if you insist on buying me a coffee:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/hudra)
+
 # QoSmate: Quality of Service for OpenWrt
 
 QoSmate is a Quality of Service (QoS) solution for OpenWrt routers that aims to optimize network performance while allowing for controlled prioritization of specific traffic types. It uses nftables for packet classification and offers both CAKE (Common Applications Kept Enhanced) and HFSC (Hierarchical Fair Service Curve) queueing disciplines for traffic management. It uses tc-ctinfo to restore DSCP marks on ingress.
@@ -58,6 +62,7 @@ wget -O /usr/libexec/rpcd/luci.qosmate https://raw.githubusercontent.com/hudra0/
 chmod +x /usr/libexec/rpcd/luci.qosmate && \
 /etc/init.d/rpcd restart && \
 /etc/init.d/uhttpd restart
+# End of command - Press Enter after pasting
 
 ```
 
