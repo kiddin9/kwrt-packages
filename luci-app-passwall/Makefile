@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-passwall
 PKG_VERSION:=25.1.28
-PKG_RELEASE:=128
+PKG_RELEASE:=129
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
@@ -38,7 +38,7 @@ LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-nohup +curl \
 	+libuci-lua +lua +luci-compat +luci-lib-jsonc \
 	+microsocks +resolveip +tcping \
 	+ipt2socks \
-	+PACKAGE_$(PKG_NAME)_INCLUDE_Geoview \
+	+PACKAGE_$(PKG_NAME)_INCLUDE_Geoview:geoview \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy:haproxy \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria:hysteria \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy:naiveproxy \
