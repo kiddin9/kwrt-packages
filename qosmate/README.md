@@ -1,6 +1,11 @@
-The ultimate reward is seeing people benefit and enjoy using this project - no donations needed! But if you insist on buying me a coffee:
+[![Ko‑Fi][ko_fi_shield]][ko_fi]
+[![OpenWrt Forum][openwrt_forum_shield]][openwrt_forum]
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/hudra)
+[ko_fi_shield]: https://img.shields.io/static/v1.svg?label=%20&message=Ko-Fi&color=F16061&logo=ko-fi&logoColor=white
+[ko_fi]: https://ko-fi.com/hudra
+
+[openwrt_forum_shield]: https://img.shields.io/static/v1.svg?label=%20&message=OpenWrt%20Forum&style=popout&color=blue&logo=OpenWrt&logoColor=white
+[openwrt_forum]: https://forum.openwrt.org/t/qosmate-yet-another-quality-of-service-tool-for-openwrt/
 
 # QoSmate: Quality of Service for OpenWrt
 
@@ -646,3 +651,9 @@ Contributions to QoSmate are welcome! Please submit issues and pull requests on 
 ## Acknowledgements
 
 QoSmate is inspired by and builds upon the work of SimpleHFSCgamerscript, SQM, cake-qos-simple, qosify and DSCPCLASSIFY. I thank all contributors and the OpenWrt community for their valuable insights and contributions.
+
+## Support
+
+The ultimate reward is seeing people benefit and enjoy using this project - no donations needed! But if you insist on buying me a coffee:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/hudra)
