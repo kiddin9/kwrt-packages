@@ -50,15 +50,17 @@ local transparency_sets = {
 }
 
 -- [[ 模糊设置 ]]--
-br = SimpleForm('config', translate('Argon Config'), translate('Here you can set the blur and transparency of the login page of argon theme, and manage the background pictures and videos.[Chrome is recommended]'))
+br = SimpleForm('config', translate('Argon theme configuration'), translate('Here you can set the blur and transparency of the login page of argon theme, and manage the background pictures and videos.[Chrome is recommended]'))
 br.reset = false
 br.submit = false
 s = br:section(SimpleSection) 
 
 o = s:option(ListValue, 'bing_background', translate('Wallpaper Source'))
-o:value('0', translate('Built-in'))
-o:value('1', translate('Bing Wallpapers'))
-o.default = bing_background
+o:value('none', translate('Built-in'))
+o:value('bing', translate('Bing'))
+o:value('unsplash', translate('Unsplash'))
+o:value('wallhaven', translate('Wallhaven'))
+o.default = 'none'
 o.rmempty = false
 
 o = s:option(ListValue, 'mode', translate('Theme mode'))

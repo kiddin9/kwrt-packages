@@ -175,11 +175,9 @@ set_firewall_wan() {
     ## 设置防火墙wan 打开
     uci -q set firewall.@zone[1].input='ACCEPT'
     uci commit firewall
-    /etc/init.d/firewall reload
     else
     uci -q set firewall.@zone[1].input='REJECT'
     uci commit firewall
-    /etc/init.d/firewall reload
     fi
 }
 
@@ -187,11 +185,9 @@ set_ttyd() {
     if [ "x$(uci -q get advancedplus.@basic[0].set_ttyd)" = "x1" ] ; then
     uci delete ttyd.@ttyd[0].interface
     uci commit
-    /etc/init.d/firewall reload
     else
     uci -q set ttyd.@ttyd[0].interface='@lan'
     uci commit
-    /etc/init.d/firewall reload
     fi
 }
 
@@ -220,17 +216,23 @@ dev=`ifconfig | grep "Point-to-Point" | cut -d " " -f1`
 [ ! $dev ] && dev=` uci -q get network.wan.device ` || dev=` uci -q get network.wan.device ` 
 [ ! $dev ] && dev=br-lan
 setnetwizard
-sethttps
-dhcp_domain
+# sethttps
+#dhcp_domain
 set_ttyd
 set_firewall_wan
 tsoset
-    [ "x$(uci -q get advancedplus.@basic[0].qos)" = "x1" ] && \usr\bin\qoshome
-    if [ "x$(uci -q get advancedplus.@basic[0].ttl)" = "x1" ] ; then
-        $ipt -t mangle -A PREROUTING -p tcp --tcp-flags RST RST -i $dev -j DROP
-        $ipt -t mangle -A PREROUTING -i ${dev} -j TTL --ttl-inc 1
-        $ipt -t mangle -A POSTROUTING -o ${dev} -j TTL --ttl-set 64
+
+    if [ -n "$(command -v fw4)" ] && [ -n "$(command -v nft)" ] && [ -n "$(dnsmasq --version | grep 'Compile time options:.* nftset')" ]; then
+          echo  ' '
+    else
+        [ "x$(uci -q get advancedplus.@basic[0].qos)" = "x1" ] && \usr\bin\qoshome
+        if [ "x$(uci -q get advancedplus.@basic[0].ttl)" = "x1" ] ; then
+            $ipt -t mangle -A PREROUTING -p tcp --tcp-flags RST RST -i $dev -j DROP
+            $ipt -t mangle -A PREROUTING -i ${dev} -j TTL --ttl-inc 1
+            $ipt -t mangle -A POSTROUTING -o ${dev} -j TTL --ttl-set 64
+       fi
     fi
+
     #cpumode=`uci -q get advancedplus.@basic[0].cpumode`
     #[ ! $cpumode ] || cpumodeset $cpumode   /usr/bin/zsh
     sed -i "\/bin\/zsh/d" /etc/profile

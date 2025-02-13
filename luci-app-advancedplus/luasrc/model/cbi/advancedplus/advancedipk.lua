@@ -3,6 +3,7 @@ LuCI - Lua Configuration Interface
  Copyright (C) 2022-2024  sirpdboy <herboy2008@gmail.com> https://github.com/sirpdboy/luci-app-advancedplus
 ]]--
 
+luci.sys.exec("echo '-' >/tmp/advancedplus.log&&echo 1 > /tmp/advancedpos" )
 local fs = require "nixio.fs"
 local uci=luci.model.uci.cursor()
 local m,s,e

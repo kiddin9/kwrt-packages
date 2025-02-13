@@ -8,12 +8,11 @@ msgstr "进阶设置"
 msgid "KuCat Theme Config"
 msgstr "KuCat主题设置"
 
-msgid "Argon Config"
+msgid "Argon theme configuration"
 msgstr "Argon主题设置"
 
 msgid "Design Config"
 msgstr "Design主题设置"
-
 
 msgid "Advanced Setting"
 msgstr "高级设置"
@@ -89,6 +88,9 @@ msgstr "壁纸透明度"
 
 msgid "Follow System"
 msgstr "跟随系统"
+
+msgid "Inital Setup"
+msgstr "设置向导"
 
 msgid "Refreshing mode"
 msgstr "清爽模式"
