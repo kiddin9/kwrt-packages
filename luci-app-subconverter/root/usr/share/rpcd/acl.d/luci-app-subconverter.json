@@ -1,11 +1,24 @@
 {
-	"luci-app-subconverter": {
-		"description": "Grant UCI access for luci-app-subconverter",
-		"read": {
-			"uci": [ "subconverter" ]
-		},
-		"write": {
-			"uci": [ "subconverter" ]
-		}
-	}
+    "luci-app-subconverter": {
+        "description": "Grant UCI access for luci-app-subconverter",
+        "read": {
+			"file": {
+                "/etc/subconverter/pref.example.ini": [ "read" ]
+            },
+            "ubus": {
+                "service": [ "list" ]
+				 "file": [ "read" ]
+            },
+            "uci": [ "subconverter" ]
+        },
+        "write": {
+			 "file": {
+                "/etc/subconverter/pref.example.ini": [ "write" ]
+            "ubus": {
+                "service": [ "list" ]
+				"file": [ "write" ]
+            },
+            "uci": [ "subconverter" ]
+        }
+    }
 }

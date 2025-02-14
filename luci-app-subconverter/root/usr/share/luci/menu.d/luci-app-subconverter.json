@@ -1,0 +1,14 @@
+{
+    "admin/services/subconverter": {
+        "title": "subconverter",
+        "order": 90,
+        "action": {
+            "type": "view",
+            "path": "subconverter/index"
+        },
+        "depends": {
+            "acl": [ "luci-app-subconverter" ],
+            "uci": { "subconverter": true }
+        }
+    }
+}

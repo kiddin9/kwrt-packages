@@ -1,1 +1,5 @@
 config subconverter 'config'
+    option enabled '0'
+    option port '9000'
+    option username 'admin'
+    option password 'admin'
