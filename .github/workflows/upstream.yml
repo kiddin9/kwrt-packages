@@ -110,6 +110,7 @@ jobs:
         git_clone https://github.com/riverscn/openwrt-iptvhelper && mvdir openwrt-iptvhelper
         git_clone https://github.com/kongfl888/luci-app-timedreboot
         git_clone https://github.com/sbwml/luci-app-webdav
+        git_clone https://github.com/kiddin9/luci-app-subconverter
         ) &
         (
         #git_clone https://github.com/jerrykuku/luci-app-vssr
