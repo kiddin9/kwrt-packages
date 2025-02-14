@@ -25,7 +25,7 @@ function index()
 	    entry({"admin", "system","advancedplus","kucatupload"}, form("advancedplus/kucatupload"), _("Desktop background upload"), 80).leaf = true
 	end
 	if nixio.fs.access('/www/luci-static/argon/css/cascade.css') then
-	    entry({"admin", "system", "advancedplus","argon-config"}, form("advancedplus/argon-config"), _("Argon Config"), 50).leaf = true
+	    entry({"admin", "system", "advancedplus","argon-config"}, form("advancedplus/argon-config"), _("Argon theme configuration"), 50).leaf = true
 	end
 	if nixio.fs.access('/www/luci-static/design/css/style.css') then
 	    entry({"admin", "system",  "advancedplus","design-config"}, form("advancedplus/design-config"), _("Design Config"), 60).leaf = true
