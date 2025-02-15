@@ -3,7 +3,8 @@
         "description": "Grant UCI access for luci-app-subconverter",
         "read": {
 		"file": {
-                "/etc/subconverter/pref.example.ini": [ "read" ]
+                "/etc/subconverter/pref.example.ini": [ "read" ],
+                "/var/log/subconverter.log": [ "read" ]
             },
             "ubus": {
                 "service": [ "list" ],
@@ -17,7 +18,7 @@
 	        },
             "ubus": {
                 "service": [ "list" ],
-		"file": [ "write" ]
+                "file": [ "write" ]
             },
             "uci": [ "subconverter" ]
             }

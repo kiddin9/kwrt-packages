@@ -5,7 +5,7 @@ USE_PROCD=1
 
 PROG=/usr/bin/subconverter
 CONF=/etc/subconverter/pref.example.ini
-LOG_FILE="/tmp/subconverter.log"
+LOG_FILE="/tmp/log/subconverter.log"
 
 get_config() {
     config_get_bool enabled $1 enabled 0

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xmm-modem
 PKG_VERSION:=0.1.4
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 PKG_MAINTAINER:=Konstantine Shevlakov <shevlakov@132lan.ru>
 
 include $(INCLUDE_DIR)/package.mk
@@ -10,7 +10,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/$(PKG_NAME)
   PKGARCH:=all
   DEPENDS:=+comgt +kmod-usb-acm +kmod-usb-serial-option \
-	   +kmod-usb-net-cdc-ncm +kmod-usb-net-rndis
+	+kmod-usb-net-cdc-ncm +kmod-usb-net-rndis
   TITLE:=Fibocom L850/L860/FM350 protocol
 endef
 
