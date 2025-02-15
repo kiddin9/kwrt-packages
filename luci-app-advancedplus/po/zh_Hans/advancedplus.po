@@ -8,7 +8,7 @@ msgstr "进阶设置"
 msgid "KuCat Theme Config"
 msgstr "KuCat主题设置"
 
-msgid "Argon theme configuration"
+msgid "Argon configuration"
 msgstr "Argon主题设置"
 
 msgid "Design Config"
@@ -109,12 +109,6 @@ msgstr "展开导航栏"
 
 msgid "Expand or shrink the toolbar"
 msgstr "展开或者收缩导航栏"
-
-msgid "Color palette"
-msgstr "调色板工具"
-
-msgid "Call up your favorite color value tool (note: HEX and RGB colors)"
-msgstr "调出自己喜欢的颜色值工具(注意:HEX和RGB值区别)"
 
 msgid "Light"
 msgstr "亮色"

@@ -84,7 +84,7 @@ e.rmempty = false
 e = t:option(Value, 'gossr', translate('Services Ssrkey settings'))
 e:value('shadowsocksr', translate('SSR'))
 e:value('bypass', translate('bypass'))
-e:value('mihomo', translate('Mihomo'))
+e:value('nikki', translate('nikki[Mihomo]'))
 e:value('passwall', translate('passwall'))
 e:value('passwall2', translate('passwall2'))
 e:value('openclash', translate('OpenClash'))

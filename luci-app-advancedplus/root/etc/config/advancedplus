@@ -7,7 +7,7 @@ config basic
 	option font_d '1.1rem'
 	option font_z '0.92rem'
 	option font_x '0.875rem'
-	option bklock '1'
+	option bklock '0'
 	option setbar '1'
 	option dayword '0'
 	option background '0'

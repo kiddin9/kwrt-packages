@@ -10,17 +10,6 @@ translate("</br>For specific usage, see:")..translate("<a href=\'https://github.
 
 t = a:section(TypedSection, "basic", translate("Settings"))
 t.anonymous = true
-e = t:option(Flag, "qos",translate('Qos automatic optimization'), translate('Enable QOS automatic optimization strategy (testing function)'))
-e.default = "0"
-e.rmempty = false
-
-dl = t:option(Value, "download", translate("Download bandwidth(Mbit/s)"))
-dl.default = '200'
-dl:depends("qos", true)
-
-ul = t:option(Value, "upload", translate("Upload bandwidth(Mbit/s)"))
-ul.default = '30'
-ul:depends("qos", true)
 
 e = t:option(Flag, "usshmenu",translate('No backend menu required'), translate('OPENWRT backend and SSH login do not display shortcut menus'))
 
