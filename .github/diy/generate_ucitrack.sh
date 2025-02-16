@@ -22,6 +22,7 @@ find . -type f \
             echo "}"
             echo "EEOF"
             echo "}"
+            echo "/etc/init.d/ucitrack reload"
             # 获取其余内容：保留包含 "get ucitrack" 的行，删除其他包含 "ucitrack" 的行
             sed '1d' "$file" | awk '/get ucitrack/ {print; next} !/ ucitrack/ {print}'
         } > "${file}.tmp"
