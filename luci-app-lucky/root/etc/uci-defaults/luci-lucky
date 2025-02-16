@@ -1,9 +1,9 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-lucky.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-lucky.json << EEOF
+[ ! -f "/usr/share/ucitrack/luci-app-lucky.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-lucky.json << EEOF
 {
-    "config": "lucky",
-    "init": "lucky"
+    "config": "lucky",
+    "init": "lucky"
 }
 EEOF
 /etc/init.d/ucitrack reload

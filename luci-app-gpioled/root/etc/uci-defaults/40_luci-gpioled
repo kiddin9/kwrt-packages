@@ -1,9 +1,9 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-gpioled.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-gpioled.json << EEOF
+[ ! -f "/usr/share/ucitrack/luci-app-gpioled.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-gpioled.json << EEOF
 {
-    "config": "gpioled",
-    "init": "gpioled"
+    "config": "gpioled",
+    "init": "gpioled"
 }
 EEOF
 /etc/init.d/ucitrack reload
