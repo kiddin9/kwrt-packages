@@ -6,8 +6,8 @@
     "init": "add"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 # Copyright (c) 2019-2024 vernesong
 
 START=99

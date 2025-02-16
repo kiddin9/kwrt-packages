@@ -6,8 +6,8 @@
     "init": "modem"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 # Copyright (C) 2023 Siriling <siriling@qq.com>
 
 uci -q get modem.global >/dev/null || uci -q batch <<-EOF >/dev/null

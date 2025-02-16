@@ -6,8 +6,8 @@
     "init": "guest-wifi"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 
 uci -q batch <<-EOF >/dev/null
 EOF

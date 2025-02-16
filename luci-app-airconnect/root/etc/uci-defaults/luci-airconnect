@@ -6,8 +6,8 @@
     "init": "airconnect"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 
 [ -f "/etc/config/ucitrack" ] && {
 uci -q batch <<-EOF >/dev/null

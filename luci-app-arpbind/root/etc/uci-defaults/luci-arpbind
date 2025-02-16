@@ -6,8 +6,8 @@
     "init": "arpbind"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 touch /etc/config/arpbind
 
 uci -q batch <<-EOF >/dev/null

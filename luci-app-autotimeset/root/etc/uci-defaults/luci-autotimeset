@@ -6,8 +6,8 @@
     "init": "autotimeset"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 chmod +x  /etc/init.d/autotimeset /usr/bin/timesethandler /etc/init.d/autotimesetrun
 uci -q batch <<-EOF >/dev/null
 EOF

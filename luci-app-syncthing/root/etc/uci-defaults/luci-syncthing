@@ -6,8 +6,8 @@
     "init": "syncthing"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 touch /etc/config/syncthing
 
 sed -i "s/127.0.0.1:8384/0.0.0.0:8384/" /etc/config/syncthing

@@ -6,8 +6,8 @@
     "init": "luci-app-ipsec-server"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.luci_app_ipsec_server

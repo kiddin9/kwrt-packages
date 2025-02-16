@@ -6,8 +6,8 @@ uci -q batch <<-EOF >/dev/null
     "init": "campusnet"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 EOF
 
 rm -f /tmp/luci-indexcache

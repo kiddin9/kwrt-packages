@@ -6,8 +6,8 @@
     "init": "xjay"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 uci get xjay.@general[-1] >/dev/null 2>&1 || uci add xjay general >/dev/null 2>&1
 uci commit xjay
 uci -q batch <<-EOF >/dev/null

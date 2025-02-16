@@ -6,8 +6,8 @@
     "init": "netkeeper-interception"
 }
 EEOF
-}
 /etc/init.d/ucitrack reload
+}
 uci -q batch <<-EOF >/dev/null
 EOF
 rm -rf /var/luci-modulecache/; rm -f /var/luci-indexcache;
