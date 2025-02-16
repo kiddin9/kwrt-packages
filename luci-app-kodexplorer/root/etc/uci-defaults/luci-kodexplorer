@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-kodexplorer.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-kodexplorer.json << EEOF
+{
+    "config": "kodexplorer",
+    "init": "kodexplorer"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@kodexplorer[-1]
-	add ucitrack kodexplorer
-	set ucitrack.@kodexplorer[-1].init=kodexplorer
-	commit ucitrack
 EOF
 
 /etc/init.d/php8-fpm stop

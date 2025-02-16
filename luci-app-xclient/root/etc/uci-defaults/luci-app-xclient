@@ -1,9 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-xclient.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-xclient.json << EEOF
+{
+    "config": "xclient",
+    "init": "xclient"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-delete ucitrack.@xclient[-1]
-add ucitrack xclient
-set ucitrack.@xclient[-1].init=xclient
-commit ucitrack
 delete firewall.xclient
 set firewall.xclient=include
 set firewall.xclient.type=script

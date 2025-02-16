@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-ssr_mudb_server.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-ssr_mudb_server.json << EEOF
+{
+    "config": "ssr_mudb_server",
+    "init": "ssr_mudb_server"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.ssr_mudb_server
@@ -9,10 +17,6 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@ssr_mudb_server[-1]
-	add ucitrack ssr_mudb_server
-	set ucitrack.@ssr_mudb_server[-1].init=ssr_mudb_server
-	commit ucitrack
 EOF
 
 chmod a+x /usr/share/ssr_mudb_server/* >/dev/null 2>&1

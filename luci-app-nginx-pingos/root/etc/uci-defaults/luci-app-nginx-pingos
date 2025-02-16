@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-pingos.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-pingos.json << EEOF
+{
+    "config": "pingos",
+    "init": "pingos"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@pingos[-1]
-	add ucitrack pingos
-	set ucitrack.@pingos[-1].init=pingos
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

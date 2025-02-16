@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-dogcom.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-dogcom.json << EEOF
+{
+    "config": "dogcom",
+    "init": "dogcom"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-    delete ucitrack.@dogcom[-1]
-    add ucitrack dogcom
-    set ucitrack.@dogcom[-1].init=dogcom
-    commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

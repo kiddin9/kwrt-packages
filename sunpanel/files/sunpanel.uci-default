@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-sunpanel.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-sunpanel.json << EEOF
+{
+    "config": "sunpanel",
+    "init": "sunpanel"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@sunpanel[-1]
-	add ucitrack sunpanel
-	set ucitrack.@sunpanel[-1].init=sunpanel
-	commit ucitrack
 EOF
 
 /etc/init.d/sunpanel enable

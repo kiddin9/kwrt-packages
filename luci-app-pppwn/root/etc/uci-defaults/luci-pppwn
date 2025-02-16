@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-pppwn.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-pppwn.json << EEOF
+{
+    "config": "pppwn",
+    "init": "pppwn"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@pppwn[-1]
-	add ucitrack pppwn
-	set ucitrack.@pppwn[-1].init=pppwn
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

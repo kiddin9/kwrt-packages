@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-broadband.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-broadband.json << EEOF
+{
+    "config": "broadband",
+    "init": "broadband"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@broadband[-1]
-	add ucitrack broadband
-	set ucitrack.@broadband[-1].init=broadband
-	commit ucitrack
 EOF
 
 general=$(uci -q get broadband.@general[-1])

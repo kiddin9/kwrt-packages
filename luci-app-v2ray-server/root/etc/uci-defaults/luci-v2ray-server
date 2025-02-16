@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-v2ray_server.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-v2ray_server.json << EEOF
+{
+    "config": "v2ray_server",
+    "init": "v2ray_server"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.v2ray_server
@@ -10,10 +18,6 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@v2ray_server[-1]
-	add ucitrack v2ray_server
-	set ucitrack.@v2ray_server[-1].init=v2ray_server
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

@@ -1,12 +1,15 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-AdGuardHome.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-AdGuardHome.json << EEOF
+{
+    "config": "AdGuardHome",
+    "init": "AdGuardHome"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null 2>&1
-	delete ucitrack.@AdGuardHome[-1]
-	add ucitrack AdGuardHome
-	set ucitrack.@AdGuardHome[-1].init=AdGuardHome
-	commit ucitrack
 	delete AdGuardHome.AdGuardHome.ucitracktest
-	/etc/init.d/AdGuardHome restart
 EOF
 
 rm -f /tmp/luci-indexcache

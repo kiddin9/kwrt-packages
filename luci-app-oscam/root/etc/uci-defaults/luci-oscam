@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-oscam.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-oscam.json << EEOF
+{
+    "config": "oscam",
+    "init": "oscam"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@oscam[-1]
-	add ucitrack oscam
-	set ucitrack.@oscam[-1].init=oscam
-	commit ucitrack
 EOF
 
 

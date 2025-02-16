@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-pppoe-user.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-pppoe-user.json << EEOF
+{
+    "config": "pppoe-user",
+    "init": "pppoe-user"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@pppoe-user[-1]
-	add ucitrack pppoe-user
-	set ucitrack.@pppoe-user[-1].init=pppoe-user
-	commit ucitrack
 EOF
 
 chmod 600 /etc/config/pppoe-user

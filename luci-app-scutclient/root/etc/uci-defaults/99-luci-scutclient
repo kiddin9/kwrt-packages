@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-scutclient.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-scutclient.json << EEOF
+{
+    "config": "scutclient",
+    "init": "scutclient"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@scutclient[-1]
-	add ucitrack scutclient
-	set ucitrack.@scutclient[-1].init=scutclient
-	commit ucitrack
 	delete scutclient.@luci[-1]
 	add scutclient luci
 	commit scutclient

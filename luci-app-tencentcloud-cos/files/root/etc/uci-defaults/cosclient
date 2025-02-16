@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-cosclient.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-cosclient.json << EEOF
+{
+    "config": "cosclient",
+    "init": "cosclient"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@cosclient[-1]
-	add ucitrack cosclient
-	set ucitrack.@cosclient[-1].init=cosclient
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

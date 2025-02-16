@@ -1,9 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-squid.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-squid.json << EEOF
+{
+    "config": "squid",
+    "init": "squid"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-        delete ucitrack.@squid[-1]
-        add ucitrack squid
-        set ucitrack.@squid[-1].init=squid
-        commit ucitrack
         set squid.transparent='transparent'
         commit squid
 EOF

@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-natter2.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-natter2.json << EEOF
+{
+    "config": "natter2",
+    "init": "natter2"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@natter2[-1]
-	add ucitrack natter2
-	set ucitrack.@natter2[-1].init=natter2
-	commit ucitrack
 EOF
 
 exit 0

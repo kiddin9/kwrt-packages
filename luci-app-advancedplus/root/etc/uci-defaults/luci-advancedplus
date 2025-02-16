@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-advancedplus.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-advancedplus.json << EEOF
+{
+    "config": "advancedplus",
+    "init": "advancedplus"
+}
+EEOF
+}
 chmod +x /etc/init.d/advancedplus
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@advancedplus[-1]
-	add ucitrack advancedplus
-	set ucitrack.@advancedplus[-1].init=advancedplus
-	commit ucitrack
 EOF
 # sed -i 's/cbi.submit\"] = true/cbi.submit\"] = \"1\"/g' /usr/lib/lua/luci/dispatcher.lua
 [ "x$(uci -q get advancedplus.@basic[0].mode)" = "x" ]  && /etc/config/advancedplus reset

@@ -1,9 +1,13 @@
 
+[ ! -f "/usr/share/ucitrack/luci-app-xwan.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-xwan.json << EEOF
+{
+    "config": "xwan",
+    "init": "xwan"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@xwan[-1]
-	add ucitrack xwan
-	set ucitrack.@xwan[-1].init=xwan
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

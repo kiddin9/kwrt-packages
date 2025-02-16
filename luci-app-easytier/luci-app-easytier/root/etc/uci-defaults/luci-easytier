@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-easytier.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-easytier.json << EEOF
+{
+    "config": "easytier",
+    "init": "easytier"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@easytier[-1]
-	add ucitrack easytier
-	set ucitrack.@easytier[-1].init=easytier
-	commit ucitrack
 EOF
 chmod +x /etc/init.d/easytier
 rm -rf /tmp/luci-indexcache /tmp/luci-modulecache

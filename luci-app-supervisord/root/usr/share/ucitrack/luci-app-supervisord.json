@@ -1,4 +1,0 @@
-{
-	"config": "supervisord",
-	"init": "supervisord"
-}

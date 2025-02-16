@@ -1,12 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-wifidog.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-wifidog.json << EEOF
+{
+    "config": "wifidog",
+    "init": "wifidog"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@wifidog[-1]
-	add ucitrack wifidog
-	set ucitrack.@wifidog[-1].init=wifidog
-	#delete ucitrack.@firewall[0].affects
-	add_list ucitrack.@firewall[0].affects=wifidog	
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

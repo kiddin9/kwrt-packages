@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-nginx-manager.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-nginx-manager.json << EEOF
+{
+    "config": "nginx-manager",
+    "init": "nginx-manager"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@nginx-manager[-1]
-	add ucitrack nginx-manager
-	set ucitrack.@nginx-manage[-1].init=nginx
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

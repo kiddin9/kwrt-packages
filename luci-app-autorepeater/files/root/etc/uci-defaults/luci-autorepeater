@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-autorepeater.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-autorepeater.json << EEOF
+{
+    "config": "autorepeater",
+    "init": "autorepeater"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@autorepeater[-1]
-	add ucitrack autorepeater
-	set ucitrack.@autorepeater[-1].init=autorepeater
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

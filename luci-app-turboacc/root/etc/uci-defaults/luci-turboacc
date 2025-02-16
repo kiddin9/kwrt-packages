@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-turboacc.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-turboacc.json << EEOF
+{
+    "config": "turboacc",
+    "init": "turboacc"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@turboacc[-1]
-	add ucitrack turboacc
-	set ucitrack.@turboacc[-1].init=turboacc
-	commit ucitrack
 EOF
 
 [ -n "$(lsmod | grep mtkhnat)" ] && \

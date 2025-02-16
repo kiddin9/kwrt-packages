@@ -1,9 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-dnsfilter.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-dnsfilter.json << EEOF
+{
+    "config": "dnsfilter",
+    "init": "dnsfilter"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@dnsfilter[-1]
-	add ucitrack dnsfilter
-	set ucitrack.@dnsfilter[-1].init=dnsfilter
-	commit ucitrack
 	delete firewall.dnsfilter
 	set firewall.dnsfilter=include
 	set firewall.dnsfilter.type=script

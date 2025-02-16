@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-homeredirect.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-homeredirect.json << EEOF
+{
+    "config": "homeredirect",
+    "init": "homeredirect"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.homeredirect
@@ -9,10 +17,6 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@homeredirect[-1]
-	add ucitrack homeredirect
-	set ucitrack.@homeredirect[-1].init=homeredirect
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

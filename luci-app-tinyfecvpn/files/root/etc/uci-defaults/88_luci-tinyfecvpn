@@ -1,8 +1,12 @@
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@tinyfecvpn[-1]
-	add ucitrack tinyfecvpn
-	set ucitrack.@tinyfecvpn[-1].init=tinyfecvpn
-	commit ucitrack
+[ ! -f "/usr/share/ucitrack/luci-app-tinyfecvpn.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-tinyfecvpn.json << EEOF
+{
+    "config": "tinyfecvpn",
+    "init": "tinyfecvpn"
+}
+EEOF
+}
 EOF
 
 general=$(uci -q get tinyfecvpn.@general[-1])

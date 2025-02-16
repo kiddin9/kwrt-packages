@@ -1,11 +1,13 @@
 #!/bin/sh
 
-uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@bridge[-1]
-	add ucitrack bridge
-	set ucitrack.@bridge[-1].init=bridge
-	commit ucitrack
-EOF
+[ ! -f "/usr/share/ucitrack/luci-app-bridge.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-bridge.json << EEOF
+{
+    "config": "bridge",
+    "init": "bridge"
+}
+EEOF
+}
 
 chmod +x /etc/init.d/bridge
 

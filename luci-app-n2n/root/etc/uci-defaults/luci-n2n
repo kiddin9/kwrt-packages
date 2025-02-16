@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-n2n.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-n2n.json << EEOF
+{
+    "config": "n2n",
+    "init": "n2n"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@n2n[-1]
-	add ucitrack n2n
-	set ucitrack.@n2n[-1].init=n2n
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-easyupdate.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-easyupdate.json << EEOF
+{
+    "config": "easyupdate",
+    "init": "easyupdate"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@easyupdate[-1]
-	add ucitrack easyupdate
-	set ucitrack.@easyupdate[-1].init=easyupdate
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

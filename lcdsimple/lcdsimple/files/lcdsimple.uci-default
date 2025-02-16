@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-lcdsimple.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-lcdsimple.json << EEOF
+{
+    "config": "lcdsimple",
+    "init": "lcdsimple"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@lcdsimple[-1]
-	add ucitrack lcdsimple
-	set ucitrack.@lcdsimple[-1].init=lcdsimple
-	commit ucitrack
 EOF
 
 /etc/init.d/lcdsimple enable

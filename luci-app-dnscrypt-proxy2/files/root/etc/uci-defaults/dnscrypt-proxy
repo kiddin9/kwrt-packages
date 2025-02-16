@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-dnscrypt_proxy.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-dnscrypt_proxy.json << EEOF
+{
+    "config": "dnscrypt_proxy",
+    "init": "dnscrypt_proxy"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@dnscrypt_proxy[-1]
-	add ucitrack dnscrypt_proxy
-	set ucitrack.@dnscrypt_proxy[-1].init=dnscrypt-proxy
-	commit ucitrack
 	delete firewall.dnscrypt_proxy
 	set firewall.dnscrypt_proxy=include
 	set firewall.dnscrypt_proxy.type=script

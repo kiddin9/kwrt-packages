@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-caddy.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-caddy.json << EEOF
+{
+    "config": "caddy",
+    "init": "caddy"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@caddy[-1]
-	add ucitrack caddy
-	set ucitrack.@caddy[-1].init=caddy
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*

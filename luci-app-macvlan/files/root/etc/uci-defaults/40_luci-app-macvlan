@@ -1,9 +1,13 @@
 
+[ ! -f "/usr/share/ucitrack/luci-app-macvlan.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-macvlan.json << EEOF
+{
+    "config": "macvlan",
+    "init": "macvlan"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@macvlan[-1]
-	add ucitrack macvlan
-	set ucitrack.@macvlan[-1].init=macvlan
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

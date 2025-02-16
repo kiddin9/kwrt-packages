@@ -1,8 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-homebridge.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-homebridge.json << EEOF
+{
+    "config": "homebridge",
+    "init": "homebridge"
+}
+EEOF
+}
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@homebridge[-1]
-	add ucitrack homebridge
-	set ucitrack.@homebridge[-1].init=homebridge
-	commit ucitrack
 EOF
 exit 0

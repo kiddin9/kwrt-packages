@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-nezha-agent.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-nezha-agent.json << EEOF
+{
+    "config": "nezha-agent",
+    "init": "nezha-agent"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@nezha-agent[-1]
-	add ucitrack nezha-agent
-	set ucitrack.@nezha-agent[-1].init=nezha-agent
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

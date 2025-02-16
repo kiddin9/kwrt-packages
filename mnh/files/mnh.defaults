@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-mnh.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-mnh.json << EEOF
+{
+    "config": "mnh",
+    "init": "mnh"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@mnh[-1]
-	add ucitrack mnh
-	set ucitrack.@mnh[-1].init=mnh
-	commit ucitrack
 EOF
 
 if fw4 >/dev/null; then

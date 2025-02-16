@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-beardropper.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-beardropper.json << EEOF
+{
+    "config": "beardropper",
+    "init": "beardropper"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@beardropper[-1]
-	add ucitrack beardropper
-	set ucitrack.@beardropper[-1].init=beardropper
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*

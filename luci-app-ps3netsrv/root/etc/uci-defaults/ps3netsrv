@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-ps3netsrv.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-ps3netsrv.json << EEOF
+{
+    "config": "ps3netsrv",
+    "init": "ps3netsrv"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@ps3netsrv[-1]
-	add ucitrack ps3netsrv
-	set ucitrack.@ps3netsrv[-1].init=ps3netsrv
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

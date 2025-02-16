@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-parentcontrol.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-parentcontrol.json << EEOF
+{
+    "config": "parentcontrol",
+    "init": "parentcontrol"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@parentcontrol[-1]
-	add ucitrack parentcontrol
-	set ucitrack.@parentcontrol[-1].init=parentcontrol
-	commit ucitrack
 EOF
 
 uci -q delete firewall.parentcontrol

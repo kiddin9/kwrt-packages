@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-supervisord.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-supervisord.json << EEOF
+{
+    "config": "supervisord",
+    "init": "supervisord"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@supervisord[-1]
-	add ucitrack supervisord
-	set ucitrack.@supervisord[-1].init=supervisord
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

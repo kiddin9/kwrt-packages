@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-natter.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-natter.json << EEOF
+{
+    "config": "natter",
+    "init": "natter"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@natter[-1]
-	add ucitrack natter
-	set ucitrack.@natter[-1].init=natter
-	commit ucitrack
 	
 	delete firewall.natter
 	set firewall.natter=include

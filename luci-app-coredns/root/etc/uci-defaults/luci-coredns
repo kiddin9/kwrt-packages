@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-coredns.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-coredns.json << EEOF
+{
+    "config": "coredns",
+    "init": "coredns"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@coredns[-1]
-	add ucitrack coredns
-	set ucitrack.@coredns[-1].init=coredns
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*

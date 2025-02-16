@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-pptpd.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-pptpd.json << EEOF
+{
+    "config": "pptpd",
+    "init": "pptpd"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.pptpd
@@ -27,10 +35,6 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@pptpd[-1]
-	add ucitrack pptpd
-	set ucitrack.@pptpd[-1].init=pptpd
-	commit ucitrack
 EOF
 
 /etc/init.d/pptpd enable && /etc/init.d/pptpd restart

@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-modem.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-modem.json << EEOF
+{
+    "config": "modem",
+    "init": "modem"
+}
+EEOF
+}
 # Copyright (C) 2023 Siriling <siriling@qq.com>
 
 uci -q get modem.global >/dev/null || uci -q batch <<-EOF >/dev/null
@@ -14,10 +22,6 @@ EOF
 /etc/init.d/modem enable
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@modem[-1]
-	add ucitrack modem
-	set ucitrack.@modem[-1].init=modem
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

@@ -1,4 +1,12 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-cns_server.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-cns_server.json << EEOF
+{
+    "config": "cns_server",
+    "init": "cns_server"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.cns_server
@@ -10,10 +18,6 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@cns_server[-1]
-	add ucitrack cns_server
-	set ucitrack.@cns_server[-1].init=cns_server
-	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-adbyby.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-adbyby.json << EEOF
+{
+    "config": "adbyby",
+    "init": "adbyby"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@adbyby[-1]
-	add ucitrack adbyby
-	set ucitrack.@adbyby[-1].init=adbyby
-	commit ucitrack
 	delete firewall.adbyby
 	set firewall.adbyby=include
 	set firewall.adbyby.type=script

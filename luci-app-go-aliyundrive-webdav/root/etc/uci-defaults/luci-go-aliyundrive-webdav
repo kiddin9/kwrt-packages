@@ -1,10 +1,14 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-go-aliyundrive-webdav.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-go-aliyundrive-webdav.json << EEOF
+{
+    "config": "go-aliyundrive-webdav",
+    "init": "go-aliyundrive-webdav"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
-	delete ucitrack.@go-aliyundrive-webdav[-1]
-	add ucitrack go-aliyundrive-webdav
-	set ucitrack.@go-aliyundrive-webdav[-1].init=go-aliyundrive-webdav
-	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

@@ -1,8 +1,12 @@
 uci batch <<EOF
-	delete ucitrack.@xlnetacc[-1]
-	add ucitrack xlnetacc
-	set ucitrack.@xlnetacc[-1].init=xlnetacc
-	commit ucitrack
+[ ! -f "/usr/share/ucitrack/luci-app-xlnetacc.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-xlnetacc.json << EEOF
+{
+    "config": "xlnetacc",
+    "init": "xlnetacc"
+}
+EEOF
+}
 EOF
 rm -rf /tmp/luci-*
 exit 0

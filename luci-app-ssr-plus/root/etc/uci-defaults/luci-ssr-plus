@@ -1,11 +1,15 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-shadowsocksr.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-shadowsocksr.json << EEOF
+{
+    "config": "shadowsocksr",
+    "init": "shadowsocksr"
+}
+EEOF
+}
 
 uci -q batch <<-EOF >/dev/null
 	[ -e "/etc/config/ucitrack" ] && {
-	delete ucitrack.@shadowsocksr[-1]
-	add ucitrack shadowsocksr
-	set ucitrack.@shadowsocksr[-1].init=shadowsocksr
-	commit ucitrack
 	}
 
 	delete firewall.shadowsocksr
