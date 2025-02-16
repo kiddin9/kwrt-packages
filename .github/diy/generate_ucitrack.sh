@@ -6,7 +6,7 @@ find . -type f \
     | while read -r file; do
     if grep -q "add ucitrack" "$file"; then
         # 提取xx的值
-        xx=$(grep "add ucitrack" "$file" | awk '{print $3}' | head -1)
+        xx=$(grep "add ucitrack" "$file" | awk '{print $3}' | head -1 | tr -d '\r' | tr -d ' ')
         
         # 读取第一行
         first_line=$(head -n 1 "$file")
