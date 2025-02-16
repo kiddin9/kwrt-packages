@@ -7,6 +7,7 @@
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 
 touch /etc/config/wizard
 

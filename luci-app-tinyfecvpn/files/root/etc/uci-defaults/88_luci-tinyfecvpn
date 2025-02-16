@@ -7,6 +7,7 @@ uci -q batch <<-EOF >/dev/null
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 EOF
 
 general=$(uci -q get tinyfecvpn.@general[-1])

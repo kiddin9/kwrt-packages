@@ -7,6 +7,7 @@ uci batch <<EOF
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 EOF
 rm -rf /tmp/luci-*
 exit 0

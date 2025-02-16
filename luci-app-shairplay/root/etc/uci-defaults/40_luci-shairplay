@@ -7,6 +7,7 @@
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 
 # needed for "Save and Apply" to restart shairplay
 uci -q batch <<-EOF >/dev/null

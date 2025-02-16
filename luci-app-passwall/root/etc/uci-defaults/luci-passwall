@@ -7,6 +7,7 @@
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 
 grep -q ip-api.com /usr/share/passwall/rules/proxy_host ||
 	sed -i '$a ip-api.com' /usr/share/passwall/rules/proxy_host

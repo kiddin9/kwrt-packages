@@ -7,6 +7,7 @@
 }
 EEOF
 }
+/etc/init.d/ucitrack reload
 
 uci -q get ucitrack.@rtty[0] > /dev/null || {
   uci commit
