@@ -424,6 +424,9 @@ jobs:
       run: |
         shopt -s extglob
         set +e
+        sed -i \
+        -e "s/\(network\..*\)\.ifname/\1.device/g" \
+        `find \( -path "*/root/*" -o -path "*/files/*" -o -path "*/luasrc/*" \) ! -path "./base-files/*" ! -path "./dnsmasq/*" ! -path "./luci-base/*" ! -path "./ppp/*" -type f` &
         sed -i -e "s/\(killall .*\)-9 /\1 /g" \
         `find \( -path "*/files/root/etc/init.d/*" -o -path "*/root/etc/init.d/*" -o -path "*/files/*.init" \) -type f` &
         wget https://github.com/xiechangan123/luci-i18n-xray-zh-cn/raw/main/po/zh-cn/xray.zh-cn.po -P luci-app-xray/po/zh_Hans/
@@ -501,12 +504,8 @@ jobs:
         ) &
 
         #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
-        sed -i 's/ +uhttpd-mod-ubus//' luci-app-packet-capture/Makefile
-        sed -i '/boot()/,+2d' ddns-scripts/files/etc/init.d/ddns
         sed -i "s/default n/default y/" dockerd/Config.in
-        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-webui.ini
-        sed -i '$a cgi-timeout = 300' uwsgi/files-luci-support/luci-cgi_io.ini
-        sed -i '/limit-as/c\limit-as = 5000' uwsgi/files-luci-support/luci-webui.ini
+        sed -i '$a cgi-timeout = 500' uwsgi/files-luci-support/luci-*.ini
         mkdir -p luci-app-passwall/root/www/luci-static/passwall luci-app-passwall2/root/www/luci-static/passwall2 luci-app-ssr-plus/root/www/luci-static/shadowsocksr
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall/root/www/luci-static/passwall/
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall2/root/www/luci-static/passwall2/
