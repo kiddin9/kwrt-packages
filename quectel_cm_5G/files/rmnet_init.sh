@@ -1,11 +1,11 @@
 #!/bin/sh
 
 uci set network.wan='interface'
-uci set network.wan.device='wwan0'
+uci set network.wan.ifname='wwan0'
 uci set network.wan.proto='rmnet'
 
 uci set network.wan6='interface'
-uci set network.wan6.device='wwan0'
+uci set network.wan6.ifname='wwan0'
 uci set network.wan6.proto='rmnet6'
 
 uci set dhcp.lan.ra='relay'

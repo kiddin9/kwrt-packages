@@ -329,7 +329,7 @@ set_firewall() {
 			fi
 			echo "$(date '+%Y-%m-%d %H:%M:%S') easytier : 添加网络接口 EasyTier 绑定虚拟接口 ${tunname}" >>/tmp/easytier.log
                        uci set network.EasyTier.device="$tunname"
-                       uci set network.EasyTier.device="$tunname"
+                       uci set network.EasyTier.ifname="$tunname"
 		fi
 		if [ -z "$(uci -q get firewall.easytierzone)" ];  then
 				echo "$(date '+%Y-%m-%d %H:%M:%S') easytier : 添加防火墙规则，放行网络接口 EasyTier 允许出入转发，开启IP动态伪装 MSS钳制" >>/tmp/easytier.log

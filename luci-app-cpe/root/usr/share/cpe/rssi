@@ -296,7 +296,7 @@ RegisterNetwork()
     #     getFM650=$(uci -q get network.wwan5g |grep "interface"| wc -l)
     #     if [ $getFM650 == "0" ] ;then
     #         uci set network.wwan5g=interface
-    #         uci set network.wwan5g.device='usb0'
+    #         uci set network.wwan5g.ifname='usb0'
     #         uci set network.wwan5g.proto=dhcp
     #         uci commit network
             
@@ -308,7 +308,7 @@ RegisterNetwork()
     #     getFM650=$(uci -q get network.wwan5g6|grep "interface"| wc -l)
     #     if [ $getFM650 == "0" ] ;then
     #         uci set network.wwan5g6=interface
-    #         uci set network.wwan5g6.device='usb0'
+    #         uci set network.wwan5g6.ifname='usb0'
     #         uci set network.wwan5g6.proto='dhcpv6'
     #         uci set network.wwan5g6.reqaddress='try'
     #         uci set network.wwan5g6.reqprefix='auto'
@@ -327,9 +327,9 @@ RegisterNetwork()
     if [ $(uci -q get network.wwan5g |grep "interface"| wc -l) == "0" ] ;then
         uci set network.wwan5g=interface
         if [ "$MODEMNAME" == "FM650CN" ]; then
-            uci set network.wwan5g.device='usb0'
+            uci set network.wwan5g.ifname='usb0'
         else
-            uci set network.wwan5g.device='wwan0'
+            uci set network.wwan5g.ifname='wwan0'
         fi
         uci set network.wwan5g.proto=dhcp
         uci commit network
@@ -340,10 +340,10 @@ RegisterNetwork()
     if [ $(uci -q get network.wwan5g6 |grep "interface"| wc -l) == "0" ] ;then
         uci set network.wwan5g6=interface
         if [ "$MODEMNAME" == "FM650CN" ]; then
-            uci set network.wwan5g6.device='usb0'
+            uci set network.wwan5g6.ifname='usb0'
             uci set network.wwan5g6._orig_ifname='usb0'
         else
-            uci set network.wwan5g6.device='wwan0'
+            uci set network.wwan5g6.ifname='wwan0'
             uci set network.wwan5g6._orig_ifname='wwan0'
         fi
         uci set network.wwan5g6.proto='dhcpv6'
@@ -357,25 +357,25 @@ RegisterNetwork()
         $(/etc/init.d/network reload)
     fi
     if [ "$MODEMNAME" == "FM650CN" ]; then
-        if [ $(uci -q get network.wwan5g.device |grep "usb0"| wc -l) == "0" ] ;then
-            uci set network.wwan5g.device='usb0'
+        if [ $(uci -q get network.wwan5g.ifname |grep "usb0"| wc -l) == "0" ] ;then
+            uci set network.wwan5g.ifname='usb0'
             uci commit network
             $(/etc/init.d/network reload)
         fi
-        if [ $(uci -q get network.wwan5g6.device |grep "usb0"| wc -l) == "0" ] ;then
-            uci set network.wwan5g6.device='usb0'
+        if [ $(uci -q get network.wwan5g6.ifname |grep "usb0"| wc -l) == "0" ] ;then
+            uci set network.wwan5g6.ifname='usb0'
             uci commit network
             $(/etc/init.d/network reload)
         fi
     else
-        if [ $(uci -q get network.wwan5g.device |grep "wwan0"| wc -l) == "0" ] ;then
-            uci set network.wwan5g.device='wwan0'
+        if [ $(uci -q get network.wwan5g.ifname |grep "wwan0"| wc -l) == "0" ] ;then
+            uci set network.wwan5g.ifname='wwan0'
             uci commit network
             $(/etc/init.d/network reload)
         fi
-        if [ $(uci -q get network.wwan5g6.device |grep "wwan0"| wc -l) == "0" ] ;then
+        if [ $(uci -q get network.wwan5g6.ifname |grep "wwan0"| wc -l) == "0" ] ;then
             uci set network.wwan5g6._orig_ifname='wwan0'
-            uci set network.wwan5g6.device='wwan0'
+            uci set network.wwan5g6.ifname='wwan0'
             uci commit network
             $(/etc/init.d/network reload)   
         fi

@@ -26,23 +26,23 @@ setup_switch() {
 
 	if [ "$mode" = "1" ]; then
 		uci -q batch <<-EOF
-			set network.wan.device='eth0.1'
-			set network.wan6.device='eth0.1'
+			set network.wan.ifname='eth0.1'
+			set network.wan6.ifname='eth0.1'
 			set network.lan=interface
 			set network.lan.type='bridge'
 			set network.lan.proto='static'
 			set network.lan.ipaddr='192.168.1.1'
 			set network.lan.netmask='255.255.255.0'
 			set network.lan.ip6assign='60'
-			set network.lan.device='eth0.2'
+			set network.lan.ifname='eth0.2'
 			set wireless.wlan0.channel='$wifich'
 		EOF
 		# WLLL,router mode
 		switch 1
 	elif [ "$mode" = "0" ]; then
 		uci -q batch <<-EOF
-			set network.wan.device='eth0'
-			set network.wan6.device='eth0'
+			set network.wan.ifname='eth0'
+			set network.wan6.ifname='eth0'
 			delete network.lan
 			set network.lan.ip6assign='60'
 			set network.lan=interface
@@ -50,7 +50,7 @@ setup_switch() {
 			set network.lan.proto='static'
 			set network.lan.ipaddr='192.168.1.1'
 			set network.lan.netmask='255.255.255.0'
-			set network.lan.device='wlan0'
+			set network.lan.ifname='wlan0'
 			set wireless.wlan0.channel='$wifich'
 		EOF
 		# restore_ip175d, defualt is switch mode

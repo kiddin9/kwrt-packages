@@ -6,7 +6,7 @@ load_easymesh_config() {
 	enable=$(uci -q get easymesh.config.enabled)
 	mesh_bat0=$(uci -q get network.bat0)
 	ap_mode=$(uci -q get easymesh.config.ap_mode)
-	lan=$(uci -q get network.lan.device)
+	lan=$(uci -q get network.lan.ifname)
 	netmask=$(uci -q get easymesh.config.netmask)
 	gateway=$(uci -q get easymesh.config.gateway)
 	dns=$(uci -q get easymesh.config.dns)
@@ -161,7 +161,7 @@ set_easymesh() {
 			if [ "$brlan" = "br-lan" ]; then
 				uci add_list network.@device[0].ports='bat0'
 			else
-				uci set network.lan.device="${lan} bat0"
+				uci set network.lan.ifname="${lan} bat0"
 			fi
 			uci commit network
 		fi

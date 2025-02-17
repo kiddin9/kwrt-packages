@@ -78,7 +78,7 @@ add_xwan() {
 
 	id=0
 	device=$(uci get network.wan.device 2>/dev/null)
-	ifname=$(uci get network.wan.device 2>/dev/null)
+	ifname=$(uci get network.wan.ifname 2>/dev/null)
 
 	if [ "x$enabled" = "x1" ] && test $number -ge 1 && test -n "$device$ifname"; then
 		uci get network.wan.metric >/dev/null 2>&1 || {
@@ -114,8 +114,8 @@ add_xwan() {
 			idx=$(printf %02u $id)
 			uci get network.device$idx >/dev/null 2>&1 || {
 				uci set network.device$idx=device
-				test -n "$device" && uci set network.device$idx.device="$device"
-				test -n "$ifname" && uci set network.device$idx.device="$ifname"
+				test -n "$device" && uci set network.device$idx.ifname="$device"
+				test -n "$ifname" && uci set network.device$idx.ifname="$ifname"
 				uci set network.device$idx.type="macvlan"
 				uci set network.device$idx.mode="vepa"
 				uci set network.device$idx.name="mvlan$idx"
@@ -128,7 +128,7 @@ add_xwan() {
 					uci set network.xwan$idx.$_k="$_v"
 				done
 				test -n "$device" && uci set network.xwan$idx.device="mvlan$idx"
-				test -n "$ifname" && uci set network.xwan$idx.device="mvlan$idx"
+				test -n "$ifname" && uci set network.xwan$idx.ifname="mvlan$idx"
 				uci set network.xwan$idx.metric=$((40 + id))
 				[ "x`uci get network.wan.proto 2>/dev/null`" = "xstatic" ] && \
 				uci set network.xwan$idx.auto='0'

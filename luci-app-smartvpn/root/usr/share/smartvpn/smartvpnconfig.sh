@@ -35,12 +35,12 @@ config_cb() {
                 set network.$sname.ipaddr="$SMARTVPN_LAN_ADDR_IP4"
                 set network.$sname.netmask="$SMARTVPN_LAN_MASK_IP4"
                 set network.$sname.dns="$SMARTVPN_LAN_DNS_IP4"
-                set network.$sname.device="$SMARTVPN_LAN_IFNAME"
+                set network.$sname.ifname="$SMARTVPN_LAN_IFNAME"
                 commit network
 EOF
         else
             uci -q batch <<-EOF >/dev/null
-                set network.$sname.device="$SMARTVPN_LAN_IFNAME"
+                set network.$sname.ifname="$SMARTVPN_LAN_IFNAME"
                 commit network
 EOF
         fi
@@ -57,7 +57,7 @@ smartvpn_logger "Processing: vpn tap interface"
 uci -q batch <<-EOF >/dev/null
 	delete network.$SMARTVPN_LANMAN_NAME
     set network.$SMARTVPN_LANMAN_NAME=interface
-	set network.$SMARTVPN_LANMAN_NAME.device="$SMARTVPN_LANMAN_IF"
+	set network.$SMARTVPN_LANMAN_NAME.ifname="$SMARTVPN_LANMAN_IF"
     set network.$SMARTVPN_LANMAN_NAME.proto="$SMARTVPN_LANMAN_PROTO"
     set network.$SMARTVPN_LANMAN_NAME.auto="$SMARTVPN_LANMAN_AUTO"
     set network.$SMARTVPN_LANMAN_NAME.netmask="$SMARTVPN_LANMAN_MASK_IP4"
@@ -70,7 +70,7 @@ uci show network.$SMARTVPN_LANMAN_NAME
 uci -q batch <<-EOF >/dev/null
 	delete network.$SMARTVPN_HUB01_NAME
     set network.$SMARTVPN_HUB01_NAME=interface
-	set network.$SMARTVPN_HUB01_NAME.device="$SMARTVPN_HUB01_IF"
+	set network.$SMARTVPN_HUB01_NAME.ifname="$SMARTVPN_HUB01_IF"
     set network.$SMARTVPN_HUB01_NAME.proto="$SMARTVPN_HUB01_PROTO"
     set network.$SMARTVPN_HUB01_NAME.auto="$SMARTVPN_HUB01_AUTO"
     set network.$SMARTVPN_HUB01_NAME.netmask="$SMARTVPN_HUB01_MASK_IP4"
@@ -85,7 +85,7 @@ uci show network.$SMARTVPN_HUB01_NAME
 uci -q batch <<-EOF >/dev/null
 	delete network.$SMARTVPN_HUB02_NAME
     set network.$SMARTVPN_HUB02_NAME=interface
-	set network.$SMARTVPN_HUB02_NAME.device="$SMARTVPN_HUB02_IF"
+	set network.$SMARTVPN_HUB02_NAME.ifname="$SMARTVPN_HUB02_IF"
     set network.$SMARTVPN_HUB02_NAME.proto="$SMARTVPN_HUB02_PROTO"
     set network.$SMARTVPN_HUB02_NAME.auto="$SMARTVPN_HUB02_AUTO"
     set network.$SMARTVPN_HUB02_NAME.netmask="$SMARTVPN_HUB02_MASK_IP4"

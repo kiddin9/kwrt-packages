@@ -210,7 +210,7 @@ dhcp_domain() {
 }
 advancedset(){
     dev=`ifconfig | grep "Point-to-Point" | cut -d " " -f1`
-    [ ! $dev ] && dev=` uci -q get network.wan.device ` || dev=` uci -q get network.wan.device ` 
+    [ ! $dev ] && dev=` uci -q get network.wan.ifname ` || dev=` uci -q get network.wan.device ` 
     [ ! $dev ] && dev=br-lan
     setnetwizard
     set_ttyd

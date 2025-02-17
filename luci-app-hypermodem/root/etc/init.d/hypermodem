@@ -31,7 +31,7 @@ set_ipv4_interface()
 	uci set network.${interface_name}='interface'
 	uci set network.${interface_name}.proto='dhcp'
 	uci set network.${interface_name}.device="${network_interface}"
-	uci set network.${interface_name}.device="${network_interface}"
+	uci set network.${interface_name}.ifname="${network_interface}"
 	uci commit network
 
 	#加入WAN防火墙
@@ -54,7 +54,7 @@ set_ipv6_interface()
 	uci set network.${interface_name}.proto='dhcpv6'
 	uci set network.${interface_name}.extendprefix='1'
 	uci set network.${interface_name}.device="${network_interface}"
-	uci set network.${interface_name}.device="${network_interface}"
+	uci set network.${interface_name}.ifname="${network_interface}"
 	uci commit network
 
 	#加入WAN防火墙
