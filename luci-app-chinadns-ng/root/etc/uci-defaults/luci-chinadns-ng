@@ -1,0 +1,26 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-chinadns-ng.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-chinadns-ng.json << EEOF
+{
+    "config": "chinadns-ng",
+    "init": "chinadns-ng"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@chinadns-ng[-1]
+	add ucitrack chinadns-ng
+	set ucitrack.@chinadns-ng[-1].init=chinadns-ng
+	commit ucitrack
+EOF
+
+if ! crontab -l | grep -q "chinadns-ng"; then
+  (crontab -l; echo -e "# chinadns-ng\n10 3 * * * /usr/bin/chinadns-ng-daily.sh") | crontab -
+fi
+
+chmod +x /etc/init.d/chinadns-ng /usr/bin/chinadns-ng-daily.sh >/dev/null 2>&1
+
+rm -rf /tmp/luci-*
+exit 0
