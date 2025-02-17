@@ -1,0 +1,11 @@
+--- a/uwsgi/files-luci-support/luci-webui.ini
++++ b/uwsgi/files-luci-support/luci-webui.ini
+@@ -12,7 +12,7 @@ chdir = /usr/lib/ucode/luci/
+ buffer-size = 10000
+ reload-mercy = 8
+ max-requests = 2000
+-limit-as = 1000
++limit-as = 5000
+ reload-on-as = 256
+ reload-on-rss = 192
+ enable-threads = true
