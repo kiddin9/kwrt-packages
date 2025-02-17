@@ -285,6 +285,10 @@ rules(){
 		fi
 		
 		if [ -z "$(uci get firewall.clash 2>/dev/null)" ] || [ -z "$(uci get ucitrack.@clash[-1].init 2>/dev/null)" ]; then
+		   uci delete ucitrack.@clash[-1] >/dev/null 2>&1
+		   uci add ucitrack clash >/dev/null 2>&1
+		   uci set ucitrack.@clash[-1].init=clash >/dev/null 2>&1
+		   uci commit ucitrack >/dev/null 2>&1
 		   uci delete firewall.clash >/dev/null 2>&1
 		   uci set firewall.clash=include >/dev/null 2>&1
 		   uci set firewall.clash.type=script >/dev/null 2>&1

@@ -8,6 +8,10 @@ uci batch <<EOF
 EEOF
 /etc/init.d/ucitrack reload
 }
+	delete ucitrack.@xlnetacc[-1]
+	add ucitrack xlnetacc
+	set ucitrack.@xlnetacc[-1].init=xlnetacc
+	commit ucitrack
 EOF
 rm -rf /tmp/luci-*
 exit 0

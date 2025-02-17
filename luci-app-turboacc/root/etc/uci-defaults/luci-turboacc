@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@turboacc[-1]
+	add ucitrack turboacc
+	set ucitrack.@turboacc[-1].init=turboacc
+	commit ucitrack
 EOF
 
 [ -n "$(lsmod | grep mtkhnat)" ] && \

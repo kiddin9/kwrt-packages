@@ -1266,6 +1266,10 @@ set_firewall()
 {
 
 if [ -z "$(uci -q get firewall.openclash)" ] || [ -z "$(uci -q get ucitrack.@openclash[-1].init)" ]; then
+   uci -q delete ucitrack.@openclash[-1]
+   uci -q add ucitrack openclash
+   uci -q set ucitrack.@openclash[-1].init=openclash
+   uci -q commit ucitrack
    uci -q delete firewall.openclash
    uci -q set firewall.openclash=include
    uci -q set firewall.openclash.type=script

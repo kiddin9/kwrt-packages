@@ -18,6 +18,10 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@luci-app-ipsec-server[-1]
+	add ucitrack luci-app-ipsec-server
+	set ucitrack.@luci-app-ipsec-server[-1].init=luci-app-ipsec-server
+	commit ucitrack
 EOF
 
 /etc/init.d/ipsec disable 2>/dev/null

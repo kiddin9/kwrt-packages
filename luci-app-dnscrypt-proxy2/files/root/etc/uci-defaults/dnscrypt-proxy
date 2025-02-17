@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@dnscrypt_proxy[-1]
+	add ucitrack dnscrypt_proxy
+	set ucitrack.@dnscrypt_proxy[-1].init=dnscrypt-proxy
+	commit ucitrack
 	delete firewall.dnscrypt_proxy
 	set firewall.dnscrypt_proxy=include
 	set firewall.dnscrypt_proxy.type=script

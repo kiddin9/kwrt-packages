@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=my-dnshelper
 PKG_VERSION:=1.1
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_MAINTAINER:=kongfl888 <kongfl888@outlook.com>
 PKG_LICENSE:=GPLv2

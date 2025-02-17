@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@tencentddns[-1]
+	add ucitrack tencentddns
+	set ucitrack.@tencentddns[-1].init=tencentddns
+	commit ucitrack
 EOF
 
 exit 0

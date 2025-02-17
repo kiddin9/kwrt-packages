@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@adbyby[-1]
+	add ucitrack adbyby
+	set ucitrack.@adbyby[-1].init=adbyby
+	commit ucitrack
 	delete firewall.adbyby
 	set firewall.adbyby=include
 	set firewall.adbyby.type=script

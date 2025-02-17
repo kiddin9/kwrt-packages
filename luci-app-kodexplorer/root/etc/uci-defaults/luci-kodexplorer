@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@kodexplorer[-1]
+	add ucitrack kodexplorer
+	set ucitrack.@kodexplorer[-1].init=kodexplorer
+	commit ucitrack
 EOF
 
 /etc/init.d/php8-fpm stop

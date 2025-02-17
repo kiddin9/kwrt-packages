@@ -10,6 +10,8 @@ EEOF
 }
 
 uci -q get ucitrack.@rtty[0] > /dev/null || {
+  uci add ucitrack rtty > /dev/null
+  uci set ucitrack.@rtty[0].init=rtty
   uci commit
 }
 

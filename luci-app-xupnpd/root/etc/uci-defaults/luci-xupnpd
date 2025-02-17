@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@xupnpd[-1]
+	add ucitrack xupnpd
+	set ucitrack.@xupnpd[-1].init=xupnpd
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

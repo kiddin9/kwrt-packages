@@ -8,6 +8,10 @@ uci -q batch <<-EOF >/dev/null
 EEOF
 /etc/init.d/ucitrack reload
 }
+	delete ucitrack.@campusnet[-1]
+	add ucitrack campusnet
+	set ucitrack.@campusnet[-1].init=campusnet
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

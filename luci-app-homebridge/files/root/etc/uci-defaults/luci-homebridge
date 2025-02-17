@@ -9,5 +9,9 @@ EEOF
 /etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@homebridge[-1]
+	add ucitrack homebridge
+	set ucitrack.@homebridge[-1].init=homebridge
+	commit ucitrack
 EOF
 exit 0

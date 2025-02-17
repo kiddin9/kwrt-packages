@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@sunpanel[-1]
+	add ucitrack sunpanel
+	set ucitrack.@sunpanel[-1].init=sunpanel
+	commit ucitrack
 EOF
 
 /etc/init.d/sunpanel enable

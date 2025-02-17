@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@gost[-1]
+	add ucitrack gost
+	set ucitrack.@gost[-1].init=gost
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

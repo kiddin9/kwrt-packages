@@ -19,6 +19,10 @@ uci -q batch <<-EOF >/dev/null
 EOF
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@cns_server[-1]
+	add ucitrack cns_server
+	set ucitrack.@cns_server[-1].init=cns_server
+	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

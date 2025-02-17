@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@switchmode[-1]
+	add ucitrack switchmode
+	add_list ucitrack.@switchmode[-1].affects=network
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

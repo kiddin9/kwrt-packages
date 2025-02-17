@@ -23,6 +23,10 @@ EOF
 /etc/init.d/modem enable
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@modem[-1]
+	add ucitrack modem
+	set ucitrack.@modem[-1].init=modem
+	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache

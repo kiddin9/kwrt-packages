@@ -11,6 +11,10 @@ EEOF
 . /lib/functions.sh
 
 [ -e "/etc/config/ucitrack" ] && {
+uci -q delete ucitrack.@openclash[-1]
+uci -q add ucitrack openclash
+uci -q set ucitrack.@openclash[-1].init=openclash
+uci -q commit ucitrack
 }
 uci -q delete firewall.openclash
 uci -q set firewall.openclash=include

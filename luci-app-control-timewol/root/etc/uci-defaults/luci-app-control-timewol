@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@timewol[-1]
+	add ucitrack timewol
+	set ucitrack.@timewol[-1].init=timewol
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

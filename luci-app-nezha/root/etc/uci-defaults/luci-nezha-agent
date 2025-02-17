@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@nezha-agent[-1]
+	add ucitrack nezha-agent
+	set ucitrack.@nezha-agent[-1].init=nezha-agent
+	commit ucitrack
 EOF
 
 rm -f /tmp/luci-indexcache

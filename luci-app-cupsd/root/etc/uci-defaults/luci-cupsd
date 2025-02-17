@@ -10,6 +10,10 @@ EEOF
 }
 
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@cupsd[-1]
+	add ucitrack cupsd
+	set ucitrack.@cupsd[-1].init=cupsd
+	commit ucitrack
 EOF
 
 

@@ -9,5 +9,9 @@ EEOF
 /etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@k3screenctrl[-1]
+	add ucitrack k3screenctrl
+	set ucitrack.@k3screenctrl[-1].init=k3screenctrl
+	commit ucitrack
 EOF
 exit 0
