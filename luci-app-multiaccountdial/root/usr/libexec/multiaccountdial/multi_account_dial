@@ -65,7 +65,7 @@ create_macvlan_if(){
     uci batch <<EOF
 add network device
 set network.@device[-1].name=$macvlan_name
-set network.@device[-1].ifname=${ifname}.${vlan_tag}
+set network.@device[-1].device=${ifname}.${vlan_tag}
 set network.@device[-1].type=macvlan
 set network.@device[-1].mode=bridge
 set network.@device[-1].scriptmark=1
@@ -84,7 +84,7 @@ echo add pppoe $ifname with account $account and password $password
     uci batch <<EOF
 set network.vwan$index=interface
 set network.vwan$index.proto=pppoe
-set network.vwan$index.ifname=$ifname
+set network.vwan$index.device=$ifname
 set network.vwan$index.username=$account
 set network.vwan$index.password=$password
 set network.vwan$index.metric=$metric

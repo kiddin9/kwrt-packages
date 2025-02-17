@@ -251,7 +251,7 @@ gen_iface_and_firewall() {
 	uci -q batch <<-EOF >/dev/null
 		delete network.ipsec_server
 		set network.ipsec_server=interface
-		set network.ipsec_server.ifname="ipsec0"
+		set network.ipsec_server.device="ipsec0"
 		set network.ipsec_server.device="ipsec0"
 		set network.ipsec_server.proto="static"
 		set network.ipsec_server.ipaddr="${vt_clientip%.*}.1"

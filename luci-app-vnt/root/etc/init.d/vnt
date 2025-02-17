@@ -273,7 +273,7 @@ EOF
 				uci set network.VNT.netmask='255.255.255.0'
 			fi
                         uci set network.VNT.device=$vnt_tun
-                        uci set network.VNT.ifname=$vnt_tun
+                        uci set network.VNT.device=$vnt_tun
 			echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 添加网络接口 VNT ，绑定虚拟网卡$vnt_tun " >>/tmp/vnt-cli.log
 		fi
                 if [ -z "$(uci -q get firewall.vntzone)" ];  then

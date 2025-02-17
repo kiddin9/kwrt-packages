@@ -2,9 +2,9 @@
 . /lib/functions.sh
 
 load_var() {
-	WAN_IF=$(uci -p /var/state get network.wan.ifname)
+	WAN_IF=$(uci -p /var/state get network.wan.device)
 	[ -z "$WAN_IF" ] && WAN_IF=`ifstatus wan 2>/dev/null| grep l3_device |awk -F'"' '{print $4}'`
-	LAN_IF=$(uci -p /var/state get network.lan.ifname)
+	LAN_IF=$(uci -p /var/state get network.lan.device)
 	[ -z "$LAN_IF" ] && LAN_IF=`ifstatus lan 2>/dev/null| grep l3_device |awk -F'"' '{print $4}'`
 }
 
@@ -38,7 +38,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
     tc qdisc del dev $WAN_IF root 2>/dev/null
   fi
 done
@@ -72,7 +72,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
     tc qdisc add dev $WAN_IF root handle 1: htb
   fi
 done
@@ -86,7 +86,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
 	  tc class add dev $WAN_IF parent 1: classid 1:2 htb rate $((UP))kbit
   fi
 done
@@ -100,7 +100,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
 
 	tc class add dev $WAN_IF parent 1: classid 1:1 htb rate $((UP*95/100))kbit	#根类
 	tc class add dev $WAN_IF parent 1:1 classid 1:11 htb rate $((UP*5/10))kbit prio 1	#高速底时延应用
@@ -148,7 +148,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
 	  iptables -t mangle -I FORWARD -o $WAN_IF -j UP
   fi
 done
@@ -201,7 +201,7 @@ do
   tmpstr=${tmpstr%=*}
   [ ! "$tmpstr" == "loopback" ] && if [ ! "$tmpstr" == "lan" ];
   then
-    WAN_IF=$(uci -p /var/state get network.$tmpstr.ifname)
+    WAN_IF=$(uci -p /var/state get network.$tmpstr.device)
 	tc class add dev $WAN_IF parent 1:2 classid 1:$var$ip htb rate $5kbit ceil $4kbit
 	tc qdisc add dev $WAN_IF parent 1:$var$ip handle $var$ip sfq perturb 10
 	tc filter add dev $WAN_IF parent 1: handle 0x$var$ip fw flowid 1:$var$ip

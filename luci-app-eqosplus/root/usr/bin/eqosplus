@@ -11,7 +11,7 @@ LOCK="/var/lock/$NAME.lock"
 TMPID="/var/$NAME.tmpid"
 if [ x$(uci get $NAME.@$NAME[0].ifname) = 'x1' ] ;then
      # dev=`ifconfig | grep "Point-to-Point" | cut -d " " -f1`
-     ifname=$(uci -q get network.lan.ifname ) 
+     ifname=$(uci -q get network.lan.device ) 
      [ "x$ifname" = "x" ] && ifname="device" || ifname="ifname" 
      [ ! ${dev} ] && dev=` uci -q get network.wan.$ifname ` 
      [ ! ${dev} ] && dev=br-lan

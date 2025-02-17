@@ -13,7 +13,7 @@ MAX_TRIES=99
 
 WAN6_NAME="wan6"
 
-WAN6_INTERFACE=$(uci get "network.$WAN6_NAME.ifname")
+WAN6_INTERFACE=$(uci get "network.$WAN6_NAME.device")
 #eth0.2 by default
 
 LAN_IP6PREFIX=$(uci get network.lan.ip6prefix)
