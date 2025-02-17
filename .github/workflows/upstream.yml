@@ -182,7 +182,7 @@ jobs:
         git_clone https://github.com/peter-tank/luci-app-dnscrypt-proxy2
         git_clone https://github.com/sundaqiang/openwrt-packages && mv -n openwrt-packages/luci-* ./; rm -rf openwrt-packages
         git_clone https://github.com/CHN-beta/rkp-ipid
-        git_clone https://github.com/Erope/openwrt_nezha nezha && mvdir nezha
+        git_clone https://github.com/dysf888/OpenWRT_NeZha_V1 nezha && mvdir nezha
         ) &
         (
         git_clone https://github.com/koshev-msk/modemfeed && mv -n modemfeed/*/!(telephony)/* ./ && rm -rf modemfeed
