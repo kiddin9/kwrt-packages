@@ -1,0 +1,11 @@
+{
+	"luci-app-nezha-agent-v1": {
+		"description": "Grant UCI access for luci-app-nezha-agent-v1",
+		"read": {
+			"uci": [ "nezha-agent-v1" ]
+		},
+		"write": {
+			"uci": [ "nezha-agent-v1" ]
+		}
+	}
+}

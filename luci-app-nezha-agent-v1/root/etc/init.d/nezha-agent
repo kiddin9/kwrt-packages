@@ -1,0 +1,26 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+USE_PROCD=1
+PROG=/usr/bin/nezha-agent
+
+start_service() {
+    if [ ! -f "/etc/config/nz.yml" ]; then
+        return 1
+    fi
+    
+    procd_open_instance
+    procd_set_param command $PROG -c /etc/config/nz.yml
+    procd_set_param respawn
+    procd_set_param stderr 1
+    procd_close_instance
+}
+
+service_triggers() {
+    procd_add_reload_trigger "nezha-agent"
+}
+
+reload_service() {
+    stop
+    start
+}

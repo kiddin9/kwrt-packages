@@ -1,0 +1,28 @@
+<!-- 
+	Copyright (C) 2021 zPonds <admin@shinenet.cn>
+	Copyright (C) 2020 KFERMercer <KFER.Mercer@gmail.com>
+	THIS IS FREE SOFTWARE, LICENSED UNDER GPLv3.
+ -->
+
+<fieldset class="cbi-section">
+	<legend><%:哪吒监控 状态%></legend>
+	<p id="nezha-agent_status">
+		<em><%:Collecting data...%></em>
+	</p>
+</fieldset>
+
+<script type="text/javascript">//<![CDATA[
+XHR.poll(3, '<%=url([[admin]], [[services]], [[nezha-agent-v1]], [[status]])%>', null,
+	function(x, data) {
+		var tb = document.getElementById('nezha-agent_status');
+		if (data && tb) {
+			if (data.running) {
+				tb.innerHTML = '<em><b><font color=green>哪吒监控 运行中</font></b></em>';
+			} else {
+				tb.innerHTML = '<em><b><font color=red>哪吒监控 未运行</font></b></em>';
+			}
+		}
+	}
+);
+//]]>
+</script>
