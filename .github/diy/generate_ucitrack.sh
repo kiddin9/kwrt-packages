@@ -4,6 +4,13 @@ find . -type f \
     -not -path "*.github*" \
     -not -name "Makefile" \
     | while read -r file; do
+    needs_reload_service=0
+    
+    # 检查是否需要添加 reload_service
+    if (grep -q "stop_service\|service_stopped" "$file") && ! grep -q "reload_service" "$file"; then
+        needs_reload_service=1
+    fi
+    
     if grep -q "add ucitrack" "$file"; then
         # 提取xx的值
         xx=$(grep "add ucitrack" "$file" | awk '{print $3}' | head -1 | tr -d '\r' | tr -d ' ')
@@ -23,23 +30,31 @@ find . -type f \
             echo "EEOF"
             echo "/etc/init.d/ucitrack reload"
             echo "}"
-            # 获取其余内容：保留包含 "get ucitrack" 的行，删除其他包含 "ucitrack" 的行
-            # sed '1d' "$file" | awk '/get ucitrack/ {print; next} !/ ucitrack/ {print}'
+            # 获取其余内容
             sed '1d' "$file"
+            
+            # 如果需要添加 reload_service，在这里添加
+            if [ "$needs_reload_service" = "1" ]; then
+                echo
+                echo "reload_service() {"
+                echo -e "\trestart"
+                echo "}"
+            fi
         } > "${file}.tmp"
-
-        # 检查是否存在 stop_service 或 service_stopped，但没有 reload_service
-        if (grep -q "stop_service\|service_stopped" "${file}.tmp") && ! grep -q "reload_service" "${file}.tmp"; then
-            # 在文件末尾添加 reload_service 函数
-            echo >> "${file}.tmp"  # 添加空行
-            echo "reload_service() {" >> "${file}.tmp"
-            echo -e "\trestart" >> "${file}.tmp"
-            echo "}" >> "${file}.tmp"
-        fi
         
         # 替换原文件
         mv "${file}.tmp" "$file"
         
-        echo "已处理文件: $file"
+        echo "已处理文件: $file (ucitrack)"
+        [ "$needs_reload_service" = "1" ] && echo "已添加 reload_service 到文件: $file"
+        
+    elif [ "$needs_reload_service" = "1" ]; then
+        # 如果只需要添加 reload_service，直接追加到文件末尾
+        echo >> "$file"
+        echo "reload_service() {" >> "$file"
+        echo -e "\trestart" >> "$file"
+        echo "}" >> "$file"
+        
+        echo "已添加 reload_service 到文件: $file"
     fi
 done
