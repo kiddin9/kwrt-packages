@@ -90,7 +90,7 @@ msgid "Not found"
 msgstr ""
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/config.js:35
-msgid "Password for AdGuard Home"
+msgid "密码"
 msgstr ""
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/status.js:136
@@ -160,7 +160,7 @@ msgstr ""
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/config.js:28
 msgid "Username for AdGuard Home"
-msgstr ""
+msgstr "用户名"
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/status.js:47
 msgid "Version"
@@ -174,3 +174,33 @@ msgstr ""
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/status.js:40
 msgid "Yes"
 msgstr ""
+
+msgid "RUNNING"
+msgstr "运行中"
+
+msgid "NOT RUNNING"
+msgstr "未运行"
+
+msgid "Collecting data..."
+msgstr "获取数据中..."
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Redirect"
+msgstr "重定向"
+
+msgid "none"
+msgstr "无"
+
+msgid "Run as dnsmasq upstream server"
+msgstr "作为dnsmasq的上游服务器"
+
+msgid "Redirect 53 port to AdGuardHome"
+msgstr "重定向53端口到AdGuardHome"
+
+msgid "Use port 53 replace dnsmasq"
+msgstr "使用53端口替换dnsmasq"
+
+msgid "AdGuardHome redirect mode"
+msgstr "AdGuardHome重定向模式"
