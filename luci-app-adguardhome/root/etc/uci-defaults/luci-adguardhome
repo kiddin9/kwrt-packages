@@ -1,5 +1,5 @@
 #!/bin/sh
 
-chown +x /etc/init.d/adguardhome /usr/libexec/rpcd/luci.adguardhome
+chmod +x /etc/init.d/adguardhome /usr/libexec/rpcd/luci.adguardhome
 
 exit 0

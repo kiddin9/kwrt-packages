@@ -65,11 +65,20 @@ return view.extend({
 		o.default = o.disabled;
 		o.rmempty = false;
 
+		// 添加重定向模式选择
+		o = s.option(form.ListValue, 'redirect', _('Redirect'), _('AdGuardHome redirect mode'));
+		o.value('none', _('none'));
+		o.value('dnsmasq-upstream', _('Run as dnsmasq upstream server'));
+		o.value('redirect', _('Redirect 53 port to AdGuardHome'));
+		o.value('exchange', _('Use port 53 replace dnsmasq'));
+		o.default = 'none';
+
 		o = s.option(form.Value, 'web_username', _('Username for AdGuard Home'), _('The username you configured when you set up AdGuard Home'));
-		o.placeholder = 'adguard';
+		o.default = 'admin';
 
 		o = s.option(form.Value, 'web_password', _('Password for AdGuard Home'), _('The password you configured when you set up AdGuard Home'));
 		o.password = true;
+		o.default = 'admin';
 
 		var ChangePassword = form.Button.extend({
 			set_passwd: rpc.declare({

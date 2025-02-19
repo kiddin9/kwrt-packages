@@ -117,3 +117,7 @@ perm_converter() {
 		i=$(($i + 1))	
 	done
 }
+
+reload_service() {
+	restart
+}

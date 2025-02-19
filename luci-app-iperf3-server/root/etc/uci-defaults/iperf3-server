@@ -1,4 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-iperf3-server.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-iperf3-server.json << EEOF
+{
+    "config": "iperf3-server",
+    "init": "iperf3-server"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@iperf3-server[-1]

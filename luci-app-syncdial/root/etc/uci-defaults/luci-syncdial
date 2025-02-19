@@ -1,4 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-syncdial.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-syncdial.json << EEOF
+{
+    "config": "syncdial",
+    "init": "syncdial"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
 touch /etc/config/syncdial
 
 uci -q batch <<-EOF >/dev/null

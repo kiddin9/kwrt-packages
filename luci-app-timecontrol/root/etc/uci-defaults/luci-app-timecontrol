@@ -1,4 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-timecontrol.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-timecontrol.json << EEOF
+{
+    "config": "timecontrol",
+    "init": "timecontrol"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.timecontrol
