@@ -27,6 +27,15 @@ find . -type f \
             # sed '1d' "$file" | awk '/get ucitrack/ {print; next} !/ ucitrack/ {print}'
             sed '1d' "$file"
         } > "${file}.tmp"
+
+        # 检查是否存在 stop_service 或 service_stopped，但没有 reload_service
+        if (grep -q "stop_service\|service_stopped" "${file}.tmp") && ! grep -q "reload_service" "${file}.tmp"; then
+            # 在文件末尾添加 reload_service 函数
+            echo >> "${file}.tmp"  # 添加空行
+            echo "reload_service() {" >> "${file}.tmp"
+            echo -e "\trestart" >> "${file}.tmp"
+            echo "}" >> "${file}.tmp"
+        fi
         
         # 替换原文件
         mv "${file}.tmp" "$file"
