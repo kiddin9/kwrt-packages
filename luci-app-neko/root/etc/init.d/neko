@@ -48,3 +48,7 @@ stop() {
 stop_service() {
 	stop
 }
+
+reload_service() {
+	restart
+}

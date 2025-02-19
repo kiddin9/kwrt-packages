@@ -154,3 +154,7 @@ start_service() {
 stop_service() {
 	flush_ipt_rules
 }
+
+reload_service() {
+	restart
+}

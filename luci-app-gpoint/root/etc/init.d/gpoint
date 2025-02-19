@@ -34,3 +34,7 @@ stop_service() {
 service_triggers() {
       procd_add_reload_trigger "gpoint"
 }
+
+reload_service() {
+	restart
+}

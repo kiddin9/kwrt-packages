@@ -117,3 +117,6 @@ restart() {
 	stop
 	start
 }
+reload_service() {
+	restart
+}

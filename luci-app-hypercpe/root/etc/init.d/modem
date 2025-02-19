@@ -80,3 +80,7 @@ stop_service() {
     killall quectel-CM  # 考虑使用更精确的方法来停止服务
     echo "quectel-CM has stopped."
 }
+
+reload_service() {
+	restart
+}

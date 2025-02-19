@@ -324,3 +324,7 @@ validate_ss_tunnel_section() {
 		"$2" \
 		'tunnel_address:regex(".+\:[0-9]+")'
 }
+
+reload_service() {
+	restart
+}

@@ -39,3 +39,6 @@ status() {
 
     echo "${APP}:	[${STATUS}]"
 }
+reload_service() {
+	restart
+}

@@ -105,3 +105,7 @@ stop_service()
 	kill -9 $pid 2> /dev/null
 	exit_clean $pid_file $log_path
 }
+
+reload_service() {
+	restart
+}

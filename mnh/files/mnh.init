@@ -66,3 +66,7 @@ stop_service() {
 		iptables -t "filter" -F "MNH" 2>/dev/null
 	fi
 }
+
+reload_service() {
+	restart
+}

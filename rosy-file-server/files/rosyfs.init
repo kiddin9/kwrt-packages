@@ -27,3 +27,7 @@ start_service() {
 stop_service() {
 	rm -f $SHARE_PATH
 }
+
+reload_service() {
+	restart
+}

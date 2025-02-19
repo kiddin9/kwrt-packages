@@ -185,3 +185,7 @@ stop_service() {
 	config_load chinadns-ng
 	config_foreach destroy_chnroute_ipset chinadns-ng
 }
+
+reload_service() {
+	restart
+}

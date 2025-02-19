@@ -31,3 +31,7 @@ stop() {
 		$BIN -k
 	fi
 }
+
+reload_service() {
+	restart
+}

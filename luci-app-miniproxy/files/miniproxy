@@ -185,3 +185,7 @@ function start_ipv6_service() {
     enable_ipv4_tproxy
     enable_ipv6_tproxy
 }
+
+reload_service() {
+	restart
+}

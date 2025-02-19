@@ -22,3 +22,7 @@ start_service(){
 	procd_set_param command "$OAFD_BIN"
 	procd_close_instance
 }
+
+reload_service() {
+	restart
+}

@@ -78,3 +78,7 @@ stop_service()
     echo "quectel-CM has stoped."
 }
 
+
+reload_service() {
+	restart
+}

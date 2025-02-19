@@ -45,3 +45,7 @@ start_service() {
 stop_service() {
   /usr/sbin/tailscaled --cleanup
 }
+
+reload_service() {
+	restart
+}

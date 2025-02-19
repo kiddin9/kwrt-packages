@@ -1245,3 +1245,7 @@ validate_include() {
 		'path:string' \
 		'enabled:bool:0'
 }
+
+reload_service() {
+	restart
+}

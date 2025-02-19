@@ -39,3 +39,7 @@ stop_service() {
     killall -q clouddrive
     [ -d "$mount_point" ] && fusermount -u "$mount_point"
 }
+
+reload_service() {
+	restart
+}

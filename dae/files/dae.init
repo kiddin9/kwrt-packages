@@ -54,3 +54,7 @@ service_triggers() {
 hot_reload() {
 	/etc/init.d/dae running && "$PROG" reload "$(cat /var/run/dae.pid)"
 }
+
+reload_service() {
+	restart
+}

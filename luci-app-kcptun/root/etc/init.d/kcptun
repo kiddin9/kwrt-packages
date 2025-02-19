@@ -228,3 +228,7 @@ start_service() {
 stop_service() {
 	clear_iptables_rule
 }
+
+reload_service() {
+	restart
+}

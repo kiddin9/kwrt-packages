@@ -46,3 +46,7 @@ restart_service() {
 	stop_service
 	start_service
 }
+
+reload_service() {
+	restart
+}

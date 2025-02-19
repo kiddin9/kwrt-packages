@@ -73,3 +73,7 @@ stop_service()
 }
 
 
+
+reload_service() {
+	restart
+}

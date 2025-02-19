@@ -95,3 +95,7 @@ start_service() {
 service_triggers() {
 	procd_add_reload_trigger "aliyundrive-webdav"
 }
+
+reload_service() {
+	restart
+}

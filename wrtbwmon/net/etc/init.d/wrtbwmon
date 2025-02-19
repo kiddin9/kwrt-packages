@@ -42,3 +42,7 @@ stop_service() {
 	procd_kill wrtbwmon
 	kill -CONT $(cat $PID_FILE)
 }
+
+reload_service() {
+	restart
+}
