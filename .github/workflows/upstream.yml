@@ -485,13 +485,6 @@ jobs:
         done
         touch /tmp/ok2
         ) &
-
-        (
-        chmod +x github/diy/*.sh
-        bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
-        bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
-        bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
-        ) &
         
         (
         sed -i \
@@ -504,6 +497,10 @@ jobs:
           */Makefile
         ) &
 
+        chmod +x github/diy/*.sh
+        bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
+        bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
+        bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
         #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
         sed -i "s/default n/default y/" dockerd/Config.in
         sed -i '$a cgi-timeout = 500' uwsgi/files-luci-support/luci-*.ini
