@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-natter.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-natter.json << EEOF
-{
-    "config": "natter",
-    "init": "natter"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@natter[-1]

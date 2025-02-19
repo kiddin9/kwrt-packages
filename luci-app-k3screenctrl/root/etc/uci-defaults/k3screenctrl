@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-k3screenctrl.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-k3screenctrl.json << EEOF
-{
-    "config": "k3screenctrl",
-    "init": "k3screenctrl"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@k3screenctrl[-1]
 	add ucitrack k3screenctrl

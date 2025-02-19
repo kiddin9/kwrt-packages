@@ -227,7 +227,3 @@ uci_get_by_type() {
 	local ret=$(uci get natter.@$1[$2].$3 2>/dev/null)
 	echo ${ret:=$4}
 }
-
-reload_service() {
-	restart
-}

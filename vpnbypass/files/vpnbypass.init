@@ -136,7 +136,3 @@ service_triggers() {
 			output "$serviceName monitoring interfaces: $ifaces\\n"
 		procd_close_trigger
 }
-
-reload_service() {
-	restart
-}

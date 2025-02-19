@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-autotimeset.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-autotimeset.json << EEOF
-{
-    "config": "autotimeset",
-    "init": "autotimeset"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 chmod +x  /etc/init.d/autotimeset /usr/bin/timesethandler /etc/init.d/autotimesetrun
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@autotimeset[-1]
