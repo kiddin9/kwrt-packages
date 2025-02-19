@@ -8,7 +8,7 @@
 . /usr/lib/natmap/common.sh
 
 start() {
-	local retry='--connect-timeout 3 --retry 8'
+	local retry='--connect-timeout 3 --retry 5'
 	$CURL $retry -L -o /dev/null -X POST \
 		-H 'Content-Type: application/json' \
 		-d '{"chat_id":"'"${CHAT_ID}"'","text":"'"${text}"'","parse_mode":"HTML","disable_notification":"false"}' \

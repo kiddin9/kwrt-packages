@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2023-2024 Anya Lin <hukk1996@gmail.com>
+# Copyright (C) 2023-2025 Anya Lin <hukk1996@gmail.com>
 
 include $(TOPDIR)/rules.mk
 
@@ -9,8 +9,8 @@ PKG_NAME:=natmapt
 PKG_UPSTREAM_VERSION:=20250101
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=30
-SCRIPTS_VERSION:=0.2025.1.2
+PKG_RELEASE:=31
+SCRIPTS_VERSION:=0.2025.2.19
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://github.com/heiher/natmap/releases/download/$(PKG_UPSTREAM_VERSION)
@@ -20,7 +20,7 @@ PKG_SOURCE:=$(PKG_UPSTREAM_NAME)-$(PKG_UPSTREAM_VERSION).tar.xz
 else
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/heiher/natmap.git
-PKG_SOURCE_VERSION:=41badefca8ffaecab7e364e5bf7304bd24161627
+PKG_SOURCE_VERSION:=3e663758f2f52ba3a20bd4285b2fbf6d23100e51
 PKG_MIRROR_HASH:=skip
 
 PKG_SOURCE:=$(PKG_UPSTREAM_NAME)-$(PKG_UPSTREAM_VERSION)-$(PKG_SOURCE_VERSION).tar.gz

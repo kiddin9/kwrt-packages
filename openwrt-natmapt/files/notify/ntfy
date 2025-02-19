@@ -18,7 +18,7 @@ http_request() {
 }
 
 start() {
-	local retry='--connect-timeout 3 --retry 8'
+	local retry='--connect-timeout 3 --retry 5'
 	json_init
 	json_add_string topic "${TOPIC}"
 	json_add_string message "${text}"
