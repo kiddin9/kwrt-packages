@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-aliyundrive-webdav.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-aliyundrive-webdav.json << EEOF
-{
-    "config": "aliyundrive-webdav",
-    "init": "aliyundrive-webdav"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@aliyundrive-webdav[-1]

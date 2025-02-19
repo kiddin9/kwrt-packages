@@ -56,7 +56,3 @@ stop_service() {
 	service_stop "$PPPOE_SERVER_EXEC"
 	rm -f $SERVICE_PID_FILE
 }
-
-reload_service() {
-	restart
-}

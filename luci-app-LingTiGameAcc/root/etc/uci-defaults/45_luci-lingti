@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-lingti.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-lingti.json << EEOF
-{
-    "config": "lingti",
-    "init": "lingti"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@lingti[-1]

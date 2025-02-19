@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-ucitrack.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-ucitrack.json << EEOF
-{
-    "config": "ucitrack",
-    "init": "ucitrack"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 
 uci -q get ucitrack.@rtty[0] > /dev/null || {
   uci add ucitrack rtty > /dev/null

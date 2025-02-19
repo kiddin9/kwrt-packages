@@ -107,7 +107,7 @@ if [ "$REDIRECT" = "redirect" ]; then
 		set_redirect $AdGuardHome_PORT
 elif [ "$REDIRECT" = "dnsmasq-upstream" ]; then
 		set_forward_dnsmasq $AdGuardHome_PORT $DNSMASQ_SERVER
-elif [ "$REDIRECT" == "exchange" ]; then
+elif [ "$REDIRECT" = "exchange" ]; then
 	use_port53 $dnsmasq_port $AdGuardHome_PORT $CONFIG_FILE
 fi
 

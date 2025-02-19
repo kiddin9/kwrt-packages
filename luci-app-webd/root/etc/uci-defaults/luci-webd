@@ -1,13 +1,4 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-webd.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-webd.json << EEOF
-{
-    "config": "webd",
-    "init": "webd"
-}
-EEOF
-/etc/init.d/ucitrack reload
-}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@webd[-1]
