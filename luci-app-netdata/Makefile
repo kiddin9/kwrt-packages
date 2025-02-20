@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 LUCI_NAME:=luci-app-netdata
 
 LUCI_TITLE:=LuCI Netdata
-LUCI_DEPENDS:=+netdata-ssl +openssl-util
+LUCI_DEPENDS:=+netdata
 
 LUCI_DESCRIPTION:=Real-time performance monitoring
 
