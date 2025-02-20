@@ -322,6 +322,7 @@ jobs:
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/kiddin9/luci-app-qosmate
         git_clone https://github.com/muink/luci-app-netdata
+        git_clone https://github.com/muink/openwrt-netdata-ssl
         git_clone https://github.com/xptsp/luci-app-ympd
         git_clone https://github.com/xptsp/openwrt-ympd
         git_clone https://github.com/xptsp/openwrt-peanut
@@ -365,7 +366,7 @@ jobs:
         utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
-        sound/spotifyd devel/go-rice admin/gotop admin/netdata
+        sound/spotifyd devel/go-rice admin/gotop
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
@@ -438,7 +439,7 @@ jobs:
              -H "Authorization: Bearer ${{ secrets.TOKEN_KIDDIN9 }}" \
              -X POST -d '{ "query": "query {repository(owner: \"'"$1"'\", name: \"'"$2"'\"){latestRelease{tagName tagCommit{oid}}refs(refPrefix:\"refs/tags/\",last:1,orderBy:{field:TAG_COMMIT_DATE,direction:ASC}){edges{node{name target{oid}}}}defaultBranchRef{target{...on Commit {oid}}}}}"}' https://api.github.com/graphql)
         }
-        for pkg in $(ls !(luci-*|cloudflared|dnsproxy|ppp|joker|ps3netsrv|sub-web|sms-tool|openwrt-ympd|gost|aic8800|gecoosac|headscale|aria2|webd|mihomo|netmaker-openwrt|hickory-dns|frp|libcryptopp|toml11|chinadns-ng|ddns-go|libtorrent-rasterbar|ua2f|homebox|xtables-wgobfs|nexttrace|tuic-server|subconverter|softethervpn5|shadowsocksr-libev|mt76|mmdvm-host|alist|curl|qBittorrent-Enhanced-Edition|libwxwidgets|ysf-clients|natter|fullconenat|v2raya|r8152|amule|brook|3proxy|containerd|oscam|netmaker|n2n_v2|naiveproxy|miniupnpd-nft|upx|netdata|tailscale|mosdns|coremark|mbedtls|quickjspp|accel-ppp)/Makefile); do
+        for pkg in $(ls !(luci-*|cloudflared|dnsproxy|ppp|joker|ps3netsrv|sub-web|sms-tool|openwrt-ympd|gost|aic8800|gecoosac|headscale|aria2|webd|mihomo|netmaker-openwrt|hickory-dns|frp|libcryptopp|toml11|chinadns-ng|ddns-go|libtorrent-rasterbar|ua2f|homebox|xtables-wgobfs|nexttrace|tuic-server|subconverter|softethervpn5|shadowsocksr-libev|mt76|mmdvm-host|alist|curl|qBittorrent-Enhanced-Edition|libwxwidgets|ysf-clients|natter|fullconenat|v2raya|r8152|amule|brook|3proxy|containerd|oscam|netmaker|n2n_v2|naiveproxy|miniupnpd-nft|upx|tailscale|mosdns|coremark|mbedtls|quickjspp|accel-ppp)/Makefile); do
           repo="$(grep ^PKG_SOURCE_URL $pkg | grep github | cut -f 4-5 -d '/' | sed -e 's/.git//' | grep -E '[0-9a-zA-Z_-]+$')" || true
           if [ "$repo" ]; then
             owner="$(echo $repo | cut -f 1 -d '/')"
