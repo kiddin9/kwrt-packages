@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qosmate
 PKG_VERSION:=0.5.48
-PKG_RELEASE:=34
+PKG_RELEASE:=35
 
 PKG_MAINTAINER:=Markus Hütter <mh@hudra.net>
 PKG_LICENSE:=GPL-3.0-or-later

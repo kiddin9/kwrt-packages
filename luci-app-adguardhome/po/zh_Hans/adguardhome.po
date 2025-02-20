@@ -90,8 +90,8 @@ msgid "Not found"
 msgstr ""
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/config.js:35
-msgid "密码"
-msgstr ""
+msgid "Password for AdGuard Home"
+msgstr "密码"
 
 #: applications/luci-app-adguardhome/htdocs/luci-static/resources/view/adguardhome/status.js:136
 msgid "Please open the Configuration section, and provide the credentials."

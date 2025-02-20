@@ -21,7 +21,7 @@
 				"/sbin/logread -e AdGuardHome": [
 					"exec"
 				],
-                "/etc/init.d/dnsmasq": [ "exec" ],
+				"/etc/init.d/dnsmasq": [ "exec" ],
 				"/etc/init.d/firewall": [ "exec" ]
 			}
 		},
