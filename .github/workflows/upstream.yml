@@ -322,7 +322,7 @@ jobs:
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/kiddin9/luci-app-qosmate
         git_clone https://github.com/muink/luci-app-netdata
-        git_clone https://github.com/kiddin9/openwrt-netdata
+        git_clone https://github.com/kiddin9/openwrt-netdata netdata
         git_clone https://github.com/xptsp/luci-app-ympd
         git_clone https://github.com/xptsp/openwrt-ympd
         git_clone https://github.com/xptsp/openwrt-peanut
