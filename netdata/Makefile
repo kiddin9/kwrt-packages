@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
 PKG_VERSION:=2.2.5
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -128,6 +128,8 @@ define Package/netdata/install
 	$(INSTALL_DIR) $(1)/etc/nginx/conf.d
 	$(INSTALL_DATA) ./files/netdata.locations $(1)/etc/nginx/conf.d/netdata.locations
 	$(INSTALL_DATA) ./files/netdata.htpasswd  $(1)/etc/nginx/conf.d/netdata.htpasswd
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DATA) ./files/netdata.uci-defaults $(1)/etc/uci-defaults/luci-netdata
 endef
 
 $(eval $(call BuildPackage,netdata))
