@@ -57,18 +57,6 @@
  
  include $(INCLUDE_DIR)/package.mk
 
---- a/luci-app-netdata/Makefile
-+++ b/luci-app-netdata/Makefile
-@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
- LUCI_NAME:=luci-app-netdata
- 
- LUCI_TITLE:=LuCI Netdata
--LUCI_DEPENDS:=+netdata-ssl +openssl-util
-+LUCI_DEPENDS:=+netdata
- 
- LUCI_DESCRIPTION:=Real-time performance monitoring
-
-
 --- a/pgyvpn/Makefile
 +++ b/pgyvpn/Makefile
 @@ -36,7 +36,6 @@ PKG_SOURCE:=pgyvpnsvr
