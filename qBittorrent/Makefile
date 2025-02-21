@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qBittorrent
 PKG_VERSION:=release-5.0.4
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/qbittorrent/qBittorrent/tar.gz/$(PKG_VERSION)?
@@ -27,7 +27,7 @@ define Package/qbittorrent
   URL:=https://github.com/qbittorrent/qBittorrent
   DEPENDS:=+libtorrent-rasterbar +libQt6Core +libQt6Network +libQt6Sql \
     +libQt6Xml +qt6-plugin-libqopensslbackend +qt6-plugin-libqsqlite
-  PROVIDES:=qbittorrent
+  PROVIDES:=qBittorrent
 endef
 
 define Package/qbittorrent/description
