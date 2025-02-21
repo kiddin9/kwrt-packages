@@ -109,16 +109,18 @@ return view.extend({
             return customRules;
         };
         o.write = function(section_id, formvalue) {
-            const fullContent = `table inet qosmate_custom {
+            // Prepare the new custom rules (only the table definition)
+            const newRules = `table inet qosmate_custom {
 ${formvalue.trim()}
 }`;
-            return fs.write('/etc/qosmate.d/custom_rules.nft', fullContent)
-                .then(() => {
-                    return fs.exec('/etc/init.d/qosmate', ['validate_custom_rules']);
-                })
-                .then(() => {
-                    return fs.read('/tmp/qosmate_custom_rules_validation.txt');
-                })
+
+            // Delete the existing table before applying new rules
+            // If deletion fails (table doesn't exist), ignore the error
+            return fs.exec('nft', ['delete', 'table', 'inet', 'qosmate_custom'])
+                .catch(() => { /* ignore deletion error */ })
+                .then(() => fs.write('/etc/qosmate.d/custom_rules.nft', newRules))
+                .then(() => fs.exec('/etc/init.d/qosmate', ['validate_custom_rules']))
+                .then(() => fs.read('/tmp/qosmate_custom_rules_validation.txt'))
                 .then((result) => {
                     if (result.includes('Custom rules validation successful.')) {
                         ui.addNotification(null, E('p', _('Custom rules validation successful.')), 'success');

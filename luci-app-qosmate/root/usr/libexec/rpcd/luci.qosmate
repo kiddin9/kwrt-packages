@@ -72,21 +72,55 @@ end
 
 -- Retrieve all current connections from nf_conntrack
 local function get_connections()
-    local connections = {}
+    local conn_list = {}
     local f = io.open("/proc/net/nf_conntrack", "r")
     if not f then
-        return connections
+        return {}
     end
 
+    -- Read all connections from nf_conntrack
     for line in f:lines() do
         local conn = parse_connection(line)
         if conn then
-            local key = string.format("%s:%s:%s:%s:%s:%s", conn.layer3, conn.protocol, conn.src, conn.sport, conn.dst, conn.dport)
-            connections[key] = conn
+            conn.total_bytes = (conn.in_bytes or 0) + (conn.out_bytes or 0)
+            table.insert(conn_list, conn)
         end
     end
     f:close()
+
+    -- Sort the entire list in descending order by total_bytes
+    table.sort(conn_list, function(a, b)
+        return a.total_bytes > b.total_bytes
+    end)
+
+    -- Determine max_entries based on system load
+    local load_avg = io.open("/proc/loadavg"):read("*a")
+    local load1 = tonumber(load_avg:match("^(%d+%.%d+)")) or 0
     
+    -- Default: no limit
+    local max_entries = math.huge
+    
+    -- Simple thresholds based on absolute load
+    if load1 > 2.0 then
+        max_entries = 100
+        -- io.popen("logger -t qosmate 'Critical load! Limiting to 100 connections'")
+    elseif load1 > 1.5 then
+        max_entries = 500
+        -- io.popen("logger -t qosmate 'High load! Limiting to 500 connections'")
+    elseif load1 > 0.8 then
+        max_entries = 1000
+        -- io.popen("logger -t qosmate 'Moderate load! Limiting to 1000 connections'")
+    end
+
+    -- Final connections table
+    local connections = {}
+    for i = 1, math.min(max_entries, #conn_list) do
+        local conn = conn_list[i]
+        local key = string.format("%s:%s:%s:%s:%s:%s",
+            conn.layer3, conn.protocol, conn.src, conn.sport, conn.dst, conn.dport)
+        connections[key] = conn
+    end
+
     return connections
 end
 

@@ -50,6 +50,14 @@
             "path": "qosmate/rules"
         }
     },
+    "admin/network/qosmate/ipsets": {
+        "title": "IP Sets",
+        "order": 45,
+        "action": {
+            "type": "view",
+            "path": "qosmate/ipsets"
+        }
+    },
     "admin/network/qosmate/custom_rules": {
         "title": "Custom Rules",
         "order": 60,
@@ -66,5 +74,4 @@
             "path": "qosmate/connections"
         }
     }
-    
 }

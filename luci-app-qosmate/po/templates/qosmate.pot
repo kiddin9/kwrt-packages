@@ -1,0 +1,14 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: htdocs/luci-static/resources/view/qosmate/settings.js:25
+msgid "QoSmate Settings"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/qosmate/settings.js:26
+msgid "Configure QoSmate settings."
+msgstr ""
+
+#: htdocs/luci-static/resources/view/qosmate/hfsc.js:15
+msgid "HFSC Settings"
+msgstr ""

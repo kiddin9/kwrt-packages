@@ -8,7 +8,7 @@
 'require poll';
 'require tools.widgets as widgets';
 
-const UI_VERSION = '1.0.7';
+const UI_VERSION = '1.0.22';
 
 var callInitAction = rpc.declare({
     object: 'luci',
@@ -19,6 +19,7 @@ var callInitAction = rpc.declare({
 
 var currentVersion = 'Unknown';
 var latestVersion = 'Unknown';
+var healthCheckData = null;
 
 function fetchCurrentVersion() {
     return fs.read('/etc/qosmate.sh').then(function(content) {
@@ -83,12 +84,46 @@ return view.extend({
     load: function() {
         return Promise.all([
             uci.load('qosmate'),
+            this.fetchHealthCheck(),
             fetchCurrentVersion().catch(() => 'Unable to fetch'),
             fetchLatestVersion()
         ]).catch(error => {
             console.error('Error in load function:', error);
             return [null, 'Unable to fetch', 'Unable to fetch'];
         });
+    },
+
+    fetchHealthCheck: function() {
+        return fs.exec_direct('/etc/init.d/qosmate', ['health_check'])
+            .then((res) => {
+                var output = res.trim();
+                // Parse the full status string (everything between status= and ;errors=)
+                var statusMatch = output.match(/status=(.*?);errors=/);
+                var errorsMatch = output.match(/errors=(\d+)$/);
+                
+                var statusString = statusMatch ? statusMatch[1] : 'Unknown';
+                var errorsCount = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                
+                var statusSegments = statusString.split(';');
+                var detailsArray = [];
+                statusSegments.forEach(function(segment) {
+                    if (!segment) return;
+                    detailsArray.push(segment);
+                });
+                
+                healthCheckData = {
+                    details: detailsArray,
+                    errors: errorsCount
+                };
+               // console.log("Health check data loaded successfully:", healthCheckData);
+            })
+            .catch((err) => {
+                console.error('Health check failed:', err);
+                healthCheckData = {
+                    details: ['Health check failed: ' + err],
+                    errors: 1
+                };
+            });
     },
 
     render: function() {
@@ -99,19 +134,68 @@ return view.extend({
         s = m.section(form.NamedSection, 'global', 'global', _('Global Settings'));
         s.anonymous = true;
 
-        o = s.option(form.DummyValue, '_status', _('Service Status'));
+        o = s.option(form.DummyValue, '_health_check', _('Service Status'));
         o.rawhtml = true;
         o.render = function(section_id) {
-            var runningText = _('Running');
-            var stoppedText = _('Stopped');
-            var status = uci.get('qosmate', 'global', 'enabled') === '1' ? runningText : stoppedText;
-            var statusColor = status === runningText ? 'green' : 'red';
+            if (!healthCheckData) {
+                return E('div', { 'class': 'cbi-value' }, [
+                    E('label', { 'class': 'cbi-value-title' }, _('Service Status')),
+                    E('div', { 'class': 'cbi-value-field' }, _('Loading health check status...'))
+                ]);
+            }
+
+            var statusHtml = E('div', { 'class': 'health-status', 'style': 'display: flex; gap: 16px; align-items: center;' });
+            
+            healthCheckData.details.forEach(function(detail) {
+                var [type, status] = detail.split(':');
+                var displayType = type.charAt(0).toUpperCase() + type.slice(1);
+                var icon, color;
+                switch(status.toLowerCase()) {
+                    case 'enabled':
+                    case 'started':
+                        icon = '✓';
+                        color = 'green';
+                        break;
+                    case 'disabled':
+                    case 'stopped':
+                        icon = '✕';
+                        color = 'red';
+                        break;
+                    case 'ok':
+                        icon = '✓';
+                        color = 'green';
+                        break;
+                    case 'failed':
+                        icon = '✕';
+                        color = 'red';
+                        break;
+                    case 'missing':
+                        icon = '⚠';
+                        color = 'orange';
+                        break;
+                    default:
+                        icon = '⚠';
+                        color = 'orange';
+                }
+                
+                statusHtml.appendChild(
+                    E('div', { 'style': 'display: flex; align-items: center; gap: 4px;' }, [
+                        E('span', { 
+                            'style': 'color: ' + color + '; font-size: 15px; font-weight: bold; min-width: 20px;'
+                        }, icon),
+                        E('span', { 
+                            'style': 'font-size: 13px; color: #666;'
+                        }, _(displayType)),
+                    ])
+                );
+            });
+
             return E('div', { 'class': 'cbi-value' }, [
                 E('label', { 'class': 'cbi-value-title' }, _('Service Status')),
-                E('div', { 'class': 'cbi-value-field', 'style': 'color:' + statusColor }, status)
+                E('div', { 'class': 'cbi-value-field' }, statusHtml)
             ]);
         };
-        
+
         o = s.option(form.DummyValue, '_buttons', _('Service Control'));
         o.rawhtml = true;
         o.render = function(section_id) {

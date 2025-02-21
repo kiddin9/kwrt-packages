@@ -22,5 +22,6 @@ wget -O /usr/libexec/rpcd/luci.qosmate https://raw.githubusercontent.com/hudra0/
 chmod +x /usr/libexec/rpcd/luci.qosmate && \
 /etc/init.d/rpcd restart && \
 /etc/init.d/uhttpd restart
+# End of command - Press Enter after pasting
 
 ```   

@@ -90,6 +90,13 @@ return view.extend({
         createOption('PACKETSIZE', _('Avg Packet Size (B)'), _('Used with PFIFOMIN to calculate PFIFO limit'), _('Default: 450'), 'uinteger');
         createOption('netemdelayms', _('NETEM Delay (ms)'), _('NETEM delay in milliseconds'), _('Default: 30'), 'uinteger');
         createOption('netemjitterms', _('NETEM Jitter (ms)'), _('NETEM jitter in milliseconds'), _('Default: 7'), 'uinteger');
+
+        o = s.option(form.ListValue, 'netem_direction', _('NETEM Direction'), _('Select which direction to apply the NETEM delay/jitter settings'));
+        o.depends('gameqdisc', 'netem');
+        o.value('both', _('Both Directions'));
+        o.value('egress', _('Egress Only'));
+        o.value('ingress', _('Ingress Only'));
+        o.default = 'both';     
         
         o = s.option(form.ListValue, 'netemdist', _('NETEM Distribution'), _('NETEM delay distribution'));
         o.value('experimental', _('Experimental'));

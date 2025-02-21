@@ -59,6 +59,9 @@ return view.extend({
     connectionHistory: {},
     historyLength: 10,
     lastUpdateTime: 0,
+    autoRefresh: true,
+    refreshTimeout: null,
+    hasPolledOnce: false,
 
     load: function() {
         return Promise.all([
@@ -75,7 +78,7 @@ return view.extend({
 
         var filterInput = E('input', {
             'type': 'text',
-            'placeholder': _('Filter by IP, IP:Port, Port, Protocol or DSCP'),
+            'placeholder': _('Filter by: IP IP:Port Port Protocol DSCP'),
             'style': 'margin-bottom: 10px; width: 300px;',
             'value': view.filter
         });
@@ -179,22 +182,37 @@ return view.extend({
             connections.sort(view.sortFunction.bind(view));
         
             connections.forEach(function(conn) {
+                if (view.filter) {
+                    // Split the filter string by whitespace to get individual tokens
+                    var tokens = view.filter.split(/\s+/).map(function(token) {
+                        return token.trim().toLowerCase();
+                    });
+
+                    // Collect the relevant fields for matching
+                    var dscpString = dscpToString(conn.dscp);
+                    var srcFull = conn.src + (conn.sport !== "-" ? ':' + conn.sport : '');
+                    var dstFull = conn.dst + (conn.dport !== "-" ? ':' + conn.dport : '');
+                    var fields = [
+                        conn.protocol.toLowerCase(),
+                        srcFull.toLowerCase(),
+                        dstFull.toLowerCase(),
+                        dscpString.toLowerCase()
+                    ];
+
+                    // Each token must match at least one field (AND logic across tokens, OR logic across fields)
+                    var pass = tokens.every(function(t) {
+                        return fields.some(function(field) {
+                            return field.includes(t);
+                        });
+                    });
+                    if (!pass) {
+                        return;
+                    }
+                }
                 var srcFull = conn.src + ':' + (conn.sport || '-');
                 var dstFull = conn.dst + ':' + (conn.dport || '-');
                 var dscpString = dscpToString(conn.dscp);
                 
-                if (view.filter && !(
-                    conn.protocol.toLowerCase().includes(view.filter) ||
-                    srcFull.toLowerCase().includes(view.filter) ||
-                    dstFull.toLowerCase().includes(view.filter) ||
-                    dscpString.toLowerCase().includes(view.filter)
-                )) {
-                    return;
-                }
-
-                var srcFull = conn.src + (conn.sport !== "-" ? ':' + conn.sport : '');
-                var dstFull = conn.dst + (conn.dport !== "-" ? ':' + conn.dport : '');                
-
                 table.appendChild(E('tr', { 'class': 'tr' }, [
                     E('td', { 'class': 'td' }, conn.protocol.toUpperCase()),
                     E('td', { 'class': 'td' }, srcFull),
@@ -243,15 +261,8 @@ return view.extend({
         view.updateTable(connections);
         this.updateSortIndicators();
 
-        poll.add(function() {
-            return callQoSmateConntrackDSCP().then(function(result) {
-                if (result && result.connections) {
-                    view.updateTable(Object.values(result.connections));
-                } else {
-                    console.error('Invalid data received:', result);
-                }
-            });
-        }, view.pollInterval);
+        // Trigger the adaptive polling:
+        adaptivePoll(view);
 
         var style = E('style', {}, `
             .sort-indicator {
@@ -324,14 +335,38 @@ return view.extend({
             E('option', { 'value': 'zoom-50' }, _('50%'))            
         ]);        
         
+        // Display the current polling interval.
+        var pollIntervalDisplay = E('span', {
+            'id': 'poll_interval_display',
+            'style': 'margin-left: 10px;'
+        }, _('Polling Interval: ') + this.pollInterval + ' s');
+
+        // Include pollIntervalDisplay in the top container
         return E('div', { 'class': 'cbi-map' }, [
             style,
             E('h2', _('QoSmate Connections')),
             E('div', { 'style': 'margin-bottom: 10px;' }, [
                 filterInput,
-                ' ',  // Space between filter input and zoom select
+                ' ',  // Space between elements.
                 E('span', _('Zoom:')),
-                zoomSelect
+                zoomSelect,
+                pollIntervalDisplay,
+                ' ',  // Space between elements.
+                E('button', {
+                    'type': 'button',
+                    'style': 'margin-left: 10px;',
+                    'click': function(ev) {
+                        if (view.autoRefresh) {
+                            clearTimeout(view.refreshTimeout);
+                            view.autoRefresh = false;
+                            this.textContent = _('Resume');
+                        } else {
+                            view.autoRefresh = true;
+                            this.textContent = _('Pause');
+                            adaptivePoll(view);
+                        }
+                    }
+                }, _('Pause'))
             ]),
             E('div', { 'class': 'cbi-section' }, [
                 E('div', { 'class': 'cbi-section-node' }, [
@@ -349,9 +384,14 @@ return view.extend({
             this.sortColumn = column;
             this.sortDescending = true;
         }
-        var connections = Object.values(this.lastData);
-        this.updateTable(connections);
-        this.updateSortIndicators();
+
+        // Defer sorting + table update to reduce blocking in click event handler
+        var view = this;
+        setTimeout(function() {
+            var connections = Object.values(view.lastData);
+            view.updateTable(connections);
+            view.updateSortIndicators();
+        }, 0);
     },
 
     sortFunction: function(a, b) {
@@ -410,3 +450,40 @@ return view.extend({
     handleSave: null,
     handleReset: null
 });
+
+// Adaptive polling function that measures response time and adjusts the polling interval.
+function adaptivePoll(view) {
+    if (!view.autoRefresh) {
+        return; // Do not schedule a new poll if auto-refresh is paused
+    }
+    var startTime = Date.now();
+    callQoSmateConntrackDSCP().then(function(result) {
+        var responseTime = Date.now() - startTime;
+        // Adjust the polling interval based on response time.        
+        if (!view.hasPolledOnce) {
+            view.pollInterval = 3;
+            view.hasPolledOnce = true;
+        } else if (responseTime > 2000) { // If response time exceeds 2000ms, increase interval.
+            view.pollInterval = Math.min(view.pollInterval + 1, 10); // Max poll interval of 10 seconds.
+        } else if (responseTime < 1000 && view.pollInterval > 1) { // If response time is less than 1000ms and poll interval is greater than 1 second, decrease interval.
+            view.pollInterval = Math.max(view.pollInterval - 1, 1); // Min poll interval of 1 second.
+        }
+        // Update the polling interval display in the UI.
+        var pollDisplay = document.getElementById('poll_interval_display');
+        if (pollDisplay) {
+            pollDisplay.textContent = _('Polling Interval: ') + view.pollInterval + ' s';
+        }
+        if (result && result.connections) {
+            view.updateTable(Object.values(result.connections));
+        } else {
+            console.error('Invalid data received:', result);
+        }
+    }).finally(function() {
+        // Schedule the next poll only if auto-refresh is not paused
+        if (view.autoRefresh) {
+            view.refreshTimeout = setTimeout(function() {
+                adaptivePoll(view);
+            }, view.pollInterval * 1000);
+        }
+    });
+}
