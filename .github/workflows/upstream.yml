@@ -100,17 +100,17 @@ jobs:
         git_clone https://github.com/kiddin9/nginx-ui-openwrt && mvdir nginx-ui-openwrt
         git_clone https://github.com/kiddin9/luci-app-uugamebooster
         ) &
-		(
-		git_clone https://github.com/kiddin9/luci-app-subconverter
-		git_clone https://github.com/kiddin9/openwrt-netdata netdata
-		git_clone https://github.com/kiddin9/luci-app-qosmate
-		git_clone https://github.com/kiddin9/luci-app-syscontrol
-		git_clone https://github.com/kiddin9/luci-app-zerotier
-		git_clone https://github.com/kiddin9/luci-app-chinadns-ng
-		git_clone https://github.com/kiddin9/openwrt-netdata netdata
-		git_clone https://github.com/kiddin9/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
-		git_clone https://github.com/kiddin9/qBittorrent
-		) &
+        (
+        git_clone https://github.com/kiddin9/luci-app-subconverter
+        git_clone https://github.com/kiddin9/openwrt-netdata netdata
+        git_clone https://github.com/kiddin9/luci-app-qosmate
+        git_clone https://github.com/kiddin9/luci-app-syscontrol
+        git_clone https://github.com/kiddin9/luci-app-zerotier
+        git_clone https://github.com/kiddin9/luci-app-chinadns-ng
+        git_clone https://github.com/kiddin9/openwrt-netdata netdata
+        git_clone https://github.com/kiddin9/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
+        git_clone https://github.com/kiddin9/qBittorrent
+        ) &
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
         git clone https://github.com/fw876/helloworld && rm -rf helloworld/{v2raya,naiveproxy,chinadns-ng} && mvdir helloworld
