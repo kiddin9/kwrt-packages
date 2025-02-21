@@ -176,6 +176,7 @@ jobs:
         git_clone https://github.com/mchome/openwrt-dogcom
         git_clone https://github.com/yichya/luci-app-xray yichya && mv -f yichya/status ./luci-app-xray-status;mv -f yichya/core ./luci-app-xray;rm -rf yichya
         git_clone https://github.com/rafmilecki/luci-app-xjay
+        git_clone https://github.com/kiddin9/qBittorrent
         # git_clone https://github.com/kiddin9/openwrt-thunder && mvdir openwrt-thunder
         ) &
         (
