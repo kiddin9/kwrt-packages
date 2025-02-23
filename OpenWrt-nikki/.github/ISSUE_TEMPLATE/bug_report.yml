@@ -7,13 +7,11 @@ body:
     id: self_check
     attributes:
       label: Self-check / 自查
-      description: |
-        Please follow the steps below to self-check, if the problem still exists after self-checking, continue to submit the Issue
-        请按以下步骤自查，如自查后问题仍然存在，再继续提交Issue
+      description: Self-Check before submitting the Issue / 在提交Issue之前的自查
       options:
         - label: DNSMASQ's `DNS Redirect` option is turned off (ignore if not applicable) / 已经关闭了DNSMASQ的`DNS 重定向`选项（如无此项请忽略）
           required: false
-        - label: Stopped running other proxy app and confirmed the environment is normal / 已停止运行其他代理插件，并确认环境正常
+        - label: The other proxy app has been stopped and the environment is normal / 已停止运行其他代理插件，并确认环境正常
           required: true
   - type: checkboxes
     id: confirm
@@ -25,9 +23,9 @@ body:
           required: true
         - label: I have searched the Issue and found no related issues / 我已经搜索过Issue，没有找到相关问题
           required: true
-        - label: I am using the latest version of the app which is installed from the repository's Release or Feed / 我使用的是通过仓库Release或Feed安装的最新版的插件
+        - label: I am using the latest version of the app which is build from this repository / 我使用的是本仓库构建的最新版的插件
           required: true
-        - label: The information I provided does not include sensitive information / 我提供的信息里不包含敏感信息
+        - label: I provided information which does not include sensitive information / 我提供的信息里不包含敏感信息
           required: true
         - label: I have provided correct, valid, and helpful information for debugging / 我提供了正确的、有效的、可以帮助DEBUG的信息
           required: true
@@ -56,9 +54,7 @@ body:
     id: debug
     attributes:
       label: Debug Log / 调试日志
-      description: |
-        Click Generate & Download button in App -> Log -> Debug Log , then upload it to here
-        点击 插件 -> 日志 -> 调试日志 中的 生成并下载 按钮，上传到此处
+      description: Download from Log -> Debug Log then upload it to here / 从 日志 -> 调试日志 下载后上传到此处
     validations:
       required: true
   - type: textarea
@@ -72,9 +68,7 @@ body:
     id: core_log
     attributes:
       label: Core Log / 核心日志
-      description: |
-        Attach your core log (info required, debug recommended)
-        附上你的核心日志（级别至少为info，建议使用debug）
+      description: Attach your core log (info required, debug recommended) / 附上你的核心日志（级别至少为info，建议使用debug）
     validations:
       required: true
   - type: textarea

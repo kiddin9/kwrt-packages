@@ -103,12 +103,14 @@ return view.extend({
                     // create link
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'nikki_debug.md';
+                    link.download = 'debug.md';
+                    // append to body
                     document.body.appendChild(link);
                     // download
                     link.click();
-                    // clean up
+                    // remove from body
                     document.body.removeChild(link);
+                    // revoke url
                     window.URL.revokeObjectURL(url);
                 });
             });
