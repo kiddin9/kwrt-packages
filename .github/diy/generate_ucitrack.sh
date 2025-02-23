@@ -1,5 +1,14 @@
 #!/bin/bash
 
+find . -path "*/root/usr/share/ucitrack/*.json" -type f | while read -r json_file; do
+    # 使用 sed 检查并替换格式，匹配不包含逗号的任意字符串
+    if grep -q '"init": \[.*\]' "$json_file"; then
+        # 使用 perl 正则来处理，因为它的正则表达式功能更强大
+        perl -i -pe 's/"init":\s*\[\s*"([^,"\n]+)"\s*\]/"init": "$1"/g' "$json_file"
+        echo "已处理 json 文件: $json_file"
+    fi
+done
+
 find . -type f \
     -not -path "*.github*" \
     -not -name "Makefile" \
