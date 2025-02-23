@@ -119,13 +119,14 @@ jobs:
         git_clone https://github.com/kongfl888/luci-app-timedreboot
         git_clone https://github.com/sbwml/luci-app-webdav
         git_clone https://github.com/hudra0/luci-app-qosmate
+        git_clone https://github.com/hyyz17200/luci-app-softethervpn-stable softethervpn1 && mvdir softethervpn1
         ) &
         (
         #git_clone https://github.com/jerrykuku/luci-app-vssr
         #git_clone https://github.com/jerrykuku/luci-app-ttnode
         git_clone https://github.com/sirpdboy/luci-app-advancedplus
         git_clone https://github.com/sirpdboy/luci-app-autotimeset
-        git_clone https://github.com/sirpdboy/luci-app-lucky oplucky && mv -f oplucky/*/ ./ && rm -rf oplucky
+        git_clone https://github.com/sirpdboy/luci-app-lucky oplucky && mvdir oplucky
         git_clone https://github.com/sirpdboy/luci-app-partexp
         git_clone https://github.com/sirpdboy/netspeedtest && mv -n netspeedtest/luci-app-netspeedtest ./ ; rm -rf netspeedtest
         git_clone https://github.com/sirpdboy/luci-app-parentcontrol
