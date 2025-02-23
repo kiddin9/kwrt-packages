@@ -120,7 +120,7 @@ start_service() {
     # Skip if during boot
     if [ -n "$adguardhome_boot" ]; then
         return 0
-    }
+    fi
 
     # Load configuration
     config_load adguardhome
@@ -167,7 +167,7 @@ stop_service() {
     # Skip if during boot
     if [ -n "$adguardhome_boot" ]; then
         return 0
-    }
+    fi
 
     # Load configuration
     config_load adguardhome
