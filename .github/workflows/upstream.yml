@@ -1,10 +1,8 @@
 #
 # This is free software, lisence use MIT.
 # 
-# 
-# <https://github.com/kiddin9/openwrt-packages>
+# <https://github.com/kiddin9/kwrt-packages>
 #
-w
 name: Merge-upstream
 on:
   push:
