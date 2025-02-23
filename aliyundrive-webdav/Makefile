@@ -1,38 +1,36 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Copyright (C) 2017-2020 Yousong Zhou <yszhou4tech@gmail.com>
+# Copyright (C) 2021-2023 ImmortalWrt.org
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aliyundrive-webdav
 PKG_VERSION:=2.3.3
-PKG_RELEASE:=5
+PKG_RELEASE:=6
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/messense/aliyundrive-webdav.git
+PKG_SOURCE_VERSION:=affeeda09a88c9fda18e82583cc02c275e4b932d
+PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=messense <messense@icloud.com>
 
-PKG_LIBC:=musl
-ifeq ($(ARCH),arm)
-  PKG_LIBC:=musleabi
+PKG_BUILD_DEPENDS:=rust/host
 
-  ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
-  ifneq ($(filter $(ARM_CPU_FEATURES),vfp vfpv2),)
-    PKG_LIBC:=musleabihf
-  endif
-endif
-
-PKG_ARCH=$(ARCH)
-ifeq ($(ARCH),i386)
-  PKG_ARCH:=i686
-endif
-
-PKG_SOURCE:=aliyundrive-webdav-v$(PKG_VERSION).$(PKG_ARCH)-unknown-linux-$(PKG_LIBC).tar.gz
-PKG_SOURCE_URL:=https://github.com/messense/aliyundrive-webdav/releases/download/v$(PKG_VERSION)/
-PKG_HASH:=skip
+RUST_PKG_FEATURES:=rustls-tls atomic64 native-tls native-tls-vendored
 
 include $(INCLUDE_DIR)/package.mk
+include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
 
 define Package/aliyundrive-webdav
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=WebDAV server for AliyunDrive
   URL:=https://github.com/messense/aliyundrive-webdav
+  DEPENDS:=$$(RUST_ARCH_DEPENDS)
 endef
 
 define Package/aliyundrive-webdav/description
@@ -43,30 +41,10 @@ define Package/aliyundrive-webdav/conffiles
 /etc/config/aliyundrive-webdav
 endef
 
-define Download/sha256sum
-	FILE:=$(PKG_SOURCE).sha256
-	URL_FILE:=$(FILE)
-	URL:=$(PKG_SOURCE_URL)
-	HASH:=skip
-endef
-$(eval $(call Download,sha256sum))
-
-define Build/Prepare
-	mv $(DL_DIR)/$(PKG_SOURCE).sha256 .
-	cp $(DL_DIR)/$(PKG_SOURCE) .
-	shasum -a 256 -c $(PKG_SOURCE).sha256
-	rm $(PKG_SOURCE).sha256 $(PKG_SOURCE)
-
-	tar -C $(PKG_BUILD_DIR)/ -zxf $(DL_DIR)/$(PKG_SOURCE)
-endef
-
-define Build/Compile
-	echo "aliyundrive-webdav using precompiled binary."
-endef
-
 define Package/aliyundrive-webdav/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aliyundrive-webdav $(1)/usr/bin/aliyundrive-webdav
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/target/$(RUSTC_TARGET_ARCH)/release/aliyundrive-webdav $(1)/usr/bin/
+
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/aliyundrive-webdav.init $(1)/etc/init.d/aliyundrive-webdav
 	$(INSTALL_DIR) $(1)/etc/config
