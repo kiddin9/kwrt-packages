@@ -119,7 +119,6 @@ jobs:
         git_clone https://github.com/kongfl888/luci-app-timedreboot
         git_clone https://github.com/sbwml/luci-app-webdav
         git_clone https://github.com/hudra0/luci-app-qosmate
-        git_clone https://github.com/hyyz17200/luci-app-softethervpn-stable softethervpn1 && mvdir softethervpn1
         ) &
         (
         #git_clone https://github.com/jerrykuku/luci-app-vssr
