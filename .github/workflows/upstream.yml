@@ -363,7 +363,7 @@ jobs:
         net/mentohust net/ps3netsrv net/modemband net/brook net/q net/quectel-cm net/speedtest-cli net/tcping-simple \
         libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
-        utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups utils/cups-bjnp \
+        utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice admin/gotop
