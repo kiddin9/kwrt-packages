@@ -1,4 +1,4 @@
 {
 	"config": "socat",
-	"init": [ "socat" ]
+	"init": "socat"
 }

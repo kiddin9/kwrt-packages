@@ -1,4 +1,4 @@
 {
 	"config": "cifs",
-	"init": [ "cifs" ]
+	"init": "cifs"
 }

@@ -1,4 +1,4 @@
 {
 	"config": "pppoe-server",
-	"init": [ "pppoe-server" ]
+	"init": "pppoe-server"
 }

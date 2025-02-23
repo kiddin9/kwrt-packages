@@ -1,4 +1,4 @@
 {
 	"config": "autoreboot",
-	"init": [ "autoreboot" ]
+	"init": "autoreboot"
 }

@@ -1,4 +1,4 @@
 {
 	"config": "speederv2",
-	"init": [ "speederv2" ]
+	"init": "speederv2"
 }

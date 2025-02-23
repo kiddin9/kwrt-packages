@@ -1,4 +1,4 @@
 {
 	"config": "nfs",
-	"init": [ "nfs" ]
+	"init": "nfs"
 }

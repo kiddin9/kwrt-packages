@@ -1,4 +1,4 @@
 {
 	"config": "timewol",
-	"init": [ "timewol" ]
+	"init": "timewol"
 }

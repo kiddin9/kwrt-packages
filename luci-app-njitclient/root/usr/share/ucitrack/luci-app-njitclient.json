@@ -1,4 +1,4 @@
 {
 	"config": "njitclient",
-	"init": [ "njitclient" ]
+	"init": "njitclient"
 }

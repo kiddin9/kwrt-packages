@@ -1,4 +1,4 @@
 {
 	"config": "pppoe-relay",
-	"init": [ "pppoe-relay" ]
+	"init": "pppoe-relay"
 }

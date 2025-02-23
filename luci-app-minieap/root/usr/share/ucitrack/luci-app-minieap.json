@@ -1,4 +1,4 @@
 {
 	"config": "minieap",
-	"init": [ "minieap" ]
+	"init": "minieap"
 }

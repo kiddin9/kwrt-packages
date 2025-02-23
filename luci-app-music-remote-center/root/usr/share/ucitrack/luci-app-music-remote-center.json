@@ -1,4 +1,4 @@
 {
 	"config": "owntone",
-	"init": [ "owntone" ]
+	"init": "owntone"
 }

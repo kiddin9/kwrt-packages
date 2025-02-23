@@ -1,4 +1,4 @@
 {
 	"config": "cpulimit",
-	"init": [ "cpulimit" ]
+	"init": "cpulimit"
 }

@@ -1,4 +1,4 @@
 {
 	"config": "ipsec",
-	"init": [ "ipsec" ]
+	"init": "ipsec"
 }
