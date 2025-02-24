@@ -34,8 +34,8 @@ msgstr "客户端MAC"
 msgid "Network Interface"
 msgstr "网络接口"
 
-msgid "awake"
-msgstr "唤醒"
+msgid "Awake"
+msgstr "立即唤醒"
 
 msgid "Minute"
 msgstr "分钟"
