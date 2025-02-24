@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ddns-scripts
 PKG_VERSION:=2.8.2
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_LICENSE:=GPL-2.0
 
@@ -153,6 +153,7 @@ endef
 define Package/ddns-scripts-dnspod/description
   Dynamic DNS Client scripts extension for dnspod.cn API (require curl)
 endef
+
 
 define Package/ddns-scripts-dnspod-v3
   $(call Package/ddns-scripts/Default)
@@ -370,6 +371,10 @@ define Package/ddns-scripts/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/usr/bin/ddns.sh \
 		$(1)/usr/bin/ddns
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DATA) ./files/etc/uci-defaults/50-ddns-migrate-retry-count \
+		$(1)/etc/uci-defaults/
 endef
 
 define Package/ddns-scripts/postinst
@@ -560,6 +565,7 @@ if [ -z "$${IPKG_INSTROOT}" ]; then
 fi
 exit 0
 endef
+
 
 define Package/ddns-scripts-dnspod-v3/install
 	$(INSTALL_DIR) $(1)/usr/lib/ddns

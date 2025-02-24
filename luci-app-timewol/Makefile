@@ -8,6 +8,11 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI support for Timewol
 LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+etherwake
+
+define Build/Prepare
+	chmod +x root/etc/init.d/timewol >/dev/null 2>&1
+endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
