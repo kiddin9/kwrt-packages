@@ -399,6 +399,15 @@ msgstr "总上传速度：<big id=\"ipv6-speed-tx-max\">0</big>"
 msgid "<big id=\"ipv6-speed-rx-max\">0</big> download speed"
 msgstr "总下载速度：<big id=\"ipv6-speed-rx-max\">0</big>"
 
+msgid "<big id=\"mac-speed-host\">0</big> hosts"
+msgstr "主机：<big id=\"mac-speed-host\">0</big>"
+
+msgid "<big id=\"mac-speed-tx-max\">0</big> upload speed"
+msgstr "总上传速度：<big id=\"mac-speed-tx-max\">0</big>"
+
+msgid "<big id=\"mac-speed-rx-max\">0</big> download speed"
+msgstr "总下载速度：<big id=\"mac-speed-rx-max\">0</big>"
+
 msgid "<big id=\"layer7-speed-most-rx\">0</big> cause the most download"
 msgstr "下载量最大的协议：<big id=\"layer7-speed-most-rx\">0</big>"
 
@@ -443,3 +452,15 @@ msgstr "认证用户"
 
 msgid "No data recorded yet."
 msgstr "暂无数据"
+
+msgid "Edit Speed Limit"
+msgstr "带宽控制"
+
+msgid "Download Limit"
+msgstr "限制下载速度"
+
+msgid "Upload Limit"
+msgstr "限制上传速度"
+
+msgid "Speed limit updated"
+msgstr "限速配置已更新"

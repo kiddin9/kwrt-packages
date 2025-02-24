@@ -78,7 +78,7 @@ jobs:
         with:
           path: OpenWrt-nikki
           branch: dependabot
-          commit-message: Update Mihomo Version
-          title: Update Mihomo Version
+          commit-message: "build: update mihomo to ${{ needs.get_lastest_info.outputs.short_commit_sha }}"
+          title: "build: update mihomo to ${{ needs.get_lastest_info.outputs.short_commit_sha }}"
           body: |
             [Changelog](https://github.com/metacubex/mihomo/compare/${{ needs.get_current_info.outputs.pkg_source_version }}...${{  needs.get_lastest_info.outputs.commit_sha }})

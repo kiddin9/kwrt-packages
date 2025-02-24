@@ -261,7 +261,6 @@ return view.extend({
 
 		var mac = key.toUpperCase();
 		var name = hostInfo.hasOwnProperty(mac) ? hostInfo[mac].name : null;
-
 		if (!name)
 			for (var i = 0; i < detailData.length; i++)
 				if ((name = hostNames[detailData[i].ip]) !== undefined)
@@ -317,7 +316,87 @@ return view.extend({
 		return false;
 	},
 
-	renderHostSpeed: function(data, pie, kpi, is_ipv6) {
+	// 编辑限速
+	handleEditSpeed: function(host, type, dl, ul) {
+		dl = dl/1024/1024;
+		ul = ul/1024/1024;
+
+		var dialog = ui.showModal(_('Edit Speed Limit'), [
+			E('div', { 'class': 'form-group' }, [
+				E('label', { 'class': 'form-label' }, _('Host')),
+				E('span',{}, host)
+			]),
+			E('div', { 'class': 'form-group' }, [
+				E('label', { 'class': 'form-label' }, _('Download Limit')),
+				E('input', {
+					'type': 'number',
+					'id': 'dl-rate',
+					'class': 'cbi-input-number',
+					'min': '0',
+					'value': dl,
+				}),
+				E('span',{}, " Mbps")
+			]),
+			E('div', { 'class': 'form-group' }, [
+				E('label', { 'class': 'form-label' }, _('Upload Limit')),
+				E('input', {
+					'type': 'number',
+					'id': 'ul-rate',
+					'class': 'cbi-input-number',
+					'min': '0',
+					'value': ul
+				}),
+				E('span',{}, " Mbps")
+			]),
+			// 添加按钮操作区域
+			E('div', { 'class': 'cbi-page-actions right' }, [
+				E('button', {
+					'class': 'btn cbi-button cbi-button-neutral',
+					'click': ui.createHandlerFn(this, function(ev) {
+						ui.hideModal(); // 取消按钮直接关闭弹窗
+					})
+				}, _('Cancel')),
+				E('button', {
+					'class': 'btn cbi-button cbi-button-positive',
+					'click': ui.createHandlerFn(this, async function(ev) {
+						var pie = this.pie.bind(this);
+						var kpi = this.kpi.bind(this);
+						var renderHostSpeed = this.renderHostSpeed.bind(this);
+
+						// 保存按钮逻辑
+						var dl = document.getElementById('dl-rate').value,
+							ul = document.getElementById('ul-rate').value;
+
+						try {
+							const results = await Promise.all([
+								fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'update', host, "downrate", dl*1024*1024 || '0', "uprate", ul*1024*1024 || '0'], 'text'),
+								fs.exec_direct('/usr/bin/aw-bpfctl', [type,  'json'], 'json')
+							]);
+							const defaultData = {status: "success", data: []};
+							const refresh_data = results[1] || defaultData;
+							renderHostSpeed(refresh_data, pie, kpi, type);
+
+							ui.addNotification(null, E('p',_('Speed limit updated')), 3000, 'success');
+							ui.hideModal();
+						} catch (e) {
+							ui.addNotification("", _('Error: ') + e.message, 3000, 'error');
+						}
+					})
+				}, _('Save'))
+			])
+		]);
+
+		// 强制设置定位模式
+		dialog.style.position = 'fixed';
+
+		// 动态计算位置
+		dialog.style.top = '50%';
+		dialog.style.left = '50%';
+		dialog.style.transform = 'translate(-50%, -50%)';
+		dialog.style.margin = '0';
+	},
+
+	renderHostSpeed: function(data, pie, kpi, type) {
 		var rows = [];
 		var rx_data = [], tx_data = [];
 		var rx_total = 0, tx_total = 0;
@@ -336,42 +415,66 @@ return view.extend({
 			// Skip entries with no traffic (using total_bytes from both directions)
 			if (rec.incoming.total_bytes === 0 && rec.outgoing.total_bytes === 0)
 				continue;
+
+			var hostKey = (type == "mac" ? rec.mac : rec.ip);
 			rows.push([
-				rec.ip,
+				hostKey,
 				[ rec.outgoing.rate, '%1024.2mbps'.format(rec.outgoing.rate) ],
 				[ rec.outgoing.total_bytes, '%1024.2mB'.format(rec.outgoing.total_bytes) ],
 				[ rec.outgoing.total_packets, '%1000.2mP'.format(rec.outgoing.total_packets) ],
 				[ rec.incoming.rate, '%1024.2mbps'.format(rec.incoming.rate) ],
 				[ rec.incoming.total_bytes, '%1024.2mB'.format(rec.incoming.total_bytes) ],
-				[ rec.incoming.total_packets, '%1000.2mP'.format(rec.incoming.total_packets) ]
+				[ rec.incoming.total_packets, '%1000.2mP'.format(rec.incoming.total_packets) ],
+				E('button', {
+					'class': 'btn cbi-button cbi-button-edit center',
+					'click': ui.createHandlerFn(this, function(host, type, dl, ul) {
+						this.handleEditSpeed(host, type, dl, ul);
+					}, hostKey, type, rec.incoming.incoming_rate_limit, rec.outgoing.outgoing_rate_limit)
+					// hostKey是当前行的主机标识（IP/MAC），type是类型（ipv4/ipv6/mac）
+				}, _('Edit'))
 			]);
+
 			rx_total += rec.incoming.rate;
 			tx_total += rec.outgoing.rate;
 			rx_data.push({
 				value: rec.incoming.rate,
 				label: [ rec.ip ]
 			});
+
 			tx_data.push({
 				value: rec.outgoing.rate,
 				label: [ rec.ip ]
 			});
 		}
-	
-		if (is_ipv6) {
-			cbi_update_table('#ipv6-speed-data', rows, E('em', _('No data recorded yet.')));
-			pie('ipv6-speed-rx-pie', rx_data);
-			pie('ipv6-speed-tx-pie', tx_data);
-			kpi('ipv6-speed-rx-max', '%1024.2mbps'.format(rx_total));
-			kpi('ipv6-speed-tx-max', '%1024.2mbps'.format(tx_total));
-			kpi('ipv6-speed-host', '%u'.format(rows.length));
-		} else {
+
+		switch (type) {
+		  case "ipv4":
 			cbi_update_table('#speed-data', rows, E('em', _('No data recorded yet.')));
 			pie('speed-rx-pie', rx_data);
 			pie('speed-tx-pie', tx_data);
 			kpi('speed-rx-max', '%1024.2mbps'.format(rx_total));
 			kpi('speed-tx-max', '%1024.2mbps'.format(tx_total));
 			kpi('speed-host', '%u'.format(rows.length));
-		}
+			break;
+		  case "ipv6":
+			cbi_update_table('#ipv6-speed-data', rows, E('em', _('No data recorded yet.')));
+			pie('ipv6-speed-rx-pie', rx_data);
+			pie('ipv6-speed-tx-pie', tx_data);
+			kpi('ipv6-speed-rx-max', '%1024.2mbps'.format(rx_total));
+			kpi('ipv6-speed-tx-max', '%1024.2mbps'.format(tx_total));
+			kpi('ipv6-speed-host', '%u'.format(rows.length));
+			break;
+		  case "mac":
+			cbi_update_table('#mac-speed-data', rows, E('em', _('No data recorded yet.')));
+			pie('mac-speed-rx-pie', rx_data);
+			pie('mac-speed-tx-pie', tx_data);
+			kpi('mac-speed-rx-max', '%1024.2mbps'.format(rx_total));
+			kpi('mac-speed-tx-max', '%1024.2mbps'.format(tx_total));
+			kpi('mac-speed-host', '%u'.format(rows.length));
+			break;
+		  default:
+			break;
+		};
 	},
 
 	pollChaQoSData: function() {
@@ -384,17 +487,20 @@ return view.extend({
 				// Get both IPv4 and IPv6 data
 				const results = await Promise.all([
 					fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv4', 'json'], 'json'),
-					fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv6', 'json'], 'json')
+					fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv6', 'json'], 'json'),
+					fs.exec_direct('/usr/bin/aw-bpfctl', ['mac',  'json'], 'json')
 				]);
 
 				const defaultData = {status: "success", data: []};
 
 				const ipv4_data = results[0] || defaultData;
 				const ipv6_data = results[1] || defaultData;
+				const mac_data  = results[2] || defaultData;
 
 				// Render both IPv4 and IPv6 stats
-				renderHostSpeed(ipv4_data, pie, kpi, false);  // IPv4
-				renderHostSpeed(ipv6_data, pie, kpi, true);   // IPv6
+				renderHostSpeed(ipv4_data, pie, kpi, "ipv4");  // IPv4
+				renderHostSpeed(ipv6_data, pie, kpi, "ipv6");  // IPv6
+				renderHostSpeed(mac_data, pie, kpi, "mac");    // MAC
 			} catch (e) {
 				console.error('Error polling data:', e);
 			}
@@ -456,6 +562,7 @@ return view.extend({
 							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th center' }, [ _('Actions') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
 							E('td', { 'class': 'td' }, [
@@ -495,6 +602,47 @@ return view.extend({
 							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th center' }, [ _('Actions') ])
+						]),
+						E('tr', { 'class': 'tr placeholder' }, [
+							E('td', { 'class': 'td' }, [
+								E('em', { 'class': 'spinning' }, [ _('Collecting data...') ])
+							])
+						])
+					]),
+				]),
+
+				E('div', { 'class': 'cbi-section', 'data-tab': 'mac', 'data-tab-title': _('MAC') }, [
+					E('div', { 'class': 'head' }, [
+						E('div', { 'class': 'pie' }, [
+							E('label', [ _('Upload Speed / Host') ]),
+							E('canvas', { 'id': 'mac-speed-tx-pie', 'width': 200, 'height': 200 })
+						]),
+
+						E('div', { 'class': 'pie' }, [
+							E('label', [ _('Download Speed / Host') ]),
+							E('canvas', { 'id': 'mac-speed-rx-pie', 'width': 200, 'height': 200 })
+						]),
+
+						E('div', { 'class': 'kpi' }, [
+							E('ul', [
+								E('li', _('<big id="mac-speed-host">0</big> hosts')),
+								E('li', _('<big id="mac-speed-rx-max">0</big> download speed')),
+								E('li', _('<big id="mac-speed-tx-max">0</big> upload speed')),
+							])
+						])
+					]),
+
+					E('table', { 'class': 'table', 'id': 'mac-speed-data' }, [
+						E('tr', { 'class': 'tr table-titles' }, [
+							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
+							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
+							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
+							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
+							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
+							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
+							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th center' }, [ _('Actions') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
 							E('td', { 'class': 'td' }, [

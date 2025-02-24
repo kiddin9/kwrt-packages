@@ -112,3 +112,18 @@
 		font-weight: bold;
 	}
 }
+
+.form-group {
+	display: flex;
+	align-items: center;    /* 垂直居中 */
+	margin-bottom: 15px;    /* 项间距 */
+	gap: 10px;              /* Label 和 Input 间距 */
+}
+
+/* 标签固定最小宽度 + 右对齐 */
+.form-label {
+	flex: 0 0 120px;       /* 不伸缩、不收缩、基础宽度120px */
+	text-align: right;
+	font-weight: bold;
+	color: #333;
+}
