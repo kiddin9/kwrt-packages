@@ -24,8 +24,8 @@
  include ../../luci.mk
  
 
---- a/ddns-scripts/files/etc/init.d/ddns
-+++ b/ddns-scripts/files/etc/init.d/ddns
+--- a/ddns-scripts/Makefile
++++ b/ddns-scripts/Makefile
 @@ -165,6 +165,15 @@ define Package/ddns-scripts-dnspod-v3/description
    Dynamic DNS Client scripts extension for dnspod.tencentcloudapi.com API v3 (require curl)
  endef
