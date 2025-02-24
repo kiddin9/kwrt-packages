@@ -10,8 +10,12 @@ LUCI_TITLE:=LuCI support for Timewol
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+etherwake
 
-define Build/Prepare
-	chmod +x root/etc/init.d/timewol >/dev/null 2>&1
+define Package/luci-app-timewol/postinst
+	#!/bin/sh
+	if [ -z "$${IPKG_INSTROOT}" ]; then
+		chmod +x /etc/init.d/timewol
+	fi
+	exit 0
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
