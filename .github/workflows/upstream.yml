@@ -107,6 +107,7 @@ jobs:
         git_clone https://github.com/kiddin9/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
         git_clone https://github.com/kiddin9/qBittorrent
         git_clone https://github.com/kiddin9/openwrt-lingtigameacc && mvdir openwrt-lingtigameacc
+        git_clone https://github.com/kiddin9/luci-app-timewol
         ) &
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
