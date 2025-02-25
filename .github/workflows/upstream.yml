@@ -160,7 +160,7 @@ jobs:
         git_clone https://github.com/linkease/nas-packages && mv -n nas-packages/{network/services/*,multimedia/*} ./; rm -rf nas-packages
         git_clone https://github.com/linkease/nas-packages-luci && mv -n nas-packages-luci/luci/* ./; rm -rf nas-packages-luci
         git_clone https://github.com/linkease/istore && mv -n istore/luci/* ./; rm -rf istore
-        git_clone https://github.com/linkease/lcdsimple
+        git_clone https://github.com/linkease/lcdsimple1 && mvdir lcdsimple1
         git_clone https://github.com/fcshark-org/openwrt-fchomo && mvdir openwrt-fchomo
         git_clone https://github.com/asvow/luci-app-tailscale
         ) &
@@ -278,7 +278,7 @@ jobs:
         git_clone https://github.com/hingbong/hickory-dns-openwrt && mvdir hickory-dns-openwrt
         ) &
         (
-        git_clone https://github.com/EasyTier/luci-app-easytier
+        git_clone https://github.com/EasyTier/luci-app-easytier1 && mvdir luci-app-easytier1
         git_clone https://github.com/ntlf9t/luci-app-dnspod
         git_clone https://github.com/lmq8267/luci-app-vnt opvnt && mv -f opvnt/luci-app-vnt ./;rm -rf opvnt
         git_clone https://github.com/RymFred11/luci-app-nettask nettask && mv nettask/luci-app-nettask ./;rm -rf nettask
@@ -356,7 +356,7 @@ jobs:
 
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/sub-web net/amule net/haproxy net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c \
+        net/sub-web net/amule net/haproxy net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/cloudreve \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite net/netbird \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
