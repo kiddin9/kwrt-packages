@@ -278,7 +278,7 @@ jobs:
         git_clone https://github.com/hingbong/hickory-dns-openwrt && mvdir hickory-dns-openwrt
         ) &
         (
-        git_clone https://github.com/EasyTier/luci-app-easytier1 && mvdir luci-app-easytier1
+        git_clone https://github.com/EasyTier/luci-app-easytier luci-app-easytier1 && mvdir luci-app-easytier1
         git_clone https://github.com/ntlf9t/luci-app-dnspod
         git_clone https://github.com/lmq8267/luci-app-vnt opvnt && mv -f opvnt/luci-app-vnt ./;rm -rf opvnt
         git_clone https://github.com/RymFred11/luci-app-nettask nettask && mv nettask/luci-app-nettask ./;rm -rf nettask
