@@ -9,7 +9,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/XGHeaven/homebox/archive/refs/tags/
 PKG_HASH:=skip
 
-PKG_BUILD_DEPENDS:=golang/host homebox/host
+PKG_BUILD_DEPENDS:=golang/host node/host
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
 
