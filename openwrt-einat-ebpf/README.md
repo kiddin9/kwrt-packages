@@ -4,7 +4,7 @@ eBPF-based Endpoint-Independent NAT
 > The [einat-ebpf][] is a eBPF application implements an "Endpoint-Independent Mapping" and "Endpoint-Independent Filtering" NAT(network address translation) on TC egress and ingress hooks.
 
 ## Requirements
-- Target Linux kernel >= 5.15
+- Target Linux kernel >= 6.10
 - Target Linux kernel has the following kernel configuration enabled
 ```
 CONFIG_BPF_EVENTS=y
@@ -32,7 +32,7 @@ And LuCI can be found here [luci-app-einat][]
 ## Additional Features
 
 Support for enabling additional features at build. Including but not limited to `ipv6, static, ...`</br>
-For details, see [define Package/$(PKG_NAME)/config](https://github.com/muink/openwrt-einat-ebpf/blob/master/Makefile#L84)
+For details, see [define Package/$(PKG_NAME)/config](https://github.com/muink/openwrt-einat-ebpf/blob/master/Makefile#L89)
 
 ## Build
 

@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.6
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=40
+PKG_RELEASE:=41
 
 ifeq ($(PKG_UPSTREAM_GITHASH),)
 PKG_SOURCE_URL:=https://codeload.github.com/EHfive/einat-ebpf/tar.gz/refs/tags/v$(PKG_UPSTREAM_VERSION)?
