@@ -1,41 +1,44 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
 msgid "Guest WiFi"
-msgstr "访客WiFi"
+msgstr ""
 
 msgid "Guest WiFi Settings"
-msgstr "访客WiFi设置"
+msgstr ""
 
 msgid "Guest WiFi provides a separate wireless network for guest access with isolated permissions."
-msgstr "访客WiFi提供一个独立的无线网络，供访客使用，并具有隔离权限。"
+msgstr ""
 
 msgid "Enable"
-msgstr "启用"
+msgstr ""
 
 msgid "Enable guest WiFi network"
-msgstr "启用访客WiFi网络"
+msgstr ""
 
 msgid "Network Name (SSID)"
-msgstr "网络名称(SSID)"
+msgstr ""
 
 msgid "Encryption"
-msgstr "加密方式"
+msgstr ""
 
 msgid "No Encryption"
-msgstr "不加密"
+msgstr ""
 
 msgid "WPA2-PSK"
-msgstr "WPA2-PSK"
+msgstr ""
 
 msgid "WPA3-SAE"
-msgstr "WPA3-SAE"
+msgstr ""
 
 msgid "WPA2/WPA3-Mixed"
-msgstr "WPA2/WPA3混合"
+msgstr ""
 
 msgid "Password"
-msgstr "密码"
+msgstr ""
 
 msgid "AP Isolation"
-msgstr "AP隔离"
+msgstr ""
 
 msgid "Prevents wireless clients from communicating with each other"
-msgstr "防止无线客户端之间相互通信"
+msgstr ""

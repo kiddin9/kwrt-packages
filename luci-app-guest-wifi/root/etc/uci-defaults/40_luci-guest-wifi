@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 [ ! -f "/usr/share/ucitrack/luci-app-guest-wifi.json" ] && {
     cat > /usr/share/ucitrack/luci-app-guest-wifi.json << EEOF
 {
