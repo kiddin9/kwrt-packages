@@ -75,20 +75,6 @@
 +      procd_add_reload_trigger "change-mac"
 +}
 
---- a/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
-+++ b/mmdvm-luci/luci-app-mmdvm/root/etc/init.d/dmrid
-@@ -41,4 +41,8 @@ status() {
-     fi
- 
-     echo "${APP}:		[${STATUS}]"
--}
-\ No newline at end of file
-+}
-+
-+service_triggers() {
-+      procd_add_reload_trigger "dmrid"
-+}
-
 --- a/pgyvpn/files/etc/init.d/pgyvpn
 +++ b/pgyvpn/files/etc/init.d/pgyvpn
 @@ -105,6 +105,10 @@ start_service()
