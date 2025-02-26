@@ -413,8 +413,8 @@ return view.extend({
 		for (var i = 0; i < recs.length; i++) {
 			var rec = recs[i];
 			// Skip entries with no traffic (using total_bytes from both directions)
-			if (rec.incoming.total_bytes === 0 && rec.outgoing.total_bytes === 0)
-				continue;
+			// if (rec.incoming.total_bytes === 0 && rec.outgoing.total_bytes === 0)
+			// 	continue;
 
 			var hostKey = (type == "mac" ? rec.mac : rec.ip);
 			rows.push([
@@ -506,7 +506,73 @@ return view.extend({
 			}
 		}, this), 5);
 	},
+	handleAddSubmit: async function(val, type) {
+		var pie = this.pie.bind(this);
+		var kpi = this.kpi.bind(this);
+		var renderHostSpeed = this.renderHostSpeed.bind(this);
 
+		try {
+			const results = await Promise.all([
+				fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'add', val], 'text'),
+				fs.exec_direct('/usr/bin/aw-bpfctl', [type,  'json'], 'json')
+			]);
+			const defaultData = {status: "success", data: []};
+			const refresh_data = results[1] || defaultData;
+			renderHostSpeed(refresh_data, pie, kpi, type);
+
+			ui.addNotification(null, E('p',_('Updated successfully!')), 3000, 'success');
+		} catch (e) {
+			ui.addNotification("", _('Error: ') + e.message, 3000, 'error');
+		}
+	},
+	validateData: function(value, type) {
+		if (typeof value !== 'string') return false;
+
+		const ipv4Regex = /^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/;
+		const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^(([0-9a-fA-F]{1,4}:){0,6}::([0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})$/i;
+		const macRegex = /^([0-9A-Fa-f]{2}([-:]))([0-9A-Fa-f]{2}\2){4}[0-9A-Fa-f]{2}$|^([0-9A-Fa-f]{12})$/i;
+
+		switch (type) {
+		  case 'ipv4':
+			return ipv4Regex.test(value);
+		  case 'ipv6':
+			return ipv6Regex.test(value);
+		  case 'mac':
+			return macRegex.test(value);
+		  default:
+			return false;
+		}
+	},
+	createAddButtonValue: function(type, placeholder) {
+		var input = E('input', {
+				'type': 'text',
+				'id': type + '-add-input',
+				'class': 'cbi-input-text',
+				'style': 'width:300px',
+				'placeholder': _(placeholder)
+			});
+
+		var btn = E('button', {
+				'class': 'btn cbi-button cbi-button-add',
+				'id': type + '-add-btn',
+				'disabled': 'disabled',
+				'click': ui.createHandlerFn(this, function() {
+					var inputValue = input.value.trim()
+					if (!this.validateData(inputValue, type)) {
+						ui.addNotification(null, _('Data format error'), 3000, "error");
+						return
+					}
+					this.handleAddSubmit(inputValue, type);
+					input.value = '';
+				})
+			}, _('Add'));
+
+		input.addEventListener('input', function() {
+			var isEmpty = this.value.trim() === '';
+			btn.disabled = isEmpty;
+		});
+		return [input, btn]
+	},
 	render: function() {
 		document.addEventListener('tooltip-open', L.bind(function(ev) {
 			this.renderHostDetail(ev.detail.target, ev.target);
@@ -569,7 +635,8 @@ return view.extend({
 								E('em', { 'class': 'spinning' }, [ _('Collecting data...') ])
 							])
 						])
-					])
+					]),
+					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("ipv4", "Please enter a valid IPv4 address")),
 				]),
 
 				E('div', { 'class': 'cbi-section', 'data-tab': 'ipv6', 'data-tab-title': _('IPv6') }, [
@@ -610,6 +677,7 @@ return view.extend({
 							])
 						])
 					]),
+					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("ipv6", "Please enter a valid IPv6 address")),
 				]),
 
 				E('div', { 'class': 'cbi-section', 'data-tab': 'mac', 'data-tab-title': _('MAC') }, [
@@ -650,8 +718,9 @@ return view.extend({
 							])
 						])
 					]),
+					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("mac", "Please enter a valid MAC address")),
 				])
-			])
+			]),
 		]);
 
 		ui.tabs.initTabGroup(node.lastElementChild.childNodes);

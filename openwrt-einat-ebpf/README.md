@@ -4,7 +4,7 @@ eBPF-based Endpoint-Independent NAT
 > The [einat-ebpf][] is a eBPF application implements an "Endpoint-Independent Mapping" and "Endpoint-Independent Filtering" NAT(network address translation) on TC egress and ingress hooks.
 
 ## Requirements
-- Target Linux kernel >= 6.10
+- Target Linux kernel >= 5.15
 - Target Linux kernel has the following kernel configuration enabled
 ```
 CONFIG_BPF_EVENTS=y

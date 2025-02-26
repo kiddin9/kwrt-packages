@@ -464,3 +464,18 @@ msgstr "限制上传速度"
 
 msgid "Speed limit updated"
 msgstr "限速配置已更新"
+
+msgid "Data format error"
+msgstr "数据格式错误"
+
+msgid "Please enter a valid IPv4 address"
+msgstr "请输入一个正确的IPV4地址"
+
+msgid "Please enter a valid IPv6 address"
+msgstr "请输入一个正确的IPV6地址"
+
+msgid "Please enter a valid MAC address"
+msgstr "请输入一个正确的MAC地址"
+
+msgid "Updated successfully!"
+msgstr "更新成功"
