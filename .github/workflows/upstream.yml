@@ -150,7 +150,7 @@ jobs:
         git_clone https://github.com/Tencent-Cloud-Plugins/tencentcloud-openwrt-plugin-cos && mv -n tencentcloud-openwrt-plugin-cos/tencentcloud_cos ./luci-app-tencentcloud-cos; rm -rf tencentcloud-openwrt-plugin-cos
         git_clone https://github.com/doushang/luci-app-shortcutmenu luci-shortcutmenu && mv -n luci-shortcutmenu/luci-app-shortcutmenu ./ ; rm -rf luci-shortcutmenu
         # git_clone https://github.com/messense/aliyundrive-webdav aliyundrive && mv -n aliyundrive/openwrt/* ./ ; rm -rf aliyundrive
-        git_clone https://github.com/sbilly/netmaker-openwrt && mv -n netmaker-openwrt/netmaker ./; rm -rf netmaker-openwrt
+        # git_clone https://github.com/sbilly/netmaker-openwrt && mv -n netmaker-openwrt/netmaker ./; rm -rf netmaker-openwrt
         git_clone https://github.com/lisaac/luci-app-dockerman dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman
         ) &
         (
@@ -178,8 +178,8 @@ jobs:
         git_clone https://github.com/ZeaKyX/luci-app-speedtest-web
         git_clone https://github.com/linkease/openwrt-app-actions
         git_clone https://github.com/Wulnut/luci-app-suselogin
-        git_clone https://github.com/lucikap/luci-app-brukamen && mv -n luci-app-brukamen/{luci*,iii/*} ./;rm -rf luci-app-brukamen luci-app-autoshell_*.ipk
-        git_clone https://github.com/mchome/openwrt-dogcom
+        git_clone https://github.com/lucikap/luci-app-brukamen && mv -n luci-app-brukamen/luci* ./;rm -rf luci-app-brukamen luci-app-autoshell_*.ipk
+        # git_clone https://github.com/mchome/openwrt-dogcom
         git_clone https://github.com/yichya/luci-app-xray yichya && mv -f yichya/status ./luci-app-xray-status;mv -f yichya/core ./luci-app-xray;rm -rf yichya
         git_clone https://github.com/rafmilecki/luci-app-xjay
         # git_clone https://github.com/kiddin9/openwrt-thunder && mvdir openwrt-thunder
@@ -197,7 +197,7 @@ jobs:
         git_clone https://github.com/shanglanxin/luci-app-homebridge
         git_clone https://github.com/ykxVK8yL5L/luci-app-synology synology && mv -n synology/luci-app-synology ./ && rm -rf synology
         git_clone https://github.com/htynkn/openwrt-switch-lan-play && mv -n openwrt-switch-lan-play/package/* ./ && rm -rf openwrt-switch-lan-play
-        git_clone https://github.com/xptsp/luci-app-nodogsplash
+        # git_clone https://github.com/xptsp/luci-app-nodogsplash
         git_clone https://github.com/xptsp/luci-mod-listening-ports
         git_clone https://github.com/xptsp/luci-app-squid-adv
         git_clone https://github.com/xptsp/openwrt-bcrypt-tool
@@ -366,7 +366,7 @@ jobs:
         libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
         utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
-        utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
+        utils/phicomm-k3screenctrl utils/joker utils/7z utils/pcat-manager utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice admin/gotop
         ) &
