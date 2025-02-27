@@ -1,0 +1,18 @@
+--- a/luci-app-syscontrol/root/usr/bin/ram_release.sh
++++ b/luci-app-syscontrol/root/usr/bin/ram_release.sh
+@@ -15,13 +15,13 @@
+ . /lib/functions.sh
+ . /usr/share/libubox/jshn.sh
+ 
+-export TZ='Asia/Jakarta'
++export TZ='Asia/Shanghai'
+ 
+ LOG_FILE="/var/log/ram_release.log"
+ PID_FILE="/var/run/ram_release.pid"
+ 
+ log_message() {
+-    local timestamp=$(TZ='Asia/Jakarta' date +"%Y-%m-%d %H:%M:%S %Z")
++    local timestamp=$(TZ='Asia/Shanghai' date +"%Y-%m-%d %H:%M:%S %Z")
+     echo "$timestamp: $1" >> "$LOG_FILE"
+     logger -t "RAM Release" -- "$1"
+ }
