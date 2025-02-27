@@ -104,18 +104,6 @@
                +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-ng:rclone-ng
  LUCI_PKGARCH:=all
 
---- a/luci-app-advancedplus/Makefile
-+++ b/luci-app-advancedplus/Makefile
-@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
- NAME:=advancedplus
- PKG_NAME:=luci-app-$(NAME)
- LUCI_TITLE:=LuCI support for Kucat theme setting by sirpdboy
--LUCI_DEPENDS:=+luci-compat +curl +wget
-+LUCI_DEPENDS:=+luci-compat +curl
- LUCI_PKGARCH:=all
- 
- PKG_VERSION:=1.8.0
-
 --- a/luci-app-einat/Makefile
 +++ b/luci-app-einat/Makefile
 @@ -9,7 +9,7 @@ LUCI_NAME:=luci-app-einat
