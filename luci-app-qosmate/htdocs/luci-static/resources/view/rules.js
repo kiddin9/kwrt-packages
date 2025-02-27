@@ -261,6 +261,11 @@ return view.extend({
         o = s.taboption('general', form.Flag, 'counter', _('Enable counter'));
         o.rmempty = false;
 
+        o = s.taboption('general', form.Flag, 'trace', _('Enable trace'));
+        o.rmempty = false;
+        o.default = '0';  // Default to disabled
+        o.description = _('Debug only');
+
         o = s.taboption('general', form.Flag, 'enabled', _('Enable'));
         o.rmempty = false;
         o.editable = true;
