@@ -12,7 +12,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).zip
 PKG_SOURCE_URL:=https://github.com/daeuniverse/dae/releases/download/v$(PKG_VERSION)/dae-full-src.zip?
 PKG_HASH:=skip
 
-PKG_LICENSE:=AGPL-3.0-only
+PKG_LICENSE:=AGPL-3.0-only 
 PKG_LICENSE_FILE:=LICENSE
 PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 
