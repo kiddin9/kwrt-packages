@@ -1,4 +1,4 @@
-# Copyright (C) 2021-2022 Lienol <lawlienol@gmail.com>
+# Copyright (C) 2021-2025 Lienol <lawlienol@gmail.com>
 
 include $(TOPDIR)/rules.mk
 
