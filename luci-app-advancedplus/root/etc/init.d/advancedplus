@@ -173,7 +173,7 @@ set_firewall_wan() {
     uci -q set firewall.@zone[1].input='ACCEPT'
     uci commit firewall
     else
-    uci -q set firewall.@zone[1].input='REJECT'
+    uci -q set firewall.@zone[1].input='DROP'
     uci commit firewall
     fi
 }

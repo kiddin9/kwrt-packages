@@ -54,7 +54,7 @@ e = t:option(Flag, "setbar", translate("Expand Toolbar"),translate('Expand or sh
 e.rmempty = false
 e.default = '0'
 
-e = t:option(Flag, "bgqs", translate("Refreshing mode"),translate('Cancel background glass fence special effects'))
+e = t:option(Flag, "bgqs", translate("Refreshing mode"))
 e.rmempty = false
 e.default = '0'
 
