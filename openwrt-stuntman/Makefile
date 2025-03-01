@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2023-2024 muink <https://github.com/muink>
+# Copyright (C) 2023-2025 muink <https://github.com/muink>
 
 include $(TOPDIR)/rules.mk
 
@@ -8,15 +8,16 @@ PKG_NAME:=stuntman
 PKG_UPSTREAM_VERSION:=1.2.17
 PKG_UPSTREAM_GITHASH:=cc5b875b3ac34b08b831ce34463b3474d412ac98
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH))
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/muink/stunserver.git
 PKG_SOURCE_VERSION:=cc5b875b3ac34b08b831ce34463b3474d412ac98
 PKG_MIRROR_HASH:=skip
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_UPSTREAM_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_UPSTREAM_VERSION)
+PKG_SOURCE:=$(PKG_SOURCE_SUBDIR)-$(PKG_SOURCE_VERSION).tar.zst
+
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 
 PKG_MAINTAINER:=Anya Lin <hukk1996@gmail.com>
