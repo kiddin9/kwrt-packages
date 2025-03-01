@@ -4,6 +4,7 @@
 'require request';
 'require fs';
 'require ui';
+'require uci';
 'require rpc';
 'require dom';
 'require poll';
@@ -18,13 +19,48 @@ var callNetworkRrdnsLookup = rpc.declare({
 var chartRegistry = {},
 	trafficPeriods = [],
 	trafficData = { columns: [], data: [] },
-	hostNames = {},
-	hostInfo = {},
-	ouiData = [];
-
+	hostNames = {}, // mac => hostname
+	hostInfo = {}, // ip => mac
+	ouiData = [],
+	hostNameMacSectionId = "";
 var l7proto = {};
 
 return view.extend({
+	loadHostNames: async function() {
+		try {
+			await uci.sections('hostnames', "hostname", function (params) {
+				hostNameMacSectionId = params['.name'];
+				for (var key in params) {
+					if (key.startsWith('.')) continue;
+					var macAddr = key.split('_').join(':');
+					hostNames[macAddr] = params[key];
+				}
+			});
+
+			const dhcpLeases = await fs.exec_direct('/usr/bin/awk', ['-F', ' ', '{print $2, $3, $4}', '/tmp/dhcp.leases'], 'text');
+			const dhcpLines = dhcpLeases.split('\n');
+			for (let i = 0; i < dhcpLines.length; i++) {
+				const line = dhcpLines[i];
+				if (line === '') continue;
+				const [mac, ip, hostname] = line.split(' ');
+				if (!hostNames.hasOwnProperty(mac)) {
+					hostNames[mac] = hostname;
+				}
+			};
+
+			const arp = await  fs.exec_direct('/usr/bin/awk', ['-F', ' ', '{print $1, $4}', '/proc/net/arp'], 'text');
+			const arpLines = arp.split('\n');
+			for (let i = 1; i < arpLines.length; i++) {
+				const line = arpLines[i];
+				if (line === '') continue;
+				const [ip, mac] = line.split(' ');
+				hostInfo[ip] = mac;
+			};
+
+		} catch (e) {
+			console.error('Error getting host names:', e);
+		}
+	},
 	off: function(elem) {
 		var val = [0, 0];
 		do {
@@ -316,15 +352,30 @@ return view.extend({
 		return false;
 	},
 
-	// 编辑限速
-	handleEditSpeed: function(host, type, dl, ul) {
+	// 编辑主机
+	handleEditSpeed: function(host, mac, hostname, type, dl, ul) {
 		dl = dl/1024/1024;
 		ul = ul/1024/1024;
+		let inputDom = E('input', {
+			'type': 'text',
+			'id': 'host-name',
+			'class': 'cbi-input-text',
+			'value': hostname,
+			'disabled': 'disabled'
+		})
+
+		if (mac) {
+			inputDom.removeAttribute('disabled');
+		}
 
 		var dialog = ui.showModal(_('Edit Speed Limit'), [
 			E('div', { 'class': 'form-group' }, [
 				E('label', { 'class': 'form-label' }, _('Host')),
 				E('span',{}, host)
+			]),
+			E('div', { 'class': 'form-group' }, [
+			E('label', { 'class': 'form-label' }, _('Hostname')),
+				inputDom
 			]),
 			E('div', { 'class': 'form-group' }, [
 				E('label', { 'class': 'form-label' }, _('Download Limit')),
@@ -366,8 +417,17 @@ return view.extend({
 						// 保存按钮逻辑
 						var dl = document.getElementById('dl-rate').value,
 							ul = document.getElementById('ul-rate').value;
-
+							host = document.getElementById('host-name').value;
 						try {
+							if (mac) {
+								hostNames[mac] = host;
+								uci.set('hostnames', hostNameMacSectionId, mac.split(':').join('_'), host);
+								uci.save('hostnames');
+								uci.apply('hostnames');
+								uci.unload('hostnames');
+								uci.load('hostnames');
+							}
+
 							const results = await Promise.all([
 								fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'update', host, "downrate", dl*1024*1024 || '0', "uprate", ul*1024*1024 || '0'], 'text'),
 								fs.exec_direct('/usr/bin/aw-bpfctl', [type,  'json'], 'json')
@@ -419,6 +479,7 @@ return view.extend({
 			var hostKey = (type == "mac" ? rec.mac : rec.ip);
 			rows.push([
 				hostKey,
+				rec.hostname || '-',
 				[ rec.outgoing.rate, '%1024.2mbps'.format(rec.outgoing.rate) ],
 				[ rec.outgoing.total_bytes, '%1024.2mB'.format(rec.outgoing.total_bytes) ],
 				[ rec.outgoing.total_packets, '%1000.2mP'.format(rec.outgoing.total_packets) ],
@@ -427,9 +488,9 @@ return view.extend({
 				[ rec.incoming.total_packets, '%1000.2mP'.format(rec.incoming.total_packets) ],
 				E('button', {
 					'class': 'btn cbi-button cbi-button-edit center',
-					'click': ui.createHandlerFn(this, function(host, type, dl, ul) {
-						this.handleEditSpeed(host, type, dl, ul);
-					}, hostKey, type, rec.incoming.incoming_rate_limit, rec.outgoing.outgoing_rate_limit)
+					'click': ui.createHandlerFn(this, function(host, mac, hostname, type, dl, ul) {
+						this.handleEditSpeed(host, mac, hostname, type, dl, ul);
+					}, hostKey, rec.mac, rec.hostname, type, rec.incoming.incoming_rate_limit, rec.outgoing.outgoing_rate_limit)
 					// hostKey是当前行的主机标识（IP/MAC），type是类型（ipv4/ipv6/mac）
 				}, _('Edit'))
 			]);
@@ -477,12 +538,15 @@ return view.extend({
 		};
 	},
 
-	pollChaQoSData: function() {
+	pollChaQoSData: async function() {
+		await uci.load('hostnames')
+
 		poll.add(L.bind(async function() {
 			var pie = this.pie.bind(this);
 			var kpi = this.kpi.bind(this);
 			var renderHostSpeed = this.renderHostSpeed.bind(this);
 
+			await this.loadHostNames();
 			try {
 				// Get both IPv4 and IPv6 data
 				const results = await Promise.all([
@@ -493,14 +557,34 @@ return view.extend({
 
 				const defaultData = {status: "success", data: []};
 
-				const ipv4_data = results[0] || defaultData;
-				const ipv6_data = results[1] || defaultData;
-				const mac_data  = results[2] || defaultData;
+				const ipv4Data = results[0] || defaultData;
+				const ipv6Data = results[1] || defaultData;
+				const macData  = results[2] || defaultData;
 
+				ipv4Data.data.forEach(item => {
+					const mac = hostInfo[item.ip];
+					if (mac) {
+						item.mac = mac;
+						item.hostname = hostNames[mac];
+					} else {
+						item.mac = null;
+						item.hostname = "";
+					}
+				});
+				// 遍历macData.data，根据mac地址获取对应的主机名,更新到macData.data中
+				macData.data.forEach(item => {
+					const mac = item.mac;
+					if (mac) {
+						item.hostname = hostNames[mac];
+					} else {
+						item.mac = null;
+						item.hostname = "";
+					}
+				});
 				// Render both IPv4 and IPv6 stats
-				renderHostSpeed(ipv4_data, pie, kpi, "ipv4");  // IPv4
-				renderHostSpeed(ipv6_data, pie, kpi, "ipv6");  // IPv6
-				renderHostSpeed(mac_data, pie, kpi, "mac");    // MAC
+				renderHostSpeed(ipv4Data, pie, kpi, "ipv4");  // IPv4
+				renderHostSpeed(ipv6Data, pie, kpi, "ipv6");  // IPv6
+				renderHostSpeed(macData, pie, kpi, "mac");    // MAC
 			} catch (e) {
 				console.error('Error polling data:', e);
 			}
@@ -544,7 +628,7 @@ return view.extend({
 		}
 	},
 	createAddButtonValue: function(type, placeholder) {
-		var input = E('input', {
+		let input = E('input', {
 				'type': 'text',
 				'id': type + '-add-input',
 				'class': 'cbi-input-text',
@@ -552,7 +636,7 @@ return view.extend({
 				'placeholder': _(placeholder)
 			});
 
-		var btn = E('button', {
+		let btn = E('button', {
 				'class': 'btn cbi-button cbi-button-add',
 				'id': type + '-add-btn',
 				'disabled': 'disabled',
@@ -622,6 +706,7 @@ return view.extend({
 					E('table', { 'class': 'table', 'id': 'speed-data' }, [
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
+							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
@@ -663,6 +748,7 @@ return view.extend({
 					E('table', { 'class': 'table', 'id': 'ipv6-speed-data' }, [
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
+							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
@@ -704,6 +790,7 @@ return view.extend({
 					E('table', { 'class': 'table', 'id': 'mac-speed-data' }, [
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
+							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),

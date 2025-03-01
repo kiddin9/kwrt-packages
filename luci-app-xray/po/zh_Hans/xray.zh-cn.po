@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-09 19:09+0080\n"
-"PO-Revision-Date: 2023-10-08 19:30+0080\n"
+"PO-Revision-Date: 2025-03-01 13:22+0080\n"
 "Last-Translator: xiechangan123\n"
 "Language: zh-cn\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
@@ -23,6 +23,12 @@ msgstr "通用设置"
 msgid "Xray Executable Path"
 msgstr "Xray运行目录"
 
+msgid "Enable Xray Service"
+msgstr "启用Xray服务"
+
+msgid "Uncheck this to disable the entire Xray service."
+msgstr "取消选中禁用全部Xray服务。"
+
 msgid "TCP Server (IPv4)"
 msgstr "TCP服务器（IPv4）"
 
@@ -40,6 +46,12 @@ msgstr "TCP服务器（IPv6）"
 
 msgid "UDP Server (IPv6)"
 msgstr "UDP服务器（IPv6）"
+
+msgid "Balancer Strategy"
+msgstr "负载均衡器配置"
+
+msgid "Strategy <code>leastPing</code> requires observatory (see "Extra Options" tab) to be enabled."
+msgstr "配置<code>leastPing</code>需要启用后台连接观测（参阅“扩展选项”选项卡）。"
 
 msgid "Enable Transparent Proxy"
 msgstr "启用透明代理"
@@ -251,6 +263,9 @@ msgstr "在这些接口上启用透明代理"
 msgid "WARNING: These features are experimental, may cause a lot of problems and are not guaranteed to be compatible across minor versions."
 msgstr "警告：这些功能是实验性的，可能会导致很多问题，无法保证跨次要版本兼容。"
 
+msgid "Inbounds"
+msgstr "入站代理"
+
 msgid "Transparent proxy port (TCP4)"
 msgstr "透明代理端口（TCP4）"
 
@@ -281,17 +296,20 @@ msgstr "FakeDNS路由"
 msgid "See <a href=\"https://github.com/v2ray/v2ray-core/issues/2233\">FakeDNS</a> for details."
 msgstr "参阅<a href=\"https://github.com/v2ray/v2ray-core/issues/2233\">FakeDNS</a>获取帮助。"
 
+msgid "Extra Inbounds"
+msgstr "扩展入站"
+
 msgid "Add more socks5 / http inbounds and redirect to other outbounds."
-msgstr "添加更多socks5/http入站Inbounds并重定向到其他出站Outbounds。"
+msgstr "添加更多socks5/http入站并重定向到其他出站。"
 
 msgid "Listen Address"
 msgstr "监听地址"
 
 msgid "Inbound Type"
-msgstr "Inbound类型"
+msgstr "入站类型"
 
 msgid "LAN Hosts Access Control"
-msgstr "LAN主机访问控制"
+msgstr "访问控制"
 
 msgid "Devices to enable IPv4 tproxy"
 msgstr "启用IPv4透明代理的设备"
@@ -321,16 +339,16 @@ msgid "MAC Address"
 msgstr "MAC地址"
 
 msgid "Extra inbound (TCP4)"
-msgstr "额外Inbounds（TCP4）"
+msgstr "扩展入站（TCP4）"
 
 msgid "Extra inbound (UDP4)"
-msgstr "额外Inbounds（UDP4）"
+msgstr "扩展入站（UDP4）"
 
 msgid "Extra inbound (TCP6)"
-msgstr "额外Inbounds（TCP6）"
+msgstr "扩展入站（TCP6）"
 
 msgid "Extra inbound (UDP6)"
-msgstr "额外Inbounds（UDP6）"
+msgstr "扩展入站（UDP6）"
 
 msgid "Dynamic Direct"
 msgstr "动态直连"
@@ -391,6 +409,9 @@ msgstr "绕过透明代理"
 
 msgid "DNS Settings"
 msgstr "DNS设置"
+
+msgid "DNS"
+msgstr "路由设置"
 
 msgid "Fast DNS"
 msgstr "快速DNS"
@@ -478,6 +499,9 @@ msgstr "对阻止域名规则返回<code>127.127.127.127</code>，未设置将�
 
 msgid "Transparent Proxy Rules"
 msgstr "透明代理规则"
+
+msgid "Outbound Routing"
+msgstr "出站路由"
 
 msgid "GeoIP Direct Code List (IPv4)"
 msgstr "GeoIP直连域名列表（IPv4）"
@@ -632,14 +656,11 @@ msgstr "发送代理协议版本"
 msgid "Custom Options"
 msgstr "自定义选项"
 
-msgid "Custom Configurations"
-msgstr "自定义配置"
+msgid "Custom Configuration Hook"
+msgstr "自定义配置钩子"
 
-msgid "Check <code>/var/etc/xray/config.json</code> for tags of generated inbounds and outbounds. See <a href=\"https://xtls.github.io/config/features/multiple.html\">here</a> for help"
-msgstr "检查 <code>/var/etc/xray/config.json</code> 以确定入站出站标签。 参阅<a href=\"https://xtls.github.io/config/features/multiple.html\">此处</a>获取帮助。"
-
-msgid "https://github.com/yichya/luci-app-xray"
-msgstr "https://github.com/yichya/luci-app-xray"
+msgid "Read <a href="https://ucode.mein.io/">ucode Documentation</a> for the language used. Code filled here may need to change after upgrading luci-app-xray."
+msgstr "参阅<a href="https://ucode.mein.io/">ucode Documentation</a>获取帮助。升级luci-app-xray后，此处填写的代码可能需要更改"
 
 msgid "Stream Security"
 msgstr "传输层安全"
@@ -693,13 +714,13 @@ msgid "Enable statistics of inbounds / outbounds data. Use Xray API to query val
 msgstr "启用入站/出站数据的统计信息，使用Xray API查询数据。"
 
 msgid "Enable Observatory"
-msgstr "启用延迟测量"
+msgstr "启用后台连接观测"
 
-msgid "Enable latency measurement for TCP and UDP outbounds. Support for balancers and strategy will be added later."
-msgstr "为TCP和UDP出站启用延迟测量，稍后将添加对平衡模式和策略的支持。"
+msgid "Enable latency measurement for TCP and UDP outbounds."
+msgstr "为TCP和UDP出站启用后台连接观测。"
 
-msgid "Enable firewall4 counters"
-msgstr "启用Firewall4计数器"
+msgid "Enable Firewall Counters"
+msgstr "启用防火墙计数器"
 
 msgid "Add <a href=\"/cgi-bin/luci/admin/status/nftables\">counters to firewall4</a> for transparent proxy rules. (Not supported in all OpenWrt versions. )"
 msgstr "为透明代理规则添加<a href=\"/cgi-bin/luci/admin/status/nftables\">counters to firewall4</a>（不支持OpenWrt所有版本）。"
@@ -745,6 +766,12 @@ msgstr "缓冲区大小"
 
 msgid "Policy: Internal cache size per connection. See <a href=\"https://xtls.github.io/config/policy.html#levelpolicyobject\">here</a> for help."
 msgstr "策略：每个连接的缓存大小。参阅<a href=\"https://xtls.github.io/config/policy.html#levelpolicyobject\">此处</a>获取帮助。"
+
+msgid "Preview or Deprecated"
+msgstr "预览或弃用"
+
+msgid "Show preview or deprecated features (requires reboot to take effect)."
+msgstr "显示预览或弃用的功能（重启后生效）。"
 
 msgid "Bridge"
 msgstr "桥接"
