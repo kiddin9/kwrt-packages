@@ -11,20 +11,15 @@ shift 6
 INITD='/etc/init.d/natmap'
 STATUS_PATH='/var/run/natmap'
 
-# exitpause <exitcode> [sleep time]
-exitpause() {
-	sleep $2
-	return $1
-}
-
 # fallloop <retry time> <func> [args...]
 fallloop() {
-	local rtry="$1"; shift
+	local retry="$1"; shift
+	local limit="$1"; shift
 	local func="$1"; shift
 
-	exitpause 1 0 || until [ $? = 0 ]; do
-		$func "$@"
-		exitpause $? $rtry
+	local error=1 count=0 && until [ $error = 0 -o $count -ge $limit ]; do
+		$func "$@" && error=0 || error=$?
+		let count++ && sleep $retry
 	done
 }
 
@@ -65,7 +60,7 @@ if [ -n "$NOTIFY" ]; then
 	json_load "$NOTIFY_PARAM"
 	json_add_string comment "$COMMENT"
 	json_add_string text "$_text"
-	fallloop 5m $NOTIFY "$(json_dump)" &
+	fallloop 5m 4 $NOTIFY "$(json_dump)" &
 fi
 if [ -n "$DDNS" ]; then
 	_hostype="$(jsonfilter -qs "$DDNS_PARAM" -e '@["hostype"]')"
@@ -78,7 +73,7 @@ if [ -n "$DDNS" ]; then
 	json_add_string https_svcparams "$_svcparams"
 	json_add_string ip "$ip"
 	json_add_int port "$port"
-	fallloop 5m $DDNS "$(json_dump)" &
+	fallloop 5m 4 $DDNS "$(json_dump)" &
 fi
 
 [ -n "${CUSTOM_SCRIPT}" ] && {

@@ -169,6 +169,11 @@ return view.extend({
 		o.default = 15;
 		o.rmempty = false;
 
+		o = s.option(form.Value, 'def_udp_stun_cycle', _('Default ') + _('UDP ') + _('STUN check cycle'));
+		o.datatype = 'uinteger';
+		o.default = 5;
+		o.rmempty = false;
+
 		o = s.option(form.Value, 'test_port', _('NATBehavior-Test port open on'), _('Please check <a href="%s"><b>Firewall Rules</b></a> to avoid port conflicts.</br>')
 			.format(L.url('admin', 'network', 'firewall'))
 			+ _('luci check may not detect all conflicts.'));
@@ -296,6 +301,11 @@ return view.extend({
 
 		o = s.taboption('general', form.Value, 'interval', _('Keep-alive interval'));
 		o.datatype = "and(uinteger, min(1))";
+		o.rmempty = true;
+		o.modalonly = true;
+
+		o = s.taboption('general', form.Value, 'stun_cycle', _('STUN check cycle'), _('For UDP mode'));
+		o.datatype = 'uinteger';
 		o.rmempty = true;
 		o.modalonly = true;
 
