@@ -13,13 +13,13 @@ function reception_lv(v) {
 	const min = -120;
 	const max = -66;
 
-	var pc = 0;
-	var vn = parseInt(v) || 0;
+	let pc = 0;
+	let vn = parseInt(v) || 0;
 	if (vn != 0) {
 		pc = Math.floor(100 * (1 - (max - vn) / (max - min)));
 	}
 
-	var i, c;
+	let i, c;
 	if (pc >= 50) {
 		if (pc >= 75) {
 			if (pc > 100) {
@@ -54,7 +54,7 @@ function reception_lv(v) {
 }
 
 function signal_lv(s, v) {
-	var min, max, u;
+	let min, max, u;
 
 	if (s == 'rssi') {
 		min = -90;
@@ -74,10 +74,10 @@ function signal_lv(s, v) {
 		u = 'dB';
 	}
 
-	var pc = 0;
-	var vn = parseInt(v) || 0;
-	if (vn != 0) {
-		var pc =  Math.floor(100 * (1 - (max - vn) / (max - min)));
+	let pc = 0;
+	let vn = parseInt(v) || 0;
+	if (vn) {
+		pc = Math.floor(100 * (1 - (max - vn) / (max - min)));
 		pc = Math.min(Math.max(pc, 0), 100);
 	}
 
@@ -92,48 +92,52 @@ const identity = ['iccid', 'imsi', 'imei', 'msisdn'];
 return view.extend({
 	load: function() {
 		return (async function() {
-			var o = {};
+			let res = {};
 
-			for (var i = 0; i < identity.length; i++) {
-				var s = await L.resolveDefault(fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000' ,'--get-' + identity[i]]));
-				o[identity[i]] = parseInt(s.slice(1, -2)) || _('None');
+			for (const i of identity) {
+				let s = await fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000' ,'--get-' + i]);						if (!s) {
+					return null;
+				}
+				res[i] = parseInt(s.slice(1, -2)) || _('N/A');
 			}
-			o.signal = await L.resolveDefault(fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000', '--get-signal-info']));
+			res.signal = await fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000', '--get-signal-info']);
 
-			return o;
+			return res;
 		}()).then(function(res) {
 			return res;
 		});
 	},
 
 	render: function(res) {
+		if (!res) {
+			return E('h3', _('No information'));
+		}
+
 		const indicator = ['rssi', 'rsrp', 'rsrq', 'snr'];
-		var m, s, o;
+		let m, s;
 
 		m = new form.JSONMap(this.formdata, _('Cellular Network'), _('Cellular network information'));
 		s = m.section(form.TypedSection, '', '', null);
 		s.anonymous = true;
 
 		pollData: poll.add(function() {
-			return L.resolveDefault(fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000', '--get-signal-info'])).then(function(res) {
+			return fs.exec_direct('/sbin/uqmi', ['-d', '/dev/cdc-wdm0', '-t', '2000', '--get-signal-info']).then(function(signal) {
 				// Signal bar
-				var json = JSON.parse(res);
-				var rlv = reception_lv(json.rsrp);
-				var view = document.getElementById('strength');
+				let json = JSON.parse(signal);
+				let rlv = reception_lv(json.rsrp);
+				let view = document.getElementById('strength');
 				if (view) {
 					view.innerHTML = '%s <span class="ifacebadge"><img src="%s"><span style="font-weight:bold;color:%s"> %d%%</span></span>'
 					.format(json.type.toUpperCase(), rlv.icon, rlv.color, rlv.per);
 				}
 
 				// Signal value
-				if (json.hasOwnProperty('rsrp')) {
-					for (var i = 0; i < indicator.length; i++) {
-						var view = document.getElementById(indicator[i]);
-						if (view) {
-							var slv = signal_lv(indicator[i], json[indicator[i]]);
-							view.setAttribute('title', '%s %s'.format(json[indicator[i]], slv.unit));
-							view.firstElementChild.style.width = '%d%%'.format(slv.per);
-						}
+				for (const i of indicator) {
+					let view = document.getElementById(i);
+					if (view) {
+						let slv = signal_lv(i, json[i]);
+						view.setAttribute('title', '%s %s'.format(json[i], slv.unit));
+						view.firstElementChild.style.width = '%d%%'.format(slv.per);
 					}
 				}
 			});
@@ -141,18 +145,18 @@ return view.extend({
 
 		s.render = function() {
 			// SIM information
-			var table_sim = E('table', { 'class': 'table' });
-			for (var i = 0; i < identity.length; i++) {
+			let table_sim = E('table', { 'class': 'table' });
+			for (const i of identity) {
 				table_sim.appendChild(E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left', 'width': '33%' }, [ identity[i].toUpperCase() ]),
-					E('td', { 'class': 'td left' }, [ res[identity[i]] ])
+					E('td', { 'class': 'td left', 'width': '33%' }, [ i.toUpperCase() ]),
+					E('td', { 'class': 'td left' }, [ res[i] ])
 				]));
 			}
 
 			// Connection status
-			var json = JSON.parse(res.signal);
-			var rlv = reception_lv(json.rsrp);
-			var table_signal = E('table', { 'class': 'table' });
+			let json = JSON.parse(res.signal);
+			let rlv = reception_lv(json.rsrp);
+			let table_signal = E('table', { 'class': 'table' });
 			table_signal.appendChild(E('tr', { 'class': 'tr' }, [
 				E('td', { 'class': 'td left', 'width': '33%' }, [ _('Signal strength') ]),
 				E('td', { 'id': 'strength', 'class': 'td left' }, [
@@ -161,16 +165,14 @@ return view.extend({
 					])
 				])
 			]));
-			if (json.hasOwnProperty('rsrp')) {
-				for (var i = 0; i < indicator.length; i++) {
-					var slv = signal_lv(indicator[i], json[indicator[i]]);
-					table_signal.appendChild(E('tr', { 'class': 'tr' }, [
-						E('td', { 'class': 'td left', 'width': '33%' }, [ indicator[i].toUpperCase() ]),
-						E('td', { 'class': 'td left' }, E('div', {
-							'id': indicator[i], 'class': 'cbi-progressbar', 'title': '%s %s'.format(json[indicator[i]], slv.unit)
-						}, E('div', { 'style': 'width:%d%%'.format(slv.per) })))
-					]));
-				}
+			for (const i of indicator) {
+				let slv = signal_lv(i, json[i]);
+				table_signal.appendChild(E('tr', { 'class': 'tr' }, [
+					E('td', { 'class': 'td left', 'width': '33%' }, [ i.toUpperCase() ]),
+					E('td', { 'class': 'td left' }, E('div', {
+						'id': i, 'class': 'cbi-progressbar', 'title': '%s %s'.format(json[i], slv.unit)
+					}, E('div', { 'style': 'width:%d%%'.format(slv.per) })))
+				]));
 			}
 
 			return E('div', { 'class': 'cbi-section' }, [

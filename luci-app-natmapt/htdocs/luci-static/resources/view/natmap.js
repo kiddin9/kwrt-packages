@@ -346,7 +346,7 @@ return view.extend({
 			],
 			{
 				'127.0.0.1': '127.0.0.1/::1 (<strong>%s</strong>)'.format(_('This device default Lan')),
-				'0.0.0.0': '0.0.0.0/:: (<strong>%s</strong>)'.format(_('This device default Lan'))
+				'0.0.0.0': '0.0.0.0/:: (<strong>%s</strong>)'.format(_('This device default Wan'))
 			});
 			opt.addChoices(choices[0], choices[1]);
 
@@ -430,7 +430,7 @@ return view.extend({
 		o = s.taboption('forward', form.Value, 'forward_target', _('Forward target'));
 		o.datatype = 'ipaddr(1)';
 		o.value('127.0.0.1', '127.0.0.1/::1 (%s)'.format(_('This device default Lan')));
-		o.value('0.0.0.0', '0.0.0.0/:: (%s)'.format(_('This device default Lan')));
+		o.value('0.0.0.0', '0.0.0.0/:: (%s)'.format(_('This device default Wan')));
 		o.default = '127.0.0.1';
 		o.rmempty = false;
 		o.retain = true;

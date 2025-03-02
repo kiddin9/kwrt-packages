@@ -7,30 +7,30 @@
 msgid "Cellular Network"
 msgstr "モバイルネットワーク"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:65
-msgid "None"
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:101
+msgid "N/A"
 msgstr "なし"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:78
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:113
+msgid "No information"
+msgstr "情報なし"
+
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:119
 msgid "Cellular Network"
 msgstr "モバイルネットワーク"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:78
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:119
 msgid "Cellular network information"
 msgstr "モバイルネットワーク情報"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:141
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:161
 msgid "Signal strength"
 msgstr "電波強度"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:152
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:179
 msgid "SIM Information"
 msgstr "SIM 情報"
 
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:152
+#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:179
 msgid "Current Connection Status"
 msgstr "現在の接続状況"
-
-#: applications/luci-app-cellularstatus/htdocs/luci-static/resources/view/status/cellularstatus.js:156
-msgid "Error: "
-msgstr "エラー:  "
