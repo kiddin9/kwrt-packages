@@ -416,12 +416,12 @@ return view.extend({
 
 						// 保存按钮逻辑
 						var dl = document.getElementById('dl-rate').value,
-							ul = document.getElementById('ul-rate').value;
-							host = document.getElementById('host-name').value;
+							ul = document.getElementById('ul-rate').value,
+							newName = document.getElementById('host-name').value;
 						try {
-							if (mac) {
-								hostNames[mac] = host;
-								uci.set('hostnames', hostNameMacSectionId, mac.split(':').join('_'), host);
+							if (mac && newName != hostname) {
+								hostNames[mac] = newName;
+								uci.set('hostnames', hostNameMacSectionId, mac.split(':').join('_'), newName);
 								uci.save('hostnames');
 								uci.apply('hostnames');
 								uci.unload('hostnames');
