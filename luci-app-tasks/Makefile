@@ -11,6 +11,6 @@ LUCI_DEPENDS:=+luci-lib-taskd
 
 PKG_MAINTAINER:=jjm2473 <jjm2473@gmail.com>
 
-include $(TOPDIR)/feeds/luci/luci.mk
+include ../../luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature
