@@ -457,8 +457,10 @@ jobs:
                 function version_lt() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1"; }
                 if version_lt "$over" "$ver"; then
                   latest="$(echo $latest | jq -r '.data.repository.latestRelease.tagCommit.oid' || echo $latest | jq -r '.data.repository.refs.edges[-1].node.target.oid')"
+                  set -x
                   sed -i -e "s/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=$latest/" \
                          -e "s/PKG_VERSION:=.*/PKG_VERSION:=$ver/" $pkg || true
+                  set +x
                 fi || true
               fi
             fi
