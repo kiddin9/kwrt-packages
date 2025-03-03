@@ -6,7 +6,7 @@
  	char *mount_opts = NULL, *ptr;
 +	char _data[128] = {0};
 +	if (strstr(fstype, "fat") || strstr(fstype, "ntfs")) {
-+		snprintf(_data, sizeof(_data), "%s", "force,iocharset=utf8,uid=65534,gid=65534");
++		snprintf(_data, sizeof(_data), "%s", "iocharset=utf8,uid=65534,gid=65534");
 +	}
 +
  	const char * const *filesystems;
