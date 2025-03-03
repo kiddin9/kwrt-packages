@@ -491,7 +491,6 @@ jobs:
         touch /tmp/ok2
         ) &
         
-        (
         sed -i \
           -e 's?include \.\./\.\./\(lang\|devel\)?include $(TOPDIR)/feeds/packages/\1?' \
           -e "s/\(\(^\| \|	\)\(PKG_HASH\|PKG_MD5SUM\|PKG_MIRROR_HASH\|HASH\):=\).*/\1skip/" \
@@ -500,7 +499,6 @@ jobs:
           -e 's/URL:=@IMMORTALWRT/URL:=https:\/\/mirror2.immortalwrt.org\/sources/g' \
           -e 's?include .*/luci.mk?include $(TOPDIR)/feeds/luci/luci.mk?' \
           */Makefile
-        ) &
 
         chmod +x github/diy/*.sh
         bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
