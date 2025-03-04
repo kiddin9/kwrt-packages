@@ -1,0 +1,40 @@
+<%+cbi/valueheader%>
+<input type="text" id="colorTextInput" placeholder="rgb(0,0,0)" >
+<script>
+
+function hexToRgb(hex) {
+	hex = hex.replace(/^#/, '');
+	let bigint = parseInt(hex, 16);
+	let r = (bigint >> 16) & 255;
+	let g = (bigint >> 8) & 255;
+	let b = bigint & 255;
+	return { r, g, b };
+}
+
+function createColorPicker(textInput) {
+	const colorPicker = document.createElement('input');
+	colorPicker.type = 'color';
+	colorPicker.value = textInput.value;
+	colorPicker.style.width = '25px';
+	colorPicker.style.height = '25px';
+	colorPicker.style.padding = '0px';
+	colorPicker.style.marginLeft = '-30px';
+	colorPicker.style.borderRadius = '4px';
+	textInput.parentNode.insertBefore(colorPicker, textInput.nextSibling);
+
+	colorPicker.addEventListener('input', function() {
+		const hexColor = colorPicker.value;
+		const rgbColor = hexToRgb(hexColor);
+		textInput.value = `rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})`;
+	});
+	textInput.addEventListener('input', function() {
+		colorPicker.value = textInput.value;
+	});
+}
+
+const textInput = document.getElementById('colorTextInput');
+createColorPicker(textInput);
+    </script>
+<%+cbi/valuefooter%>
+
+ 
