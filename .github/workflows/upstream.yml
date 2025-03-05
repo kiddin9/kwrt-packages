@@ -337,7 +337,7 @@ jobs:
         ) &
         (
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
-        multimedia/UnblockNeteaseMusic multimedia/aliyundrive-webdav net/antileech net/gowebdav net/kismet net/mstpd \
+        multimedia/UnblockNeteaseMusic multimedia/aliyundrive-webdav net/gowebdav net/kismet net/mstpd \
         net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
         net/uugamebooster net/pgyvpn ‎net/ooniprobe net/polipo net/rosy-file-server \
         net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater \
@@ -345,7 +345,7 @@ jobs:
         ) &
         (
         git_sparse_clone openwrt-24.10 "https://github.com/openwrt/packages" \
-        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
+        utils/coremark utils/watchcat utils/dockerd utils/cgroupfs-mount net/uwsgi net/miniupnpd net/p910nd net/ddns-scripts \
         net/ariang net/tailscale net/frp
         ) &
         (
@@ -363,12 +363,13 @@ jobs:
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
         net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
         net/mentohust net/ps3netsrv net/modemband net/brook net/q net/quectel-cm net/speedtest-cli net/tcping-simple \
-        net/vsftpd libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
+        net/vsftpd net/antileech net/smartdns libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
         utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
-        sound/spotifyd devel/go-rice admin/gotop kernel/quectel-qmi-wwan
+        sound/spotifyd devel/go-rice admin/gotop kernel/quectel-qmi-wwan ‎kernel/fibocom-qmi-wwan ‎\
+        lang/lua-periphery lang/lua-neturl lang/lua-maxminddb
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
