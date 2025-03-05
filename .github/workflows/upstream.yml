@@ -363,8 +363,8 @@ jobs:
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
         net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
         net/mentohust net/ps3netsrv net/modemband net/brook net/q net/quectel-cm net/speedtest-cli net/tcping-simple \
-        net/vsftpd net/antileech net/smartdns libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
-        libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp \
+        net/vsftpd net/smartdns libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
+        libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
         utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
