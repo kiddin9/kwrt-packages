@@ -17,7 +17,7 @@ TCP/UDP port mapping for full cone NAT
 
 ## Screenshots
 
-![0](.img/0.png "0")  
+![0](.img/0.png "0")
 
 ## Depends
 
@@ -61,8 +61,8 @@ make package/luci-app-natmapt/compile V=99
 
 ## Collaborators
 
-[Richard Yu](https://github.com/ysc3839)  
-[Anya Lin](https://github.com/muink)  
+[Richard Yu](https://github.com/ysc3839)\
+[Anya Lin](https://github.com/muink)
 
 [NATMap]: https://github.com/heiher/natmap
 [natmapt]: https://github.com/muink/openwrt-natmapt

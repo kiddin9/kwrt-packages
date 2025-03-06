@@ -15,7 +15,7 @@ TCP/UDP port mapping for full cone NAT
 - [ ] SVCB Record update script
 
 ## Releases
-You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packages/)  
+You can find the prebuilt-ipks [here](https://fantastic-packages.github.io/packages/)\
 And LuCI can be found here [luci-app-natmapt][]
 
 ## Build
@@ -43,9 +43,9 @@ make package/natmapt/compile V=99
 
 ## Collaborators
 
-[Ray Wang](https://github.com/heiher)  
-[Richard Yu](https://github.com/ysc3839)  
-[Anya Lin](https://github.com/muink)  
+[Ray Wang](https://github.com/heiher)\
+[Richard Yu](https://github.com/ysc3839)\
+[Anya Lin](https://github.com/muink)
 
 [NATMap]: https://github.com/heiher/natmap
 [luci-app-natmapt]: https://github.com/muink/luci-app-natmapt
