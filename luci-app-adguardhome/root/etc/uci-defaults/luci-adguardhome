@@ -1,5 +1,6 @@
 #!/bin/sh
 
 chmod +x /etc/init.d/adguardhome /usr/libexec/rpcd/luci.adguardhome
+service rpcd restart
 
 exit 0
