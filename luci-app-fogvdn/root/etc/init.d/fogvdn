@@ -20,7 +20,7 @@ function run_instance()
     else
         json="{}"
     fi
-    
+
     config_get username $1 username
     config_get isp $1 isp
     config_get region $1 region
@@ -104,7 +104,6 @@ function nics_hd()
     nic_name=$1
     res=$(echo $json |  jq '.nics | index(["'${nic_name}'"])')
     [ "$res" == "null" ] && json=$(echo "$json" | jq --arg item "$nic_name" '.nics += [$item]')
-    
 }
 
 function stop_instance()

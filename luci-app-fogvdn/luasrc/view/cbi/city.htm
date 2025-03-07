@@ -5562,7 +5562,7 @@
         ]
     },
 ]
-	/* 
+	/*
 	当input<%=cbid%>没有值时 隐藏input<%=cbid%>
 	如果input<%=cbid%>有值 显示，并添加点击事件，点击时候显示下拉列表
 	创建三个下拉列表，分别是省、市、区，并添加change事件，
@@ -5579,7 +5579,7 @@
 		init() {
 			if (this.cbi_input.value) {
 				this.cbi_input.style.display = "";
-				this.cbi_input.addEventListener("click", 
+				this.cbi_input.addEventListener("click",
 					() =>{
 						this.showEdit();
 						var provice_value, city_value, area_value;
@@ -5591,7 +5591,7 @@
 						//clear value
 						this.cbi_input.value = "";
 					}
-					
+
 				);
 			} else {
 				this.cbi_input.style.display = "none";
@@ -5608,7 +5608,7 @@
 				area_select = this.area_select;
 			} else {
 				province_select = document.createElement("select");
-				province_select.addEventListener("change", 
+				province_select.addEventListener("change",
 					() =>{
 						city_select.innerHTML = "";
 						area_select.innerHTML = "";
@@ -5616,14 +5616,14 @@
 					}
 				);
 				city_select = document.createElement("select");
-				city_select.addEventListener("change", 
+				city_select.addEventListener("change",
 					() =>{
 						area_select.innerHTML = "";
 						this.updateSelect();
 					}
 				);
 				area_select = document.createElement("select");
-				area_select.addEventListener("change", 
+				area_select.addEventListener("change",
 					() =>{
 						this.updateSelect();
 					}
@@ -5637,7 +5637,7 @@
 			}
 			this.updateSelect();
 		}
-		
+
 		updateSelect(){
 			var provice_value, city_value, area_value;
 			if (this.province_select) {
@@ -5731,16 +5731,8 @@
 				return;
 			}
 			this.cbi_input.value = provice_value + "-" + city_value + "-" + area_value;
-			
-
 		}
-
-
 	}
 	new ZoneSelect("<%=cbid%>", zonedata);
-
-	
-
-
 </script>
 <%+cbi/valuefooter%>

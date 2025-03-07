@@ -2,10 +2,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quectel-qmi-wwan
 PKG_VERSION:=1.2.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://mirror2.immortalwrt.org/sources
+PKG_SOURCE_URL:=@IMMORTALWRT
 PKG_HASH:=skip
 
 PKG_LICENSE:=GPL-2.0-only

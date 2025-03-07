@@ -4,7 +4,6 @@ local json = require "luci.jsonc"
 m = Map("fogvdn", translate("FOGVDN Node"))
 s = m:section(NamedSection, "main", "main", translate("Main"))
 
-
 act_status = s:option(DummyValue, "act_status", translate("Status"))
 act_status.template = "pcdn/act_status"
 
@@ -16,28 +15,29 @@ if fs.access(node_info_file) then
     local node_info = fs.readfile(node_info_file)
     node_info = json.parse(node_info)
     for k,v in pairs(node_info) do
+
 node_info_file = "/etc/pear/pear_monitor/node_info.json"
 if fs.access(node_info_file) then
-    local node_info = fs.readfile(node_info_file)
-    node_info = json.parse(node_info)
-    for k,v in pairs(node_info) do
-        if k == "node_id" then
-            option = s:option(DummyValue, "_"..k,translate(k))
-            option.value = v
-        end
-    end
+    local node_info = fs.readfile(node_info_file)
+    node_info = json.parse(node_info)
+    for k,v in pairs(node_info) do
+        if k == "node_id" then
+            option = s:option(DummyValue, "_"..k,translate(k))
+            option.value = v
+        end
+    end
 end
 
 storage_info_file = "/etc/pear/pear_monitor/storage_info.json"
 if fs.access(storage_info_file) then
-    local storage_info = fs.readfile(storage_info_file)
-    storage_info = json.parse(storage_info)
-    for k,v in pairs(storage_info) do
-        if k == "os_drive_serial" then
-            option = s:option(DummyValue, "_"..k,translate(k))
-            option.value = v
-        end
-    end
+    local storage_info = fs.readfile(storage_info_file)
+    storage_info = json.parse(storage_info)
+    for k,v in pairs(storage_info) do
+        if k == "os_drive_serial" then
+            option = s:option(DummyValue, "_"..k,translate(k))
+            option.value = v
+        end
+    end
 end
             option = s:option(DummyValue, "_"..k,translate(k))
             option.value = v
@@ -52,15 +52,12 @@ s = m:section(TypedSection, "instance", translate("Settings"))
 s.anonymous = true
 s.description = translate("Fogvdn Settings")
 
-
-
 username = s:option(Value, "username", translate("username"))
 username.description = translate("<input type=\"button\" class=\"cbi-button cbi-button-apply\" value=\"Register\" onclick=\"window.open('https://account.openfogos.com/signup?source%3Dopenfogos.com%26')\" />")
 
 region = s:option(Value, "region", translate("Region"))
 region.optional = true
 region.template="cbi/city"
-
 
 isp = s:option(Value, "isp", translate("ISP"))
 isp.optional = true
@@ -145,14 +142,14 @@ end
 -- 解析并转换大小单位
 function parseSize(size)
     if type(size) ~= "string" then return 0 end
-    
+
     local unit = {"B", "K", "M", "G", "T"}
-    
+
     local num, u = string.match(size, "^(%d+%.?%d*)([KMGT]?)$")
     if not num then return 0 end
-    
+
     local i = table.indexOf(unit, u)
-    
+
     -- 如果没有找到单位，默认为字节
     if i == -1 then
         return tonumber(num)
@@ -164,7 +161,7 @@ end
 -- 获取最佳存储方案
 function getOptimalSolution(numsObjArray)
     if type(numsObjArray) ~= "table" or #numsObjArray == 0 then return {} end
-    
+
     -- 拷贝并按大小排序
     local nums = {}
     for _, v in ipairs(numsObjArray) do
@@ -192,7 +189,7 @@ function getOptimalSolution(numsObjArray)
         table.insert(result, v.name)
     end
     table.sort(result)
-    
+
     return result
 end
 

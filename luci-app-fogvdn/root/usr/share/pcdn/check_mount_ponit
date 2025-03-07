@@ -2,7 +2,6 @@
 # 脚本功能：json方式返回 大于某个容量的磁盘挂载点及其大小
 . /usr/share/libubox/jshn.sh
 
-
 get_disk_info() {
     disk_info=$(lsblk |grep disk)
     IFS=$'\n'
@@ -38,12 +37,10 @@ get_mount_point_info() {
         if [ -z "$mount_point_capacity" ] || [ -z "$mount_point_name" ]; then
             continue
         fi
-        
-        
+
         json_add_string "$mount_point_name/openfogos" "$mount_point_capacity"
     done
 }
-
 
 json_init
 case $1 in

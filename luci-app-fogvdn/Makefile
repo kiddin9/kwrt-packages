@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/package.mk
 
-LLUCI_TITLE:=Luci for OpenFog Peer-to-Peer Content Delivery Network
+LLUCI_TITLE:=Luci for OpenFog Pear P2P CDN
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+luci-compat +fogvdn +jq +lsblk
 
