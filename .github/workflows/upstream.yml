@@ -496,7 +496,6 @@ jobs:
           -e "s/\(\(^\| \|	\)\(PKG_HASH\|PKG_MD5SUM\|PKG_MIRROR_HASH\|HASH\):=\).*/\1skip/" \
           -e 's/php7/php8/g' \
           -e 's/+docker\( \|$\)/+docker +dockerd /g' \
-          -e 's/URL:=@IMMORTALWRT/URL:=https:\/\/mirror2.immortalwrt.org\/sources/g' \
           -e 's?include .*/luci.mk?include $(TOPDIR)/feeds/luci/luci.mk?' \
           */Makefile
 
