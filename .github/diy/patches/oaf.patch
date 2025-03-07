@@ -12,15 +12,3 @@
 +		}
 +	}
 +}
-
---- a/oaf/Makefile
-+++ b/oaf/Makefile
-@@ -23,7 +23,7 @@ define KernelPackage/oaf/description
- endef
- 
- 
--EXTRA_CFLAGS:=-Wno-declaration-after-statement -Wno-strict-prototypes -Wno-unused-variable -Wno-implicit-fallthrough -Wno-missing-braces -Wno-parentheses -Wno-format
-+EXTRA_CFLAGS:=-Wno-declaration-after-statement -Wno-strict-prototypes -Wno-unused-variable -Wno-implicit-fallthrough -Wno-missing-braces -Wno-parentheses -Wno-format -Wno-incompatible-pointer-types
- 
- 
-
