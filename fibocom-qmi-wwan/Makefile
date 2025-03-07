@@ -2,10 +2,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fibocom-qmi-wwan
 PKG_VERSION:=1.0.5
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@IMMORTALWRT
+PKG_SOURCE_URL:=https://sources-cdn.immortalwrt.org
 PKG_HASH:=skip
 
 PKG_LICENSE:=GPL-2.0-only
