@@ -9,7 +9,7 @@ THEME_NAME:=kucat
 THEME_TITLE:=Kucat Theme
 PKG_NAME:=luci-theme-$(THEME_NAME)
 LUCI_TITLE:=Kucat Theme by sirpdboy
-LUCI_DEPENDS:=+curl
+LUCI_DEPENDS:=
 
 define Package/luci-theme-$(THEME_NAME)/postinst
 #!/bin/sh
