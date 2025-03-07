@@ -368,7 +368,7 @@ jobs:
         utils/qt6tools utils/sms-tool utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
-        sound/spotifyd devel/go-rice admin/gotop kernel/fibocom-qmi-wwan \
+        sound/spotifyd devel/go-rice admin/gotop \
         lang/lua-periphery lang/lua-neturl lang/lua-maxminddb
         ) &
         (
