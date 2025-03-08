@@ -57,28 +57,17 @@ return view.extend({
 		return this.handleCommand('rgmac', [ '-lrouter' ]);
 	},
 
-//	handleAction(name, action, ev) {
-//		return this.callInitAction(name, action).then((success) => {
-//			if (success != true)
-//				throw _('Command failed');
-//
-//			return true;
-//		}).catch((e) => {
-//			ui.addNotification(null, E('p', _('Failed to execute "/etc/init.d/%s %s" action: %s').format(name, action, e)));
-//		});
-//	},
-
-	handleAction(m, action, ev) {
-		m.save();
-		uci.save();
-		uci.apply();
-		uci.unload('change-mac');
-		uci.load('change-mac');
-
-		return fs.exec('/etc/init.d/change-mac', [action])
-			.then(L.bind(uci.unload, uci, 'change-mac'))
-			.then(L.bind(m.render, m))
-			.catch((e) => { ui.addNotification(null, E('p', e.message)) });
+	handleAction(action, ev, section_id) {
+		return this.map.save()
+			.then(uci.save())
+			.then(uci.apply())
+			.then(L.bind(this.map.load, this.map))
+			.then(L.bind(this.map.reset, this.map))
+			.then(() => {
+				return fs.exec('/etc/init.d/change-mac', [action])
+					.catch((e) => { ui.addNotification(null, E('p', e.message)) });
+			})
+			.catch(() => {});
 	},
 
 	render(res) {
@@ -130,14 +119,12 @@ return view.extend({
 		o = s.option(form.Button, '_change_now', _('Change MAC now'));
 		o.inputtitle = _('Change now');
 		o.inputstyle = 'apply';
-		o.onclick = this.handleAction.bind(this, m, 'change');
-// E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'start'), 'disabled': isReadonlyView }, _('Start')),
+		o.onclick = L.bind(this.handleAction, o, 'change');
 
 		o = s.option(form.Button, '_restore_sel', _('Restore selected interfaces'));
 		o.inputtitle = _('Restore');
 		o.inputstyle = 'apply';
-		o.onclick = this.handleAction.bind(this, m, 'restore');
-// E('button', { 'class': 'btn cbi-button-action', 'click': ui.createHandlerFn(this, 'handleAction', list[i].name, 'stop'), 'disabled': isReadonlyView }, _('Stop')),
+		o.onclick = L.bind(this.handleAction, o, 'restore');
 
 		s = m.section(form.TypedSection, '_utilities');
 		s.render = L.bind(function(view, section_id) {
