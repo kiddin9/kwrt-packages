@@ -113,7 +113,7 @@ jobs:
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
         git clone https://github.com/fw876/helloworld && rm -rf helloworld/{v2raya,naiveproxy,chinadns-ng} && mvdir helloworld
-        git_clone https://github.com/xiaorouji/openwrt-passwall-packages && mvdir openwrt-passwall-packages
+        git_clone https://github.com/xiaorouji/openwrt-passwall-packages && rm -rf openwrt-passwall-packages/v2ray-* && mvdir openwrt-passwall-packages
         git_clone https://github.com/Lienol/openwrt-package liep
         git_clone https://github.com/rufengsuixing/luci-app-autoipsetadder
         git_clone https://github.com/NateLol/luci-app-beardropper
