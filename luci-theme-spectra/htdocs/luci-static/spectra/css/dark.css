@@ -944,7 +944,7 @@ ul.tabs li.active, ul.cbi-tabmenu li.cbi-tab {
   font-weight: normal !important;
   border-radius: 8px !important;
   min-width: 6em;
-  display: inline-flex !important;
+
   align-items: center!important;
   justify-content: center;
   text-decoration: none !important;
@@ -1467,6 +1467,10 @@ svg path {
 #mwan3-service-status > div {
     background-color: #ff4d4f !important; 
     margin: 10px !important; 
+}
+
+#cbi-fchomo-config-_reload .cbi-button {
+  margin-left: -0.1ch !important;
 }
 
 footer {

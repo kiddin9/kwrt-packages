@@ -54,6 +54,7 @@ return view.extend({
 		s.tab('gateway', _('Gateway Settings'));
 		s.tab('advanced', _('Advanced Settings'));
 		s.tab('rule', _('Rule Settings'));
+		s.tab('qos', _('QoS Settings'));
 
 		// basic settings
 		o = s.taboption('basic', form.Flag, 'enabled', _('Enable'), _('Enable apfree-wifidog service.'));
@@ -160,7 +161,7 @@ return view.extend({
 		o.rmempty = false;
 		o.optional = false;
 		o.placeholder = '192.168.80.0/24';
-		
+
 		// advanced settings
 		o = s.taboption('advanced', form.ListValue, 'long_conn_mode', _('Persistent Connection Mode'),
 						_('The persistent connection mode of the device to auth server.'));
@@ -275,6 +276,28 @@ return view.extend({
 		o.datatype = 'macaddr';
 		o.rmempty = true;
 		o.depends('enable_anti_nat', '1');
+
+		// QoS settings
+		o = s.taboption('qos', form.Flag, 'enable_qos', _('Enable Global QoS'),
+						_('Enable Global QoS.'));
+		o.rmempty = false;
+		o.defaulValue = false;
+
+		o = s.taboption('qos', form.Value, 'qos_up', _('Global QoS Up'),
+						_('The global QoS up value(Mbps).'));
+		o.datatype = 'uinteger';
+		o.rmempty = true;
+		o.optional = true;
+		o.defaulValue = 0;
+		o.depends('enable_qos', '1');
+
+		o = s.taboption('qos', form.Value, 'qos_down', _('Global QoS Down'),
+						_('The global QoS down value(Mbps).'));
+		o.datatype = 'uinteger';
+		o.rmempty = true;
+		o.optional = true;
+		o.defaulValue = 0;
+		o.depends('enable_qos', '1');
 
 		// rule settings
 		o = s.taboption('rule', form.DynamicList, 'trusted_wildcard_domains', _('Trusted Wildcard Domains'),

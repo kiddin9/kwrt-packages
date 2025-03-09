@@ -479,3 +479,24 @@ msgstr "请输入一个正确的MAC地址"
 
 msgid "Updated successfully!"
 msgstr "更新成功"
+
+msgid "Enable Global QoS"
+msgstr "启用全局 QoS"
+
+msgid "Global QoS Up"
+msgstr "全局上传 QoS"
+
+msgid "Global QoS Down"
+msgstr "全局下载 QoS"
+
+msgid "Enable Global QoS."
+msgstr "启用全局 QoS 控制"
+
+msgid "The global QoS up value(Mbps)."
+msgstr "全局上传 QoS 值（Mbps）"
+
+msgid "The global QoS down value(Mbps)."
+msgstr "全局下载 QoS 值（Mbps）"
+
+msgid "QoS Settings"
+msgstr "QoS 设置"
