@@ -10,18 +10,6 @@
  
  PKG_NAME:=luci-app-easytier
 
---- a/luci-app-aria2/Makefile
-+++ b/luci-app-aria2/Makefile
-@@ -7,7 +7,7 @@
- include $(TOPDIR)/rules.mk
- 
- LUCI_TITLE:=LuCI Support for Aria2
--LUCI_DEPENDS:=+luci-base +aria2
-+LUCI_DEPENDS:=+luci-base +aria2 +ariang
- 
- PKG_MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
- PKG_LICENSE:=MIT
-
 --- a/luci-app-samba4/Makefile
 +++ b//luci-app-samba4/Makefile
 @@ -3,7 +3,7 @@
