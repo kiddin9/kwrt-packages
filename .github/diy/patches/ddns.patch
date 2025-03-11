@@ -1,17 +1,3 @@
---- a/ddns-scripts/files/etc/init.d/ddns
-+++ b/ddns-scripts/files/etc/init.d/ddns
-@@ -2,10 +2,6 @@
- START=95
- STOP=10
- 
--boot() {
--	return 0
--}
--
- reload() {
- 	/usr/lib/ddns/dynamic_dns_updater.sh -- reload
- 	return 0
-
 --- a/luci-app-ddns/Makefile
 +++ b/luci-app-ddns/Makefile
 @@ -12,7 +12,7 @@ PKG_LICENSE:=Apache-2.0
