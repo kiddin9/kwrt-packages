@@ -27,27 +27,25 @@
 
 --- a/miniupnpd/files/upnpd.config
 +++ b/miniupnpd/files/upnpd.config
-@@ -1,7 +1,8 @@
+@@ -1,5 +1,5 @@
  config upnpd config
 -	option enabled		0
 +	option enabled		1
  	option enable_natpmp	1
  	option enable_upnp	1
-+	option force_forwarding 1
  	option secure_mode	1
- 	option log_output	0
- 	option download		1024
-@@ -12,6 +13,10 @@ config upnpd config
- 	option port		5000
+@@ -13,8 +13,9 @@ config upnpd config
  	option upnp_lease_file	/var/run/miniupnpd.leases
  	option igdv1		1
-+	option use_stun '1'
-+	option stun_host 'stun.miwifi.com'
-+	option stun_port '3478'
-+	option ipv6_disable '1'
+ 	option ipv6_disable	1
+-	option use_stun		0
+-	option stun_host 	stunserver.stunprotocol.org
++	option force_forwarding 1
++	option use_stun		1
++	option stun_host 	stun.miwifi.com
+ 	option stun_port	3478
  
  config perm_rule
- 	option action		allow
 
 --- a/miniupnpd/Makefile
 +++ b/miniupnpd/Makefile
