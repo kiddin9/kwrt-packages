@@ -1,6 +1,8 @@
 body {
-  background:  #1e1e1e;
-  color: #cccccc;
+  /* background: url('/luci-static/spectra/background/bg1.jpg') no-repeat center center fixed !important;
+  background-size: cover !important; */
+  color: #FFE4C4;
+  z-index: 9999;
 }
 .login-page .login-container .login-form {
   background-color: transparent;
@@ -118,18 +120,7 @@ header::after {
 .main .main-right {
   background-color: transparent; <!-- warna bg diluar system dll -->
 }
-h2 {
-  color: cyan;
-  background: linear-gradient(to right, #0000009a, transparent);
-}
-h3 {
-  color: #ccc;
-  border-bottom: 0;
-  background: #333333;
-}
-h4 {
-  color: #8c6900;
-}
+
 abbr {
   color: var(--dark-primary) !important;
 }
@@ -170,7 +161,7 @@ header.bg-primary {
 }
 div > table > tbody > tr:nth-of-type(2n),
 div > .table > .tr:nth-of-type(2n) {
-  background-color: transparent;
+  background-color: rgba(37, 37, 38, 0.1); 
 }
 table > tbody > tr > td,
 table > tfoot > tr > td,
@@ -178,7 +169,7 @@ table > thead > tr > td {
   color: #cccccc;
 }
 fieldset > table > tbody > tr:nth-of-type(2n) {
-  background-color: transparent;
+  background-color: rgba(37, 37, 38, 0.1); 
 }
 table > tbody > tr > td,
 table > tfoot > tr > td,
@@ -248,12 +239,10 @@ body:not(.Interfaces) .cbi-rowstyle-2:first-child {
 }
 .cbi-section > h3:first-child,
 .panel-title,
-h3 {
-  color: cyan;
-  background: linear-gradient(to right, #0000009a, transparent);
-}
-h4 {
-  background-color: #0000009a;
+h2, h3, h4 {
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 .cbi-progressbar {
   background: linear-gradient(to right, #0000009a, #0000);
@@ -339,7 +328,9 @@ div > .table > .tbody > .tr:nth-of-type(2n) {
   border-bottom: none !important;
 }
 .cbi-tabcontainer > .cbi-value:nth-of-type(2n) {
-  background-color: #252526;
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 .cbi-value-title {
   color: #ccc;
@@ -386,16 +377,18 @@ select {
   color: #ccc;
 }
 .cbi-input-textarea {
-  background-color: #1e1e1e;
-  color: #ccc;
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    color: #FFE4C4;
 }
 textarea:focus-visible {
   border: 1px solid var(--dark-primary);
 }
 .cbi-section-remove:nth-of-type(2n),
-.cbi-section-node:nth-of-type(2n) {
-  background-color: #0000009a;
-}
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 .node-system-packages > .main table tr td:nth-last-child(1) {
   color: #ccc;
 }
@@ -517,7 +510,9 @@ header .fill .status span[data-style="active"] {
 [data-page="admin-network-diagnostics"] .tr > .td,
 .tr.table-titles > .th,
 .tr.cbi-section-table-titles > .th {
-  background-color: transparent;
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 .network-status-table .ifacebox-body .ifacebadge {
   background: linear-gradient(to right, #0000009a, transparent);
@@ -596,7 +591,9 @@ input,
   color: #ccc;
 }
 .cbi-section-table-row {
-  background-color: transparent; !important;
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 .modal {
   background-color: #0000009a;
@@ -680,7 +677,7 @@ input,
   --h3-color: #6BCB77;
   --h4-color: #4D96FF;
   --h5-color: #A66DD4;
-  --h6-color: #FF9F1C;
+  --h6-color: #FFA500;
 }
 
 body * {
@@ -785,24 +782,31 @@ h6 {
 
 .modal.alert-message.notice {
   position: fixed;
-  top: 50%;
+  top: 10%;  
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   width: auto;
-  min-width: 300px;
+  min-width: 400px;
   max-width: 90%;
-  margin: 0 auto;
+  max-height: 400px;  
   padding: 20px;
-  text-align: center;
+  text-align: center;  
   z-index: 9999;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  background: #f0f9eb !important; 
+  border: 2px solid #67C23A !important; 
   border-radius: 8px;
-  background: white;
+  box-shadow: 0 4px 12px rgba(102, 194, 58, 0.15); 
+  font-size: 16px;
+  color: #3d8b3d !important; 
+  text-align: center; 
 }
 
 .modal.alert-message.notice p {
   margin: 0;
   line-height: 1.5;
+  color: #3d8b3d !important;  
+  font-weight: bold; 
+  text-align: center; 
 }
 
 .cbi-section,
@@ -1261,12 +1265,13 @@ a.food[data-title="Log_out"]:hover::after {
     color: #ff4444;
     transform: translateY(-50%) scale(1.1);
 }
-
 .cbi-section-table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: #1a1a1a !important; 
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
     color: #ffffff !important;
 }
 
@@ -1276,7 +1281,9 @@ a.food[data-title="Log_out"]:hover::after {
 }
 
 .cbi-section-table tbody {
-    background-color: #1a1a1a !important; 
+    background: rgba(37, 37, 38, 0.1); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 
 .cbi-section-table tr {
@@ -1329,7 +1336,7 @@ a.food[data-title="Log_out"]:hover::after {
 }
 
 #add_link_div {
-    background-color: rgba(26, 26, 26, 0.8) !important; 
+    background-color: rgba(26, 26, 26, 0.1) !important; 
     backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(64, 64, 64, 0.5) !important;
     border-radius: 8px !important;
@@ -1339,7 +1346,7 @@ a.food[data-title="Log_out"]:hover::after {
 #nodes_link {
     width: 100% !important;
     height: 100px !important;
-    background-color: rgba(26, 26, 26, 0.8) !important; 
+    background-color: rgba(26, 26, 26, 0.1) !important; 
     border: 1px solid rgba(64, 64, 64, 0.5) !important;
     color: #ffffff !important;
     padding: 10px !important;
@@ -1347,7 +1354,7 @@ a.food[data-title="Log_out"]:hover::after {
 }
 
 .cbi-section-node {
-    background-color: rgba(26, 26, 26, 0.8) !important;
+    background-color: rgba(26, 26, 26, 0.1) !important;
     backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(64, 64, 64, 0.5) !important;
     border-radius: 8px !important;
@@ -1366,22 +1373,34 @@ a.food[data-title="Log_out"]:hover::after {
 }
 
 .create-item-input {
-    background-color: rgba(26, 26, 26, 0.8) !important;
+    caret-color: #00ff00 !important;
+    background-color: rgba(26, 26, 26, 0.6) !important;
     border: 1px solid rgba(64, 64, 64, 0.5) !important;
     color: #ffffff !important;
     padding: 5px !important;
     border-radius: 3px !important;
 }
 
+.cbi-dropdown[open] > ul.dropdown > li:hover {
+    background-color: rgba(26, 26, 26, 0.8) !important;
+    background: rgba(83, 195, 27, 0.6) !important;  
+    color: #fff !important;  
+    cursor: pointer !important;  
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: background 0.2s ease-in-out;  
+}
+
 .cbi-value-description {
-    color: #40A9FF !important;
+    color: #00FFFF !important;
     font-size: 1em !important;
+    font-weight: 700;
     margin-top: 5px !important;
+    text-shadow: -1px -1px 2px #444, 1px 1px 2px #000 !important; 
 }
 
 input[type="checkbox"] {
-    width: 20px !important; 
-    height: 20px !important; 
+    width: 18px !important; 
+    height: 18px !important; 
     border: 2px solid #888 !important; 
     background-color: #fff !important; 
     appearance: none !important; 
@@ -1401,7 +1420,7 @@ input[type="checkbox"]:hover {
 }
 
 .action[data-v-127a3100] {
-    background-color: rgba(20, 20, 20, 0.85) !important;
+    background-color: rgba(20, 20, 20, 0.1) !important;
     backdrop-filter: blur(15px) !important;
     border-radius: 10px !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -1411,7 +1430,7 @@ input[type="checkbox"]:hover {
 }
 
 ul[data-v-b8dfe98c] {
-    background-color: rgba(20, 20, 20, 0.85) !important;
+    background-color: rgba(20, 20, 20, 0.1) !important;
     backdrop-filter: blur(15px) !important;
     border-radius: 10px !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -1442,7 +1461,7 @@ ul[data-v-b8dfe98c] li[data-v-b8dfe98c]:hover {
 .network-container, 
 .nas-container_card, 
 .app-container {
-    background: rgba(25, 25, 25, 0.7) !important;
+    background: rgba(25, 25, 25, 0.1) !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
@@ -1462,7 +1481,7 @@ ul[data-v-b8dfe98c] li[data-v-b8dfe98c]:hover {
 }
 
 .progress {
-    background: rgba(100, 100, 100, 0.4) !important;
+    background: rgba(100, 100, 100, 0.1) !important;
     border-radius: 5px;
 }
 .progress-value {
@@ -1472,7 +1491,7 @@ ul[data-v-b8dfe98c] li[data-v-b8dfe98c]:hover {
 .item-label,
 .disk-item,
 .domain-item {
-    background: rgba(50, 50, 50, 0.3) !important;
+    background: rgba(50, 50, 50, 0.1) !important;
     border-radius: 8px;
     padding: 12px 15px !important;
     margin: 8px 0 !important;
@@ -1490,32 +1509,34 @@ svg path {
 }
 
 .app-container_status-label[data-v-08006dd5] {
-    background: rgba(20, 20, 20, 0.85) !important;
+    background: rgba(20, 20, 20, 0.15) !important;
     backdrop-filter: blur(15px) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 10px !important;
 }
 
+
 .app-container_status-container[data-v-08006dd5] {
-    background: rgba(30, 30, 30, 0.6) !important;
+    background: rgba(30, 30, 30, 0.1) !important;
     border-radius: 8px !important;
 }
 
 .app-container_status-container[data-v-08006dd5] {
-    background: rgba(20, 20, 20, 0.85) !important;
+    background: rgba(20, 20, 20, 0.1) !important;
     backdrop-filter: blur(15px) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 10px !important;
 }
 
 .app-container_status-label_block[data-v-08006dd5] {
-    background: rgba(45, 45, 45, 0.5) !important;
+    background: rgba(37, 37, 38, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 6px !important;
 }
 
+
 .app-container_status-label_bg[data-v-02f10ac5] {
-    background: rgba(40, 40, 40, 0.6) !important;
+    background: rgba(40, 40, 40, 0.1) !important;
     border-radius: 8px !important;
     padding: 12px !important;
 }
@@ -1622,7 +1643,9 @@ a[href="#"][onclick*="/cgi-bin/luci/admin/services/passwall2/get_socks_log"]:act
 [data-page="admin-status-routes"] #view p textarea,
 [data-page="admin-system-crontab"] #view p textarea {
   color: #ccc;
-  background-color: #0000009a;
+  background: rgba(37, 37, 38, 0.1); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); 
 }
 #view > .spinning {
   background: #333333 !important;
@@ -1740,4 +1763,12 @@ a[href="#"][onclick*="/cgi-bin/luci/admin/services/passwall2/get_socks_log"]:act
     background-color: #1e1e1e;
     box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.35);
   }
+}
+
+@media (max-width: 768px) {
+    .cbi-dropdown[open] > ul.preview {
+        width: 100vw !important;
+        left: 0 !important;
+        right: auto !important;
+    }
 }
