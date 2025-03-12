@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=coremark
 PKG_SOURCE_DATE:=2023-01-25
 PKG_SOURCE_VERSION:=d5fad6bd094899101a4e5fd53af7298160ced6ab
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/eembc/coremark/tar.gz/$(PKG_SOURCE_VERSION)?
@@ -78,17 +78,6 @@ endef
 define Package/coremark/install
 	$(INSTALL_DIR) $(1)/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/coremark $(1)/bin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_BIN) ./coremark.sh $(1)/etc/
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./coremark $(1)/etc/uci-defaults/xxx-coremark
-endef
-
-define Package/coremark/postinst
-#!/bin/sh
-[ -n "$${IPKG_INSTROOT}" ] || sed -i '/coremark/d' /etc/crontabs/root
-[ -n "$${IPKG_INSTROOT}" ] || echo "0 4 * * * /etc/coremark.sh" >> /etc/crontabs/root
-[ -n "$${IPKG_INSTROOT}" ] || crontab /etc/crontabs/root
 endef
 
 $(eval $(call BuildPackage,coremark))
