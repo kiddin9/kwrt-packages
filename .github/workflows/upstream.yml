@@ -404,6 +404,7 @@ jobs:
           mv -f $pkg/Makefile $pkg/Makefile.k >/dev/null 2>&1 || true
         done
         sed -i 's/\r//g' luci-app-ua2f/Makefile
+        rm -rf */.github
 
 
     - name: SSH connection to Actions
