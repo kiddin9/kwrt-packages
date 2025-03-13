@@ -1,0 +1,264 @@
+#!/bin/sh
+
+# QoSmate Statistics Backend for LuCI
+# shellcheck disable=SC2039,SC3043,SC2155,SC3057,SC1091
+
+. /lib/functions.sh
+
+# Set to 1 to enable debug logging, 0 to disable
+DEBUG=0
+
+# Debug logging function
+debug_log() {
+    if [ "$DEBUG" -eq 1 ]; then
+        echo "$1" >> /tmp/qosmate_debug.log
+    fi
+}
+
+# Function to safely get JSON from tc command
+get_tc_json() {
+    local output
+    # Fix HFSC options format by completely replacing the options object
+    output=$("$@" 2>/dev/null) || echo "[]"
+    
+    # Check if output is empty
+    if [ -z "$output" ]; then
+        echo "[]"
+        return
+    fi
+    
+    # Fix the HFSC options format by replacing the entire options object with a simple default value
+    echo "$output" | sed 's/\("kind":"hfsc",[^{]*"options":\){[^}]*}/\1{"default":13}/g'
+}
+
+# Function to filter statistics to only include QoSmate relevant qdiscs
+filter_qosmate_qdiscs() {
+    local stats="$1"
+    local wan_interface="$2"
+    local ifb_interface="$3"
+    
+    # Filter to only include qdiscs related to QoSmate (on wan_interface and ifb_interface)
+    echo "$stats" | jq -c "[.[] | select(.dev == \"$wan_interface\" or .dev == \"$ifb_interface\")]" 2>/dev/null || echo "[]"
+}
+
+# Function to get the statistics based on root qdisc
+get_stats() {
+    # Get basic statistics for all qdiscs
+    local basic_stats
+    basic_stats=$(get_tc_json tc -s -j qdisc show)
+    
+    debug_log "Basic stats: $basic_stats"
+
+    # Get root qdisc type
+    local root_qdisc
+    root_qdisc=$(uci -q get qosmate.settings.ROOT_QDISC || echo "hfsc")
+
+    # Get interface names
+    local wan_interface
+    wan_interface=$(uci -q get qosmate.settings.WAN || echo "eth1")
+    
+    local ifb_interface
+    ifb_interface="ifb-$wan_interface"
+    
+    # Filter basic stats to only include QoSmate relevant qdiscs
+    local filtered_stats
+    filtered_stats=$(filter_qosmate_qdiscs "$basic_stats" "$wan_interface" "$ifb_interface")
+    debug_log "Filtered stats: $filtered_stats"
+
+    # Process statistics based on qdisc type
+    local result
+    if [ "$root_qdisc" = "cake" ]; then
+        # Extract CAKE statistics for both egress and ingress
+        local cake_egress_stats
+        cake_egress_stats=$(echo "$filtered_stats" | jq -c "[.[] | select(.kind == \"cake\" and .dev == \"$wan_interface\")]" 2>/dev/null || echo "[]")
+        debug_log "Cake egress stats: $cake_egress_stats"
+
+        local cake_ingress_stats
+        cake_ingress_stats=$(echo "$filtered_stats" | jq -c "[.[] | select(.kind == \"cake\" and .dev == \"$ifb_interface\")]" 2>/dev/null || echo "[]")
+        debug_log "Cake ingress stats: $cake_ingress_stats"
+
+        # Get the priority queue type (diffserv3/4/8)
+        local priority_queue_ingress
+        priority_queue_ingress=$(uci -q get qosmate.cake.PRIORITY_QUEUE_INGRESS || echo "diffserv4")
+        local priority_queue_egress
+        priority_queue_egress=$(uci -q get qosmate.cake.PRIORITY_QUEUE_EGRESS || echo "diffserv4")
+
+        # Extract the actual cake qdisc stats for UI compatibility
+        local cake_egress=$(echo "$cake_egress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local cake_ingress=$(echo "$cake_ingress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+
+        # Create final JSON output using jq to ensure proper escaping
+        result=$(jq -n \
+            --arg rq "$root_qdisc" \
+            --arg wi "$wan_interface" \
+            --arg ii "$ifb_interface" \
+            --arg pqi "$priority_queue_ingress" \
+            --arg pqe "$priority_queue_egress" \
+            --argjson fs "$filtered_stats" \
+            --argjson ce "$cake_egress" \
+            --argjson ci "$cake_ingress" \
+            '{
+                root_qdisc: $rq,
+                wan_interface: $wi,
+                ifb_interface: $ii,
+                priority_queue_ingress: $pqi,
+                priority_queue_egress: $pqe,
+                qdisc_stats: $fs,
+                cake_egress: $ce,
+                cake_ingress: $ci
+            }' 2>/dev/null)
+    elif [ "$root_qdisc" = "hfsc" ]; then
+        # Extract HFSC root qdiscs and classes
+        local hfsc_egress_qdisc
+        hfsc_egress_qdisc=$(get_tc_json tc -s -j qdisc show dev "$wan_interface" | jq -c "[.[] | select(.kind == \"hfsc\")]" 2>/dev/null || echo "[]")
+        debug_log "HFSC egress qdisc: $hfsc_egress_qdisc"
+        
+        local hfsc_egress_classes
+        hfsc_egress_classes=$(get_tc_json tc -s -j class show dev "$wan_interface")
+        debug_log "HFSC egress classes: $hfsc_egress_classes"
+        
+        # Process the output to ensure it's valid JSON
+        hfsc_egress_classes=$(echo "$hfsc_egress_classes" | jq -c '.' 2>/dev/null || echo "[]")
+
+        local hfsc_ingress_qdisc
+        hfsc_ingress_qdisc=$(get_tc_json tc -s -j qdisc show dev "$ifb_interface" | jq -c "[.[] | select(.kind == \"hfsc\")]" 2>/dev/null || echo "[]")
+        debug_log "HFSC ingress qdisc: $hfsc_ingress_qdisc"
+        
+        local hfsc_ingress_classes
+        hfsc_ingress_classes=$(get_tc_json tc -s -j class show dev "$ifb_interface")
+        debug_log "HFSC ingress classes: $hfsc_ingress_classes"
+        
+        # Process the output to ensure it's valid JSON
+        hfsc_ingress_classes=$(echo "$hfsc_ingress_classes" | jq -c '.' 2>/dev/null || echo "[]")
+
+        # Get leaf qdisc statistics
+        local egress_leaf_qdiscs
+        egress_leaf_qdiscs=$(get_tc_json tc -s -j qdisc show dev "$wan_interface")
+        debug_log "Egress leaf qdiscs: $egress_leaf_qdiscs"
+        
+        # Process the output to ensure it's valid JSON and filter non-HFSC qdiscs
+        egress_leaf_qdiscs=$(echo "$egress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "hfsc" and .parent != null)]' 2>/dev/null || echo "[]")
+
+        local ingress_leaf_qdiscs
+        ingress_leaf_qdiscs=$(get_tc_json tc -s -j qdisc show dev "$ifb_interface")
+        debug_log "Ingress leaf qdiscs: $ingress_leaf_qdiscs"
+        
+        # Process the output to ensure it's valid JSON and filter non-HFSC qdiscs
+        ingress_leaf_qdiscs=$(echo "$ingress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "hfsc" and .parent != null)]' 2>/dev/null || echo "[]")
+
+        # Get game qdisc type
+        local gameqdisc
+        gameqdisc=$(uci -q get qosmate.hfsc.gameqdisc || echo "pfifo")
+
+        # Extract the main HFSC qdisc objects for UI compatibility
+        local hfsc_egress=$(echo "$hfsc_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local hfsc_ingress=$(echo "$hfsc_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+
+        # Create final JSON output using jq to ensure proper escaping
+        result=$(jq -n \
+            --arg rq "$root_qdisc" \
+            --arg wi "$wan_interface" \
+            --arg ii "$ifb_interface" \
+            --arg gq "$gameqdisc" \
+            --argjson fs "$filtered_stats" \
+            --argjson he "$hfsc_egress" \
+            --argjson hi "$hfsc_ingress" \
+            --argjson hec "$hfsc_egress_classes" \
+            --argjson hic "$hfsc_ingress_classes" \
+            --argjson elq "$egress_leaf_qdiscs" \
+            --argjson ilq "$ingress_leaf_qdiscs" \
+            '{
+                root_qdisc: $rq,
+                wan_interface: $wi,
+                ifb_interface: $ii,
+                gameqdisc: $gq,
+                qdisc_stats: $fs,
+                hfsc_egress: $he,
+                hfsc_ingress: $hi,
+                hfsc_egress_classes: $hec,
+                hfsc_ingress_classes: $hic,
+                egress_leaf_qdiscs: $elq,
+                ingress_leaf_qdiscs: $ilq
+            }' 2>/dev/null)
+    fi
+
+    echo "$result"
+}
+
+# Function to get historical statistics
+get_historical_stats() {
+    # Note: This is currently a placeholder function for future implementation
+    # In the future, this could provide historical QoS statistics from a database or log files
+    # Currently returns an empty JSON object as no history is being saved
+    local history_file="/tmp/qosmate_stats_history.json"
+    
+    if [ -f "$history_file" ]; then
+        cat "$history_file"
+    else
+        echo "{}"
+    fi
+}
+
+# Function to get RRD data if available
+get_rrd_data() {
+    # Note: This is currently a placeholder function for future implementation
+    # In the future, this could provide Round Robin Database data for generating time-series charts
+    # Currently only checks if the RRD directory exists but doesn't actually process any data
+    # Check if RRD data is available for QoS
+    if [ -d "/tmp/rrd" ]; then
+        echo "{\"rrd_available\": true}"
+    else
+        echo "{\"rrd_available\": false}"
+    fi
+}
+
+# Function to handle the call command
+handle_call() {
+    # Process input JSON
+    local input_json
+    input_json=$(cat)
+    debug_log "Input JSON: $input_json"
+    
+    # Extract method directly from the JSON
+    local method
+    method=$(echo "$input_json" | jsonfilter -e '@.method')
+    debug_log "Extracted method: $method"
+    
+    # Handle empty method case
+    if [ -z "$method" ]; then
+        # Default to getStats if no method is specified
+        method="getStats"
+        debug_log "Using default method: $method"
+    fi
+    
+    # Process based on method
+    case "$method" in
+        getStats)
+            get_stats
+            ;;
+        getHistoricalStats)
+            get_historical_stats
+            ;;
+        getRrdData)
+            get_rrd_data
+            ;;
+        *)
+            debug_log "Unknown method: $method"
+            echo '{"error": "Method not found"}'
+            ;;
+    esac
+}
+
+# Main function to handle RPC calls
+case "$1" in
+    list)
+        # List available methods
+        echo '{"getStats": {}, "getHistoricalStats": {}, "getRrdData": {}}'
+        ;;
+    call)
+        handle_call
+        ;;
+    *)
+        echo '{"error": "Invalid call"}'
+        ;;
+esac

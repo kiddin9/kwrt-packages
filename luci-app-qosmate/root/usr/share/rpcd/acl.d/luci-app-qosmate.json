@@ -1,10 +1,10 @@
-
 {
     "luci-app-qosmate": {
         "description": "Grant access to QoSmate configuration",
         "read": {
             "ubus": {
                 "luci.qosmate": [ "getConntrackDSCP" ],
+                "luci.qosmate_stats": [ "getStats", "getHistoricalStats", "getRrdData" ],
                 "luci": [ "getInitList", "setInitAction", "getInitActionStatus", "exec" ]
             },
             "uci": [ "qosmate" ],
@@ -15,7 +15,8 @@
                 "/etc/config/qosmate": [ "read" ],   
                 "/tmp/qosmate_auto_setup_output.txt": [ "read" ],
                 "/etc/qosmate.d/custom_rules.nft": [ "read" ],
-                "/tmp/qosmate_custom_rules_validation.txt": [ "read" ]                                                                          
+                "/tmp/qosmate_custom_rules_validation.txt": [ "read" ],
+                "/tmp/qosmate_stats_history.json": [ "read" ]                                                                     
             }
         },
         "write": {

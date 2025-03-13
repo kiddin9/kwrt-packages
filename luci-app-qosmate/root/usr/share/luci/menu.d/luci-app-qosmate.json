@@ -73,5 +73,13 @@
             "type": "view",
             "path": "qosmate/connections"
         }
+    },
+    "admin/network/qosmate/statistics": {
+        "title": "Statistics",
+        "order": 80,
+        "action": {
+            "type": "view",
+            "path": "qosmate/statistics"
+        }
     }
 }
