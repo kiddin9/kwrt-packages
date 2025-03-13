@@ -348,7 +348,7 @@ index cc39c00a21..079c9723b3 100755
 --- a/luci-app-passwall/root/usr/share/passwall/0_default_config
 +++ b/luci-app-passwall/root/usr/share/passwall/0_default_config
  	option use_default_dns 'direct'
-@@ -45,12 +46,12 @@ config global_other
+@@ -45,12 +46,15 @@ config global_other
  	option nodes_ping 'auto_ping tcping'
  
  config global_rules
@@ -362,5 +362,8 @@ index cc39c00a21..079c9723b3 100755
 +	option geosite_update '1'
 -	option geoip_update '0'
 +	option geoip_update '1'
++	option enable_geoview '1'
++	option week_update '7'
++	option time_update '4'
  	list gfwlist_url 'https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt'
  	list chnroute_url 'https://ispip.clang.cn/all_cn.txt'
