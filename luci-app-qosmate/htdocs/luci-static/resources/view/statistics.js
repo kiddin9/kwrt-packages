@@ -38,6 +38,24 @@ var convertToKbps = function(bytesPerSecond) {
     return (bytesPerSecond * 8 / 1000).toFixed(2) + ' Kbit/s';
 };
 
+// Format time value intelligently (microseconds to ms or s when appropriate)
+var formatTime = function(microseconds) {
+    if (microseconds === undefined || microseconds === null) return '0 µs';
+    
+    if (microseconds === 0) return '0 µs';
+    
+    if (microseconds >= 1000000) {
+        // Convert to seconds for values >= 1s
+        return (microseconds / 1000000).toFixed(2) + ' s';
+    } else if (microseconds >= 1000) {
+        // Convert to milliseconds for values >= 1ms
+        return (microseconds / 1000).toFixed(2) + ' ms';
+    } else {
+        // Keep as microseconds for small values
+        return microseconds + ' µs';
+    }
+};
+
 // Parse size string like "10.5 MiB" to bytes
 var parseSizeToBytes = function(sizeStr) {
     if (!sizeStr || typeof sizeStr !== 'string') return 0;
@@ -227,11 +245,16 @@ return view.extend({
                         'Tin ' + index,
                         // Convert threshold_rate from Byte/s to Kbit/s
                         bytesToKbits(tin.threshold_rate) + ' Kbit/s',
-                        tin.target_us + ' µs',
-                        tin.interval_us + ' µs',
+                        formatTime(tin.target_us),
+                        formatTime(tin.interval_us),
+                        // Add delay metrics (µs)
+                        formatTime(tin.peak_delay_us),
+                        formatTime(tin.avg_delay_us),
+                        formatTime(tin.base_delay_us),
                         formatSize(tin.sent_bytes),
                         tin.sent_packets,
-                        tin.drops
+                        tin.drops,
+                        tin.ecn_mark
                     ]);
                 });
             }
@@ -240,7 +263,7 @@ return view.extend({
             if (egressRows.length > 0) {
                 result.tables.push(self.createStatsTable(
                     _('CAKE Egress Statistics - eth1'),
-                    [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Bytes'), _('Packets'), _('Dropped')],
+                    [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Peak Delay'), _('Avg Delay'), _('Sparse Delay'), _('Bytes'), _('Packets'), _('Dropped'), _('ECN Marked')],
                     egressRows
                 ));
                 
@@ -250,11 +273,11 @@ return view.extend({
                 });
                 
                 var sentBytes = egressRows.map(function(row) { 
-                    return parseSizeToBytes(row[4]);
+                    return parseSizeToBytes(row[7]);
                 });
                 
-                var sentPackets = egressRows.map(function(row) { return parseInt(row[5]); });
-                var droppedPackets = egressRows.map(function(row) { return parseInt(row[6]); });
+                var sentPackets = egressRows.map(function(row) { return parseInt(row[8]); });
+                var droppedPackets = egressRows.map(function(row) { return parseInt(row[9]); });
                 
                 result.charts.push(self.createChart(
                     'cake-egress-bytes',
@@ -293,11 +316,16 @@ return view.extend({
                         'Tin ' + index,
                         // Convert threshold_rate from Byte/s to Kbit/s
                         bytesToKbits(tin.threshold_rate) + ' Kbit/s',
-                        tin.target_us + ' µs',
-                        tin.interval_us + ' µs',
+                        formatTime(tin.target_us),
+                        formatTime(tin.interval_us),
+                        // Add delay metrics (µs)
+                        formatTime(tin.peak_delay_us),
+                        formatTime(tin.avg_delay_us),
+                        formatTime(tin.base_delay_us),
                         formatSize(tin.sent_bytes),
                         tin.sent_packets,
-                        tin.drops
+                        tin.drops,
+                        tin.ecn_mark
                     ]);
                 });
             }
@@ -306,7 +334,7 @@ return view.extend({
             if (ingressRows.length > 0) {
                 result.tables.push(self.createStatsTable(
                     _('CAKE Ingress Statistics - eth1'),
-                    [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Bytes'), _('Packets'), _('Dropped')],
+                    [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Peak Delay'), _('Avg Delay'), _('Sparse Delay'), _('Bytes'), _('Packets'), _('Dropped'), _('ECN Marked')],
                     ingressRows
                 ));
                 
@@ -316,11 +344,11 @@ return view.extend({
                 });
                 
                 var sentBytes = ingressRows.map(function(row) { 
-                    return parseSizeToBytes(row[4]);
+                    return parseSizeToBytes(row[7]);
                 });
                 
-                var sentPackets = ingressRows.map(function(row) { return parseInt(row[5]); });
-                var droppedPackets = ingressRows.map(function(row) { return parseInt(row[6]); });
+                var sentPackets = ingressRows.map(function(row) { return parseInt(row[8]); });
+                var droppedPackets = ingressRows.map(function(row) { return parseInt(row[9]); });
                 
                 result.charts.push(self.createChart(
                     'cake-ingress-bytes',
