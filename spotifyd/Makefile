@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=spotifyd
-PKG_VERSION:=0.4.0
-PKG_RELEASE:=3
+PKG_VERSION:=0.4.1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Spotifyd/spotifyd/tar.gz/v$(PKG_VERSION)?
