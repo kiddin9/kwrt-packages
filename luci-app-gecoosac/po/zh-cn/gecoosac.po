@@ -72,3 +72,6 @@ msgstr "打开管理页面"
 
 msgid "Collecting data..."
 msgstr "收集数据..."
+
+msgid "Clear Upload Directory"
+msgstr "清理上传目录"

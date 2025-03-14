@@ -1,4 +1,3 @@
-
 function program_exists(program)
 	local handle = io.popen('which ' .. program)
 	local result = handle:read('*a')
@@ -51,18 +50,25 @@ o.placeholder = "/etc/gecoosac/tls/1.key"
 o.default     = "/etc/gecoosac/tls/1.key"
 o:depends("https", true)
 
-o = s:option(Value, "upload_dir", translate("Upload dir path"), translate("The path to upload AP upgrade firmware"))
-o.placeholder = "/tmp/gecoosac/upload/"
-o.default     = "/tmp/gecoosac/upload/"
-o.rmempty     = false
+upload_dir = s:option(Value, "upload_dir", translate("Upload dir path"), translate("The path to upload AP upgrade firmware"))
+upload_dir.placeholder = "/tmp/gecoosac/upload/"
+upload_dir.default     = "/tmp/gecoosac/upload/"
+upload_dir.rmempty     = false
 
-o = s:option(Value, "db_dir", translate("Database dir path"), translate("The path to store the config database"))
-o.placeholder = "/etc/gecoosac/"
-o.default     = "/etc/gecoosac/"
-o.rmempty     = false
+db_dir = s:option(Value, "db_dir", translate("Database dir path"), translate("The path to store the config database"))
+db_dir.placeholder = "/etc/gecoosac/"
+db_dir.default     = "/etc/gecoosac/"
+db_dir.rmempty     = false
 
-o = s:option(Flag, "log", translate("Enable Log"))
-o.default = 1
-o.rmempty = false
+log = s:option(Flag, "log", translate("Enable Log"))
+log.default = 1
+log.rmempty = false
+
+clear_upload = s:option(Button, "clear_upload", translate("Clear Upload Directory"))
+clear_upload.inputstyle = "remove"
+clear_upload.write = function(self, section)
+    local path = upload_dir:formvalue(section) or "/tmp/gecoosac/upload/"
+    luci.sys.call("rm -rf " .. path .. "/*")
+end
 
 return m

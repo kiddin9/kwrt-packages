@@ -21,3 +21,9 @@ function act_status()
 	luci.http.prepare_content("application/json")
 	luci.http.write_json(e)
 end
+
+function clear_upload()
+    local path = "/tmp/gecoosac/upload/"
+    luci.sys.call("rm -rf " .. path .. "/*")
+    luci.http.status(200, "OK")
+end
