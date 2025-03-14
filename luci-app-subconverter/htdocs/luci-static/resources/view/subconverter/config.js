@@ -29,7 +29,7 @@ function renderStatus(isRunning, port) {
 	var spanTemp = '<span style="color:%s"><strong>%s %s</strong></span>';
 	var renderHTML;
 	if (isRunning) {
-		var button = String.format('&#160;<a class="btn cbi-button" href=%s//%s/%s" target="_blank" rel="noreferrer noopener">%s</a>',
+		var button = String.format('&#160;<a class="btn cbi-button" href="%s//%s/%s" target="_blank" rel="noreferrer noopener">%s</a>',
 			window.location.protocol, window.location.hostname, "sub-web", _('Open Web Interface'));
 		renderHTML = spanTemp.format('green', _('subconverter'), _('RUNNING')) + button;
 	} else {

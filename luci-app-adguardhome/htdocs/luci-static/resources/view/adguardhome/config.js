@@ -65,6 +65,10 @@ return view.extend({
 		o.default = o.disabled;
 		o.rmempty = false;
 
+		o = s.option(form.Value, 'workdir', _('Work Dir'));
+		o.datatype = 'string';
+		o.default = '/var/lib/adguardhome';
+
 		// 添加重定向模式选择
 		o = s.option(form.ListValue, 'redirect', _('Redirect'), _('AdGuardHome redirect mode'));
 		o.value('none', _('none'));

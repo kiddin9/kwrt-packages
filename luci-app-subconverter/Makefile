@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=LuCI support for Nginx UI
+LUCI_TITLE:=LuCI support for subconverter
 LUCI_DEPENDS:=+subconverter +sub-web +luci-base
 LUCI_PKGARCH:=all
 
