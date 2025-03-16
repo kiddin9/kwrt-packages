@@ -426,7 +426,7 @@ return view.extend({
 
 		// temperature line
 		let tempLine   = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-			tempLine.setAttribute('style', 'fill:#ADD3E6; fill-opacity:1; stroke:#006282; stroke-width:1');
+			tempLine.setAttribute('style', 'fill:rgba(0 98 130 / 0.2); fill-opacity:1; stroke:rgba(0 98 130 / 1.0); stroke-width:1');
 		let tempPoints = [[0, svgHeight]];
 
 		for(let i = 0; i < dataSize; i++) {
