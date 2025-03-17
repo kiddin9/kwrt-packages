@@ -211,6 +211,7 @@ jobs:
         git_clone https://github.com/4IceG/luci-app-at-socat at-socat && mvdir at-socat
         git_clone https://github.com/4IceG/luci-app-easyconfig-transfer easyconfig && mvdir easyconfig
         git_clone https://github.com/4IceG/luci-app-atcommands atcommands && mvdir atcommands
+        git_clone https://github.com/yichya/openwrt-hv-tools
         ) &
         (
         git_clone https://github.com/Diciya/luci-app-broadbandacc
