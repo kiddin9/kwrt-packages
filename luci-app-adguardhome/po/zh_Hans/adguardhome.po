@@ -204,3 +204,7 @@ msgstr "使用53端口替换dnsmasq"
 
 msgid "AdGuardHome redirect mode"
 msgstr "AdGuardHome重定向模式"
+
+msgid "Work Dir"
+msgstr "工作目录"
+

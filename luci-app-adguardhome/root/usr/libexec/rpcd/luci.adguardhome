@@ -111,7 +111,6 @@ case "$1" in
 				# Return the AGH configuration as a JSON table: 
 				cat ${TFILE} | sed "s|^|\"|g" | sed "s|=\"|\":\"|g" | sed "s|\"$|\",|g" | tr -d '\n'
 				# Include web url, then close the JSON array:
-				echo -n "\"bcrypt-tool\":\"$(whereis bcrypt-tool | awk '{print $2}')\","
 				echo "\"web_url\":\"${PROTO}://${HOST}:${PORT}\"}"
 				;;
 
@@ -126,8 +125,6 @@ case "$1" in
 				;;
 
 			set_passwd)
-				# Check if bcrypt-tool is available for use:
-				check_if_empty "bcrypt-tool is missing." "$(whereis bcrypt-tool)"
 				# Read and load the argument into JSON array:  
 				read input
 				json_load "$input"

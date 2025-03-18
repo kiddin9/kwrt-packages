@@ -97,7 +97,7 @@ set_forward_dnsmasq() {
     
     echo "$current_server" | grep -q "^$addr" && return
     
-    uci -q set "dhcp.@dnsmasq[0].server=$addr"
+    uci -q add_list dhcp.@dnsmasq[0].server="$addr"
     uci -q delete "dhcp.@dnsmasq[0].resolvfile"
     uci set "dhcp.@dnsmasq[0].noresolv=1"
     uci commit dhcp
