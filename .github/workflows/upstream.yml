@@ -492,7 +492,7 @@ jobs:
         bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
         bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
         bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
-        chmod -R +x */root/etc/init.d/ */root/bin/ */root/sbin/ */root/usr/libexec/ */root/usr/bin */root/usr/sbin
+        chmod -R +x */root/etc/init.d/ */root/bin/ */root/sbin/ */root/usr/libexec/ */root/usr/bin/ */root/usr/sbin/
         find "*/root/usr/share/" -name "*.sh" -type f -exec chmod +x {} \;
         #sed -i 's?"http://" + window.location.hostname?window.location.protocol + "//" + window.location.hostname?g' `find luci-app*/luasrc/view/ -maxdepth 2 -name "*.htm"`
         sed -i "s/default n/default y/" dockerd/Config.in
