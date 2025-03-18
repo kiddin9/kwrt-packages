@@ -220,8 +220,3 @@ uci -q set firewall.@defaults[0].fullcone='0'
 uci commit firewall
 }
 }
-
-chmod -R +x /etc/init.d/ /bin/ /sbin/ /usr/bin/ /usr/sbin/ /usr/libexec/
-find "/usr/share/" -name "*.sh" -type f -exec chmod +x {} \;
-
-

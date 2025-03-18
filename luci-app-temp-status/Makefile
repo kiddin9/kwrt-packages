@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2024 gSpot (https://github.com/gSpotx2f/luci-app-temp-status)
+# Copyright (C) 2025 gSpot (https://github.com/gSpotx2f/luci-app-temp-status)
 #
 # This is free software, licensed under the MIT License.
 #

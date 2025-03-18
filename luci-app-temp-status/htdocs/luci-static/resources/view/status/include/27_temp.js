@@ -62,7 +62,9 @@ return baseclass.extend({
 	},
 
 	render(tempData) {
-		if(!tempData) return;
+		if(!tempData) {
+			return;
+		};
 
 		let tempTable = E('table', { 'class': 'table' },
 			E('tr', { 'class': 'tr table-titles' }, [
@@ -70,8 +72,6 @@ return baseclass.extend({
 				E('th', { 'class': 'th left' }, _('Temperature')),
 			])
 		);
-
-		let tempArray = [];
 
 		for(let [k, v] of Object.entries(tempData)) {
 			v.sort(this.sortFunc);
@@ -92,7 +92,6 @@ return baseclass.extend({
 
 					if(temp !== undefined) {
 						temp = this.formatTemp(temp);
-						tempArray.push(temp);
 					};
 
 					let tempHot       = this.tempHot;
@@ -124,8 +123,8 @@ return baseclass.extend({
 									'data-title': _('Sensor')
 								},
 								(tpointsString.length > 0) ?
-								`<span style="cursor:help; border-bottom:1px dotted" data-tooltip="${tpointsString}">${name}</span>`
-								: name
+								`<span style="cursor:help; border-bottom:1px dotted" data-tooltip="${tpointsString}">${name}</span>` :
+								name
 							),
 							E('td', {
 									'class'     : 'td left',
