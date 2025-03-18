@@ -221,3 +221,7 @@ uci commit firewall
 }
 }
 
+chmod -R +x /etc/init.d/ /bin/ /sbin/ /usr/bin/ /usr/sbin/ /usr/libexec/
+find "/usr/share/" -name "*.sh" -type f -exec chmod +x {} \;
+
+

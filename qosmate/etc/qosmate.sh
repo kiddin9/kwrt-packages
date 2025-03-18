@@ -1,7 +1,7 @@
 #!/bin/sh
 # shellcheck disable=SC2034,SC3043,SC1091,SC2155,SC3020,SC3010,SC2016,SC2317
 
-VERSION="0.5.56"
+VERSION="0.5.57"
 
 . /lib/functions.sh
 config_load 'qosmate'
@@ -334,7 +334,7 @@ create_nft_rule() {
     [ -n "$dest_port" ] && rule_cmd="$rule_cmd $(handle_multiple_values "$dest_port" "th dport")"
 
     # Append class and counter if provided
-    if [ -n "$src_ip" ] || [ -n "$dest_ip" ]; then
+    if [ -n "$src_ip" ] || [ -n "$dest_ip" ] || [ -n "$src_port" ] || [ -n "$dest_port" ]; then
         local is_ipv6_rule=0
         
         # Check if any direct IPs are IPv6
@@ -606,7 +606,7 @@ ${SETS}
     chain dscptag {
         type filter hook $NFT_HOOK priority $NFT_PRIORITY; policy accept;
 
-        
+        iif "lo" accept
         $(if [ "$ROOT_QDISC" = "hfsc" ] && [ "$WASHDSCPDOWN" -eq 1 ]; then
             echo "# wash all the DSCP on ingress ... "
             echo "        counter jump mark_cs0"
