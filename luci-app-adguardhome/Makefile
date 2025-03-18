@@ -10,12 +10,6 @@ LUCI_DEPENDS:=+adguardhome +luci-base
 
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
 
-define Package/luci-app-adguardhome/postinst
-#!/bin/sh
-chmod +x /etc/init.d/adguardhome /usr/libexec/rpcd/luci.adguardhome
-exit 0
-endef
-
 include $(TOPDIR)/feeds/luci/luci.mk
 
 # call BuildPackage - OpenWrt buildroot signature

@@ -9,6 +9,7 @@ board_name() {
 	htmode="$(uci -q get wireless.${radio}.htmode)"
 	if uci -q get wireless.${radio} >/dev/null; then
 			uci -q del wireless.${radio}.disabled
+			uci -q set wireless.${radio}.country='CN'
 			uci -q set wireless.${radio}.mu_beamformer='1'
 			uci -q set wireless.${radio}.cell_density='3'
 		
