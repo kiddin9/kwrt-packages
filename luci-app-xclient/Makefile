@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-xclient
 PKG_VERSION:=v2.1
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 PKG_MAINTAINER:=xcode75
 	
 include $(INCLUDE_DIR)/package.mk
