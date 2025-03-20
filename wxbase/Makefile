@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wxbase
-PKG_VERSION:=3.2.6
-PKG_RELEASE:=2
+PKG_VERSION:=3.2.7
+PKG_RELEASE:=3
 
 PKG_SOURCE:=wxWidgets-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/wxWidgets/wxWidgets/releases/download/v$(PKG_VERSION)
