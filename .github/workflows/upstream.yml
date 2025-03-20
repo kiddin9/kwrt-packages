@@ -253,7 +253,7 @@ jobs:
         git_clone https://github.com/muink/openwrt-Toolkit
         ) &
         (
-        # git_clone https://github.com/gSpotx2f/luci-app-temp-status
+        git_clone https://github.com/gSpotx2f/luci-app-temp-status
         git_clone https://github.com/gSpotx2f/luci-app-cpu-perf
         git_clone https://github.com/gSpotx2f/luci-app-log
         git_clone https://github.com/gSpotx2f/luci-app-internet-detector idetector && mv idetector/*internet-detector* ./;rm -rf idetector
