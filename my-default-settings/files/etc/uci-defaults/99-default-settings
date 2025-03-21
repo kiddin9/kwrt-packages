@@ -214,6 +214,9 @@ rm -rf /tmp/luci-*
 uci -q set base_config.@status[0].version=$version
 uci commit base_config
 
+grep -q "cgi-timeout" /etc/uwsgi/vassals/luci-*.ini 2>/dev/null || sed -i '$a cgi-timeout = 500' /etc/uwsgi/vassals/luci-*.ini
+sed -i "s/limit-as = 1000/limit-as = 5000/g" /etc/uwsgi/vassals/luci-webui.ini
+
 modprobe xt_FULLCONENAT || {
 [ "$(iptables -L -t nat | grep "FULLCONENAT")" ] || {
 uci -q set firewall.@defaults[0].fullcone='0'
