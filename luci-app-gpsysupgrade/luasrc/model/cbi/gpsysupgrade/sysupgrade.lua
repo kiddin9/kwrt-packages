@@ -58,7 +58,7 @@ function to_check()
     elseif target:match("sunxi") then
 		check_update()
 		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-" ..target.. "-" ..board_name.. "-squashfs-sdcard.img.gz"    
-    elseif arch:match("aarch64_generic") or board_name:match("rpi%-") then
+    elseif target:match("rockchip") or board_name:match("rpi%-") then
 		check_update()
 		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-" ..target.. "-" ..board_name.. "-squashfs-sysupgrade.img.gz"
     else
