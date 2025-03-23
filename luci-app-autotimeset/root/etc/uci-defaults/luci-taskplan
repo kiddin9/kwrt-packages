@@ -1,0 +1,23 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-taskplan.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-taskplan.json << EEOF
+{
+    "config": "taskplan",
+    "init": "taskplan"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
+chmod +x  /etc/init.d/taskplan /usr/bin/taskplanhandler /etc/init.d/taskplanrun
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@taskplan[-1]
+	add ucitrack taskplan 
+	set ucitrack.@taskplan[-1].init="taskplan"
+	commit ucitrack
+	delete ucitrack.@taskplanrun[-1]
+	add ucitrack taskplanrun
+	set ucitrack.@taskplanrun[-1].init="taskplanrun"
+	commit ucitrack
+EOF
+rm -rf /tmp/luci-modulecache /tmp/luci-indexcache*
+exit 0
