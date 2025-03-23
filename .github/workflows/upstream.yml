@@ -264,7 +264,7 @@ jobs:
         git_clone https://github.com/Carseason/openwrt-packages Carseason && mv -n Carseason/*/* ./;mv services/routergo ./;rm -rf Carseason
         git_clone https://github.com/Carseason/openwrt-themedog && mv -n openwrt-themedog/luci/* ./;rm -rf openwrt-themedog
         git_clone https://github.com/Carseason/openwrt-app-actions Carseason && mv -n Carseason/applications/* ./;rm -rf Carseason
-        git clone https://github.com/Thaolga/openwrt-nekobox -b nekobox --depth 1 && mv openwrt-nekobox/luci-* ./;rm -rf openwrt-nekobox
+        git_clone https://github.com/Thaolga/openwrt-nekobox && mv openwrt-nekobox/luci-* ./;rm -rf openwrt-nekobox
         git_clone https://github.com/nosignals/openwrt-neko && mv openwrt-neko/luci-app-neko ./;rm -rf openwrt-neko
         ) &
         (
