@@ -1,30 +1,3 @@
---- a/miniupnpd/files/miniupnpd.init
-+++ b/miniupnpd/files/miniupnpd.init
-@@ -63,6 +63,7 @@ upnpd() {
- 	local use_stun stun_host stun_port uuid notify_interval presentation_url
- 	local upnp_lease_file clean_ruleset_threshold clean_ruleset_interval
- 	local ipv6_disable
-+	local force_forwarding
- 
- 	local enabled
- 	config_get_bool enabled config enabled 1
-@@ -90,6 +91,7 @@ upnpd() {
- 	config_get clean_ruleset_threshold config clean_ruleset_threshold
- 	config_get clean_ruleset_interval config clean_ruleset_interval
- 	config_get ipv6_disable config ipv6_disable 0
-+	config_get force_forwarding config force_forwarding 1
- 
- 	local conf ifname ifname6
- 
-@@ -142,6 +144,7 @@ upnpd() {
- 		upnpd_write_bool igdv1 0 force_igd_desc_v1
- 		upnpd_write_bool use_stun 0 ext_perform_stun
- 		upnpd_write_bool ipv6_disable $ipv6_disable
-+		upnpd_write_bool force_forwarding $force_forwarding
- 
- 		[ "$use_stun" -eq 0 ] || {
- 			[ -n "$stun_host" ] && echo "ext_stun_host=$stun_host"
-
 --- a/miniupnpd/files/upnpd.config
 +++ b/miniupnpd/files/upnpd.config
 @@ -1,5 +1,5 @@
@@ -34,16 +7,15 @@
  	option enable_natpmp	1
  	option enable_upnp	1
  	option secure_mode	1
-@@ -13,8 +13,9 @@ config upnpd config
+@@ -13,7 +13,7 @@ config upnpd config
  	option upnp_lease_file	/var/run/miniupnpd.leases
  	option igdv1		1
  	option ipv6_disable	1
 -	option use_stun		0
--	option stun_host 	stunserver.stunprotocol.org
-+	option force_forwarding 1
 +	option use_stun		1
-+	option stun_host 	stun.miwifi.com
+ 	option stun_host	stun.miwifi.com
  	option stun_port	3478
+ 	option force_forwarding	1
  
  config perm_rule
 
