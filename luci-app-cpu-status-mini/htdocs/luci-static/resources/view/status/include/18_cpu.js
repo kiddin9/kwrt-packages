@@ -3,9 +3,9 @@
 'require fs';
 
 return baseclass.extend({
-	title    : _('CPU Load'),
+	title      : _('CPU Load'),
 
-	statArray: null,
+	cpuStatLast: null,
 
 	load() {
 		return L.resolveDefault(fs.read('/proc/stat'), null);
@@ -14,55 +14,45 @@ return baseclass.extend({
 	render(cpuData) {
 		if(!cpuData) return;
 
-		let cpuStatArray   = [];
+		let cpuStat        = null;
 		let statItemsArray = cpuData.trim().split('\n').filter(s => s.startsWith('cpu'));
 
 		for(let str of statItemsArray) {
 			let arr = str.split(/\s+/).slice(0, 8);
-			arr[0]  = (arr[0] === 'cpu') ? Infinity : arr[0].replace('cpu', '');
-			arr     = arr.map(e => Number(e));
-			cpuStatArray.push([
-				arr[0],
-				arr[1] + arr[2] + arr[3] + arr[5] + arr[6] + arr[7],
-				arr[4],
-			]);
+			if(arr[0] === 'cpu') {
+				arr[0]  = 0;
+				arr     = arr.map(e => Number(e));
+				cpuStat = [
+					arr[1] + arr[2] + arr[3] + arr[5] + arr[6] + arr[7],
+					arr[4],
+				];
+			};
 		};
-
-		cpuStatArray.sort((a, b) => a[0] - b[0]);
 
 		let cpuTable = E('table', { 'class': 'table' });
+		let loadAvg  = 0;
 
-		// For single-core CPU (hide 'total')
-		if(cpuStatArray.length === 2) {
-			cpuStatArray = cpuStatArray.slice(0, 1);
+		if(this.cpuStatLast !== null) {
+			let idle = cpuStat[1] - this.cpuStatLast[1];
+			let sum  = cpuStat[0] - this.cpuStatLast[0];
+			loadAvg  = Math.round(100 * sum / (sum + idle));
 		};
 
-		cpuStatArray.forEach((c, i) => {
-			let loadAvg = 0;
-			if(this.statArray !== null) {
-				let idle = c[2] - this.statArray[i][2];
-				let sum  = c[1] - this.statArray[i][1];
-				loadAvg  = Math.round(100 * sum / (sum + idle));
-			};
+		cpuTable.append(
+			E('tr', { 'class': 'tr' }, [
+				E('td', { 'class': 'td left', 'width': '33%' }, _('Total Load')),
+				E('td', { 'class': 'td' },
+					E('div', {
+							'class': 'cbi-progressbar',
+							'title': (this.cpuStatLast !== null) ? loadAvg + '%' : _('Calculating') + '...',
+						},
+						E('div', { 'style': 'width:' + loadAvg + '%' })
+					)
+				),
+			])
+		);
 
-			cpuTable.append(
-				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left', 'width': '33%' },
-						(cpuStatArray[i][0] === Infinity) ? _('Total Load') : _('CPU') + ' ' + cpuStatArray[i][0]),
-
-					E('td', { 'class': 'td' },
-						E('div', {
-								'class': 'cbi-progressbar',
-								'title': (this.statArray !== null) ? loadAvg + '%' : _('Calculating') + '...',
-							},
-							E('div', { 'style': 'width:' + loadAvg + '%' })
-						)
-					),
-				])
-			);
-		});
-
-		this.statArray = cpuStatArray;
+		this.cpuStatLast = cpuStat;
 		return cpuTable;
 	},
 });

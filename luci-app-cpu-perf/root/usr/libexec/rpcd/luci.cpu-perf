@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
-local json = require "luci.jsonc"
-local fs   = require "nixio.fs"
+local json = require("luci.jsonc")
+local fs   = require("nixio.fs")
 
 local sysCpuDir          = "/sys/devices/system/cpu"
 local sysOndemandDir     = sysCpuDir .. "/cpufreq/ondemand"
@@ -59,23 +59,23 @@ local function readCpuPerf()
 			if item:match("^cpu[0-9]+$") then
 				local deviceDirPath = string.format("%s/%s/cpufreq", sysCpuDir, item)
 				if fs.stat(deviceDirPath, "type") == "dir" then
-					local dNumber     = item:match("[0-9]+")
-					local sCurFreq    = tonumber(readFile(deviceDirPath .. "/scaling_cur_freq"))
-					local curFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_cur_freq"))
-					local sMinFreq    = tonumber(readFile(deviceDirPath .. "/scaling_min_freq"))
-					local minFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_min_freq"))
-					local sMaxFreq    = tonumber(readFile(deviceDirPath .. "/scaling_max_freq"))
-					local maxFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_max_freq"))
-					local governor    = readFile(deviceDirPath .. "/scaling_governor")
-					local sAvailFreqs = readFile(deviceDirPath .. "/scaling_available_frequencies")
-					if sAvailFreqs then
-						sAvailFreqs = parseMultiValue(sAvailFreqs, true)
-					end
-					local sAvailGovernors = readFile(deviceDirPath .. "/scaling_available_governors")
-					if sAvailGovernors then
-						sAvailGovernors = parseMultiValue(sAvailGovernors)
-					end
+					local dNumber  = item:match("[0-9]+")
 					if dNumber ~= nil then
+						local sCurFreq    = tonumber(readFile(deviceDirPath .. "/scaling_cur_freq"))
+						local curFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_cur_freq"))
+						local sMinFreq    = tonumber(readFile(deviceDirPath .. "/scaling_min_freq"))
+						local minFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_min_freq"))
+						local sMaxFreq    = tonumber(readFile(deviceDirPath .. "/scaling_max_freq"))
+						local maxFreq     = tonumber(readFile(deviceDirPath .. "/cpuinfo_max_freq"))
+						local governor    = readFile(deviceDirPath .. "/scaling_governor")
+						local sAvailFreqs = readFile(deviceDirPath .. "/scaling_available_frequencies")
+						if sAvailFreqs then
+							sAvailFreqs = parseMultiValue(sAvailFreqs, true)
+						end
+						local sAvailGovernors = readFile(deviceDirPath .. "/scaling_available_governors")
+						if sAvailGovernors then
+							sAvailGovernors = parseMultiValue(sAvailGovernors)
+						end
 						cpus[dNumber] = {
 							number          = tonumber(dNumber),
 							sCurFreq        = sCurFreq,

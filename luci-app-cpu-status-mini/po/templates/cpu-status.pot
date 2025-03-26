@@ -7,8 +7,5 @@ msgstr ""
 msgid "CPU Load"
 msgstr ""
 
-msgid "CPU"
-msgstr ""
-
 msgid "Total Load"
 msgstr ""

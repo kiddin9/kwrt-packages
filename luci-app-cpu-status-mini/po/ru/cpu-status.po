@@ -18,8 +18,5 @@ msgstr "Вычисление"
 msgid "CPU Load"
 msgstr "Загрузка ЦПУ"
 
-msgid "CPU"
-msgstr "ЦПУ"
-
 msgid "Total Load"
 msgstr "Общая загрузка"
