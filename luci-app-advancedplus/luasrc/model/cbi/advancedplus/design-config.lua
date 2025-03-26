@@ -10,7 +10,7 @@ if nxfs.access('/etc/config/design') then
 	navbar_proxy = uci:get_first('design', 'global', 'navbar_proxy')
 end
 
--- [[ 设置 ]]--
+
 br = SimpleForm('config', translate('Design Config'), translate('Here you can set the mode of the theme and change the proxy tool icon in the navigation bar. [Recommend Chrome]'))
 br.reset = false
 br.submit = false

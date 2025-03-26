@@ -7,4 +7,4 @@ config global
 	option transparency '0.2'
 	option transparency_dark '0.2'
 	option mode 'normal'
-	option online_wallpaper 'none'
+	option bing_background '0'

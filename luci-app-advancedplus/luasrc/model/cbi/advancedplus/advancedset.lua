@@ -24,10 +24,20 @@ e.rmempty = false
 e = t:option(Flag, "set_ttyd",translate('Allow TTYD external network access'))
 e.default = "0"
 
-e = t:option(Flag, "set_firewall_wan",translate('Set firewall wan to open'))
-e.default = "0"
+e = t:option(ListValue, "set_firewall_wan",translate('Set up firewall for external network access'))
+e:value('ACCEPT', translate('accept'))
+e:value('DROP', translate('drop'))
+e:value('REJECT', translate('reject'))
+e.default = 'ACCEPT'
 
 e = t:option(Flag, "dhcp_domain",translate('Add Android host name mapping'), translate('Resolve the issue of Android native TV not being able to connect to WiFi for the first time'))
 e.default = "0"
+
+a.apply_on_parse = true
+a.on_after_apply = function(self,map)
+	luci.sys.exec("/etc/init.d/advancedplus start >/dev/null 2>&1")
+	luci.http.redirect(luci.dispatcher.build_url("admin","system","advancedplus","advancedset"))
+end
+
 
 return a

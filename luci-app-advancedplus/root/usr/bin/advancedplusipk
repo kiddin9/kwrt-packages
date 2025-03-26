@@ -21,7 +21,7 @@ is_iStore() {
 }
 
 is_vip() {
-     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Vip" | cut -d " " -f 2 | cut -d "-" -f 1)
+     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Vip" | cut -d "'" -f 2 | cut -d "-" -f 1)
     if [ "$DISTRIB_FREE" = "Vip" ]; then
         return 0
     else
@@ -30,7 +30,7 @@ is_vip() {
 }
 
 is_free() {
-     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Free" | cut -d " " -f 2 | cut -d "-" -f 1)
+     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Free" | cut -d "'" -f 2 | cut -d "-" -f 1)
     if [ "$DISTRIB_FREE" = "Free" ]; then
         return 0
     else
@@ -70,9 +70,6 @@ istore_install(){
             if is_x86_64; then
                 extra_info="with iStoreOS Style"
 		echo "src/gz is_store https://istore.linkease.com/repo/all/store" >/etc/opkg/customfeeds.conf
-		if is_vip; then
-	        	echo "src/gz dllkids https://op.dllkids.xyz/packages/x86_64" >>/etc/opkg/customfeeds.conf
-		fi
                 current_revision=$(grep "DISTRIB_REVISION" /etc/openwrt_release | cut -d "'" -f 2)
                 if [[ $current_revision != *"$extra_info"* ]]; then
                     new_revision="${current_revision} ${extra_info}"

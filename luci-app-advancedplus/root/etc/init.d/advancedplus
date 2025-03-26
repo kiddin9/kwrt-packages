@@ -133,6 +133,7 @@ else
      $tautocore restart
 fi
 }
+
 sethttps() {
     uhttp=`uci -q get uhttpd.main.listen_https | awk -F ' ' '{printf $1}'`
     if [ "x$(uci -q get advancedplus.@basic[0].uhttps)" = "x1" ] ; then
@@ -145,8 +146,8 @@ sethttps() {
 	         /etc/init.d/uhttpd restart
 	    }
     else
-        [  $uhttp ] && 
-	{  
+        [  $uhttp ] &&
+	{
 	     /etc/init.d/uhttpd stop
 	    sed -i "/listen_https/d" /etc/config/uhttpd
 	    uci commit uhttpd
@@ -168,24 +169,20 @@ setnetwizard(){
 }
 
 set_firewall_wan() {
-    if [ "x$(uci -q get advancedplus.@basic[0].set_firewall_wan)" = "x1" ] ; then
-    ## 设置防火墙wan 打开
-    uci -q set firewall.@zone[1].input='ACCEPT'
+wanwan=`uci -q get advancedplus.@basic[0].set_firewall_wan`
+if [ -n $wanwan ] ; then
+    uci -q set firewall.@zone[1].input=$wanwan
     uci commit firewall
-    else
-    uci -q set firewall.@zone[1].input='DROP'
-    uci commit firewall
-    fi
+fi
 }
 
 set_ttyd() {
     if [ "x$(uci -q get advancedplus.@basic[0].set_ttyd)" = "x1" ] ; then
-    uci delete ttyd.@ttyd[0].interface
-    uci commit
+        uci -q delete ttyd.@ttyd[0].interface
     else
-    uci -q set ttyd.@ttyd[0].interface='@lan'
-    uci commit
+        uci -q set ttyd.@ttyd[0].interface='@lan'
     fi
+    uci commit ttyd
 }
 
 dhcp_domain() {
@@ -218,7 +215,6 @@ advancedset(){
     tsoset
     sed -i "\/bin\/zsh/d" /etc/profile
     [ "x$(uci -q get advancedplus.@basic[0].usshmenu)" = "x1" ] || echo '/usr/bin/zsh'  >> /etc/profile
-    uci commit netwizard 
 }
 
 kucatset(){

@@ -1,15 +1,15 @@
 config basic
-	option gouser 'admin'
+	option gouser 'advancedplus'
 	option gohome 'overview'
 	option setbar '1'
 	option wizard '0'
 	option bgqs '1'
-	option gossr 'openclash'
+	option gossr 'passwall'
 	option dayword '0'
 	option background '0'
-	option bklock '0'
+	option bklock '1'
 	option mode 'dark'
-	option bkuse '0'
+	option bkuse '1'
 	option primary_rgbs_ts '0'
 	option primary_rgbbody '33,45,60'
 	option primary_opacity '0'
@@ -20,8 +20,11 @@ config basic
 	option font_d '1.1rem'
 	option font_z '0.92rem'
 	option font_x '0.875rem'
-
-
+	option tsoset '1'
+	option set_ttyd '1'
+	option set_firewall_wan '1'
+	option dhcp_domain '1'
+	
 config theme
 	option primary_rgbbody '33,45,60'
 	option primary_rgbs '76,157,69'

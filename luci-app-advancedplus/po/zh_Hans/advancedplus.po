@@ -402,8 +402,8 @@ msgstr "点击执行"
 msgid "Allow TTYD external network access"
 msgstr "允许TTYD外网访问"
 
-msgid "Set firewall wan to open"
-msgstr "设置防火墙wan打开"
+msgid "Set up firewall for external network access"
+msgstr "设置防火墙外网访问"
 
 msgid "Add Android host name mapping"
 msgstr "添加安卓主机名映射"
