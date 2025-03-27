@@ -1,4 +1,13 @@
 #!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-socat.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-socat.json << EEOF
+{
+    "config": "socat",
+    "init": "socat"
+}
+EEOF
+/etc/init.d/ucitrack reload
+}
 
 uci -q batch <<-EOF >/dev/null
 	delete firewall.socat
@@ -6,6 +15,13 @@ uci -q batch <<-EOF >/dev/null
 	set firewall.socat.type=script
 	set firewall.socat.path=/var/etc/socat.include
 	set firewall.socat.reload=1
+EOF
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@socat[-1]
+	add ucitrack socat
+	set ucitrack.@socat[-1].init=luci_socat
+	commit ucitrack
 EOF
 
 rm -rf /tmp/luci-*cache
