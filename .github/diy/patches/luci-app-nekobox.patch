@@ -60,7 +60,7 @@
 +        if (!-f $request_filename) {
 +            return 404;
 +        }
-+		fastcgi_pass 127.0.0.1:1026;
++        fastcgi_pass 127.0.0.1:1026;
 +        fastcgi_index index.php;
 +        include fastcgi_params;
 +        fastcgi_param SCRIPT_FILENAME $request_filename;
