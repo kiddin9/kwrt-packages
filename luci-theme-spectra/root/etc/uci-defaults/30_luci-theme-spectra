@@ -8,6 +8,28 @@ commit luci
 EOF
 
     rm -rf /tmp/luci-*
-    /etc/init.d/uhttpd restart
+    if [ -n "$(command -v nginx)" ];then
+        if [ ! -f /etc/nginx/conf.d/spectra.locations ]; then
+cat << 'EOF' > /etc/nginx/conf.d/spectra.locations
+location /luci-static/spectra/ {
+    location ~ \.php$ {
+        if (!-f $request_filename) {
+            return 404;
+        }
+		fastcgi_pass 127.0.0.1:1026;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $request_filename;
+    }
+}
+EOF
+            /etc/init.d/nginx restart
+        fi
+    else
+        uci set uhttpd.main.index_page='index.php'
+        uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
+        uci commit uhttpd
+        /etc/init.d/uhttpd restart
+    fi
 fi
 exit 0
