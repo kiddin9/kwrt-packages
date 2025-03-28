@@ -1,6 +1,5 @@
 #!/bin/sh
 
-. /lib/functions.sh
 . /usr/share/libubox/jshn.sh
 
 readonly LOGREAD_CMD="logread"
