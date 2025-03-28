@@ -92,18 +92,6 @@
                +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-ng:rclone-ng
  LUCI_PKGARCH:=all
 
---- a/luci-app-einat/Makefile
-+++ b/luci-app-einat/Makefile
-@@ -9,7 +9,7 @@ LUCI_NAME:=luci-app-einat
- 
- LUCI_TITLE:=LuCI Support for einat
- LUCI_PKGARCH:=all
--LUCI_DEPENDS:=
-+LUCI_DEPENDS:=+einat-ebpf
- 
- LUCI_DESCRIPTION:=eBPF-based Endpoint-Independent NAT
-
-
 --- a/tailscale/Makefile
 +++ b/tailscale/Makefile
 @@ -58,8 +58,6 @@ define Package/tailscale/install
