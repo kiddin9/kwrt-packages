@@ -1214,6 +1214,7 @@ body:hover,
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                  <div class="alert alert-warning">支持格式：[ jpg, jpeg, png, gif, mp4, mkv, mp3, wav, flac ]</div>
                     <form id="uploadForm" method="post" enctype="multipart/form-data">
                         <div class="drop-zone border rounded p-5 text-center mb-3">
                             <input type="file" name="upload_file[]" id="upload_file" multiple 
@@ -1897,7 +1898,7 @@ body:hover,
 }
 
 .modal-content:fullscreen .row {
-	--playlist-width: 350px;
+	--playlist-width: 450px;
 }
 
 .modal-content:fullscreen .col-md-8 {
@@ -2024,6 +2025,12 @@ window.addEventListener('resize', handleVerticalResize);
     margin: 0;
 }
 
+.modal-footer {
+    position: relative; 
+    height: 60px;
+    flex-shrink: 0; 
+}
+
 @media (max-width: 576px) {
     .modal-xl:not(.fullscreen-modal) {
         max-height: calc(100vh - var(--header-height) - var(--footer-height));
@@ -2108,34 +2115,6 @@ window.addEventListener('resize', () => {
 
 updateFullscreenButton(false); 
 </script>
-
-<style>
-.video-container {
-    height: calc(100vh - 180px);  
-    transition: height 0.3s ease;
-    position: relative;
-}
-
-#playerModal .modal-content {
-    display: flex;
-    flex-direction: column;
-    height: 70vh; 
-}
-
-video::-webkit-media-controls-panel {
-    bottom: 60px !important;  
-}
-
-video::-webkit-media-controls-enclosure {
-    height: calc(100% - 60px) !important;
-}
-
-.modal-footer {
-    position: relative; 
-    height: 60px;
-    flex-shrink: 0; 
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
