@@ -6,12 +6,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=caddy
-PKG_VERSION:=2.10.0-beta.4
-PKG_RELEASE:=7
+PKG_VERSION:=20250405
+PKG_RELEASE:=8
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/caddyserver/caddy/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/caddyserver/caddy.git
+PKG_SOURCE_DATE:=2025-04-05
+PKG_SOURCE_VERSION:=5a6b2f8d1d4633622b551357f3cc9d27ec669d02
+PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
@@ -42,13 +44,13 @@ define Package/$(PKG_NAME)/description
 Caddy is an extensible server platform that uses TLS by default.
 endef
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-endef
-
 define Build/Compile
 	$(call GoPackage/Build/Compile)
 	$(STAGING_DIR_HOST)/bin/upx --lzma --best $(GO_PKG_BUILD_BIN_DIR)/caddy
+endef
+
+define Package/caddy/install
+	$(call GoPackage/Package/Install/Bin,$(1))
 endef
 
 $(eval $(call GoBinPackage,$(PKG_NAME)))
