@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=2.3.0
-PKG_RELEASE:=13
+PKG_VERSION:=2.3.2
+PKG_RELEASE:=14
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -64,6 +64,7 @@ CMAKE_OPTIONS += \
 	-DENABLE_EXPORTER_PROMETHEUS_REMOTE_WRITE=Off \
 	-DENABLE_EXPORTER_MONGODB=Off \
 	-DENABLE_H2O=Off \
+	-DENABLE_LIBBACKTRACE=Off \
 	-DENABLE_LOGS_MANAGEMENT_TESTS=Off \
 	-DENABLE_ML=Off \
 	-DENABLE_PLUGIN_APPS=Off \
