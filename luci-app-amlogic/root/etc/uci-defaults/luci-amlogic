@@ -6,7 +6,6 @@
     "init": "amlogic"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 sed -i 's/cbi.submit\"] = true/cbi.submit\"] = \"1\"/g' /usr/lib/lua/luci/dispatcher.lua

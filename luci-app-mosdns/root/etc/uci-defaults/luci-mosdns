@@ -6,7 +6,6 @@
     "init": "mosdns"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 [ -f "/etc/config/ucitrack" ] && {

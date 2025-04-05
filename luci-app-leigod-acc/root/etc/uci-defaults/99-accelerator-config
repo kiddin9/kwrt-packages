@@ -6,7 +6,6 @@
     "init": "accelerator"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 # check if file exist

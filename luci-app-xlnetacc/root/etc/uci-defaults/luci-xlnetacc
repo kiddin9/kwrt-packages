@@ -6,7 +6,6 @@ uci batch <<EOF
     "init": "xlnetacc"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 	delete ucitrack.@xlnetacc[-1]
 	add ucitrack xlnetacc

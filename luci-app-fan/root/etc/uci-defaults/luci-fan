@@ -6,7 +6,6 @@
     "init": "luci-fan"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 /usr/libexec/fan-control init

@@ -6,7 +6,6 @@
     "init": "add"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 . /lib/functions.sh
 

@@ -6,7 +6,6 @@
     "init": "macvlan"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@macvlan[-1]

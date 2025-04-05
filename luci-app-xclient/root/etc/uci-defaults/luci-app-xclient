@@ -6,7 +6,6 @@
     "init": "xclient"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null
 delete ucitrack.@xclient[-1]

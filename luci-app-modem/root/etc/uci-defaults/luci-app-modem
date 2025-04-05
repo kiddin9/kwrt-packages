@@ -6,7 +6,6 @@
     "init": "modem"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 # Copyright (C) 2023 Siriling <siriling@qq.com>
 

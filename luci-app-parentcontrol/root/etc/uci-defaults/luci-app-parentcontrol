@@ -6,7 +6,6 @@
     "init": "parentcontrol"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 [ -e "/etc/config/ucitrack" ] && {

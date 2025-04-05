@@ -6,7 +6,6 @@ uci -q batch <<-EOF >/dev/null
     "init": "tinyfecvpn"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 	delete ucitrack.@tinyfecvpn[-1]
 	add ucitrack tinyfecvpn

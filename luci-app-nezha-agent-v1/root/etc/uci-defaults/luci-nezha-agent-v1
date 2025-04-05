@@ -6,7 +6,6 @@
     "init": "nezha-agent-v1"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 # 创建必要的配置文件和目录

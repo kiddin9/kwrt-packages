@@ -6,7 +6,6 @@
     "init": "advancedplus"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 chmod +x /etc/init.d/advancedplus
 uci -q batch <<-EOF >/dev/null

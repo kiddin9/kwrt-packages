@@ -6,7 +6,6 @@
     "init": "taskplan"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 chmod +x  /etc/init.d/taskplan /usr/bin/taskplanhandler /etc/init.d/taskplanrun
 uci -q batch <<-EOF >/dev/null

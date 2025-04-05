@@ -6,7 +6,6 @@
     "init": "shadowsocks"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 uci get shadowsocks.@general[-1] >/dev/null 2>&1 || \
 	uci add shadowsocks general >/dev/null 2>&1

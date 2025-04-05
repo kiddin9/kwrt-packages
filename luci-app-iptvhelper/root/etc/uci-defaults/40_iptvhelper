@@ -6,7 +6,6 @@
     "init": "iptvhelper"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 
 # needed for "Save and Apply" to restart iptvhelper

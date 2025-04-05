@@ -6,7 +6,6 @@ uci -q batch <<-EOF >/dev/null
     "init": "campusnet"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 	delete ucitrack.@campusnet[-1]
 	add ucitrack campusnet

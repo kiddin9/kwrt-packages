@@ -6,7 +6,6 @@
     "init": "my-dnshelper"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null 2>&1
 	delete ucitrack.@my-dnshelper[-1]

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-dnsmasq-ipset
 PKG_VERSION:=0.2.1
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE

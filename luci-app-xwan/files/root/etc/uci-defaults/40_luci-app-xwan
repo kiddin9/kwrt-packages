@@ -6,7 +6,6 @@
     "init": "xwan"
 }
 EEOF
-/etc/init.d/ucitrack reload
 }
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@xwan[-1]
