@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ympd
 PKG_VERSION:=1.2.3
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
 
 PKG_SOURCE_PROTO:=git

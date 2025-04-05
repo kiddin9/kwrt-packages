@@ -19,7 +19,3 @@ start_service() {
 	procd_set_param limits nofile="${nofile} ${nofile}"
 	procd_close_instance
 }
-
-service_triggers() {
-	procd_add_reload_trigger "dockerd"
-}

@@ -33,3 +33,7 @@ start_service() {
 	procd_set_param command /usr/bin/ympd -h "$host" -p "$port" -w "$webport" -u "$user" -m "$mpdpass" $dletoken
 	procd_close_instance
 }
+
+service_triggers() {
+	procd_add_reload_trigger "${CONFIGURATION}"
+}

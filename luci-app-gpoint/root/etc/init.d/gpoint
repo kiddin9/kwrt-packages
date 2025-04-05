@@ -31,10 +31,10 @@ stop_service() {
    fi
 }
 
-service_triggers() {
-      procd_add_reload_trigger "gpoint"
-}
-
 reload_service() {
 	restart
+}
+
+service_triggers() {
+	procd_add_reload_trigger "${CONFIGURATION}"
 }

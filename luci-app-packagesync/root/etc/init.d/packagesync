@@ -292,5 +292,5 @@ boot() {
 }
 
 service_triggers() {
-      procd_add_reload_trigger "packagesync"
+	procd_add_reload_trigger "$CONFIG_NAME"
 }

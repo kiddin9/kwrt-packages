@@ -1139,3 +1139,9 @@ health_check() {
 }
 
 pkg_manager="$(detect_package_manager)" # global variable
+
+service_triggers() {
+	procd_add_reload_trigger "qosmate
+qosmate
+qosmate"
+}

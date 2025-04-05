@@ -102,10 +102,10 @@ restart() {
 	start
 }
 
-service_triggers() {
-      procd_add_reload_trigger "change-mac"
-}
-
 reload_service() {
 	restart
+}
+
+service_triggers() {
+	procd_add_reload_trigger "$CONFIG_NAME"
 }

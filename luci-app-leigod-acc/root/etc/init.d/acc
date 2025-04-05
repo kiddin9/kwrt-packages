@@ -164,6 +164,7 @@ start_service() {
     start_service_daemon
 }
 
+
 service_triggers() {
-      procd_add_reload_trigger "acc"
+	procd_add_reload_trigger "accelerator"
 }
