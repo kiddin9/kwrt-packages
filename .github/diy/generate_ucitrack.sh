@@ -52,9 +52,9 @@ find . -type f \
         echo "已添加 reload_service 到文件: $file"
     fi
 
-    if (grep -q "start_service" "$file") && (grep -q "config_load" "$file") && ! grep -q "service_triggers" "$file"; then
+    if (grep -q "USE_PROCD" "$file") && (grep -q "config_load" "$file") && ! grep -q "service_triggers" "$file"; then
         needs_service_triggers=1
-        config=$(sed -n 's/.*config_load[[:space:]]\+["'\'']\?\([^"'\''[:space:]]*\)["'\'']\?.*$/\1/p' $file)
+        config=$(grep -m 1 "config_load" "$file" | sed 's/.*config_load[[:space:]]\+["'\'']\?\([^"'\''[:space:]]*\)["'\'']\?.*$/\1/')
         echo >> "$file"
         echo "service_triggers() {" >> "$file"
         echo -e "\tprocd_add_reload_trigger \"$config\"" >> "$file"
