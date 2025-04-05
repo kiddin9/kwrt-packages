@@ -13,12 +13,6 @@ find . -type f \
     -not -path "*.github*" \
     -not -name "Makefile" \
     | while read -r file; do
-    needs_reload_service=0
-    
-    # 检查是否需要添加 reload_service
-    if (grep -q "stop_service\|service_stopped" "$file") && ! grep -q "reload_service" "$file"; then
-        needs_reload_service=1
-    fi
     
     if grep -q "add ucitrack" "$file"; then
         # 提取xx的值
@@ -40,29 +34,33 @@ find . -type f \
             echo "}"
             # 获取其余内容
             sed '1d' "$file"
-            
-            # 如果需要添加 reload_service，在这里添加
-            if [ "$needs_reload_service" = "1" ]; then
-                echo
-                echo "reload_service() {"
-                echo -e "\trestart"
-                echo "}"
-            fi
         } > "${file}.tmp"
         
         # 替换原文件
         mv "${file}.tmp" "$file"
         
         echo "已处理文件: $file (ucitrack)"
-        [ "$needs_reload_service" = "1" ] && echo "已添加 reload_service 到文件: $file"
         
-    elif [ "$needs_reload_service" = "1" ]; then
-        # 如果只需要添加 reload_service，直接追加到文件末尾
+    else
+        # 检查是否需要添加 reload_service
+    if (grep -q "stop_service\|service_stopped" "$file") && ! grep -q "reload_service" "$file"; then
         echo >> "$file"
         echo "reload_service() {" >> "$file"
         echo -e "\trestart" >> "$file"
         echo "}" >> "$file"
         
         echo "已添加 reload_service 到文件: $file"
+    fi
+
+    if (grep -q "start_service" "$file") && (grep -q "config_load" "$file") && ! grep -q "service_triggers" "$file"; then
+        needs_service_triggers=1
+        config=$(sed -n 's/.*config_load[[:space:]]\+["'\'']\?\([^"'\''[:space:]]*\)["'\'']\?.*$/\1/p' $file)
+        echo >> "$file"
+        echo "service_triggers() {" >> "$file"
+        echo -e "\tprocd_add_reload_trigger \"$config\"" >> "$file"
+        echo "}" >> "$file"
+        
+        echo "已添加 service_triggers 到文件: $file"
+    fi
     fi
 done
