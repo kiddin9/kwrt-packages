@@ -37,7 +37,6 @@ find . -type f \
             echo "    \"init\": \"${xx}\""
             echo "}"
             echo "EEOF"
-            echo "/etc/init.d/ucitrack reload"
             echo "}"
             # 获取其余内容
             sed '1d' "$file"
