@@ -107,6 +107,5 @@ reload_service() {
 }
 
 service_triggers() {
-	procd_add_reload_trigger "phtunnel
-phtunnel"
+	procd_add_reload_trigger "phtunnel"
 }

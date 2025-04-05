@@ -152,8 +152,5 @@ status() {
 }
 
 service_triggers() {
-	procd_add_reload_trigger "wifidog
-wifidog
-wifidog
-wifidog"
+	procd_add_reload_trigger "wifidog"
 }

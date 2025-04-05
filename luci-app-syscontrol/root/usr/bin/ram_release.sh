@@ -153,7 +153,3 @@ exit 0
 reload_service() {
 	restart
 }
-
-service_triggers() {
-	procd_add_reload_trigger "77_syscontrol"
-}

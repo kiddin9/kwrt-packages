@@ -64,6 +64,5 @@ reload_service() {
 }
 
 service_triggers() {
-	procd_add_reload_trigger "totd
-totd"
+	procd_add_reload_trigger "totd"
 }
