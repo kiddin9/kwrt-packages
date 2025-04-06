@@ -196,38 +196,6 @@ if (!file_exists($configFile)) {
 }
 ?>
 
-<?php
-$repoOwner = 'Thaolga';
-$repoName = 'openwrt-nekobox';
-$releaseTag = '1.8.8'; 
-$packagePattern = '/^luci-theme-spectra_(.+)_all\.ipk$/';
-
-$latestVersion = null;
-$downloadUrl = null;
-
-try {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://api.github.com/repos/{$repoOwner}/{$repoName}/releases/tags/{$releaseTag}");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'PHP');
-    $response = curl_exec($ch);
-        
-    if (curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200) {
-        $releaseData = json_decode($response, true);
-            
-        foreach ($releaseData['assets'] as $asset) {
-            if (preg_match($packagePattern, $asset['name'], $matches)) {
-                $latestVersion = $matches[1];
-                $downloadUrl = $asset['browser_download_url'];
-                break;
-            }
-        }
-    }
-    curl_close($ch);
- } catch(Exception $e) {
-}
-?>
-
 <head>
     <meta charset="utf-8">
     <title>媒体文件管理</title>
@@ -367,6 +335,37 @@ body {
 	margin-left: 4px !important;
 	letter-spacing: 1px !important;
 	font-family: "Noto Serif SC", serif !important;
+}
+
+.custom-tooltip-wrapper {
+        position: relative;
+        display: inline-block;
+        cursor: help; 
+}
+
+.custom-tooltip-wrapper::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: -100%; 
+        left: 0;
+        transform: translateY(-8px); 
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        white-space: pre-wrap;
+        line-height: 1.4;
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        max-width: 300px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.custom-tooltip-wrapper:hover::after {
+        opacity: 1;
 }
 
 .card {
@@ -1074,7 +1073,7 @@ body:hover,
             $usedSpace = $totalSpace - $freeSpace;
             
             function formatSize($bytes) {
-                $units = ['B', 'KB', 'MB', 'GB'];
+                $units = ['B', 'KB', 'MB', 'GB', 'TB'];
                 $index = 0;
                 while ($bytes >= 1024 && $index < 3) {
                     $bytes /= 1024;
@@ -1082,14 +1081,13 @@ body:hover,
                 }
                 return round($bytes, 2) . ' ' . $units[$index];
             }
-            ?>            
-            <div class="me-3 d-flex gap-2 mt-4 ps-2" 
-                 data-bs-toggle="tooltip" 
-                 title="挂载点：<?= $mountPoint ?>｜已用空间：<?= formatSize($usedSpace) ?>">
+            ?>  
+            <div class="me-3 d-flex gap-2 mt-4 ps-2 custom-tooltip-wrapper" 
+                 data-tooltip="挂载点：<?= $mountPoint ?>｜已用空间：<?= formatSize($usedSpace) ?>">
                 <span class="btn btn-primary btn-sm"><i class="bi bi-hdd"></i> 总共：<?= $totalSpace ? formatSize($totalSpace) : 'N/A' ?></span>
                 <span class="btn btn-success btn-sm"><i class="bi bi-hdd"></i> 剩余：<?= $freeSpace ? formatSize($freeSpace) : 'N/A' ?></span>
             </div>
-            <?php if ($downloadUrl): ?><button class="btn btn-info mt-4 update-theme-btn" data-url="<?= htmlspecialchars($downloadUrl) ?>" title="更新主题"><i class="bi bi-cloud-download"></i> <span class="btn-label"></span></button><?php endif; ?>
+            <button class="btn btn-info mt-4" data-bs-toggle="modal" data-bs-target="#updateConfirmModal" title="检查更新"><i class="bi bi-cloud-download"></i> <span class="btn-label"></span></button>
             <button class="btn btn-warning ms-2 mt-4" data-bs-toggle="modal" data-bs-target="#uploadModal" title="批量上传"><i class="bi bi-upload"></i> <span class="btn-label"></span></button>
             <button class="btn btn-primary ms-2 mt-4" id="openPlayerBtn" data-bs-toggle="modal" data-bs-target="#playerModal" title="勾选添加到播放列表"><i class="bi bi-play-btn"></i> <span class="btn-label"></span></button>
             <button class="btn btn-primary ms-2 mt-4" data-bs-toggle="modal" data-bs-target="#musicModal"><i class="bi bi-music-note"></i></button>
@@ -1443,7 +1441,7 @@ body:hover,
         </div>
     </div>
 
-    <div class="modal fade" id="updateConfirmModal">
+    <div class="modal fade" id="updateConfirmModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1451,11 +1449,11 @@ body:hover,
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">最新版本：<?= htmlspecialchars($latestVersion) ?></div>
+                    <div id="themeVersionInfo" class="alert alert-warning">正在获取版本信息...</div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <a id="confirmUpdateLink" href="#" class="btn btn-danger">下载到本地</a>
+                    <a id="confirmUpdateLink" href="#" class="btn btn-danger" target="_blank">下载到本地</a>
                 </div>
             </div>
         </div>
@@ -1763,21 +1761,6 @@ body:hover,
             });
         });
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            new bootstrap.Tooltip(document.querySelector('[data-bs-toggle="tooltip"]'))
-
-            document.querySelectorAll('.update-theme-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const downloadUrl = this.dataset.url
-                    const modal = new bootstrap.Modal('#updateConfirmModal')
-                    document.getElementById('confirmUpdateLink').href = downloadUrl
-                    modal.show()
-                })
-            })
-        })
-    </script> 
 
     <script>
         document.getElementById("updatePhpConfig").addEventListener("click", function() {
@@ -2332,6 +2315,33 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalElement = document.getElementById('updateConfirmModal');
+    const versionInfo = document.getElementById('themeVersionInfo');
+    const downloadLink = document.getElementById('confirmUpdateLink');
+
+    modalElement.addEventListener('shown.bs.modal', function () {
+        versionInfo.textContent = '正在获取版本信息...';
+        downloadLink.href = '#';
+
+        fetch('check_theme_update.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.version && data.url) {
+                    versionInfo.textContent = '最新版本：' + data.version;
+                    downloadLink.href = data.url;
+                } else {
+                    versionInfo.textContent = '无法获取最新版本信息';
+                }
+            })
+            .catch(() => {
+                versionInfo.textContent = '请求失败，请稍后再试';
+            });
+    });
+});
 </script>
 
 <script>
