@@ -504,7 +504,7 @@ jobs:
         echo "#page>div:first-child{display:none}
         button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
 
-        while [[ ! -f /tmp/ok ||  ! -f /tmp/ok2 ]]; do
+        while [[ ! -f /tmp/ok || ! -f /tmp/ok2 || ! -f /tmp/ok3 ]]; do
             echo "wait"
           sleep 1
         done
