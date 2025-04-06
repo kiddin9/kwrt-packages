@@ -663,7 +663,3 @@ expquit() {
     exit $1
 }
 
-
-service_triggers() {
-	procd_add_reload_trigger "partexp"
-}
