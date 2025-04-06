@@ -52,14 +52,7 @@ find . -type f \
         echo "已添加 reload_service 到文件: $file"
     fi
 
-    if sed -n '
-    /^USE_PROCD/q1
-    /start_service/q1
-    /functions\.sh/q2
-    /config_load/q1
-    /service_triggers/q2
-    $q3
-' "$file"; [ $? -eq 1 ]; then
+if grep -q -e "^USE_PROCD" -e "start_service" -e "config_load" "$file" && ! grep -q "functions.sh" "$file" && ! grep -q "service_triggers" "$file"; then
         needs_service_triggers=1
         config=$(grep -m 1 "config_load" "$file" | sed 's/.*config_load[[:space:]]\+["'\'']\?\([^"'\''[:space:]]*\)["'\'']\?.*$/\1/')
         echo >> "$file"
