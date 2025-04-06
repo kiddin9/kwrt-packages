@@ -1,5 +1,5 @@
 set_var EASYRSA_OPENSSL	"openssl"
-set_var EASYRSA_KEY_SIZE	1024
+set_var EASYRSA_KEY_SIZE	2048
 set_var EASYRSA_REQ_COUNTRY	"lunatickochiya"
 set_var EASYRSA_REQ_PROVINCE	"github"
 set_var EASYRSA_REQ_CITY	"github"

@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
 PKG_VERSION:=2.3.2
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -53,6 +53,7 @@ endef
 
 TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS)) -O3
 TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib
+TARGET_CFLAGS += $(FPIC)
 
 CMAKE_OPTIONS += \
 	-DCMAKE_INSTALL_PREFIX="/" \
