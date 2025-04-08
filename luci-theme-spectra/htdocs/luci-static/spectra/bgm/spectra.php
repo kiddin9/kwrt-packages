@@ -1395,7 +1395,10 @@ body:hover,
             </div>
         </div>
     </div>
-<div id="floatingLyrics"></div>
+<div id="floatingLyrics">
+    <div id="currentSong" class="vertical-title"></div>
+    <div class="vertical-lyrics"></div>
+</div>
     <div class="modal fade" id="musicModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-dark text-white">
@@ -1419,6 +1422,10 @@ body:hover,
                     </div> 
                  
                     <div class="controls d-flex justify-content-center gap-3 mt-4">
+                        <button class="btn btn-outline-light control-btn" id="toggleFloatingLyrics" onclick="toggleFloating()" title="桌面歌词"><i id="floatingIcon" class="bi bi-display"></i></button>
+                        <button class="btn btn-outline-light control-btn" id="repeatBtn" onclick="toggleRepeat()">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>
                         <button class="btn btn-outline-light control-btn" onclick="changeTrack(-1)">
                             <i class="bi bi-skip-backward-fill"></i>
                         </button>
@@ -1428,10 +1435,7 @@ body:hover,
                         <button class="btn btn-outline-light control-btn" onclick="changeTrack(1)">
                             <i class="bi bi-skip-forward-fill"></i>
                         </button>
-                        <button class="btn btn-outline-light control-btn" id="repeatBtn" onclick="toggleRepeat()">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </button>
-                        <button class="btn btn-outline-light control-btn" id="toggleFloatingLyrics" onclick="toggleFloating()" title="桌面歌词"><i id="floatingIcon" class="bi bi-display"></i></button>
+                        <button class="btn btn-outline-light control-btn" id="clear-cache-btn" title="清除配置"><i class="bi bi-trash3-fill"></i></button>
                         <button class="btn btn-volume position-relative" id="volumeToggle">
                             <i class="bi bi-volume-up-fill"></i>
                             <div class="volume-slider-container position-absolute bottom-100 start-50 translate-middle-x mb-1 p-2"
@@ -2919,6 +2923,7 @@ const colorList = [
 
 let usedColors = [];
 const elements = document.querySelectorAll('.time-display span');
+const currentSong = document.querySelector('#currentSong'); 
 
 function getNextColor() {
     if (usedColors.length === colorList.length) {
@@ -2936,6 +2941,10 @@ function rotateColors() {
         const color = getNextColor();
         el.style.color = color;
     });
+
+    if (currentSong) {
+        currentSong.style.color = getNextColor();
+    }
 }
 
 setInterval(rotateColors, 4000); 
@@ -2983,15 +2992,18 @@ body {
     border-radius: var(--radius);
     background: var(--card-bg);
     border: 1px solid var(--border-color);
+    font-family: 'SimSun', 'Songti SC', '宋体', serif; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lyric-line {
-    font-size: 1.2em;
-    margin: 18px 0;
-    opacity: 0.5;
-    text-align: center;
+    opacity: 1 !important;
+    color: #cccccc !important; 
+    font-size: 1.1rem;
     transition: all 0.3s ease;
-    line-height: 1.6;
+    transition: color 0.3s; 
 }
 
 .lyric-line .char {
@@ -3005,10 +3017,8 @@ body {
 }
 
 .lyric-line.highlight {
-    opacity: 1;
-    transform: scale(1.05);
-    color: var(--accent-color);
-    font-weight: 600;
+    color: #cccccc !important; 
+    font-size: 1.3rem;
 }
 
 .lyric-line.highlight .char {
@@ -3031,9 +3041,10 @@ body {
     -webkit-background-clip: text;
     color: transparent !important;
     animation: color-flow 1s linear infinite;
-        0 0 10px oklch(65% 0.25 15 / 0.5),
-        0 0 15px oklch(70% 0.25 135 / 0.5),
-        0 0 20px oklch(65% 0.25 240 / 0.5);
+    text-shadow: 
+        0 0 10px rgba(255,51,102,0.5),
+        0 0 15px rgba(102,255,51,0.5),
+        0 0 20px rgba(51,204,255,0.5);
 }
 
 .lyric-line.enter-active {
@@ -3049,6 +3060,11 @@ body {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+.char.space {
+    display: inline;
+    min-width: 0.5em; 
 }
 
 .progress-container {
@@ -3128,25 +3144,55 @@ body {
 
 #floatingLyrics {
     position: fixed;
-    top: 10%;
-    left: 2%;
-    transform: none;
+    top: 2%;
+    left: 7.5%;
     background: var(--bg-body);
-    padding: 12px;
+    padding: 20px;
     border-radius: 20px;
-    font-size: 1.1rem;
     backdrop-filter: var(--glass-blur);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    line-height: 1.6;
-    font-family: 'Noto Serif SC', serif; 
+    line-height: 2;
+    font-family: 'Noto Serif SC', serif;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
 }
 
 #floatingLyrics.visible {
     opacity: 1;
+}
+
+#floatingLyrics #currentSong.vertical-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #32CD32;
+    writing-mode: vertical-rl;
+    border-right: 2px solid rgba(255,255,255,0.3);
+    padding-right: 0.8em;
+    margin-right: 0.8em;
+}
+
+#floatingLyrics .vertical-lyrics {
+    writing-mode: vertical-rl;
+    text-combine-upright: all;
+}
+
+#floatingLyrics .char {
+    font-size: 1.6rem; 
+    transition: transform 0.3s ease;
+    display: inline-block; 
+    position: relative;
+}
+
+#floatingLyrics .char.active {
+    color: #32CD32; 
+    animation: bounce-scale 0.6s ease-out;
+    transform: scale(1.3);
+    position: relative;
 }
 
 @keyframes bounce-scale {
@@ -3164,22 +3210,9 @@ body {
     }
 }
 
-.char {
-    font-size: 1.3rem; 
-    transition: transform 0.3s ease;
-    display: inline-block; 
-    position: relative;
-}
-
-.char.active {
-    color: #32CD32; 
-    animation: bounce-scale 0.6s ease-out; 
-    transform: scale(1.3);
-    position: relative; 
-}
-
 .char.played {
-    opacity: 0.4;
+
+    transform: scale(1) !important;
 }
 
 .playlist {
@@ -3657,7 +3690,10 @@ function syncLyrics() {
     let currentLine = null;
     let hasActiveLine = false;
 
-    lines.forEach(line => line.classList.remove('highlight', 'played'));
+    lines.forEach(line => {
+    line.classList.remove('highlight', 'played');
+    line.style.color = 'white'; 
+});
 
     for (let i = lines.length - 1; i >= 0; i--) {
         const line = lines[i];
@@ -3684,7 +3720,8 @@ function syncLyrics() {
             }
         });
 
-        const floatingLyrics = document.getElementById('floatingLyrics');
+        const floatingContainer = document.getElementById('floatingLyrics');
+        const floatingLyrics = floatingContainer.querySelector('.vertical-lyrics');
         if (!floatingLyrics.innerHTML || currentLine.dataset.time !== floatingLyrics.dataset.time) {
             floatingLyrics.innerHTML = currentLine.innerHTML;
             floatingLyrics.dataset.time = currentLine.dataset.time;
@@ -3804,6 +3841,12 @@ function saveCoreState() {
 function updateCurrentSong(url) {
     const songName = decodeURIComponent(url.split('/').pop().replace(/\.\w+$/, ''));
     document.getElementById('currentSong').textContent = songName;
+    
+    const floatingTitle = document.querySelector('#floatingLyrics #currentSong');
+    if (floatingTitle) floatingTitle.textContent = songName;
+
+    const modalTitle = document.querySelector('#musicModal #currentSong');
+    if (modalTitle) modalTitle.textContent = songName;
 }
 
 function updateTimeDisplay() {
@@ -3948,10 +3991,13 @@ function updatePlaylistUI() {
     setTimeout(() => {
         const activeItem = playlist.querySelector('.active');
         if (activeItem) {
-            activeItem.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+            activeItem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
             activeItem.classList.toggle('blink', !isPlaying);
         }
-    }, 100);
+    }, 300);
 }
 
 loadDefaultPlaylist();
@@ -4040,5 +4086,42 @@ audioPlayer.volume = lastVolume;
 updateVolumeIcon();
 </script>
 
+<script>
+const notificationMessage = '配置已清除';
+const speechMessage = '配置已清除';
 
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.shiftKey && event.code === 'KeyC') {
+        clearCache();
+        event.preventDefault();  
+    }
+});
 
+document.getElementById('clear-cache-btn').addEventListener('click', function() {
+    clearCache();
+});
+
+function clearCache() {
+    location.reload(true); 
+    localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem('cacheCleared', 'true');
+    showLogMessage(notificationMessage);
+    speakMessage(speechMessage);
+}
+
+window.addEventListener('load', function() {
+    if (sessionStorage.getItem('cacheCleared') === 'true') {
+        showLogMessage(notificationMessage);
+        speakMessage(speechMessage);
+        sessionStorage.removeItem('cacheCleared'); 
+    }
+});
+
+function speakMessage(text) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(utterance);
+    }
+}
+</script>
