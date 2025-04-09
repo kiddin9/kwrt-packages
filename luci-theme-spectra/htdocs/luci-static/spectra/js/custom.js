@@ -78,9 +78,29 @@ document.addEventListener("DOMContentLoaded", function () {
         return texts[savedFit] || '默认裁剪';
     }
 
+    function updateThemeButton(mode) {
+        const btn = document.getElementById('theme-toggle');
+        const status = document.getElementById('theme-status');
+        if (!btn || !status) return;
+
+        if (mode === "dark") {
+            btn.innerHTML = '<i class="bi bi-sun"></i> 切换到亮色模式';
+            btn.className = "btn btn-primary light";
+            status.innerText = "当前主题: 暗色模式";
+        } else {
+            btn.innerHTML = '<i class="bi bi-moon"></i> 切换到暗色模式';
+            btn.className = "btn btn-primary dark";
+            status.innerText = "当前主题: 亮色模式";
+        }
+    }
+
     const controlPanel = `
         <div id="settings-icon">⚙️</div>
         <div id="mode-popup">
+            <button id="theme-toggle" style="opacity:1 !important;pointer-events:auto !important;background:#2196F3 !important">
+                <i class="bi bi-moon"></i> 切换主题模式
+                <div id="theme-status" style="margin-left:8px;color:#FFEB3B"></div>
+            </button>
             <button id="master-switch">
                 <span>${isEnabled ? '已启用 ✅' : '已禁用 ❌'}</span>
                 <div class="status-led" style="background:${isEnabled ? '#4CAF50' : '#f44336'}"></div>
@@ -311,6 +331,33 @@ document.addEventListener("DOMContentLoaded", function () {
         if (videoTag) {
             videoTag.muted = newMuted;
         }
+    });
+
+    document.getElementById('theme-toggle')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fetch("/luci-static/spectra/bgm/theme-switcher.php", { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateThemeButton(data.mode);
+                } else {
+                    console.error("模式切换失败:", data.error);
+                }
+            })
+            .catch(error => {
+                console.error("请求出错:", error);
+            });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch("/luci-static/spectra/bgm/theme-switcher.php")
+            .then(res => res.json())
+            .then(data => {
+                updateThemeButton(data.mode);
+            })
+            .catch(error => {
+                console.error("获取主题模式失败:", error);
+            });
     });
 
     document.querySelector('.info-btn').addEventListener('click', () => {
@@ -849,7 +896,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <button class="close-btn">&times;</button>
                 </div>
                 <iframe id="theme-iframe" 
-                    src="${window.location.protocol}//${window.location.host}/luci-static/spectra/bgm/spectra.php"
+                    src="${window.location.protocol}//${window.location.host}/luci-static/spectra/bgm/index.php"
                     style="width: 100%; height: calc(100% - 40px); border: none; border-radius: 0 0 5px 5px;">
                 </iframe>
             </div>
