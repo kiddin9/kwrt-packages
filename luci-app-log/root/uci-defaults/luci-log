@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sed -i "s/luci-mod-status-logs/luci-mod-status-log/" /usr/share/luci/menu.d/luci-mod-status.json
+
+exit 0
