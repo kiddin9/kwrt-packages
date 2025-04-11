@@ -32,6 +32,12 @@ msgstr "Применять фильтр даты как регулярное в�
 msgid "Auto refresh"
 msgstr "Автообновление"
 
+msgid "Convert timestamps to a human readable date"
+msgstr "Конвертировать временные метки в удобочитаемую дату"
+
+msgid "Date"
+msgstr "Дата"
+
 msgid "Dismiss"
 msgstr "Закрыть"
 

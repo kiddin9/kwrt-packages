@@ -1,5 +1,5 @@
 'use strict';
-'require view.log-viewer.log-abstract as abc';
+'require view.log-viewer.log-system as abc';
 
 return abc.view.extend({
 	viewName   : 'syslog',

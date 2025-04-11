@@ -5,15 +5,19 @@
 'require view.log-viewer.log-widget as widget';
 
 return widget.view.extend({
-	viewName      : 'dmesg',
+	viewName              : 'dmesg',
 
-	title         : _('Kernel Log'),
+	title                 : _('Kernel Log'),
 
-	autoRefresh   : true,
+	enableAutoRefresh     : true,
 
-	entryRegexp   : new RegExp(/^<(\d{1,2})>\[([\d\s.]+)\]\s+(.*)$/),
+	enableConvertTimestamp: true,
 
-	facilityName  : [
+	entryRegexp           : new RegExp(/^<(\d{1,2})>\[([\d\s.]+)\]\s+(.*)$/),
+
+	entriesHandler        : null,
+
+	facilityName          : [
 		'kern',
 		'user',
 		'mail',
@@ -24,11 +28,11 @@ return widget.view.extend({
 		'news',
 	],
 
-	localtime     : null,
+	localtime             : null,
 
-	uptime        : null,
+	uptime                : null,
 
-	days          : {
+	days                  : {
 		0: 'Sun',
 		1: 'Mon',
 		2: 'Tue',
@@ -39,7 +43,7 @@ return widget.view.extend({
 		7: 'Sun',
 	},
 
-	months        : {
+	months                : {
 		1:  'Jan',
 		2:  'Feb',
 		3:  'Mar',
@@ -54,13 +58,22 @@ return widget.view.extend({
 		12: 'Dec',
 	},
 
-	callLogHash: rpc.declare({
+	logCols               : [
+		'#',
+		_('Timestamp'),
+		null,
+		_('Facility'),
+		_('Level'),
+		_('Message'),
+	],
+
+	callLogHash           : rpc.declare({
 		object: 'luci.log-viewer',
 		method: 'getDmesgHash',
 		expect: { '': {} }
 	}),
 
-	callSystemInfo: rpc.declare({
+	callSystemInfo        : rpc.declare({
 		object: 'system',
 		method: 'info'
 	}),
@@ -71,11 +84,11 @@ return widget.view.extend({
 		});
 	},
 
-	calcDmesgDate(t) {
-		if(!this.localtime || !this.uptime) {
+	convertTimestampFunc(t) {
+		if(!this.convertTimestampValue || !this.localtime || !this.uptime) {
 			return t;
 		};
-		let date = new Date((this.localtime - this.uptime + t) * 1000);
+		let date = new Date((this.localtime - this.uptime + Number(t)) * 1000);
 		return '%s %s %d %02d:%02d:%02d %d'.format(
 			this.days[ date.getUTCDay() ],
 			this.months[ date.getUTCMonth() + 1 ],
@@ -102,9 +115,11 @@ return widget.view.extend({
 			return [];
 		};
 
-		let unsupportedLog = false;
-		this.isFacilities  = true;
-		this.isLevels      = true;
+		let unsupportedLog     = false;
+		this.logTimestampFlag  = true;
+		this.logFacilitiesFlag = true;
+		this.logLevelsFlag     = true;
+		this.logHostsFlag      = false;
 
 		let strings = logdata.trim().split(/\n/);
 
@@ -128,12 +143,12 @@ return widget.view.extend({
 					level = logLevelsTranslate[Number(strArray[1]).toString(8)];
 				};
 				return [
-					i + 1,                                          // #         (Number)
-					this.calcDmesgDate(Number(strArray[2].trim())), // Timestamp (String)
-					null,                                           // Host      (String)
-					this.facilityName[ facility ],                  // Facility  (String)
-					level,                                          // Level     (String)
-					this.htmlEntities(strArray[3]) || ' ',          // Message   (String)
+					i + 1,                                         // #         (Number)
+					this.convertTimestampFunc(strArray[2].trim()), // Timestamp (String)
+					null,                                          // Host      (String)
+					this.facilityName[ facility ],                 // Facility  (String)
+					level,                                         // Level     (String)
+					this.htmlEntities(strArray[3]) || ' ',         // Message   (String)
 				];
 			} else {
 				unsupportedLog = true;
@@ -144,7 +159,7 @@ return widget.view.extend({
 		if(unsupportedLog) {
 			throw new Error(_('Unable to load log data:') + ' ' + _('Unsupported log format'));
 		} else {
-			if(this.logSortingValue === 'desc') {
+			if(this.logSortingValue == 'desc') {
 				entriesArray.reverse();
 			};
 			return entriesArray;

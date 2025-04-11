@@ -13,23 +13,23 @@ make_value() {
 }
 
 get_syslog_size() {
-	make_value 'bytes' "`$LOGREAD_CMD | wc -c`"
+	make_value 'bytes' "$($LOGREAD_CMD | wc -c)"
 }
 
 get_syslog_hash() {
-	make_value 'hash' "`$LOGREAD_CMD -t -l 1`"
+	make_value 'hash' "$($LOGREAD_CMD -t -l 1)"
 }
 
 get_dmesg_size() {
-	make_value 'bytes' "`$DMESG_CMD | wc -c`"
+	make_value 'bytes' "$($DMESG_CMD | wc -c)"
 }
 
 get_dmesg_hash() {
-	make_value 'hash' "`$DMESG_CMD | tail -n 1`"
+	make_value 'hash' "$($DMESG_CMD | tail -n 1)"
 }
 
 get_logfile_size() {
-	make_value 'bytes' "`ls -l "$1" | awk '{printf $5}'`"
+	make_value 'bytes' "$(ls -l "$1" | awk '{printf $5}')"
 }
 
 case "$1" in

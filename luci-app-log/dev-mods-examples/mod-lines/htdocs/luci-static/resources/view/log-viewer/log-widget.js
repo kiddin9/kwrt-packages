@@ -75,7 +75,7 @@ return baseclass.extend({
 						e[5] = `&#9;${e[5]}`;
 					};
 					lines.push(
-						`<span class="log-entry-line log-${e[4] || 'empty'}">` +
+						`<span class="log-entry-line log-${(e[1]) ? e[4] || 'empty' : (this.entriesHandler) ? 'raw' : 'empty'}">` +
 						e.filter(i => (i)).join(' ') +
 						'</span>'
 					);
@@ -86,7 +86,7 @@ return baseclass.extend({
 			try {
 				logArea.insertAdjacentHTML('beforeend', lines);
 			} catch(err) {
-				if(err.name === 'SyntaxError') {
+				if(err.name == 'SyntaxError') {
 					ui.addNotification(null,
 						E('p', {}, _('HTML/XML error') + ': ' + err.message), 'error');
 				};

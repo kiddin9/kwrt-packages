@@ -22,6 +22,12 @@ msgstr ""
 msgid "Auto refresh"
 msgstr ""
 
+msgid "Convert timestamps to a human readable date"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
 msgid "Dismiss"
 msgstr ""
 

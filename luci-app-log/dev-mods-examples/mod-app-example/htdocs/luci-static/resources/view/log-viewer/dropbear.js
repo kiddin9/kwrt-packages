@@ -1,9 +1,9 @@
 'use strict';
-'require view.log-viewer.log-abstract as abc';
+'require view.log-viewer.log-system as abc';
 
 return abc.view.extend({
-	viewName   : 'dropbear',
-	title      : _('Dropbear'),
-	autoRefresh: false,
-	appPattern : 'dropbear\[[0-9]*\]:',
+	viewName         : 'dropbear',
+	title            : _('Dropbear'),
+	enableAutoRefresh: false,
+	appPattern       : 'dropbear\[[0-9]*\]:',
 });

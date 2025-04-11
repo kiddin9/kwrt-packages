@@ -1,5 +1,5 @@
 'use strict';
-'require view.log-viewer.multilog.multilog-abstract as abc';
+'require view.log-viewer.multilog.log-multilog as abc';
 
 return abc.view.extend({
 	viewName   : 'multilog-secure',
