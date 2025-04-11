@@ -8,6 +8,18 @@ size="$(df -k | awk '/\/overlay$/ {sub(/K$/, "", $4); print $4}')"
 curltest=`which curl`
 user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 
+get_tz() {
+	SET_TZ=""
+	[ -e "/etc/localtime" ] && return
+	for tzfile in /etc/TZ /var/etc/TZ
+	do
+		[ -e "$tzfile" ] || continue
+		tz="$(cat $tzfile 2>/dev/null)"
+	done
+	[ -z "$tz" ] && return
+	SET_TZ=$tz
+}
+
 start_vntcli() {
                 local cfg="$1"
 		local enabled
@@ -162,6 +174,8 @@ EOF
       rm -rf /tmp/log4rs.yaml
           fi
 		procd_open_instance "vnt-cli"
+		get_tz
+		[ -z "$SET_TZ" ] || procd_set_param env TZ="$SET_TZ"
 		procd_set_param command "$clibin"
 		procd_append_param command -k "$token"
 		[ -z "$ipaddr" ] || procd_append_param command --ip "$ipaddr"
@@ -473,6 +487,8 @@ start_vnts() {
                 config_get_bool sfinger "$cfg" 'sfinger' '0'
 
 		procd_open_instance "vnts"
+		get_tz
+		[ -z "$SET_TZ" ] || procd_set_param env TZ="$SET_TZ"
 		procd_set_param command "$vntsbin"
 		procd_append_param command --port "$server_port"
 
