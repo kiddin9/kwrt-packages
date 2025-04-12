@@ -37,7 +37,7 @@ msgstr ""
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:266
 msgid ""
-"Allow ZeroTier to set IP Addresses and Routes ( local/private ranges only). "
+"Allow ZeroTier to set IP Addresses and Routes (local/private ranges only). "
 "Default Yes."
 msgstr ""
 
@@ -135,12 +135,12 @@ msgstr ""
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:218
 msgid ""
 "Network configuration, you can have as many configurations as networks you "
-"want to join. see documentation at https://docs.zerotier.com/config/#network-"
-"specific-configuration"
+"want to join. (<a target=\"_blank\" href=\"https://docs.zerotier.com/"
+"config/#network-specific-configuration\">see documentation</a>)"
 msgstr ""
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:216
-msgid "Networks"
+msgid "Join Network"
 msgstr ""
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/interface.js:77
@@ -153,8 +153,8 @@ msgstr ""
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:174
 msgid ""
-"Path of the optional file local.conf (see documentation at https://docs."
-"zerotier.com/config#local-configuration-options)"
+"Path of the optional file local.conf (<a target=\"_blank\" "
+"href=\"https://docs.zerotier.com/config#local-configuration-options\">see documentation</a>)"
 msgstr ""
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:181

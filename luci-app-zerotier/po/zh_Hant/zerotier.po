@@ -13,19 +13,19 @@ msgstr "新增網路"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:291
 msgid "Allow DNS"
-msgstr "Allow DNS"
+msgstr "允許 DNS"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:284
 msgid "Allow Default"
-msgstr "Allow Default"
+msgstr "允許預設閘道"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:275
 msgid "Allow Global"
-msgstr "Allow Global"
+msgstr "允許公共網路路由"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:264
 msgid "Allow Managed"
-msgstr "Allow Managed"
+msgstr "允許私人網路路由"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:299
 msgid "Allow ZeroTier clients access your LAN network."
@@ -43,7 +43,7 @@ msgstr "允許 ZeroTier 設定全域/公用/非私有範圍 IP 和路由。預�
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:266
 msgid ""
-"Allow ZeroTier to set IP Addresses and Routes ( local/private ranges only). "
+"Allow ZeroTier to set IP Addresses and Routes (local/private ranges only). "
 "Default Yes."
 msgstr "允許 ZeroTier 設定 IP 位址和路由（僅限本地/專用範圍）。預設為 Yes"
 
@@ -141,15 +141,15 @@ msgstr "網路介面資訊"
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:218
 msgid ""
 "Network configuration, you can have as many configurations as networks you "
-"want to join. see documentation at https://docs.zerotier.com/config/#network-"
-"specific-configuration"
+"want to join. (<a target=\"_blank\" href=\"https://docs.zerotier.com/"
+"config/#network-specific-configuration\">see documentation</a>)"
 msgstr ""
-"網路配置，可以設定多個想要加入的網路。詳見文檔https://docs.zerotier.com/"
-"config/#network-specific-configuration"
+"網路配置，可以設定多個想要加入的網路。（<a target=\"_blank\" href=\"https://docs.zerotier.com/"
+"config/#network-specific-configuration\">詳見文檔</a>）"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:216
-msgid "Networks"
-msgstr "網路"
+msgid "Join Network"
+msgstr "加入網路"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/interface.js:77
 msgid "No interface online."
@@ -161,11 +161,11 @@ msgstr "開啟網站"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:174
 msgid ""
-"Path of the optional file local.conf (see documentation at https://docs."
-"zerotier.com/config#local-configuration-options)"
+"Path of the optional file local.conf (<a target=\"_blank\" "
+"href=\"https://docs.zerotier.com/config#local-configuration-options\">see documentation</a>)"
 msgstr ""
-"選用文件 local.conf 的路徑（詳見文檔https://docs.zerotier.com/config#local-"
-"configuration-options）"
+"選用文件 local.conf 的路徑（<a target=\"_blank\" "
+"href=\"https://docs.zerotier.com/config#local-configuration-options\">詳見文檔</a>）"
 
 #: applications/luci-app-zerotier/htdocs/luci-static/resources/view/zerotier/base.js:181
 msgid "Persistent Configuration Path"

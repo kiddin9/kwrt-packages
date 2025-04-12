@@ -23,8 +23,10 @@ fi
 
 zerotier_nat() {
 	local cfg="$1"
-	local id auto_nat
+	local enabled id auto_nat
 	local portDeviceName ip_segment
+	config_get_bool enabled "$cfg" 'enabled' 0
+	[ "$enabled" -eq "1" ] || return
 	config_get id "$cfg" 'id'
 	config_get_bool auto_nat "$cfg" 'auto_nat' 0
 	echo "id $id"
@@ -40,7 +42,7 @@ zerotier_nat() {
 		echo "iifname $portDeviceName counter accept comment \"!fw4: Zerotier allow inbound forward $portDeviceName\"" >> "$nft_incdir/forward/zerotier.nft"
 		echo "oifname $portDeviceName counter accept comment \"!fw4: Zerotier allow outbound forward $portDeviceName\"" >> "$nft_incdir/forward/zerotier.nft"
 		echo "oifname $portDeviceName counter masquerade comment \"!fw4: Zerotier $portDeviceName outbound postrouting masq\"" >> "$nft_incdir/srcnat/zerotier.nft"
-		[ -z "$ip_segment" ] || echo "ip saddr $ip_segment counter masquerade comment \"!fw4: Zerotier $ip_segment postrouting masq\"" >> "$nft_incdir/srcnat/zerotier.nft"
+		[ -z "$ip_segment" ] || echo "$ip_segment" | xargs -I {} echo "ip saddr {} counter masquerade comment \"!fw4: Zerotier {} postrouting masq\"" >> "$nft_incdir/srcnat/zerotier.nft"
 		logger -t "zerotier" "interface $id auto nat rules added!"
 	fi
 
