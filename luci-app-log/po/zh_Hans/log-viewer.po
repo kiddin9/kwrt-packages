@@ -38,10 +38,10 @@ msgid "Entries"
 msgstr "条目"
 
 msgid "Facility"
-msgstr "设施"
+msgstr "模块"
 
 msgid "Facilities"
-msgstr "设施"
+msgstr "模块"
 
 msgid "Filter is regexp"
 msgstr "过滤器是正则表达式"
@@ -62,7 +62,7 @@ msgid "Kernel Log"
 msgstr "内核日志"
 
 msgid "Last entries"
-msgstr "最近的条目"
+msgstr "显示最新条目数"
 
 msgid "Level"
 msgstr "级别"
@@ -101,10 +101,10 @@ msgid "System Log"
 msgstr "系统日志"
 
 msgid "Timestamp"
-msgstr "时间戳"
+msgstr "时间"
 
 msgid "Timestamp filter"
-msgstr "时间戳过滤器"
+msgstr "时间过滤器"
 
 msgid "Type a search pattern..."
 msgstr "输入搜索模式..."
