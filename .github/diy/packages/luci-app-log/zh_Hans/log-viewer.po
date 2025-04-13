@@ -71,7 +71,7 @@ msgid "Log"
 msgstr "日志"
 
 msgid "Log Viewer"
-msgstr "日志查看器"
+msgstr "系统日志"
 
 msgid "Logging levels"
 msgstr "日志级别"
