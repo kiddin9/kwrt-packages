@@ -1,0 +1,122 @@
+msgid "Alert"
+msgstr "警报"
+
+msgid "All"
+msgstr "全部"
+
+msgid "All entries"
+msgstr "所有条目"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Apply message filter as regular expression"
+msgstr "将消息过滤器应用为正则表达式"
+
+msgid "Apply timestamp filter as regular expression"
+msgstr "将时间戳过滤器应用为正则表达式"
+
+msgid "Auto refresh"
+msgstr "自动刷新"
+
+msgid "Convert timestamps to a human readable date"
+msgstr "将时间戳转换为人类可读的日期"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Dismiss"
+msgstr "关闭"
+
+msgid "Download log"
+msgstr "下载日志"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Entries"
+msgstr "条目"
+
+msgid "Facility"
+msgstr "设施"
+
+msgid "Facilities"
+msgstr "设施"
+
+msgid "Filter is regexp"
+msgstr "过滤器是正则表达式"
+
+msgid "Filter settings"
+msgstr "过滤设置"
+
+msgid "Host"
+msgstr "主机"
+
+msgid "Hosts"
+msgstr "主机"
+
+msgid "Invalid regular expression"
+msgstr "无效的正则表达式"
+
+msgid "Kernel Log"
+msgstr "内核日志"
+
+msgid "Last entries"
+msgstr "最近的条目"
+
+msgid "Level"
+msgstr "级别"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Log Viewer"
+msgstr "日志查看器"
+
+msgid "Logging levels"
+msgstr "日志级别"
+
+msgid "Logread not found"
+msgstr "未找到 Logread"
+
+msgid "Message"
+msgstr "消息"
+
+msgid "Message filter"
+msgstr "消息过滤器"
+
+msgid "More entries"
+msgstr "更多条目"
+
+msgid "No entries available..."
+msgstr "没有可用条目..."
+
+msgid "Refresh log"
+msgstr "刷新日志"
+
+msgid "Sorting entries"
+msgstr "排序条目"
+
+msgid "System Log"
+msgstr "系统日志"
+
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgid "Timestamp filter"
+msgstr "时间戳过滤器"
+
+msgid "Type a search pattern..."
+msgstr "输入搜索模式..."
+
+msgid "Unable to load log data:"
+msgstr "无法加载日志数据："
+
+msgid "Unsupported log format"
+msgstr "不支持的日志格式"
+
+msgid "ascending"
+msgstr "升序"
+
+msgid "descending"
+msgstr "降序"
