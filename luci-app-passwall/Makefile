@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-passwall
 PKG_VERSION:=25.4.10
-PKG_RELEASE:=180
+PKG_RELEASE:=181
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
@@ -94,7 +94,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Geoview
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy
 	bool "Include Haproxy"
-	default y if aarch64||arm||i386||x86_64
+	default y if aarch64||i386||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria
 	bool "Include Hysteria"
@@ -142,7 +142,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
 config PACKAGE_$(PKG_NAME)_INCLUDE_SingBox
 	bool "Include Sing-Box"
 	select PACKAGE_sing-box
-	default y if aarch64||arm||i386||x86_64
+	default y if aarch64||i386||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
 	bool "Include Trojan-Plus"
@@ -150,7 +150,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_tuic_client
 	bool "Include tuic-client"
-	depends on aarch64||arm||i386||x86_64
+	depends on aarch64||i386||x86_64
 	select PACKAGE_tuic-client
 	default n
 
@@ -162,7 +162,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Geodata
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
 	bool "Include V2ray-Plugin (Shadowsocks Plugin)"
-	default y if aarch64||arm||i386||x86_64
+	default y if aarch64||i386||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
 	bool "Include Xray"
