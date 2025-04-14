@@ -43,14 +43,16 @@
  
  define Package/$(PKG_NAME)/config
  menu "Configuration"
-@@ -71,7 +94,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Geoview
+@@ -71,8 +94,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Geoview
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Haproxy
  	bool "Include Haproxy"
 -	select PACKAGE_haproxy
- 	default y if aarch64||arm||i386||x86_64
+-	default y if aarch64||arm||i386||x86_64
++	default y if aarch64||i386||x86_64
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria
+ 	bool "Include Hysteria"
 @@ -87,19 +109,15 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Client
@@ -80,7 +82,7 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
-@@ -121,7 +137,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
+@@ -121,22 +137,20 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
  	bool "Include Simple-Obfs (Shadowsocks Plugin)"
@@ -88,7 +90,10 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_SingBox
-@@ -131,7 +146,6 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_SingBox
+ 	bool "Include Sing-Box"
+ 	select PACKAGE_sing-box
+-	default y if aarch64||arm||i386||x86_64
++	default y if aarch64||i386||x86_64
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus
  	bool "Include Trojan-Plus"
@@ -96,12 +101,19 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_tuic_client
+ 	bool "Include tuic-client"
+-	depends on aarch64||arm||i386||x86_64
++	depends on aarch64||i386||x86_64
+ 	select PACKAGE_tuic-client
+ 	default n
+ 
 @@ -148,14 +162,11 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Geodata
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_V2ray_Plugin
  	bool "Include V2ray-Plugin (Shadowsocks Plugin)"
 -	select PACKAGE_v2ray-plugin
- 	default y if aarch64||arm||i386||x86_64
+-	default y if aarch64||arm||i386||x86_64
++	default y if aarch64||i386||x86_64
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Xray
  	bool "Include Xray"
