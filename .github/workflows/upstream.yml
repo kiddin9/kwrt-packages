@@ -125,12 +125,12 @@ jobs:
         #git_clone https://github.com/jerrykuku/luci-app-vssr
         #git_clone https://github.com/jerrykuku/luci-app-ttnode
         git_clone https://github.com/sirpdboy/luci-app-advancedplus
-        git_clone https://github.com/sirpdboy/luci-app-taskplan
+        git_clone https://github.com/sirpdboy/luci-app-taskplan taskplan && mvdir taskplan
         git_clone https://github.com/sirpdboy/luci-app-lucky oplucky && mvdir oplucky
         git_clone https://github.com/sirpdboy/luci-app-partexp partexp && mvdir partexp
         git_clone https://github.com/sirpdboy/netspeedtest && mvdir netspeedtest
         git_clone https://github.com/sirpdboy/luci-app-parentcontrol
-        git_clone https://github.com/sirpdboy/luci-app-poweroffdevice
+        git_clone https://github.com/sirpdboy/luci-app-poweroffdevice poweroffdevice && mvdir poweroffdevice
         git_clone https://github.com/muink/openwrt-fastfetch
         # git_clone https://github.com/muink/luci-app-homeproxy
         ) &
