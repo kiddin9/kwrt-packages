@@ -1,24 +1,55 @@
 #!/bin/bash
-trap 'rm /tmp/peanut.{1,2,3} 2> /dev/null' EXIT
+trap 'rm /tmp/peanut.{1,2,3,4} 2> /dev/null' EXIT
+# If we are not running as root, then run this script as root:
+if [[ "$UID" -ne 0 ]]; then
+        sudo $0 $@
+        exit $?
+fi
 FILE=/tmp/peanut
 header() {
 	echo -e "${GREEN}$1 Active Internet connections (servers only)${NC}"
 	echo -ne "${BLUE}"
-	cat ${FILE}.1 | head -2 | tail -1
+	echo -ne "$(cat ${FILE}.1 | head -2 | tail -1)"
+	[[ -f ${FILE}.4 ]] && echo "   Docker Container" || echo ""
 	echo -ne "${NC}"
 }
 GREEN='\033[1;32m'
 BLUE='\033[1;34m'
 NC='\033[0m'
+rm ${FILE}.{1,2,3,4} 2> /dev/null
 netstat -peanut | tee ${FILE}.1| sed '/LISTEN/!d' > ${FILE}.2
+docker container ls > ${FILE}.4 | grep -e "\:[0-9]" 2> /dev/null
+[[ "$(cat ${FILE}.4 | wc -l)" -lt 2 ]] && rm ${FILE}.4
 if [[ -z "$1" || "$1" == "-4" ]]; then
 	header IPv4
-	grep -E '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do grep ":${port} " ${FILE}.3; done
+	grep -E '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do 
+		LINE="$(grep ":${port} " ${FILE}.3)"
+		echo -n "${LINE}   "
+		PROG="$(echo $LINE | awk '{print $NF}')"
+		if [[ -f ${FILE}.4 && "${PROG}" =~ docker-pro ]]; then
+			PORT=$(echo "${LINE}" | grep -oe "\:[0-9]*" | grep -e "\:[0-9]")
+			OUT=$(grep "${PORT}" ${FILE}.4 | awk '{print $NF}' | head -1)
+			echo "${OUT}"
+		else
+			echo ""
+		fi
+	done
 fi
 [[ -z "$1" ]] && echo ""
 if [[ -z "$1" || "$1" == "-6" ]]; then
 	header IPv4
-	grep -Ev '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do grep ":${port} " ${FILE}.3; done
+	grep -Ev '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' ${FILE}.2 | tee ${FILE}.3 | awk '{print $4}' | sed 's/.*://g' | sort -n | uniq | while read port; do
+		LINE="$(grep ":${port} " ${FILE}.3)"
+		echo -n "${LINE}   "
+		PROG="$(echo $LINE | awk '{print $NF}')"
+		if [[ -f ${FILE}.4 && "${PROG}" =~ docker-pro ]]; then
+			PORT=$(echo "${LINE}" | grep -oe "\:[0-9]*" | grep -e "\:[0-9]")
+			OUT=$(grep "${PORT}" ${FILE}.4 | awk '{print $NF}' | head -1)
+			echo "${OUT}"
+		else
+			echo ""
+		fi
+	done
 elif [[ "$1" == "--dump" ]]; then
 	sed "s|/| |g" ${FILE}.2 | while read PROTO A B LOCAL C D PID PROG; do
 		PORT=$(echo $LOCAL | sed 's/.*://g')
@@ -33,4 +64,4 @@ elif [[ "$1" == "--dump" ]]; then
 		echo "${PORT}|${PROTO}|${IP}|${PID}|${PROG}|${CMD}|${IPv}"
 	done | sort -n
 fi
-[[ -z "$1" ]] && echo ""
+[[ -z "$1" || "$1" == "-4" ]] && echo ""
