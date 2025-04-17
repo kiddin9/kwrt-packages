@@ -1,0 +1,23 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-istoreenhance.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-istoreenhance.json << EEOF
+{
+    "config": "istoreenhance",
+    "init": "istoreenhance"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@istoreenhance[-1]
+	add ucitrack istoreenhance
+	set ucitrack.@istoreenhance[-1].init=istoreenhance
+	commit ucitrack
+
+	delete firewall.istoreenhance
+EOF
+
+/etc/init.d/istoreenhance enable
+/etc/init.d/istoreenhance start
+
+exit 0

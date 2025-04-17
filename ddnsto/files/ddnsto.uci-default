@@ -1,0 +1,20 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-ddnsto.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-ddnsto.json << EEOF
+{
+    "config": "ddnsto",
+    "init": "ddnsto"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@ddnsto[-1]
+	add ucitrack ddnsto
+	set ucitrack.@ddnsto[-1].init=ddnsto
+	commit ucitrack
+EOF
+
+/etc/init.d/ddnsto enable
+
+exit 0
