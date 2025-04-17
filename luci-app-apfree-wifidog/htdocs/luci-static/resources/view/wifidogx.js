@@ -133,6 +133,11 @@ return view.extend({
 		ss.addremove = true;
 		ss.nodescriptions = true;
 		
+		o = ss.option(form.Flag, 'gateway_auth_enabled', _('Auth Enabled'),
+						_('Enable the authentication of the gateway.'));
+		o.rmempty = false;
+		o.defaulValue = true;
+
 		o = ss.option(widgets.DeviceSelect, 'gateway_name', _('Gateway Name'));
 		o.filter = function(section_id, name) {
 			var dev = this.devices.filter(function(dev) { return dev.getName() == name })[0];

@@ -60,7 +60,7 @@
 }
 
 .head .pie {
-	min-width: 200px;
+	/* min-width: 200px; */
 	padding: 5px;
 	flex: 1 1 30%;
 }
@@ -126,4 +126,20 @@
 	text-align: right;
 	font-weight: bold;
 	color: #333;
+}
+
+.th-sort-asc::after {
+	content: " ▲";
+}
+
+.th-sort-desc::after {
+	content: " ▼";
+}
+
+.table .th {
+	cursor: pointer;
+}
+
+.table .th:hover {
+	background-color: #f0f0f0;
 }

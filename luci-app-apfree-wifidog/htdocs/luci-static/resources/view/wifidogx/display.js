@@ -95,14 +95,13 @@ return view.extend({
 			data = [{
 				value: 1,
 				color: '#cccccc',
-				label: [ _('no traffic') ]
+				label: _('no traffic')
 			}];
 
 		for (var i = 0; i < data.length; i++) {
 			if (!data[i].color) {
 				var hue = 120 / (data.length-1) * i;
 				data[i].color = 'hsl(%u, 80%%, 50%%)'.format(hue);
-				data[i].label.push(hue);
 			}
 		}
 
@@ -280,13 +279,13 @@ return view.extend({
 			]);
 
 			rxData.push({
-				label: ['%s: %%1024.2mB'.format(rec[col] || _('other')), cell],
-				value: rec.rx_bytes
+				value: rec.rx_bytes,
+				label: rec.ip || rec.mac
 			});
 
 			txData.push({
-				label: ['%s: %%1024.2mB'.format(rec[col] || _('other')), cell],
-				value: rec.tx_bytes
+				value: rec.tx_bytes,
+				label: rec.ip || rec.mac
 			});
 		}
 
@@ -352,10 +351,81 @@ return view.extend({
 		return false;
 	},
 
+	handleDeleteHost: function(host, type) {
+		var pie = this.pie.bind(this);
+		var kpi = this.kpi.bind(this);
+		var renderHostSpeed = this.renderHostSpeed.bind(this);
+		
+		ui.showModal(_('Delete Host'), [
+			E('p', _('Are you sure you want to delete this host?')),
+			E('div', { 'class': 'right' }, [
+				E('button', {
+					'class': 'btn',
+					'click': ui.hideModal
+				}, _('Cancel')),
+				E('button', {
+					'class': 'btn cbi-button-negative',
+					'click': ui.createHandlerFn(this, async function() {
+						try {
+							// Execute the delete command
+							await fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'del', host], 'text');
+							
+							// Get updated data
+							const updatedData = await fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'json'], 'json');
+							
+							// Refresh the table with new data
+							const defaultData = {status: "success", data: []};
+							renderHostSpeed(updatedData || defaultData, pie, kpi, type);
+							
+							ui.hideModal();
+							ui.addNotification(null, E('p', _('Host deleted successfully')), 3000, 'success');
+						} catch (e) {
+							ui.hideModal();
+							ui.addNotification(null, E('p', _('Error: ') + e.message), 3000, 'error');
+						}
+					})
+				}, _('Delete'))
+			])
+		]);
+	},
+
 	// 编辑主机
-	handleEditSpeed: function(host, mac, hostname, type, dl, ul) {
-		dl = dl/1024/1024;
-		ul = ul/1024/1024;
+	handleEditSpeed: function(host, mac, hostname, type) {
+		// 原本使用当前的流量统计作为限速值是错误的
+		// 我们需要从系统中获取当前已配置的限速值
+		var rate_limit_dl = 0;
+		var rate_limit_ul = 0;
+		
+		// 直接获取当前正在使用的 rate limit 值
+		fs.exec_direct('/usr/bin/aw-bpfctl', [type, 'json'], 'json').then(result => {
+			if (result && result.status === 'success' && Array.isArray(result.data)) {
+				// 查找当前主机
+				for (var i = 0; i < result.data.length; i++) {
+					var item = result.data[i];
+					if ((item.ip && item.ip === host) || (item.mac && item.mac === host)) {
+						// 找到对应主机，提取其限速值
+						// 根据 aw-bpfctl 的实际输出格式调整字段名
+						if (item.incoming && item.incoming.incoming_rate_limit) {
+							rate_limit_dl = item.incoming.incoming_rate_limit / 1024 / 1024; // 转换为 Mbps
+						}
+						if (item.outgoing && item.outgoing.outgoing_rate_limit) {
+							rate_limit_ul = item.outgoing.outgoing_rate_limit / 1024 / 1024; // 转换为 Mbps
+						}
+						break;
+					}
+				}
+			}
+			
+			// 显示对话框，使用实际的限速值
+			this.displaySpeedLimitDialog(host, mac, hostname, type, rate_limit_dl, rate_limit_ul);
+		}).catch(error => {
+			console.error('获取限速值出错:', error);
+			// 获取失败时使用默认值 0
+			this.displaySpeedLimitDialog(host, mac, hostname, type, 0, 0);
+		});
+	},
+	
+	displaySpeedLimitDialog: function(host, mac, hostname, type, dl, ul) {
 		let inputDom = E('input', {
 			'type': 'text',
 			'id': 'host-name',
@@ -457,138 +527,153 @@ return view.extend({
 	},
 
 	renderHostSpeed: function(data, pie, kpi, type) {
-		var rows = [];
-		var rx_data = [], tx_data = [];
-		var rx_total = 0, tx_total = 0;
-		var recs = [];
-	
-		// Check status and data structure
-		if (data.status === "success" && Array.isArray(data.data)) {
-			recs = data.data;
-		} else {
-			console.log("Invalid data format");
+		if (!data || !data.status || data.status !== "success" || !data.data) {
 			return;
 		}
-	
-		for (var i = 0; i < recs.length; i++) {
-			var rec = recs[i];
-			// Skip entries with no traffic (using total_bytes from both directions)
-			// if (rec.incoming.total_bytes === 0 && rec.outgoing.total_bytes === 0)
-			// 	continue;
 
-			var hostKey = (type == "mac" ? rec.mac : rec.ip);
+		var rows = [];
+		var rx_data = [];
+		var tx_data = [];
+		var rx_total = 0;
+		var tx_total = 0;
+
+		for (var i = 0; i < data.data.length; i++) {
+			var rec = data.data[i];
+			if (!rec || !rec.incoming || !rec.outgoing) continue;
+
+			var host = rec.ip || rec.mac || '';
+			var hostname = rec.hostname || '';
+
 			rows.push([
-				hostKey,
-				rec.hostname || '-',
-				[ rec.outgoing.rate, '%1024.2mbps'.format(rec.outgoing.rate) ],
-				[ rec.outgoing.total_bytes, '%1024.2mB'.format(rec.outgoing.total_bytes) ],
-				[ rec.outgoing.total_packets, '%1000.2mP'.format(rec.outgoing.total_packets) ],
-				[ rec.incoming.rate, '%1024.2mbps'.format(rec.incoming.rate) ],
-				[ rec.incoming.total_bytes, '%1024.2mB'.format(rec.incoming.total_bytes) ],
-				[ rec.incoming.total_packets, '%1000.2mP'.format(rec.incoming.total_packets) ],
-				E('button', {
-					'class': 'btn cbi-button cbi-button-edit center',
-					'click': ui.createHandlerFn(this, function(host, mac, hostname, type, dl, ul) {
-						this.handleEditSpeed(host, mac, hostname, type, dl, ul);
-					}, hostKey, rec.mac, rec.hostname, type, rec.incoming.incoming_rate_limit, rec.outgoing.outgoing_rate_limit)
-					// hostKey是当前行的主机标识（IP/MAC），type是类型（ipv4/ipv6/mac）
-				}, _('Edit'))
+				host,
+				hostname,
+				[rec.incoming.rate, '%1024.2mbps'.format(rec.incoming.rate)],
+				[rec.incoming.total_bytes, '%1024.2mB'.format(rec.incoming.total_bytes)],
+				[rec.incoming.total_packets, '%1000.2mP'.format(rec.incoming.total_packets)],
+				[rec.outgoing.rate, '%1024.2mbps'.format(rec.outgoing.rate)],
+				[rec.outgoing.total_bytes, '%1024.2mB'.format(rec.outgoing.total_bytes)],
+				[rec.outgoing.total_packets, '%1000.2mP'.format(rec.outgoing.total_packets)],
+				E('div', { 'class': 'button-container' }, [
+					E('button', {
+						'class': 'btn cbi-button cbi-button-edit',
+						'style': 'margin-right: 5px;',
+						'click': ui.createHandlerFn(this, function(host, mac, hostname, type) {
+							return function() {
+								this.handleEditSpeed(host, mac, hostname, type);
+							};
+						}(host, rec.mac, hostname, type))
+					}, _('Edit')),
+					E('button', {
+						'class': 'btn cbi-button cbi-button-remove',
+						'click': ui.createHandlerFn(this, function(host, type) {
+							return function() {
+								this.handleDeleteHost(host, type);
+							};
+						}(host, type))
+					}, _('Delete'))
+				])
 			]);
 
-			rx_total += rec.incoming.rate;
-			tx_total += rec.outgoing.rate;
+			rx_total += rec.outgoing.rate;
+			tx_total += rec.incoming.rate;
+
 			rx_data.push({
-				value: rec.incoming.rate,
-				label: [ rec.ip ]
+				value: rec.outgoing.rate,
+				label: rec.ip || rec.mac
 			});
 
 			tx_data.push({
-				value: rec.outgoing.rate,
-				label: [ rec.ip ]
+				value: rec.incoming.rate,
+				label: rec.ip || rec.mac
 			});
 		}
 
 		switch (type) {
-		  case "ipv4":
-			cbi_update_table('#speed-data', rows, E('em', _('No data recorded yet.')));
-			pie('speed-rx-pie', rx_data);
-			pie('speed-tx-pie', tx_data);
-			kpi('speed-rx-max', '%1024.2mbps'.format(rx_total));
-			kpi('speed-tx-max', '%1024.2mbps'.format(tx_total));
-			kpi('speed-host', '%u'.format(rows.length));
-			break;
-		  case "ipv6":
-			cbi_update_table('#ipv6-speed-data', rows, E('em', _('No data recorded yet.')));
-			pie('ipv6-speed-rx-pie', rx_data);
-			pie('ipv6-speed-tx-pie', tx_data);
-			kpi('ipv6-speed-rx-max', '%1024.2mbps'.format(rx_total));
-			kpi('ipv6-speed-tx-max', '%1024.2mbps'.format(tx_total));
-			kpi('ipv6-speed-host', '%u'.format(rows.length));
-			break;
-		  case "mac":
-			cbi_update_table('#mac-speed-data', rows, E('em', _('No data recorded yet.')));
-			pie('mac-speed-rx-pie', rx_data);
-			pie('mac-speed-tx-pie', tx_data);
-			kpi('mac-speed-rx-max', '%1024.2mbps'.format(rx_total));
-			kpi('mac-speed-tx-max', '%1024.2mbps'.format(tx_total));
-			kpi('mac-speed-host', '%u'.format(rows.length));
-			break;
-		  default:
-			break;
-		};
+			case "ipv4":
+				cbi_update_table('#speed-data', rows, E('em', _('No data recorded yet.')));
+				pie('speed-tx-pie', tx_data);  // Download pie chart
+				pie('speed-rx-pie', rx_data);  // Upload pie chart
+				kpi('speed-tx-max', '%1024.2mbps'.format(tx_total));  // Download total
+				kpi('speed-rx-max', '%1024.2mbps'.format(rx_total));  // Upload total
+				kpi('speed-host', '%u'.format(rows.length));
+				break;
+			case "ipv6":
+				cbi_update_table('#ipv6-speed-data', rows, E('em', _('No data recorded yet.')));
+				pie('ipv6-speed-tx-pie', tx_data);  // Download pie chart
+				pie('ipv6-speed-rx-pie', rx_data);  // Upload pie chart
+				kpi('ipv6-speed-tx-max', '%1024.2mbps'.format(tx_total));  // Download total
+				kpi('ipv6-speed-rx-max', '%1024.2mbps'.format(rx_total));  // Upload total
+				kpi('ipv6-speed-host', '%u'.format(rows.length));
+				break;
+			case "mac":
+				cbi_update_table('#mac-speed-data', rows, E('em', _('No data recorded yet.')));
+				pie('mac-speed-tx-pie', tx_data);  // Download pie chart
+				pie('mac-speed-rx-pie', rx_data);  // Upload pie chart
+				kpi('mac-speed-tx-max', '%1024.2mbps'.format(tx_total));  // Download total
+				kpi('mac-speed-rx-max', '%1024.2mbps'.format(rx_total));  // Upload total
+				kpi('mac-speed-host', '%u'.format(rows.length));
+				break;
+			default:
+				break;
+		}
 	},
 
 	pollChaQoSData: async function() {
 		await uci.load('hostnames')
 
 		poll.add(L.bind(async function() {
-			var pie = this.pie.bind(this);
-			var kpi = this.kpi.bind(this);
-			var renderHostSpeed = this.renderHostSpeed.bind(this);
-
 			await this.loadHostNames();
-			try {
-				// Get both IPv4 and IPv6 data
-				const results = await Promise.all([
-					fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv4', 'json'], 'json'),
-					fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv6', 'json'], 'json'),
-					fs.exec_direct('/usr/bin/aw-bpfctl', ['mac',  'json'], 'json')
-				]);
-
-				const defaultData = {status: "success", data: []};
-
-				const ipv4Data = results[0] || defaultData;
-				const ipv6Data = results[1] || defaultData;
-				const macData  = results[2] || defaultData;
-
-				ipv4Data.data.forEach(item => {
-					const mac = hostInfo[item.ip];
-					if (mac) {
-						item.mac = mac;
-						item.hostname = hostNames[mac];
-					} else {
-						item.mac = null;
-						item.hostname = "";
-					}
-				});
-				// 遍历macData.data，根据mac地址获取对应的主机名,更新到macData.data中
-				macData.data.forEach(item => {
-					const mac = item.mac;
-					if (mac) {
-						item.hostname = hostNames[mac];
-					} else {
-						item.mac = null;
-						item.hostname = "";
-					}
-				});
-				// Render both IPv4 and IPv6 stats
-				renderHostSpeed(ipv4Data, pie, kpi, "ipv4");  // IPv4
-				renderHostSpeed(ipv6Data, pie, kpi, "ipv6");  // IPv6
-				renderHostSpeed(macData, pie, kpi, "mac");    // MAC
-			} catch (e) {
-				console.error('Error polling data:', e);
-			}
+			await this.loadHostSpeedData();
 		}, this), 5);
+	},
+	loadHostSpeedData: async function() {
+		var pie = this.pie.bind(this);
+		var kpi = this.kpi.bind(this);
+		var renderHostSpeed = this.renderHostSpeed.bind(this);
+		try {
+			// Get both IPv4 and IPv6 data
+			const results = await Promise.all([
+				fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv4', 'json'], 'json'),
+				fs.exec_direct('/usr/bin/aw-bpfctl', ['ipv6', 'json'], 'json'),
+				fs.exec_direct('/usr/bin/aw-bpfctl', ['mac',  'json'], 'json')
+			]);
+
+			const defaultData = {status: "success", data: []};
+
+			const ipv4Data = results[0] || defaultData;
+			const ipv6Data = results[1] || defaultData;
+			const macData  = results[2] || defaultData;
+			
+			// 确保所有添加按钮状态一致
+			this.updateAllAddButtons();
+
+			ipv4Data.data.forEach(item => {
+				const mac = hostInfo[item.ip];
+				if (mac) {
+					item.mac = mac;
+					item.hostname = hostNames[mac];
+				} else {
+					item.mac = null;
+					item.hostname = "";
+				}
+			});
+			// 遍历macData.data，根据mac地址获取对应的主机名,更新到macData.data中
+			macData.data.forEach(item => {
+				const mac = item.mac;
+				if (mac) {
+					item.hostname = hostNames[mac];
+				} else {
+					item.mac = null;
+					item.hostname = "";
+				}
+			});
+			// Render both IPv4 and IPv6 stats
+			renderHostSpeed(ipv4Data, pie, kpi, "ipv4");  // IPv4
+			renderHostSpeed(ipv6Data, pie, kpi, "ipv6");  // IPv6
+			renderHostSpeed(macData, pie, kpi, "mac");    // MAC
+		} catch (e) {
+			console.error('Error polling data:', e);
+		}
 	},
 	handleAddSubmit: async function(val, type) {
 		var pie = this.pie.bind(this);
@@ -628,15 +713,20 @@ return view.extend({
 		}
 	},
 	createAddButtonValue: function(type, placeholder) {
+		let addInputWidth = 'width:180px';
+		if (type == "ipv6") {
+			addInputWidth = 'width:320px';
+		}
+
 		let input = E('input', {
 				'type': 'text',
 				'id': type + '-add-input',
 				'class': 'cbi-input-text',
-				'style': 'width:300px',
+				'style': addInputWidth,
 				'placeholder': _(placeholder)
 			});
 
-		let btn = E('button', {
+		let addBtn = E('button', {
 				'class': 'btn cbi-button cbi-button-add',
 				'id': type + '-add-btn',
 				'disabled': 'disabled',
@@ -646,16 +736,47 @@ return view.extend({
 						ui.addNotification(null, _('Data format error'), 3000, "error");
 						return
 					}
-					this.handleAddSubmit(inputValue, type);
-					input.value = '';
+					this.handleAddSubmit(inputValue, type).then(() => {
+						// 添加操作完成后刷新页面，以确保所有UI元素正确重置
+						this.loadHostSpeedData();
+					});
+					input.value = ''; // 清空输入框
 				})
 			}, _('Add'));
 
+		let freshBtn = E('button', {
+			'class': 'btn cbi-button cbi-button-add',
+			'click': this.loadHostSpeedData.bind(this)
+		}, _('Refreshing'));
+
+		// 确保初始状态下按钮是禁用的
+		addBtn.disabled = true;
+		
 		input.addEventListener('input', function() {
 			var isEmpty = this.value.trim() === '';
-			btn.disabled = isEmpty;
+			addBtn.disabled = isEmpty;
 		});
-		return [input, btn]
+		
+		// 在页面加载后也执行一次检查，确保状态一致
+		setTimeout(function() {
+			var isEmpty = input.value.trim() === '';
+			addBtn.disabled = isEmpty;
+		}, 0);
+		
+		return [input, addBtn, freshBtn];
+	},
+	updateAllAddButtons: function() {
+		// 获取所有类型的添加按钮和输入框
+		['ipv4', 'ipv6', 'mac'].forEach(type => {
+			const input = document.getElementById(type + '-add-input');
+			const addBtn = document.getElementById(type + '-add-btn');
+			
+			if (input && addBtn) {
+				// 检查输入框是否有值，并相应设置按钮状态
+				const isEmpty = input.value.trim() === '';
+				addBtn.disabled = isEmpty;
+			}
+		});
 	},
 	render: function() {
 		document.addEventListener('tooltip-open', L.bind(function(ev) {
@@ -672,6 +793,12 @@ return view.extend({
 			});
 		}
 
+		let pidWidth = 200, pidHeight = 200;
+		const width = window.innerWidth;
+		if (width < 800) {
+			pidWidth = pidHeight = width/4
+		}
+		console.log("width ", width)
 		var node = E([], [
 			E('link', { 'rel': 'stylesheet', 'href': L.resource('view/wifidogx.css') }),
 			E('script', {
@@ -685,20 +812,20 @@ return view.extend({
 				E('div', { 'class': 'cbi-section', 'data-tab': 'speed', 'data-tab-title': _('Speed Distribution') }, [
 					E('div', { 'class': 'head' }, [
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Upload Speed / Host') ]),
-							E('canvas', { 'id': 'speed-tx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Download Speed / Host') ]),
+							E('canvas', { 'id': 'speed-tx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Download Speed / Host') ]),
-							E('canvas', { 'id': 'speed-rx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Upload Speed / Host') ]),
+							E('canvas', { 'id': 'speed-rx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'kpi' }, [
 							E('ul', [
 								E('li', _('<big id="speed-host">0</big> hosts')),
-								E('li', _('<big id="speed-rx-max">0</big> download speed')),
-								E('li', _('<big id="speed-tx-max">0</big> upload speed')),
+								E('li', _('<big id="speed-tx-max">0</big> download speed')),
+								E('li', _('<big id="speed-rx-max">0</big> upload speed')),
 							])
 						])
 					]),
@@ -707,13 +834,13 @@ return view.extend({
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
 							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
-							E('th', { 'class': 'th center' }, [ _('Actions') ])
+							E('th', { 'class': 'th left' }, [ _('Download Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Actions') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
 							E('td', { 'class': 'td' }, [
@@ -721,26 +848,26 @@ return view.extend({
 							])
 						])
 					]),
-					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("ipv4", "Please enter a valid IPv4 address")),
+					E('div', { 'style': 'align-items: center; padding: 0.5rem 1rem;' }, this.createAddButtonValue("ipv4", "Please enter a valid IPv4 address")),
 				]),
 
 				E('div', { 'class': 'cbi-section', 'data-tab': 'ipv6', 'data-tab-title': _('IPv6') }, [
 					E('div', { 'class': 'head' }, [
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Upload Speed / Host') ]),
-							E('canvas', { 'id': 'ipv6-speed-tx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Download Speed / Host') ]),
+							E('canvas', { 'id': 'ipv6-speed-tx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Download Speed / Host') ]),
-							E('canvas', { 'id': 'ipv6-speed-rx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Upload Speed / Host') ]),
+							E('canvas', { 'id': 'ipv6-speed-rx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'kpi' }, [
 							E('ul', [
 								E('li', _('<big id="ipv6-speed-host">0</big> hosts')),
-								E('li', _('<big id="ipv6-speed-rx-max">0</big> download speed')),
-								E('li', _('<big id="ipv6-speed-tx-max">0</big> upload speed')),
+								E('li', _('<big id="ipv6-speed-tx-max">0</big> download speed')),
+								E('li', _('<big id="ipv6-speed-rx-max">0</big> upload speed')),
 							])
 						])
 					]),
@@ -749,13 +876,13 @@ return view.extend({
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
 							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
-							E('th', { 'class': 'th center' }, [ _('Actions') ])
+							E('th', { 'class': 'th left' }, [ _('Download Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Actions') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
 							E('td', { 'class': 'td' }, [
@@ -763,26 +890,26 @@ return view.extend({
 							])
 						])
 					]),
-					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("ipv6", "Please enter a valid IPv6 address")),
+					E('div', { 'style': 'align-items: center; padding: 0.5rem 1rem;' }, this.createAddButtonValue("ipv6", "Please enter a valid IPv6 address")),
 				]),
 
 				E('div', { 'class': 'cbi-section', 'data-tab': 'mac', 'data-tab-title': _('MAC') }, [
 					E('div', { 'class': 'head' }, [
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Upload Speed / Host') ]),
-							E('canvas', { 'id': 'mac-speed-tx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Download Speed / Host') ]),
+							E('canvas', { 'id': 'mac-speed-tx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'pie' }, [
-							E('label', [ _('Download Speed / Host') ]),
-							E('canvas', { 'id': 'mac-speed-rx-pie', 'width': 200, 'height': 200 })
+							E('label', [ _('Upload Speed / Host') ]),
+							E('canvas', { 'id': 'mac-speed-rx-pie', 'width': pidWidth, 'height': pidHeight })
 						]),
 
 						E('div', { 'class': 'kpi' }, [
 							E('ul', [
 								E('li', _('<big id="mac-speed-host">0</big> hosts')),
-								E('li', _('<big id="mac-speed-rx-max">0</big> download speed')),
-								E('li', _('<big id="mac-speed-tx-max">0</big> upload speed')),
+								E('li', _('<big id="mac-speed-tx-max">0</big> download speed')),
+								E('li', _('<big id="mac-speed-rx-max">0</big> upload speed')),
 							])
 						])
 					]),
@@ -791,13 +918,13 @@ return view.extend({
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left hostname' }, [ _('Host') ]),
 							E('th', { 'class': 'th left hostname' }, [ _('Hostname') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
-							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
-							E('th', { 'class': 'th center' }, [ _('Actions') ])
+							E('th', { 'class': 'th left' }, [ _('Download Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Download (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload Speed (Bit/s)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Bytes)') ]),
+							E('th', { 'class': 'th left' }, [ _('Upload (Packets)') ]),
+							E('th', { 'class': 'th left' }, [ _('Actions') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
 							E('td', { 'class': 'td' }, [
@@ -805,7 +932,7 @@ return view.extend({
 							])
 						])
 					]),
-					E('div', { 'class': 'cbi-section-create cbi-tblsection-create' }, this.createAddButtonValue("mac", "Please enter a valid MAC address")),
+					E('div', { 'style': 'align-items: center; padding: 0.5rem 1rem;' }, this.createAddButtonValue("mac", "Please enter a valid MAC address")),
 				])
 			]),
 		]);

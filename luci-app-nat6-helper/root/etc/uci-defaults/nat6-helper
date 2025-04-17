@@ -1,0 +1,17 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-nat6-helper.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-nat6-helper.json << EEOF
+{
+    "config": "nat6-helper",
+    "init": "nat6-helper"
+}
+EEOF
+}
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@nat6-helper[-1]
+	add ucitrack nat6-helper
+	set ucitrack.@nat6-helper[-1].init=nat6-helper
+	commit ucitrack
+EOF
+rm -f /tmp/luci-indexcache
+exit 0
