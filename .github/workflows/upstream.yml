@@ -157,7 +157,7 @@ jobs:
         git_clone https://github.com/ophub/luci-app-amlogic amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic
         git_clone https://github.com/mingxiaoyu/luci-app-cloudflarespeedtest cloudflarespeedtest && mv -n cloudflarespeedtest/applications/* ./;rm -rf cloudflarespeedtest
         git_clone https://github.com/xiaorouji/openwrt-passwall2 passwall2 && mv -n passwall2/luci-app-passwall2 ./;rm -rf passwall2
-        git_clone https://github.com/linkease/nas-packages && mv -n nas-packages/{network/services/*,multimedia/*} ./; rm -rf nas-packages
+        git_clone https://github.com/linkease/nas-packages && mv -n nas-packages/{network/services/*} ./; rm -rf nas-packages
         git_clone https://github.com/linkease/nas-packages-luci && mv -n nas-packages-luci/luci/* ./; rm -rf nas-packages-luci
         git_clone https://github.com/linkease/istore && mv -n istore/luci/* ./; rm -rf istore
         git_clone https://github.com/linkease/lcdsimple lcdsimple1 && mvdir lcdsimple1
