@@ -190,6 +190,7 @@ jobs:
         git_clone https://github.com/sundaqiang/openwrt-packages && mv -n openwrt-packages/luci-* ./; rm -rf openwrt-packages
         git_clone https://github.com/CHN-beta/rkp-ipid
         git_clone https://github.com/dysf888/OpenWRT_NeZha_V1 nezha && mvdir nezha
+        git clone https://github.com/Ausaci/luci-app-nat6-helper -b main-dev
         ) &
         (
         git_clone https://github.com/koshev-msk/modemfeed && mv -n modemfeed/*/!(telephony)/* ./ && rm -rf modemfeed
@@ -267,8 +268,6 @@ jobs:
         git_clone https://github.com/nosignals/openwrt-neko && mv openwrt-neko/luci-app-neko ./;rm -rf openwrt-neko
         ) &
         (
-        git_clone https://github.com/liudf0716/luci-app-yt-dlp
-        git_clone https://github.com/liudf0716/luci-app-apfree-wifidog
         git_clone https://github.com/ilxp/luci-app-ikoolproxy
         git_clone https://github.com/animegasan/luci-app-droidmodem
         git_clone https://github.com/animegasan/luci-app-droidnet
@@ -370,6 +369,7 @@ jobs:
         (
         git_sparse_clone master "https://github.com/x-wrt/com.x-wrt" luci-app-macvlan luci-app-xwan
         git_sparse_clone master "https://github.com/obsy/packages" oscam luci-proto-wwan 3ginfo modemband
+        git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/luci" applications/luci-app-yt-dlp applications/luci-app-apfree-wifidog applications/luci-app-ss-redir
         ) &
         git_sparse_clone master "https://github.com/coolsnowwolf/luci" applications libs/luci-lib-fs
         mv -f applications luciapp
