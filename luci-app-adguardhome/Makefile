@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 PKG_LICENSE:=Apache-2.0
 
 LUCI_TITLE:=LuCI support for AdguardHome
-LUCI_DEPENDS:=+adguardhome +luci-base
+LUCI_DEPENDS:=+adguardhome +luci-base +curl
 
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
 

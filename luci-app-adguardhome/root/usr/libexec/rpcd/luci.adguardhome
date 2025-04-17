@@ -87,12 +87,17 @@ TFILE=/tmp/rpcd-adguardhome-$(date -Ins).tmp
 trap 'rm ${TFILE}; exit' EXIT
 read_config > ${TFILE}
 source ${TFILE}
-[[ "${tls_enabled}" == "false" ]] && PROTO="http" || PROTO="https"
-[[ -z "${http_address}" ]] && http_address=${bind_host}:${bind_port}
 HOST=${http_address%:*}
 [[ "${HOST}" == "0.0.0.0" ]] && HOST=$(uci get system.@system[0].hostname).$(uci get dhcp.@dnsmasq[0].domain)
 HOST=$(echo ${HOST} | awk '{print tolower($0)}')
 PORT=${http_address##*:}
+PROTO="http"
+if [[ "${tls_enabled}" == "true" ]]; then
+	PROTO="https"
+	HOST=${tls_server_name}
+	PORT=${tls_port_https}
+fi
+[[ -z "${http_address}" ]] && http_address=${bind_host}:${bind_port}
 
 ############################################################################################
 # Decision-making cade:
@@ -125,6 +130,7 @@ case "$1" in
 				;;
 
 			set_passwd)
+				# Check if bcrypt-tool is available for use:
 				# Read and load the argument into JSON array:  
 				read input
 				json_load "$input"
