@@ -198,7 +198,7 @@ jobs:
         git_clone https://github.com/shanglanxin/luci-app-homebridge
         git_clone https://github.com/ykxVK8yL5L/luci-app-synology synology && mv -n synology/luci-app-synology ./ && rm -rf synology
         git_clone https://github.com/htynkn/openwrt-switch-lan-play && mv -n openwrt-switch-lan-play/package/* ./ && rm -rf openwrt-switch-lan-play
-        # git_clone https://github.com/xptsp/luci-app-nodogsplash
+        git_clone https://github.com/xptsp/luci-app-nodogsplash
         git_clone https://github.com/xptsp/luci-mod-listening-ports
         git_clone https://github.com/xptsp/luci-app-squid-adv
         git_clone https://github.com/xptsp/openwrt-bcrypt-tool
