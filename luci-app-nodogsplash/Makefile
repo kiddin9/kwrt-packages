@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 PKG_LICENSE:=Apache-2.0
 PKG_NAME:=luci-app-nodogsplash
 PKG_VERSION:=2.0.1
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -35,9 +35,6 @@ endef
 define Package/luci-app-nodogsplash/install
 	$(INSTALL_DIR) $(1)/www/luci-static/resources/view/nodogsplash/
 	$(INSTALL_DATA) ./htdocs/luci-static/resources/view/nodogsplash/*.js $(1)/www/luci-static/resources/view/nodogsplash/
-
-	$(INSTALL_DIR) $(1)/usr/libexec/rpcd/
-	$(INSTALL_DATA) ./root/usr/libexec/rpcd/luci.nodogsplash $(1)/usr/libexec/rpcd/
 
 	$(INSTALL_DIR) $(1)/usr/share/luci/menu.d/
 	$(INSTALL_DATA) ./root/usr/share/luci/menu.d/luci-app-nodogsplash.json $(1)/usr/share/luci/menu.d/
