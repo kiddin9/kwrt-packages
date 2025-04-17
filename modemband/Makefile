@@ -1,21 +1,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=modemband
-PKG_VERSION:=20241111
-PKG_RELEASE:=5
-
-PKG_LICENSE:=MIT
-PKG_MAINTAINER:=Cezary Jackiewicz <cezary@eko.one.pl>
+PKG_VERSION:=20250409
+PKG_RELEASE:=6
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/modemband
-  SECTION:=net
-  CATEGORY:=Network
-  SUBMENU:=WWAN
-  TITLE:=Setting LTE/5G bands for selected modems
-  DEPENDS:=+sms-tool
-  PKGARCH:=all
+	SECTION:=net
+	CATEGORY:=Network
+	TITLE:=Setting LTE/5G bands for selected modems
+	MAINTAINER:=Cezary Jackiewicz <cezary@eko.one.pl>
+	PKGARCH:=all
+	DEPENDS:=+sms-tool
 endef
 
 define Build/Compile
