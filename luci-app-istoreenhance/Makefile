@@ -5,7 +5,7 @@
 
 include $(TOPDIR)/rules.mk
 
-LUCI_TITLE:=LuCI support for iStoreEnhance
+LUCI_TITLE:=LuCI support for KSpeeder
 LUCI_DEPENDS:=+istoreenhance
 LUCI_PKGARCH:=all
 # PKG_RELEASE MUST be empty for luci.mk
