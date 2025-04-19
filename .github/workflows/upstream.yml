@@ -99,7 +99,6 @@ jobs:
         git_clone https://github.com/kiddin9/luci-app-uugamebooster
         ) &
         (
-        git_clone https://github.com/kiddin9/luci-app-subconverter
         git_clone https://github.com/kiddin9/openwrt-netdata netdata
         git_clone https://github.com/kiddin9/luci-app-syscontrol
         git_clone https://github.com/kiddin9/luci-app-chinadns-ng
