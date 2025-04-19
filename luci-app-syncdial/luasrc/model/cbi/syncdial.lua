@@ -27,6 +27,9 @@ luci.tools.webadmin.cbi_add_networks(o)
 o.optional = false
 o.rmempty = false
 
+o = s:option(Flag, "ipv6", translate("启用ipv6"))
+o.rmempty = false
+
 o = s:option(Value, "wannum", translate("虚拟WAN接口数量"))
 o.datatype = "and(uinteger,range(0,249))"
 o.optional = false
@@ -57,13 +60,13 @@ o = s:option(Flag, "dialchk", translate("启用掉线检测"))
 o.rmempty = false
 
 o = s:option(Value, "dialnum", translate("最低在线接口数量"))
-o.description = translate("如果在线接口数量小于这个值则重拨。")
+o.description = translate("如果在线接口数量小于这个值则重拨。(每个ipv6也算一个接口)")
 o.datatype = "and(uinteger,range(0,248))"
 o.optional = false
 o.default = 2
 
 o = s:option(Value, "dialnum2", translate("第二条线最低在线接口数量"))
-o.description = translate("如果第二条线在线接口数量小于这个值则重拨。")
+o.description = translate("如果第二条线在线接口数量小于这个值则重拨。(每个ipv6也算一个接口)")
 o.datatype = "range(0,248)"
 o.optional = false
 o.default = 2

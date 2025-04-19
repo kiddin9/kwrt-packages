@@ -5,6 +5,7 @@
 
 #检测IP列表
 chk_ip_list="www.baidu.com 114.114.114.114 119.29.29.29"
+chk_ip6_list="2400:da00:2::29"
 origfirewall=$(uci get firewall.@zone[1].network)
 backupdev=$(uci get syncdial.config.devbackup)
 norun=$(echo $origfirewall|grep vwan)
@@ -13,7 +14,7 @@ wanselect=$(uci get syncdial.config.wanselect)
 wannum=$(uci get syncdial.config.wannum)
 oldframe=$(uci get syncdial.config.old_frame)
 bindwan=$(uci -q get syncdial.config.bindwan)
-
+ipv6=$(uci -q get syncdial.config.ipv6)
 dial_type=$(uci get syncdial.config.dial_type)
 [ "$dial_type" -eq 2 ] && {
 	wanselect2=$(uci get syncdial.config.wanselect2)
@@ -60,6 +61,35 @@ mwan_cfg_add() {
 	uci set mwan3.${1}_m1_w1.weight=1
 	#gen mwan3_policy
 	uci add_list mwan3.balanced.use_member=${1}_m1_w1
+	[ "$ipv6" == "1" ] && {
+		#gen mwan3_interface
+		uci set mwan3.${1}_6=interface
+		uci set mwan3.${1}_6.enabled=1
+		uci set mwan3.${1}_6.count=2
+		uci set mwan3.${1}_6.timeout=2
+		uci set mwan3.${1}_6.interval=5
+		uci set mwan3.${1}_6.down=4
+		uci set mwan3.${1}_6.up=1
+		for i in $chk_ip6_list
+		do
+			uci add_list mwan3.${1}.track_ip="$i"
+		done
+		uci set mwan3.${1}_6.reliability=1
+		uci set mwan3.${1}_6.initial_state=online
+		uci set mwan3.${1}_6.family=ipv6
+		uci set mwan3.${1}_6.track_method=ping
+		uci set mwan3.${1}_6.size=56
+		uci set mwan3.${1}_6.failure_interval=5
+		uci set mwan3.${1}_6.recovery_interval=5
+		uci set mwan3.${1}_6.flush_conntrack=never
+		#gen mwan3_member
+		uci set mwan3.${1}_6_m1_w1=member
+		uci set mwan3.${1}_6_m1_w1.interface=${1}_6
+		uci set mwan3.${1}_6_m1_w1.metric=1
+		uci set mwan3.${1}_6_m1_w1.weight=1
+		#gen mwan3_policy
+		uci add_list mwan3.balanced.use_member=${1}_6_m1_w1
+	}
 }
 
 #删除MWAN负载均衡相关配置
@@ -68,6 +98,11 @@ mwan_cfg_del() {
 	uci del mwan3.${1}
 	uci del mwan3.${1}_m1_w1
 	uci del_list mwan3.balanced.use_member=${1}_m1_w1
+	[ "$ipv6" == "1" ] && {
+		uci del mwan3.${1}_6
+		uci del mwan3.${1}_6_m1_w1
+		uci del_list mwan3.balanced.use_member=${1}_6_m1_w1
+	}
 }
 
 #添加macvlan设备
@@ -92,6 +127,14 @@ pppoe_if_add() {
 	uci set network.${1}.password=${5}
 	uci set network.${1}.metric=${2}
 	uci set network.${1}.macaddr=$NEW_MACADDR
+	[ "$ipv6" == "1" ] && {
+	uci set network.${1}_6=interface
+	uci set network.${1}_6.device=pppoe-${1}
+	uci set network.${1}_6.proto=dhcpv6
+	uci set network.${1}_6.metric=$((${5}+984))
+	uci set network.${1}_6.macaddr=$NEW_MACADDR
+	uci add_list firewall.@zone[1].network=${1}_6
+	}
 	#gen firewall
 	uci add_list firewall.@zone[1].network=${1}
 }
@@ -238,6 +281,13 @@ else
 fi
 
 ###dualdial configuration
+[ "$nomwan" -ne 1 ] && [ -z "$(uci get mwan3.ipv6_default_rule)" ] && {
+	uci set mwan3.ipv6_default_rule=rule
+	uci set mwan3.ipv6_default_rule.dest_ip='::/0'
+	uci set mwan3.ipv6_default_rule.proto='all'
+	uci set mwan3.ipv6_default_rule.sticky='0'
+	uci set mwan3.ipv6_default_rule.use_policy='balanced'
+}
 [ "$(uci -q get syncdial.config.dial_type)" = "2" ] && {
 
 	uci set network.$wanselect2.metric=60
