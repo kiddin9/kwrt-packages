@@ -107,7 +107,7 @@ jobs:
         git_clone https://github.com/kiddin9/openwrt-lingtigameacc && mvdir openwrt-lingtigameacc
         git_clone https://github.com/kiddin9/luci-app-timewol
         git_clone https://github.com/kiddin9/luci-app-vsftpd
-        git_clone https://github.com/kiddin9/sub-web
+        git_clone https://github.com/kiddin9/openwrt-subconverter && mvdir openwrt-subconverter
         ) &
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
