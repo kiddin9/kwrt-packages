@@ -469,7 +469,7 @@ jobs:
         ) &
 
         (
-        for pkg in $(ls -d */ | grep -v "naiveproxy"); do
+        for pkg in $(ls -d */ | grep -v "naiveproxy" | grep -v "luci-app-passwall"); do
           if [[ "$(grep "PKG_VERSION" $pkg/Makefile)" && ! "$(grep "PKG_RELEASE" $pkg/Makefile)" ]]; then
             sed -i "s/\(PKG_VERSION:=.*\)/\1\nPKG_RELEASE:=/" $pkg/Makefile || true
           fi
