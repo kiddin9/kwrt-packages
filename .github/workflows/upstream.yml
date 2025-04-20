@@ -373,7 +373,7 @@ jobs:
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
         luci-app-packet-capture luci-app-iperf atinout
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/luci" applications/luci-app-yt-dlp applications/luci-app-apfree-wifidog applications/luci-app-ss-redir
-        )
+        ) &
         git_sparse_clone master "https://github.com/coolsnowwolf/luci" applications libs/luci-lib-fs
         mv -f applications luciapp
         rm -rf luciapp/{luci-app-qbittorrent,luci-app-zerotier,luci-app-cpufreq,luci-app-e2guardian,luci-app-aliyundrive-fuse,luci-app-syncdial,luci-app-firewall}
