@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gowebdav
 PKG_VERSION:=5.7.4
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/hacdias/webdav/tar.gz/v$(PKG_VERSION)?
@@ -46,10 +46,10 @@ endef
 define Package/gowebdav/install
 	$(call GoPackage/Package/Install/Bin,$(1))
 
-	$(INSTALL_DIR) $(1)/etc/config/ $(1)/etc/init.d/ $(1)/etc/webdav/
-	$(INSTALL_BIN) $(CURDIR)/files/webdav.init $(1)/etc/init.d/webdav
-	$(INSTALL_CONF) $(CURDIR)/files/webdav.config $(1)/etc/config/webdav
-	$(INSTALL_CONF) $(CURDIR)/files/webdav.yaml $(1)/etc/webdav/webdav.yaml
+#	$(INSTALL_DIR) $(1)/etc/config/ $(1)/etc/init.d/ $(1)/etc/webdav/
+#	$(INSTALL_BIN) $(CURDIR)/files/webdav.init $(1)/etc/init.d/webdav
+#	$(INSTALL_CONF) $(CURDIR)/files/webdav.config $(1)/etc/config/webdav
+#	$(INSTALL_CONF) $(CURDIR)/files/webdav.yaml $(1)/etc/webdav/webdav.yaml
 endef
 
 $(eval $(call GoBinPackage,gowebdav))
