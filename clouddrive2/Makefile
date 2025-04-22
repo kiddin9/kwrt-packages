@@ -7,17 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=CloudDrive2
-PKG_VERSION:=0.7.21
+PKG_VERSION:=0.8.16
 PKG_RELEASE=1
-
-STRIP:=true
 
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH:=x86_64
-endif
-
-ifeq ($(ARCH),arm64)
-	PKG_ARCH:=aarch64
 endif
 
 ifeq ($(ARCH),aarch64)
@@ -28,24 +22,21 @@ ifeq ($(ARCH),arm)
 	PKG_ARCH:=armv7
 endif
 
+PKG_SOURCE:=clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION).tgz
+PKG_SOURCE_URL:=https://github.com/cloud-fs/cloud-fs.github.io/releases/download/v$(PKG_VERSION)
+PKG_HASH:=skip
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/clouddrive2
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=@(arm||aarch64||x86_64) +fuse-utils +fuse3-utils
+  DEPENDS:=@(arm||aarch64||x86_64) +fuse3-utils
   TITLE:=CloudDrive2
 endef
 
 define Package/clouddrive2/description
   CloudDrive2 is a cloud storage mounting tool for OpenWrt.
-endef
-
-define Download/clouddrive2
-  URL:=https://github.com/cloud-fs/cloud-fs.github.io/releases/download/v$(PKG_VERSION)
-  URL_FILE:=clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION).tgz
-  FILE:=clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION).tgz
-  HASH:=skip
 endef
 
 define Build/Prepare
@@ -66,5 +57,4 @@ define Package/clouddrive2/install
 	cp -rf $(PKG_BUILD_DIR)/clouddrive-2-linux-$(PKG_ARCH)-$(PKG_VERSION)/wwwroot $(1)/usr/share/clouddrive2/
 endef
 
-$(eval $(call Download,clouddrive2))
 $(eval $(call BuildPackage,clouddrive2))
