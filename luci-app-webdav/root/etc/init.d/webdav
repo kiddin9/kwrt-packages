@@ -101,7 +101,7 @@ start() {
 }
 
 stop() {
-	rm -f "${NGINX_DAV_CONF}" "${NGINX_DAV_PASSWORD}" ${root_dir}/.webdav_temp
+	rm -rf "${NGINX_DAV_CONF}" "${NGINX_DAV_PASSWORD}" ${root_dir}/.webdav_temp
 	/etc/init.d/nginx reload
 	external_access="deny"
 	set_firewall
