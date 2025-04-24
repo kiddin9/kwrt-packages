@@ -26,7 +26,7 @@ function run_test(server,proto,mode,updown,omit,parallel,transmit,bitrate)
 	if mode == "udp" then
 		options = options .. " -u -b " .. bitrate
 	end
-	if updown ~= "upload" then
+	if direction == "receive" then
 		options = options .. " -R"
 	end
 	local ipv = "4"
