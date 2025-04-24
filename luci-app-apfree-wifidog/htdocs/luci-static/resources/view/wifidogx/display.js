@@ -85,41 +85,97 @@ return view.extend({
 
 		e.parentNode.style.display = val1 ? 'list-item' : '';
 	},
+	normalizeDat: function(data) {
+		const total = data.reduce((n, d) => n + d.value, 0);
+		const normalized = [...data];
 
+		if (normalized.length >= 1) {
+			const fakeValue = total*0.001
+			normalized.push({
+				value: fakeValue,
+				name: '', // 空标签
+				itemStyle: {
+					color: 'transparent'
+				},
+				label: {
+					show: false
+				},
+				tooltip: {
+					show: false
+				}
+			});
+		}
+
+		return normalized;
+	},
 	pie: function(id, data) {
-		var total = data.reduce(function(n, d) { return n + d.value }, 0);
+		const total = data.reduce((n, d) => n + d.value, 0);
 
-		data.sort(function(a, b) { return b.value - a.value });
+		data.sort((a, b) => b.value - a.value);
 
-		if (total === 0)
+		if (total === 0) {
 			data = [{
 				value: 1,
 				color: '#cccccc',
-				label: _('no traffic')
+				name: 'No traffic'
 			}];
-
-		for (var i = 0; i < data.length; i++) {
-			if (!data[i].color) {
-				var hue = 120 / (data.length-1) * i;
-				data[i].color = 'hsl(%u, 80%%, 50%%)'.format(hue);
-			}
 		}
 
-		var node = L.dom.elem(id) ? id : document.getElementById(id),
-		    key = L.dom.elem(id) ? id.id : id,
-		    ctx = node.getContext('2d');
-
-		if (chartRegistry.hasOwnProperty(key))
-			chartRegistry[key].destroy();
-
-		chartRegistry[key] = new Chart(ctx).Doughnut(data, {
-			segmentStrokeWidth: 1,
-			percentageInnerCutout: 30
+		// 自动填充颜色
+		data.forEach((d, i) => {
+			if (!d.color) {
+				const hue = 120 / (data.length - 1 || 1) * i;
+				d.color = `hsl(${hue}, 80%, 50%)`;
+			}
 		});
 
-		return chartRegistry[key];
-	},
+		const option = {
+			tooltip: {
+				trigger: 'item',
+				formatter: '{b}: {c} ({d}%)'
+			},
+			series: [
+				{
+					type: 'pie',
+					radius: ['15%', '70%'],
+					avoidLabelOverlap: false,
+					itemStyle: {
+						borderRadius: 5,
+						borderColor: '#fff',
+						borderWidth: 2
+					},
+					label: {
+						show: false,
+						position: 'center'
+					},
+					emphasis: {
+						label: {
+							show: true,
+							fontSize: 12
+						}
+					},
+					labelLine: {
+						show: false
+					},
+					data: this.normalizeDat(data.map(d => ({
+						value: d.value,
+						name: d.label || d.name,
+						itemStyle: { color: d.color }
+					})))
+				}
+			]
+		};
 
+		const dom = typeof id === 'string' ? document.getElementById(id) : id;
+
+		if (!chartRegistry[id]) {
+			chartRegistry[id] = echarts.init(dom);
+		}
+
+		chartRegistry[id].setOption(option, true);  // 第二个参数 true 表示替换整个 option
+
+		return chartRegistry[id];
+	},
 	oui: function(mac) {
 		var m, l = 0, r = ouiData.length / 3 - 1;
 		var mac1 = parseInt(mac.replace(/[^a-fA-F0-9]/g, ''), 16);
@@ -803,7 +859,7 @@ return view.extend({
 			E('link', { 'rel': 'stylesheet', 'href': L.resource('view/wifidogx.css') }),
 			E('script', {
 				'type': 'text/javascript',
-				'src': L.resource('nlbw.chart.min.js')
+				'src': L.resource('echarts.simple.min.js')
 			}),
 
 			E('h2', [ _('Auth User Speed Monitor') ]),
