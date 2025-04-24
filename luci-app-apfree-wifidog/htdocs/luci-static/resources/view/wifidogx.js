@@ -6,6 +6,7 @@
 'require uci';
 'require fs';
 'require tools.widgets as widgets';
+'require tools.github as github';
 'require tools.firewall as fwtool';
 
 var callServiceList = rpc.declare({
@@ -43,7 +44,7 @@ return view.extend({
 		var m, s, o, ss;
 
 		m = new form.Map('wifidogx', _('ApFree-WiFiDog'));
-		m.description = _("apfree-wifidog is a Stable & Secure captive portal solution.");
+		m.description = github.desc('apfree-wifidog offers a stable and secure captive portal solution.', 'liudf0716', 'apfree-wifidog');
 		
 
 		s = m.section(form.NamedSection, 'common',  _('Configuration'));
