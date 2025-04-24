@@ -1,0 +1,11 @@
+#!/bin/sh
+
+uci -q batch <<-EOT
+	delete firewall.ss_redir
+	set firewall.ss_redir=include
+	set firewall.ss_redir.type=script
+	set firewall.ss_redir.path=/usr/share/ss-redir/firewall.include
+	commit firewall
+EOT
+
+exit 0

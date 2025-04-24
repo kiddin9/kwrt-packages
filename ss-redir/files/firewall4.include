@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/etc/init.d/ss-redir enabled && /etc/init.d/ss-redir restart
+exit 0
