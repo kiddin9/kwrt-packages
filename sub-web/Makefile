@@ -1,43 +1,38 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sub-web
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/CareyWang/sub-web.git
-PKG_SOURCE_DATE:=2022-11-10
-PKG_SOURCE_VERSION:=71e53414a89b5fd5ec0ef453e32202194993d0cf
+PKG_SOURCE_URL:=https://github.com/cmliu/SUBWEB.git
+PKG_SOURCE_DATE:=2025-02-09
+PKG_SOURCE_VERSION:=39932f552c116477c87241f228d3c3b7eb4e45fb
 PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 
-PKG_BUILD_DEPENDS:=node/host node-yarn/host
+PKG_BUILD_DEPENDS:=node/host
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/sub-web
   SECTION:=net
   CATEGORY:=Network
-  URL:=https://github.com/CareyWang/sub-web
+  URL:=https://github.com/cmliu/SUBWEB
   TITLE:=A WebUI for generating proxy subscription url
   DEPENDS:=+subconverter
   PKGARCH:=all
 endef
 
 define Package/sub-web/description
-  Based on vue-cli and subconverter, for generating proxy subscription
-  url automatically.
+  A WebUI for generating proxy subscription url.
 endef
 
 define Build/Compile
-	( \
-		pushd "$(PKG_BUILD_DIR)"; \
-		yarn install; \
-		NODE_OPTIONS=--openssl-legacy-provider yarn build; \
-		popd ; \
-	)
+	pushd "$(PKG_BUILD_DIR)"; \
+	npm install && \
+	npm run build
 endef
 
 define Package/sub-web/install
