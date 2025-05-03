@@ -18,7 +18,7 @@ BLUE='\033[1;34m'
 NC='\033[0m'
 rm ${FILE}.{1,2,3,4} 2> /dev/null
 netstat -peanut | tee ${FILE}.1| sed '/LISTEN/!d' > ${FILE}.2
-docker container ls > ${FILE}.4 | grep -e "\:[0-9]" 2> /dev/null
+docker container ls > ${FILE}.4 2> /dev/null | grep -e "\:[0-9]"
 [[ "$(cat ${FILE}.4 | wc -l)" -lt 2 ]] && rm ${FILE}.4
 if [[ -z "$1" || "$1" == "-4" ]]; then
 	header IPv4
