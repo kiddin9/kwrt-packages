@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=upx
-PKG_VERSION:=5.0.0
-PKG_RELEASE:=3
+PKG_VERSION:=5.0.1
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/upx/upx.git
-PKG_SOURCE_VERSION:=8bf49aa4f23a71d42c6ffb065afe3a65d49aef88
+PKG_SOURCE_VERSION:=730c6ce6c52158280cc7fc2e4ea73b6c38970eaa
 PKG_MIRROR_HASH:=skip
 
 PKG_MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
