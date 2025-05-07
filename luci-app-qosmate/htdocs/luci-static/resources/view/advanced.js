@@ -86,9 +86,17 @@ return view.extend({
         o.rmempty = false;
         o.default = '1';
 
+        o = s.option(form.Flag, 'TCP_DOWNPRIO_INITIAL_ENABLED', _('Enable Initial TCP Down-Prioritization'), _('Downgrades the first ~500ms of TCP traffic (except CS1) to CS0 to prevent initial bursts'));
+        o.rmempty = false;
+        o.default = '1';
+
+        o = s.option(form.Flag, 'TCP_DOWNPRIO_SUSTAINED_ENABLED', _('Enable Sustained TCP Down-Prioritization'), _('Downgrades TCP flows exceeding ~10 seconds worth of data transfer to CS1 (Bulk). Helps prevent large downloads from starving other traffic.'));
+        o.rmempty = false;
+        o.default = '1';
+
         createOption('UDPBULKPORT', _('UDP Bulk Ports'), _('Specify UDP ports for bulk traffic'), _('Default: none'));
         createOption('TCPBULKPORT', _('TCP Bulk Ports'), _('Specify TCP ports for bulk traffic'), _('Default: none'));
-
+        
         o = s.option(form.Value, 'MSS', _('TCP MSS'), _('Maximum Segment Size for TCP connections. This setting is only active when the upload or download bandwidth is less than 3000 kbit/s. Leave empty to use the default value. Valid range: 536-1500'), _('Default: 536'), 'uinteger');
         o.placeholder = 'Default: 536';
         o.validate = function(section_id, value) {

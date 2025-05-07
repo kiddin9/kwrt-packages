@@ -37,6 +37,8 @@ load_config() {
     MSS=$(uci -q get qosmate.advanced.MSS || echo "536")
     NFT_HOOK=$(uci -q get qosmate.advanced.NFT_HOOK || echo "forward")
     NFT_PRIORITY=$(uci -q get qosmate.advanced.NFT_PRIORITY || echo "0")
+    TCP_DOWNPRIO_INITIAL_ENABLED=$(uci -q get qosmate.advanced.TCP_DOWNPRIO_INITIAL_ENABLED || echo "1")
+    TCP_DOWNPRIO_SUSTAINED_ENABLED=$(uci -q get qosmate.advanced.TCP_DOWNPRIO_SUSTAINED_ENABLED || echo "1")
 
     # HFSC specific settings
     LINKTYPE=$(uci -q get qosmate.hfsc.LINKTYPE || echo "ethernet")
@@ -80,14 +82,14 @@ load_config() {
 load_config
 
 validate_and_adjust_rates() {
-    if [ "$ROOT_QDISC" = "hfsc" ]; then
+    if [ "$ROOT_QDISC" = "hfsc" ] || [ "$ROOT_QDISC" = "hybrid" ]; then
         if [ -z "$DOWNRATE" ] || [ "$DOWNRATE" -eq 0 ]; then
-            echo "Warning: DOWNRATE is zero or not set for HFSC. Setting to minimum value of 1000 kbps."
+            echo "Warning: DOWNRATE is zero or not set for $ROOT_QDISC. Setting to minimum value of 1000 kbps."
             DOWNRATE=1000
             uci set qosmate.settings.DOWNRATE=1000
         fi
         if [ -z "$UPRATE" ] || [ "$UPRATE" -eq 0 ]; then
-            echo "Warning: UPRATE is zero or not set for HFSC. Setting to minimum value of 1000 kbps."
+            echo "Warning: UPRATE is zero or not set for $ROOT_QDISC. Setting to minimum value of 1000 kbps."
             UPRATE=1000
             uci set qosmate.settings.UPRATE=1000
         fi
@@ -98,7 +100,7 @@ validate_and_adjust_rates() {
 validate_and_adjust_rates
 
 # Adjust DOWNRATE based on BWMAXRATIO
-if [ $((DOWNRATE > UPRATE*BWMAXRATIO)) -eq 1 ]; then
+if [ "$UPRATE" -gt 0 ] && [ $((DOWNRATE > UPRATE*BWMAXRATIO)) -eq 1 ]; then
     echo "We limit the downrate to at most $BWMAXRATIO times the upstream rate to ensure no upstream ACK floods occur which can cause game packet drops"
     DOWNRATE=$((BWMAXRATIO*UPRATE))
 fi
@@ -600,6 +602,19 @@ else
     tcp_upgrade_rules="# TCP upgrade for slow connections is disabled"
 fi
 
+# Conditionally defining TCP down-prioritization rules based on enabled flags
+if [ "$TCP_DOWNPRIO_INITIAL_ENABLED" -eq 1 ]; then
+    downprio_initial_rules="meta l4proto tcp ct bytes < \$first500ms jump mark_500ms"
+else
+    downprio_initial_rules="# Initial TCP down-prioritization disabled"
+fi
+
+if [ "$TCP_DOWNPRIO_SUSTAINED_ENABLED" -eq 1 ]; then
+    downprio_sustained_rules="meta l4proto tcp ct bytes > \$first10s jump mark_10s"
+else
+    downprio_sustained_rules="# Sustained TCP down-prioritization disabled"
+fi
+
 # Conditionally defining TCPMSS rules based on UPRATE and DOWNRATE
 
 if [ "$UPRATE" -lt 3000 ]; then
@@ -654,8 +669,8 @@ table inet dscptag {
 
     map priomap { type dscp : classid ;
         elements =  {ef : 1:11, cs5 : 1:11, cs6 : 1:11, cs7 : 1:11,
-                    cs4 : 1:12, af41 : 1:12, af42 : 1:12,
-                    cs2 : 1:14 , cs1 : 1:15, cs0 : 1:13}
+                    cs4 : 1:12 , af41 : 1:12, af42 : 1:12,
+                    cs2 : 1:14 , af11 : 1:14 , cs1 : 1:15, cs0 : 1:13}
     }
 
 # Create sets first
@@ -754,10 +769,10 @@ ${SETS}
         $udp_rate_limit_rules
         
         # down prioritize the first 500ms of tcp packets
-        meta l4proto tcp ct bytes < \$first500ms jump mark_500ms
+        $downprio_initial_rules
 
         # downgrade tcp that has transferred more than 10 seconds worth of packets
-        meta l4proto tcp ct bytes > \$first10s jump mark_10s
+        $downprio_sustained_rules
 
         $tcp_upgrade_rules
         
@@ -1012,17 +1027,18 @@ case $useqdisc in
 esac
 
 if [ "$DIR" = "lan" ]; then
-    # Apply the filters on the IFB interface's egress
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xb8 0xfc classid 1:11 # ef (46)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xa0 0xfc classid 1:11 # cs5 (40)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xc0 0xfc classid 1:11 # cs6 (48)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xe0 0xfc classid 1:11 # cs7 (56)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x80 0xfc classid 1:12 # cs4 (32)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x88 0xfc classid 1:12 # af41 (34)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x90 0xfc classid 1:12 # af42 (36)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x40 0xfc classid 1:14 # cs2 (16)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x20 0xfc classid 1:15 # cs1 (8)
-    tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x00 0xfc classid 1:13 # none (0)
+	# Apply the filters on the IFB interface's egress
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xb8 0xfc classid 1:11 # ef (46)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xa0 0xfc classid 1:11 # cs5 (40)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xc0 0xfc classid 1:11 # cs6 (48)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0xe0 0xfc classid 1:11 # cs7 (56)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x80 0xfc classid 1:12 # cs4 (32)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x88 0xfc classid 1:12 # af41 (34)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x90 0xfc classid 1:12 # af42 (36)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x40 0xfc classid 1:14 # cs2 (16)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x28 0xfc classid 1:14 # af11 (10)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x20 0xfc classid 1:15 # cs1 (8)
+	tc filter add dev $DEV parent 1: protocol ip prio 1 u32 match ip dsfield 0x00 0xfc classid 1:13 # none (0) -> Default
 fi
 
 echo "adding $nongameqdisc qdisc for non-game traffic"

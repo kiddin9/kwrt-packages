@@ -69,7 +69,7 @@ return view.extend({
                 ]),
                 E('tr', { 'class': 'tr' }, [
                     E('td', { 'class': 'td left' }, _('Low Priority (1:14)')),
-                    E('td', { 'class': 'td left' }, 'CS2')
+                    E('td', { 'class': 'td left' }, 'CS2, AF11')
                 ]),
                 E('tr', { 'class': 'tr' }, [
                     E('td', { 'class': 'td left' }, _('Bulk (1:15)')),
@@ -253,6 +253,7 @@ return view.extend({
         o.value('cs4', _('CS4 (32)'));
         o.value('af41', _('AF41 (34)'));
         o.value('af42', _('AF42 (36)'));
+        o.value('af11', _('AF11 (10)'));
         o.value('cs2', _('CS2 (16)'));
         o.value('cs1', _('CS1 (8)'));
         o.value('cs0', _('CS0 - Best Effort (0)'));
