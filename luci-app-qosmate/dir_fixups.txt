@@ -1,0 +1,7 @@
+# all fetched files and directories *inside* directories on the left side of '='
+#     will be moved into directories on the right side of '=' during installation
+# (all of this inside the distribution directory, before copying files to permanent storage)
+/root/usr/share/luci/menu.d=/usr/share/luci/menu.d
+/root/usr/share/rpcd/acl.d=/usr/share/rpcd/acl.d
+/root/usr/libexec/rpcd=/usr/libexec/rpcd
+/htdocs/luci-static/resources/view=/www/luci-static/resources/view/qosmate

@@ -8,7 +8,8 @@
 'require poll';
 'require tools.widgets as widgets';
 
-const UI_VERSION = '1.1.0';
+const UI_VERSION = '1.2.0';
+const UI_UPD_CHANNEL = 'release';
 
 var callInitAction = rpc.declare({
     object: 'luci',
@@ -17,45 +18,99 @@ var callInitAction = rpc.declare({
     expect: { result: false }
 });
 
-var currentVersion = 'Unknown';
-var latestVersion = 'Unknown';
-var healthCheckData = null;
-
-function fetchCurrentVersion() {
-    return fs.read('/etc/qosmate.sh').then(function(content) {
-        var match = content.match(/^VERSION="(.+)"/m);
-        currentVersion = match ? match[1] : 'Unknown';
-        return currentVersion;
-    }).catch(function(error) {
-        console.error('Error reading current version:', error);
-        return 'Unknown';
-    });
+function createStatusText(status, text) {
+    var colors = {
+        'current': '#4CAF50',  // Green
+        'update': '#FF5252',   // Red
+        'error': '#FFC107',    // Yellow
+        'unknown': '#9E9E9E'   // Gray
+    };
+    
+    var icons = {
+        'current': '✓ ',
+        'update': '↑ ',
+        'error': '⚠ ',
+        'unknown': '? '
+    };
+    
+    return E('span', { 
+        'style': 'color: ' + colors[status] + '; font-weight: bold; font-size: 13px;'
+    }, icons[status] + text);
 }
 
-function fetchLatestVersion() {
-    return new Promise((resolve) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://raw.githubusercontent.com/hudra0/qosmate/main/etc/qosmate.sh', true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var match = xhr.responseText.match(/^VERSION="(.+)"/m);
-                latestVersion = match ? match[1] : 'Unable to fetch';
+var healthCheckData = null;
+var versionInfo = {
+    backend: { current: 'Unknown', latest: 'Unknown', channel: 'Unknown' },
+    frontend: { current: 'Unknown', latest: 'Unknown', channel: 'Unknown' }
+};
+
+function fetchVersionInfo() {
+    return fs.exec_direct('/etc/init.d/qosmate', ['check_version'])
+        .then(function(output) {
+            // Check for API limit error
+            if (output.includes('HTTP error 403') || output.includes('API rate limit exceeded')) {
+                console.warn('GitHub API rate limit likely reached.');
+
+                // Try to parse current versions even if latest check failed due to rate limit
+                const backendCurrentMatch = output.match(/Backend versions:[\s\S]*?Current version: (.+)/);
+                const backendChannelMatch = output.match(/Backend versions:[\s\S]*?Update channel: (.+)/);
+                const frontendCurrentMatch = output.match(/Frontend versions:[\s\S]*?Current version: (.+)/);
+                const frontendChannelMatch = output.match(/Frontend versions:[\s\S]*?Update channel: (.+)/);
+
+                versionInfo = {
+                    backend: {
+                        current: backendCurrentMatch ? backendCurrentMatch[1].trim() : 'Unknown',
+                        latest: 'API limit reached',
+                        channel: backendChannelMatch ? backendChannelMatch[1].trim() : 'Unknown'
+                    },
+                    frontend: {
+                        current: frontendCurrentMatch ? frontendCurrentMatch[1].trim() : 'Unknown',
+                        latest: 'API limit reached',
+                        channel: frontendChannelMatch ? frontendChannelMatch[1].trim() : 'Unknown'
+                    }
+                };
+
             } else {
-                latestVersion = 'Unable to fetch';
+                 // Normal processing
+                const backendCurrentMatch = output.match(/Backend versions:[\s\S]*?Current version: (.+)/);
+                const backendLatestMatch = output.match(/Backend versions:[\s\S]*?Latest version: (.+)/);
+                const backendChannelMatch = output.match(/Backend versions:[\s\S]*?Update channel: (.+)/);
+
+                const frontendCurrentMatch = output.match(/Frontend versions:[\s\S]*?Current version: (.+)/);
+                const frontendLatestMatch = output.match(/Frontend versions:[\s\S]*?Latest version: (.+)/);
+                const frontendChannelMatch = output.match(/Frontend versions:[\s\S]*?Update channel: (.+)/);
+
+                versionInfo = {
+                    backend: {
+                        current: backendCurrentMatch ? backendCurrentMatch[1].trim() : 'Unknown',
+                        latest: backendLatestMatch ? backendLatestMatch[1].trim() : 'Unknown',
+                        channel: backendChannelMatch ? backendChannelMatch[1].trim() : 'Unknown'
+                    },
+                    frontend: {
+                        current: frontendCurrentMatch ? frontendCurrentMatch[1].trim() : 'Unknown',
+                        latest: frontendLatestMatch ? frontendLatestMatch[1].trim() : 'Unknown',
+                        channel: frontendChannelMatch ? frontendChannelMatch[1].trim() : 'Unknown'
+                    }
+                };
             }
-            resolve(latestVersion);
-        };
-        xhr.onerror = function() {
-            latestVersion = 'Unable to fetch';
-            resolve(latestVersion);
-        };
-        xhr.timeout = 2000; // 2 second timeout
-        xhr.ontimeout = function() {
-            latestVersion = 'Unable to fetch';
-            resolve(latestVersion);
-        };
-        xhr.send();
-    });
+
+            return versionInfo;
+        })
+        .catch(function(error) {
+            console.error('Error fetching version information:', error);
+            // Keep previous info if available, otherwise set to error state
+             if (versionInfo.backend.current === 'Unknown' && versionInfo.frontend.current === 'Unknown') {
+                versionInfo = {
+                    backend: { current: 'Unknown', latest: 'Error', channel: 'Unknown' },
+                    frontend: { current: 'Unknown', latest: 'Error', channel: 'Unknown' }
+                };
+            } else {
+                 versionInfo.backend.latest = 'Error';
+                 versionInfo.frontend.latest = 'Error';
+            }
+
+            return versionInfo;
+        });
 }
 
 return view.extend({
@@ -85,11 +140,11 @@ return view.extend({
         return Promise.all([
             uci.load('qosmate'),
             this.fetchHealthCheck(),
-            fetchCurrentVersion().catch(() => 'Unable to fetch'),
-            fetchLatestVersion()
+            fetchVersionInfo()
         ]).catch(error => {
             console.error('Error in load function:', error);
-            return [null, 'Unable to fetch', 'Unable to fetch'];
+            ui.addNotification(null, E('p', _('Error loading initial data: %s').format(error.message || error)), 'error');
+            return [null, null, null];
         });
     },
 
@@ -127,14 +182,289 @@ return view.extend({
     },
 
     render: function() {
-        var m, s, o;
+        var m, s_info, s_status, o;
 
-        m = new form.Map('qosmate', _('QoSmate Settings'), _('Configure QoSmate settings.'));
+        m = new form.Map('qosmate', _(''), _(''));
 
-        s = m.section(form.NamedSection, 'global', 'global', _('Global Settings'));
-        s.anonymous = true;
+        s_info = m.section(form.NamedSection, 'global', 'global', _('Version & Updates'));
+        s_info.anonymous = true;
 
-        o = s.option(form.DummyValue, '_health_check', _('Service Status'));
+        // Version information
+        o = s_info.option(form.DummyValue, '_version', _('Version Information'));
+        o.rawhtml = true;
+        o.render = function(section_id) {
+            // Determine if an update is available for backend
+            var backendUpdateAvailable = versionInfo.backend.current !== versionInfo.backend.latest &&
+                                         versionInfo.backend.current !== 'Unknown' &&
+                                         versionInfo.backend.latest !== 'Unknown' &&
+                                         versionInfo.backend.latest !== 'API limit reached' &&
+                                         versionInfo.backend.latest !== 'Error';
+
+            // Determine if an update is available for frontend
+            var frontendUpdateAvailable = versionInfo.frontend.current !== versionInfo.frontend.latest &&
+                                          versionInfo.frontend.current !== 'Unknown' &&
+                                          versionInfo.frontend.latest !== 'Unknown' &&
+                                          versionInfo.frontend.latest !== 'API limit reached' &&
+                                          versionInfo.frontend.latest !== 'Error';
+
+            var container = E('div');
+            
+            // Create each component section
+            function createComponentSection(title, info) {
+                var section = E('div', { 'style': 'display: flex; align-items: center; margin-bottom: 8px;' });                
+                var titleEl = E('div', { 
+                    'style': 'display: inline-block; min-width: 75px; font-weight: bold; margin-right: 1px;'
+                }, title);
+                
+                section.appendChild(titleEl);
+
+                var channelEl = E('div', {
+                    'style': 'display: inline-block; min-width: 70px; color: #888; margin-right: 15px;'
+                }, [
+                    E('span', { 'style': 'font-family: monospace;' }, 'Channel: ' + info.channel)
+                ]);
+                
+                section.appendChild(channelEl);
+                
+                var versionInfo = E('div', { 'style': 'display: inline-block; margin-right: 10px;' }, [
+                    info.current, 
+                    ' → ',
+                    E('span', { 
+                        'style': (title === 'Backend' && backendUpdateAvailable) || 
+                                 (title === 'Frontend' && frontendUpdateAvailable) ? 
+                                 'color: #ff7d7d; font-weight: bold;' : ''
+                    }, info.latest)
+                ]);
+                
+                section.appendChild(versionInfo);
+                
+                var statusType = '';
+                var statusText = '';
+
+                if ((title === 'Backend' && backendUpdateAvailable) || 
+                    (title === 'Frontend' && frontendUpdateAvailable)) {
+                    statusType = 'update';
+                    statusText = _('UPDATE AVAILABLE');
+                } else if (info.latest === 'API limit reached') {
+                    statusType = 'error';
+                    statusText = _('API LIMIT');
+                } else if (info.latest === 'Error') {
+                    statusType = 'error';
+                    statusText = _('ERROR');
+                } else if (info.current !== 'Unknown' && info.latest !== 'Unknown') {
+                    statusType = 'current';
+                    statusText = _('CURRENT');
+                } else {
+                    statusType = 'unknown';
+                    statusText = _('UNKNOWN');
+                }
+                
+                section.appendChild(createStatusText(statusType, statusText));
+                
+                return section;
+            }
+            
+            // Create component sections
+            container.appendChild(createComponentSection('Backend', versionInfo.backend));
+            container.appendChild(createComponentSection('Frontend', versionInfo.frontend));
+            
+            // Add the update button if updates are available
+            if (backendUpdateAvailable || frontendUpdateAvailable) {
+                var buttonContainer = E('div', { 'style': 'margin-top: 10px;' });
+                
+                var updateButton = E('button', {
+                    'class': 'cbi-button cbi-button-apply',
+                    'click': ui.createHandlerFn(this, function() {
+                        // Create update wizard modal
+                        var updateOptions = [];
+                        
+                        if (backendUpdateAvailable) {
+                            updateOptions.push({
+                                name: 'backend',
+                                title: _('Backend'),
+                                current: versionInfo.backend.current,
+                                latest: versionInfo.backend.latest
+                            });
+                        }
+                        
+                        if (frontendUpdateAvailable) {
+                            updateOptions.push({
+                                name: 'frontend',
+                                title: _('Frontend'),
+                                current: versionInfo.frontend.current,
+                                latest: versionInfo.frontend.latest
+                            });
+                        }
+                        
+                        var modalContent = [
+                            E('h4', {}, _('Update QoSmate Components')),
+                            E('p', {}, _('Select components to update:'))
+                        ];
+                        
+                        var checkboxes = {};
+                        updateOptions.forEach(function(option) {
+                            var checkbox = E('input', { 
+                                'type': 'checkbox',
+                                'id': 'update_' + option.name,
+                                'name': 'update_' + option.name,
+                                'checked': 'checked'
+                            });
+                            
+                            checkboxes[option.name] = checkbox;
+                            
+                            modalContent.push(
+                                E('div', { 'class': 'cbi-value' }, [
+                                    E('label', { 'class': 'cbi-value-title', 'for': 'update_' + option.name }, option.title),
+                                    E('div', { 'class': 'cbi-value-field' }, [
+                                        checkbox,
+                                        ' ',
+                                        option.current,
+                                        ' → ',
+                                        E('span', { 'style': 'color: #ff7d7d; font-weight: bold;' }, option.latest)
+                                    ])
+                                ])
+                            );
+                        });
+                        
+                        // Update channel info
+                        modalContent.push(
+                            E('div', { 'class': 'cbi-value' }, [
+                                E('label', { 'class': 'cbi-value-title' }, _('Update Channel')),
+                                E('div', { 'class': 'cbi-value-field' }, [
+                                    E('span', {}, versionInfo.backend.channel === versionInfo.frontend.channel ? 
+                                        versionInfo.backend.channel : 
+                                        _('%s (Backend) / %s (Frontend)').format(versionInfo.backend.channel, versionInfo.frontend.channel)),
+                                    E('div', { 'style': 'font-size: 90%; color: #888; margin-top: 5px;' }, 
+                                      _('To change the update channel, go to the Advanced tab'))
+                                ])
+                            ])
+                        );
+                        
+                        // Add buttons
+                        modalContent.push(
+                            E('div', { 'class': 'right' }, [
+                                E('button', {
+                                    'class': 'btn',
+                                    'click': ui.hideModal
+                                }, _('Cancel')),
+                                ' ',
+                                E('button', {
+                                    'class': 'cbi-button cbi-button-positive',
+                                    'click': ui.createHandlerFn(this, function() {
+                                        var componentsToUpdate = [];
+                                        
+                                        updateOptions.forEach(function(option) {
+                                            if (checkboxes[option.name].checked) {
+                                                componentsToUpdate.push(option.name);
+                                            }
+                                        });
+                                        
+                                        if (componentsToUpdate.length === 0) {
+                                            ui.hideModal();
+                                            return;
+                                        }
+                                        
+                                        ui.showModal(_('Updating QoSmate'), [
+                                            E('p', { 'class': 'spinning' }, _('Please wait while QoSmate is being updated...'))
+                                        ]);
+                                        
+                                        // Use the current channel from versionInfo
+                                        var selectedChannel;
+                                        if (versionInfo.backend.channel === versionInfo.frontend.channel) {
+                                            selectedChannel = versionInfo.backend.channel;
+                                        } else {
+                                            // If channels are mixed, show a confirmation dialog
+                                            if (!confirm(_('Components are using different update channels (%s/%s). Continue with %s channel?')
+                                                         .format(versionInfo.backend.channel, versionInfo.frontend.channel, versionInfo.backend.channel))) {
+                                                ui.hideModal();
+                                                return;
+                                            }
+                                            selectedChannel = versionInfo.backend.channel;
+                                        }
+                                        
+                                        var updateArgs = ['update'];
+                                        
+                                        // Add component selection if not updating both components
+                                        if (componentsToUpdate.length === 1) {
+                                            updateArgs.push('-c', componentsToUpdate[0]);
+                                        } 
+                                        
+                                        // Add channel selection
+                                        updateArgs.push('-v', selectedChannel);
+                                        
+                                        console.log('Executing update command:', '/etc/init.d/qosmate', updateArgs);
+                                        
+                                        return fs.exec_direct('/etc/init.d/qosmate', updateArgs)
+                                            .then(function(result) {
+                                                console.log('Update command result:', result);
+                                                // If result contains error messages, treat it as an error
+                                                if (result && (result.includes('error') || result.includes('Error') || result.includes('failed'))) {
+                                                    ui.hideModal();
+                                                    ui.addNotification(null, E('p', _('Update process encountered issues: %s').format(result)), 'warning');
+                                                    return;
+                                                }
+                                                
+                                                // Simulate update completion after 5 seconds
+                                                setTimeout(function() {
+                                                    ui.hideModal();
+                                                    ui.addNotification(null, E('p', _('QoSmate updated successfully.')), 'success');
+                                                    window.setTimeout(function() { 
+                                                        location.reload(); 
+                                                    }, 1000);
+                                                }, 5000);
+                                            })
+                                            .catch(function(err) {
+                                                console.error('Update error:', err);
+                                                ui.hideModal();
+                                                
+                                                var errorMessage = _('Failed to update QoSmate');
+                                                
+                                                if (err) {
+                                                    if (typeof err === 'string') {
+                                                        errorMessage += ': ' + err;
+                                                    } else if (err.message) {
+                                                        errorMessage += ': ' + err.message;
+                                                    } else {
+                                                        errorMessage += ': ' + JSON.stringify(err);
+                                                    }
+                                                }
+                                                
+                                                if (selectedChannel === 'snapshot') {
+                                                    errorMessage += '. ' + _('Note: The "snapshot" channel might not be available in the current repository configuration.');
+                                                }
+                                                
+                                                ui.addNotification(null, E('p', errorMessage), 'error');
+                                            });
+                                    })
+                                }, _('Update Now'))
+                            ])
+                        );
+                        
+                        ui.showModal(_('QoSmate Update'), modalContent);
+                    })
+                }, [
+                    E('span', { 'class': 'cbi-button-icon cbi-icon-reload' }),
+                    ' ',
+                    _('Update QoSmate')
+                ]);
+                
+                buttonContainer.appendChild(updateButton);
+                container.appendChild(buttonContainer);
+            }
+            
+            return E('div', { 'class': 'cbi-value' }, [
+                E('label', { 'class': 'cbi-value-title' }, _('Version Information')),
+                E('div', { 'class': 'cbi-value-field' }, [
+                    container
+                ])
+            ]);
+        };        
+
+        // Section, also targeting 'global' but with a UI title for grouping
+        s_status = m.section(form.NamedSection, 'global', 'global', _('Service Status & Control'));
+
+        // Service Status (Health Check)
+        o = s_status.option(form.DummyValue, '_health_check', _('')); 
         o.rawhtml = true;
         o.render = function(section_id) {
             if (!healthCheckData) {
@@ -196,7 +526,8 @@ return view.extend({
             ]);
         };
 
-        o = s.option(form.DummyValue, '_buttons', _('Service Control'));
+        // Service Control buttons
+        o = s_status.option(form.DummyValue, '_buttons', _(''));
         o.rawhtml = true;
         o.render = function(section_id) {
             var buttonStyle = 'button cbi-button';
@@ -243,7 +574,7 @@ return view.extend({
         };
 
         // Auto Setup Button
-        o = s.option(form.Button, '_auto_setup', _('Auto Setup'));
+        o = s_status.option(form.Button, '_auto_setup', _('Auto Setup'));
         o.inputstyle = 'apply';
         o.inputtitle = _('Start Auto Setup');
         o.onclick = ui.createHandlerFn(this, function() {
@@ -373,39 +704,11 @@ return view.extend({
             ]);
         });
 
-        // Version information
-        o = s.option(form.DummyValue, '_version', _('Version Information'));
-        o.rawhtml = true;
-        o.render = function(section_id) {
-            var updateAvailable = currentVersion !== latestVersion && 
-                                currentVersion !== _('Unable to fetch') && 
-                                latestVersion !== _('Unable to fetch');
-
-            var html = '<div>' +
-                    '<strong>' + _('Current Version') + ':</strong> ' + currentVersion + '<br>' +
-                    '<strong>' + _('Latest Version') + ':</strong> ' + latestVersion + '<br>';
-
-            if (updateAvailable) {
-                html += '<br><span style="color: red;">' + _('A new version is available!') + '</span><br>';
-            } else if (currentVersion !== 'Unable to fetch' && latestVersion !== 'Unable to fetch') {
-                html += '<br><span style="color: green;">' + _('QoSmate is up to date.') + '</span>';
-            } else {
-                html += '<br><span style="color: orange;">' + _('Unable to check for updates.') + '</span>';
-            }
-
-            html += '</div>';
-
-            return E('div', { 'class': 'cbi-value' }, [
-                E('label', { 'class': 'cbi-value-title' }, _('Version Information')),
-                E('div', { 'class': 'cbi-value-field' }, html)
-            ]);
-        };
-
-        s = m.section(form.NamedSection, 'settings', 'settings', _('Basic Settings'));
-        s.anonymous = true;
+        let s_basic = m.section(form.NamedSection, 'settings', 'settings', _('Basic Settings'));
+        s_basic.anonymous = true;
         
         function createOption(name, title, description, placeholder, datatype) {
-            var opt = s.option(form.Value, name, title, description);
+            var opt = s_basic.option(form.Value, name, title, description);
             opt.datatype = datatype || 'string';
             opt.rmempty = true;
             opt.placeholder = placeholder;
@@ -425,16 +728,16 @@ return view.extend({
             return opt;
         }
         
-        var wanInterface = uci.get('qosmate', 'settings', 'WAN') || ''; // Get the current WAN interface from config
-        o = s.option(widgets.DeviceSelect, 'WAN', _('WAN Interface'), _('Select the WAN interface'));
+        var wanInterface = uci.get('qosmate', 'settings', 'WAN') || '';
+        o = s_basic.option(widgets.DeviceSelect, 'WAN', _('WAN Interface'), _('Select the WAN interface'));
         o.rmempty = false;
-        o.editable = true; // Allow manual entry
+        o.editable = true;
         o.default = wanInterface;
 
         createOption('DOWNRATE', _('Download Rate (kbps)'), _('Set the download rate in kbps'), _('Default: 90000'), 'uinteger');
         createOption('UPRATE', _('Upload Rate (kbps)'), _('Set the upload rate in kbps'), _('Default: 45000'), 'uinteger');
         
-        o = s.option(form.ListValue, 'ROOT_QDISC', _('Root Queueing Discipline'), _('Select the root queueing discipline'));
+        o = s_basic.option(form.ListValue, 'ROOT_QDISC', _('Root Queueing Discipline'), _('Select the root queueing discipline'));
         o.value('hfsc', _('HFSC'));
         o.value('cake', _('CAKE'));
         o.default = 'hfsc';
@@ -450,14 +753,6 @@ return view.extend({
         return m.render();
     }
 });
-
-// Poll for current and latest version every 30 seconds
-poll.add(function() {
-    return Promise.all([
-        fetchCurrentVersion(),
-        fetchLatestVersion()
-    ]);
-}, 30);
 
 function updateQosmate() {
     // Implement the update logic here
