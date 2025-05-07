@@ -1,3 +1,15 @@
+--- a/luci-app-nekobox/Makefile
++++ b/luci-app-nekobox/Makefile
+@@ -16,7 +16,7 @@ define Package/$(PKG_NAME)
+ 	SUBMENU:=3. Applications
+ 	TITLE:=LuCI support for mihomo & sing-box
+ 	PKGARCH:=all
+-	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
++	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fastcgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
+ endef
+ 
+ define Package/$(PKG_NAME)/description
+
 --- a/luci-app-nekobox/htdocs/nekobox/index.php
 +++ b/luci-app-nekobox/htdocs/nekobox/index.php
 @@ -543,7 +543,7 @@ function readLogFile($filePath) {
