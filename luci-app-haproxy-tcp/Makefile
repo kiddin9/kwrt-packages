@@ -10,6 +10,7 @@ LUCI_DEPENDS:=+haproxy
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-haproxy-tcp
 PKG_VERSION=1.4
+PKG_RELEASE:=5
 PKG_MAINTAINER:=Alex Zhuo <1886090@gmail.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk

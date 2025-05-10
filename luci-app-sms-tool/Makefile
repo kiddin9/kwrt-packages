@@ -6,6 +6,8 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=luci-app-sms-tool
 LUCI_TITLE:=LuCI Support for sms_tool
 LUCI_PKGARCH:=all
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=9
 PKG_LICENSE:=GPLv3
 PKG_LINCESE_FILES:=LICENSE
 PKF_MAINTAINER:=siriling <siriling@qq.com>

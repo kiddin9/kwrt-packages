@@ -11,6 +11,8 @@ LUCI_DEPENDS:=
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-accesscontrol
+PKG_VERSION:=1
+PKG_RELEASE:=9
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

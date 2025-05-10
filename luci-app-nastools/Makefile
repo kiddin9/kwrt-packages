@@ -2,6 +2,8 @@
 
 include $(TOPDIR)/rules.mk
 
+PKG_VERSION:=1.1.3-20240822
+PKG_RELEASE:=5
 
 LUCI_TITLE:=LuCI support for nastools
 LUCI_PKGARCH:=all

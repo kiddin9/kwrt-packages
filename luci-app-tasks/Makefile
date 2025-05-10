@@ -9,6 +9,8 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=luci for taskd
 LUCI_DEPENDS:=+luci-lib-taskd
 
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=4
 PKG_MAINTAINER:=jjm2473 <jjm2473@gmail.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk

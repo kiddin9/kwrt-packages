@@ -1,7 +1,6 @@
 module("luci.controller.nfs", package.seeall)
 
 function index()
-	entry({"admin", "nas"}, firstchild(), _("NAS") , 45).dependent = false
 	if not nixio.fs.access("/etc/config/nfs") then
 		return
 	end

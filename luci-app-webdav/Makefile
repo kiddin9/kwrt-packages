@@ -6,6 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-webdav
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=6
 
 LUCI_TITLE:=LuCI support for WebDav
 LUCI_PKGARCH:=all

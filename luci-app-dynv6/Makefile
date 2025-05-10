@@ -8,6 +8,8 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=dynv6 ddns script
 LUCI_DEPENDS:= +luci-compat
 
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=8
 PKG_MAINTAINER:=luochongjun <luochongjun@gl-inet.com>
 
 define Package/luci-app-dynv6/postinst

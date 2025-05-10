@@ -11,6 +11,8 @@ PKG_NAME:=luci-app-$(NAME)
 LUCI_TITLE:=LuCI support for Task Plan setting
 LUCI_PKGARCH:=all
 
+PKG_VERSION:=2.2.2
+PKG_RELEASE:=7
 
 
 define Package/$(PKG_NAME)/conffiles

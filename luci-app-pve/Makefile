@@ -2,6 +2,8 @@
 
 include $(TOPDIR)/rules.mk
 
+PKG_VERSION:=8.3.2-20250106
+PKG_RELEASE:=5
 
 LUCI_TITLE:=LuCI support for pve
 LUCI_PKGARCH:=all

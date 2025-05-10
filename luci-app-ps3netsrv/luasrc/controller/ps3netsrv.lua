@@ -1,7 +1,6 @@
 module("luci.controller.ps3netsrv",package.seeall)
 
 function index()
-	entry({"admin", "nas"}, firstchild(), _("NAS") , 45).dependent = false
 if not nixio.fs.access("/etc/config/ps3netsrv")then
   return
 end

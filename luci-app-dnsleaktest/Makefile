@@ -9,6 +9,8 @@ LUCI_DEPENDS:=+curl
 LUCI_DESCRIPTION:=LuCI support for DNS Leak Test
 
 PKG_MAINTAINER:=Hilman Maulana <hilman0.0maulana@gmail.com>
+PKG_VERSION:=1.1
+PKG_RELEASE:=3
 PKG_LICENSE:=Apache-2.0
 
 include $(TOPDIR)/feeds/luci/luci.mk

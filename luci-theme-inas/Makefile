@@ -8,6 +8,8 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=INas Theme
 LUCI_DEPENDS:=+luci-theme-argon
+PKG_VERSION:=0.0.2
+PKG_RELEASE:=2
 
 LUCI_MINIFY_CSS:=0
 LUCI_MINIFY_JS:=0

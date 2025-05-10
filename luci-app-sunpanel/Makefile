@@ -9,7 +9,9 @@ LUCI_TITLE:=LuCI support for sunpanel
 LUCI_DEPENDS:=+sunpanel
 LUCI_PKGARCH:=all
 
+PKG_VERSION:=1.3.1-2
 # PKG_RELEASE MUST be empty for luci.mk
+PKG_RELEASE:=2
 
 LUCI_MINIFY_CSS:=0
 LUCI_MINIFY_JS:=0

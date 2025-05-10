@@ -1,6 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-guest-wifi
+PKG_VERSION:=2.0.1
+PKG_RELEASE:=10
 
 LUCI_TITLE:=LuCI support for guest-wifi
 LUCI_DEPENDS:=+luci-base +luci-compat

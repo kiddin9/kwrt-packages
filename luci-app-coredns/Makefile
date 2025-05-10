@@ -1,6 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-coredns
+PKG_VERSION:=1.1.0
+PKG_RELEASE:=12
 
 LUCI_TITLE:=LuCI Support for coredns
 LUCI_PKGARCH:=all

@@ -5,7 +5,6 @@ local http = require "luci.http"
 local api = require "luci.model.cbi.filebrowser.api"
 
 function index()
-	entry({"admin", "nas"}, firstchild(), _("NAS") , 45).dependent = false
     if not nixio.fs.access("/etc/config/filebrowser") then return end
 
     entry({"admin", "nas"}, firstchild(), "NAS", 44).dependent = false

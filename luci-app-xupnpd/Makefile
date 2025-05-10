@@ -10,6 +10,8 @@ LUCI_DEPENDS:=+xupnpd
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-xupnpd
+PKG_VERSION:=1.8
+PKG_RELEASE:=13
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

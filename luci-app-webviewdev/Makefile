@@ -7,6 +7,8 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=Luci App WevviewDev
+PKG_VERSION:=0.0.1
+PKG_RELEASE:=2
 LUCI_MINIFY_CSS:=0
 LUCI_MINIFY_JS:=0
 

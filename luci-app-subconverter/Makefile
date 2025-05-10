@@ -4,6 +4,8 @@ LUCI_TITLE:=LuCI support for subconverter
 LUCI_DEPENDS:=+subconverter +sub-web +luci-base
 LUCI_PKGARCH:=all
 
+PKG_VERSION:=1.0.0
+PKG_RELEASE:=24
 
 define Package/luci-app-subconverter/conffiles
 /etc/config/subconverter
