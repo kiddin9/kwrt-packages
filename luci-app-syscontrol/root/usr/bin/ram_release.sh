@@ -43,7 +43,7 @@ update_cron() {
         cron_days=$(echo $days | sed 's/mon/1/g; s/tue/2/g; s/wed/3/g; s/thu/4/g; s/fri/5/g; s/sat/6/g; s/sun/0/g')
         hour=$(echo $time | cut -d: -f1)
         minute=$(echo $time | cut -d: -f2)
-        cron_entry="$minute $hour * * $cron_days TZ='Asia/Jakarta' /usr/bin/ram_release.sh release"
+        cron_entry="$minute $hour * * $cron_days TZ='Asia/Shanghai' /usr/bin/ram_release.sh release"
         echo "$cron_entry" >> /etc/crontabs/root
         log_message "Cron job updated: $cron_entry"
     else
