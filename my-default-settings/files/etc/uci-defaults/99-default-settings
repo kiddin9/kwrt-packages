@@ -207,7 +207,7 @@ grep -q "uwsgi_read_timeout" /etc/nginx/conf.d/luci.locations 2>/dev/null || {
 }
 
 sed -i "s/client_max_body_size 128M/client_max_body_size 3072M/" /etc/nginx/uci.conf.template
-sed -i "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 512k/" /etc/nginx/uci.conf.template
+sed -i "s/large_client_header_buffers 2 1k;/large_client_header_buffers 4 512k;\n\tclient_body_buffer_size 128K;/" /etc/nginx/uci.conf.template
 fi
 
 rm -rf /tmp/luci-*

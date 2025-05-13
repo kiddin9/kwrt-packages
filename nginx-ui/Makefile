@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
 PKG_VERSION:=2.0.0-rc.8
-PKG_RELEASE:=20
+PKG_RELEASE:=21
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
@@ -51,7 +51,7 @@ define Build/Compile
 	export GOOS=linux && \
 	export GOARCH=$(GOARCH) && \
 	export CGO_ENABLED=1 && \
-	go generate && \
+	go generate cmd/version/generate.go && \
 	go build -tags=jsoniter \
 		-ldflags "-w --extldflags '-static' -X 'github.com/0xJacky/Nginx-UI/settings.buildTime=$(shell date +%s)'" \
 		-o $(PKG_BUILD_DIR)/nginx-ui -v main.go
