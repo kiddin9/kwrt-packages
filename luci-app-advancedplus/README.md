@@ -1,8 +1,16 @@
+## 访问数：![hello](https://views.whatilearened.today/views/github/sirpdboy/deplives.svg)[![](https://img.shields.io/badge/TG群-点击加入-FFFFFF.svg)](https://t.me/joinchat/AAAAAEpRF88NfOK5vBXGBQ)
 ### 访问数：[![](https://visitor-badge.glitch.me/badge?page_id=sirpdboy-visitor-badge)] [![](https://img.shields.io/badge/TG群-点击加入-FFFFFF.svg)](https://t.me/joinchat/AAAAAEpRF88NfOK5vBXGBQ)
 
 ![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/说明1.jpg)
 
 #【说在前面的话】此次酷猫主题研发借鉴:Opentopd主题、Jerryk大神argon主题、以及thinktip大神的neobird主题的部分灵感及参考借用部分代码，在这里表示感谢，感谢有你们珠玉在前！
+
+
+# 特殊说明
+- 当系统中 有进阶设置又有 KUCAT主题设置工具时， 以进阶设置中的设置为准。
+- 如果设置上有问题，可以在SSH登陆后，用4号功能恢复设置。
+- 如果是进阶设置，恢复默认设置，可以用：/etc/init.d/advancedplus reset
+- 
 
 # 为什么叫酷猫 ？ 
 
@@ -34,40 +42,41 @@
 
 ## 界面
 
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/kucatset1.png)
+![screenshots](./doc/advancedplus1.png)
 
-![screenshots](https://raw.githubusercontent.com/sirpdboy/openwrt/master/doc/kucatset2.png)
+![screenshots](./doc/advancedplus2.png)
 
+![screenshots](./doc/advancedplus3.png)
 
-## 使用与授权相关说明
- 
-- 本人开源的所有源码，任何引用需注明本处出处，如需修改二次发布必告之本人，未经许可不得做于任何商用用途。
+![screenshots](./doc/advancedplus4.png)
 
+![screenshots](./doc/advancedplus5.png)
+
+![screenshots](./doc/advancedplus6.png)
+
+![screenshots](./doc/advancedplus7.png)
+
+![screenshots](./doc/kucatz1.png)
+
+![screenshots](./doc/kucatz2.png)
 
 # My other project
 
-- 网络速度测试 ：https://github.com/sirpdboy/NetSpeedTest
-
-- 定时设置插件 : https://github.com/sirpdboy/luci-app-autotimeset
-
+- 路由安全看门狗 ：https://github.com/sirpdboy/luci-app-watchdog
+- 网络速度测试 ：https://github.com/sirpdboy/luci-app-netspeedtest
+- 计划任务插件（原定时设置） : https://github.com/sirpdboy/luci-app-taskplan
 - 关机功能插件 : https://github.com/sirpdboy/luci-app-poweroffdevice
-
 - opentopd主题 : https://github.com/sirpdboy/luci-theme-opentopd
-
-- kucat 主题: https://github.com/sirpdboy/luci-theme-kucat
-
+- kucat酷猫主题: https://github.com/sirpdboy/luci-theme-kucat
+- kucat酷猫主题设置工具: https://github.com/sirpdboy/luci-app-kucat-config
+- NFT版上网时间控制插件: https://github.com/sirpdboy/luci-app-timecontrol
 - 家长控制: https://github.com/sirpdboy/luci-theme-parentcontrol
-
+- 定时限速: https://github.com/sirpdboy/luci-app-eqosplus
 - 系统高级设置 : https://github.com/sirpdboy/luci-app-advanced
-
 - ddns-go动态域名: https://github.com/sirpdboy/luci-app-ddns-go
-
 - 进阶设置（系统高级设置+主题设置kucat/agron/opentopd）: https://github.com/sirpdboy/luci-app-advancedplus
-
-- 设置向导: https://github.com/sirpdboy/luci-app-wizard
-
-- 分区扩容: https://github.com/sirpdboy/luci-app-partexp
-
+- 网络设置向导: https://github.com/sirpdboy/luci-app-netwizard
+- 一键分区扩容: https://github.com/sirpdboy/luci-app-partexp
 - lukcy大吉: https://github.com/sirpdboy/luci-app-lukcy
 
 ## 捐助
