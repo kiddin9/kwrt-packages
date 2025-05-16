@@ -206,10 +206,12 @@ grep -q "uwsgi_read_timeout" /etc/nginx/conf.d/luci.locations 2>/dev/null || {
 	sed -i '/ubus_parallel_req/a\        ubus_script_timeout 600;' /etc/nginx/conf.d/luci.locations
 }
 
-sed -i "s/client_max_body_size 128M/client_max_body_size 3072M/" /etc/nginx/uci.conf.template
-sed -i "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 512k/" /etc/nginx/uci.conf.template
+sed -i \
+	-e "s/client_max_body_size 128M/client_max_body_size 3072M/" \
+	-e "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 512k/" \
+	/etc/nginx/uci.conf.template
 grep -q "client_body_buffer_size" /etc/nginx/uci.conf.template ||
-		sed -i "/large_client_header_buffers/a client_body_buffer_size 128K;" /etc/nginx/uci.conf.template
+		sed -i "/large_client_header_buffers/a\	client_body_buffer_size 128K;" /etc/nginx/uci.conf.template
 fi
 
 rm -rf /tmp/luci-*
