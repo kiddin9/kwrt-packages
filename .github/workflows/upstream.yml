@@ -170,7 +170,7 @@ jobs:
         git_clone https://github.com/peter-tank/luci-app-fullconenat
         git_clone https://github.com/KFERMercer/luci-app-tcpdump
         git_clone https://github.com/ykxVK8yL5L/pikpak-webdav pikpak && mv -n pikpak/openwrt/* ./;rm -rf pikpak
-        git_clone https://github.com/jjm2473/openwrt-apps && rm -rf openwrt-apps/{luci-app-cpufreq,luci-app-ota,*homebox,luci-alias.mk} && sed -i "s/luci-alias.mk/..\/luci.mk/" openwrt-apps/*/Makefile && mvdir openwrt-apps
+        git_clone https://github.com/jjm2473/openwrt-apps && rm -rf openwrt-apps/{luci-app-cpufreq,luci-app-ota,luci-alias.mk} && sed -i "s/luci-alias.mk/..\/luci.mk/" openwrt-apps/*/Makefile && mvdir openwrt-apps
         git_clone https://github.com/lwb1978/openwrt-gecoosac && mvdir openwrt-gecoosac
         git_clone https://github.com/nikkinikki-org/OpenWrt-nikki && mv -f OpenWrt-nikki/{luci-app-nikki,nikki} ./;rm -rf OpenWrt-nikki
         ) &
@@ -432,7 +432,7 @@ jobs:
              -H "Authorization: Bearer ${{ secrets.TOKEN_KIDDIN9 }}" \
              -X POST -d '{ "query": "query {repository(owner: \"'"$1"'\", name: \"'"$2"'\"){latestRelease{tagName tagCommit{oid}}refs(refPrefix:\"refs/tags/\",last:1,orderBy:{field:TAG_COMMIT_DATE,direction:ASC}){edges{node{name target{oid}}}}defaultBranchRef{target{...on Commit {oid}}}}}"}' https://api.github.com/graphql)
         }
-        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|3proxy|sub-web|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|homebox|rustdesk-server|shadowsocksr-libev|tuic-server|joker|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
+        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|3proxy|sub-web|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|rustdesk-server|shadowsocksr-libev|tuic-server|joker|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
           repo="$(grep ^PKG_SOURCE_URL $pkg | grep github | cut -f 4-5 -d '/' | sed -e 's/.git//' | grep -E '[0-9a-zA-Z_-]+$')" || true
           if [ "$repo" ]; then
             owner="$(echo $repo | cut -f 1 -d '/')"
