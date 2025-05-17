@@ -1,0 +1,18 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-homebox.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-homebox.json << EEOF
+{
+    "config": "homebox",
+    "init": "homebox"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@homebox[-1]
+	add ucitrack homebox
+	set ucitrack.@homebox[-1].init=homebox
+	commit ucitrack
+EOF
+
+exit 0
