@@ -181,6 +181,13 @@ if [ -n "$(command -v nginx)" ]; then
 	uci -q set dhcp._sc_pw.comments="PassWall"
 	uci commit dhcp
 fi
+if [ -z "`uci -q get dhcp._ta`" ]; then
+	uci -q set dhcp._ta=domain
+	uci -q set dhcp._ta.name="time.android.com"
+	uci -q set dhcp._ta.ip="203.107.6.88"
+	uci -q set dhcp._ta.comments="time.android"
+	uci commit dhcp
+fi
 	version=1
 fi
 
