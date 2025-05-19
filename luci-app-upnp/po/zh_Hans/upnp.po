@@ -264,9 +264,3 @@ msgstr "上传速度"
 msgctxt "Use %s (%s = STUN)"
 msgid "Use %s"
 msgstr "使用 %s"
-
-msgid "Force Forwarding"
-msgstr "强制转发"
-
-msgid "Force forwarding even there is no public IP (please try STUN first)"
-msgstr "就算没有公网IP也进行转发（请先尝试STUN）"
