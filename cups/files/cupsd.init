@@ -7,21 +7,23 @@ START=99
 USE_PROCD=1
 
 PROG=/usr/sbin/cupsd
-
 get_config() {
-	config_get_bool enabled $1 enabled 1
+        config_get_bool enabled $1 enabled 1
 	config_get_bool logger $1 logger 1
 	config_get port $1 port 631
 }
 
+
 start_service() {
 	config_load cupsd
-	config_foreach get_config cupsd
+        config_foreach get_config cupsd
 	[ x$enabled == x1 ] || return 1
 	sed -i "s/Port.*/Port ${port}/g"  /etc/cups/cupsd.conf
 	[ -d /var/cache/cups ] || mkdir -m 0755 -p /var/cache/cups
 	[ -d /var/cups ] || mkdir -m 0755 -p /var/cups
 	[ -d /var/spool/cups/tmp ] || mkdir -m 0755 -p /var/spool/cups/tmp
+	logger -t cupsd -p warn "cupsd is start."
+	echo "cupsd is start."
 	procd_open_instance
 	procd_set_param command $PROG -f
 	[ "x$logger" == x1 ] && procd_set_param stderr 1
@@ -30,5 +32,5 @@ start_service() {
 }
 
 service_triggers() {
-	procd_add_reload_trigger "cupsd"
+      procd_add_reload_trigger "cupsd"
 }

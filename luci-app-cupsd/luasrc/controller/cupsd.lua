@@ -8,8 +8,11 @@ function index()
 		return
 	end
 
-	entry({"admin", "services", "cupsd"},alias("admin", "services", "cupsd", "basic"), _("CUPS打印服务器"), 60).dependent = true
+	local page = entry({"admin", "services", "cupsd"},alias("admin", "services", "cupsd", "basic"), _("CUPS打印服务器"), 60)
+	page.dependent = true
+	page.acl_depends = { "luci-app-cupsd" }
 	entry({"admin", "services", "cupsd", "basic"}, cbi("cupsd/basic"), _("设置"), 10).leaf = true
+
 	entry({"admin", "services", "cupsd_status"}, call("act_status"))
 end
 

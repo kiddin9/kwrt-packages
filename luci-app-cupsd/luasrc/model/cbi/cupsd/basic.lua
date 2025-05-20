@@ -5,6 +5,7 @@
 
 local m, s, o
 
+
 m = Map("cupsd", translate("CUPS打印服务器"))
 m.description = "<font color=\"green\">CUPS是苹果公司为MacOS和其他类似UNIX的操作系统开发的基于标准的开源打印系统。</font><br><a href=\"/cups.pdf\" target=\"_blank\">点击此处可浏览或下载《添加打印机教程》</a>"
 m:section(SimpleSection).template  = "cupsd_status"
@@ -20,6 +21,7 @@ o=s:option(Value, "port", translate("WEB管理端口"),translate("可随意设�
 o.datatype="uinteger"
 o.default=631
 o:depends("enabled",1)
+
 
 return m
 

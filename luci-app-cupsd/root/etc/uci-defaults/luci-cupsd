@@ -15,5 +15,6 @@ uci -q batch <<-EOF >/dev/null
 	commit ucitrack
 EOF
 
-rm -f /tmp/luci-*
+
+rm -f /tmp/luci*
 exit 0
