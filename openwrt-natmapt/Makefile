@@ -9,7 +9,7 @@ PKG_NAME:=natmapt
 PKG_UPSTREAM_VERSION:=20250512
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=46
+PKG_RELEASE:=47
 SCRIPTS_VERSION:=0.2025.2.19
 
 PKG_SOURCE_SUBDIR:=$(PKG_UPSTREAM_NAME)-$(PKG_UPSTREAM_VERSION)
@@ -74,6 +74,7 @@ define Package/natmapt/install
 	$(INSTALL_BIN) ./files/natmap.defaults $(1)/etc/uci-defaults/97_natmap
 	$(INSTALL_DIR) $(1)/etc/natmap/client
 	$(INSTALL_BIN) ./files/client/qBittorrent $(1)/etc/natmap/client/
+	$(LN)          qBittorrent                $(1)/etc/natmap/client/qBittorrent-announce_port
 	$(INSTALL_DIR) $(1)/etc/natmap/notify
 	$(INSTALL_BIN) ./files/notify/ntfy $(1)/etc/natmap/notify/
 	$(INSTALL_DIR) $(1)/etc/natmap/ddns

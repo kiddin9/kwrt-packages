@@ -11,7 +11,7 @@ shift 6
 INITD='/etc/init.d/natmap'
 STATUS_PATH='/var/run/natmap'
 
-# fallloop <retry time> <func> [args...]
+# fallloop <retry interval> <retry limit> <func> [args...]
 fallloop() {
 	local retry="$1"; shift
 	local limit="$1"; shift
