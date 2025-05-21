@@ -190,7 +190,7 @@ jobs:
         git_clone https://github.com/peter-tank/luci-app-dnscrypt-proxy2
         git_clone https://github.com/sundaqiang/openwrt-packages && mv -n openwrt-packages/luci-* ./; rm -rf openwrt-packages
         git_clone https://github.com/CHN-beta/rkp-ipid
-        git_clone https://github.com/dysf888/OpenWRT_NeZha_V1 nezha && mvdir nezha
+        git_clone https://github.com/2018nuoyan/openwrt_nezha && mv -n openwrt_nezha/*nezhav1 ./; rm -rf openwrt_nezha
         git clone https://github.com/Ausaci/luci-app-nat6-helper -b main-dev
         ) &
         (
