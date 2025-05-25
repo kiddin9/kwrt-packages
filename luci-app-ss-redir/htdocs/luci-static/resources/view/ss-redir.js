@@ -115,9 +115,6 @@ return view.extend({
             _("The port of kcptun client listening on. default: 12948"));
         o.datatype = "port";
         o.rmempty = false;
-		o.cfgvalue = function(section_id) {
-			return uci.get_first('kcptun', 'client', 'local_port') || 12948;
-		};
 
         o = s.taboption('ss-redir', form.Value, "password", _("Password"),
             _("The password of shadowsocks server"));
