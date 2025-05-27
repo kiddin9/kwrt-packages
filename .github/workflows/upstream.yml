@@ -358,6 +358,7 @@ jobs:
         net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater \
         net/vpnbypass net/vpn-policy-routing utils/qfirehose
         git_sparse_clone master "https://github.com/lunatickochiya/Matrix-Action-Openwrt" package/kochiya/brlaser package/kochiya/luci-app-banmac-ipt package/kochiya/luci-app-banmac-nft package/kochiya/luci-app-nvr package/kochiya/luci-app-openvpn-server
+        git_sparse_clone main https://github.com/sbwml/openwrt_pkgs luci-app-socat
         ) &
         (
         git_sparse_clone master "https://github.com/xiaoqingfengATGH/feeds-xiaoqingfeng" homeredirect luci-app-homeredirect
