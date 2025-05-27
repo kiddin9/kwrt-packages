@@ -1,0 +1,157 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-06-11 16:36+0000\n"
+"Last-Translator: antrouter <xinyangla@188.com>\n"
+"Language-Team: Chinese (Simplified) <http://weblate.openmptcprouter.com/"
+"projects/omr/luciapplicationsomr-dscp/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.0.4\n"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:21
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:72
+msgid "CS0 - Normal/Best Effort"
+msgstr "CS0 - 正常/尽量"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:22
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:73
+msgid "CS1 - Low priority"
+msgstr "CS1 - 低优先级"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:23
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:74
+msgid "CS2 - High priority"
+msgstr "CS2 - 高优先级"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:24
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:75
+msgid "CS3 - SIP"
+msgstr "CS3 - SIP"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:25
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:76
+msgid "CS4 - Streaming video"
+msgstr "CS4 - 视频流"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:26
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:77
+msgid "CS5"
+msgstr "CS5"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:27
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:78
+msgid "CS6 - Network routing"
+msgstr "CS6-网络路由"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:28
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:79
+msgid "CS7"
+msgstr "CS7"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:20
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:71
+msgid "Class"
+msgstr "类"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:15
+msgid "Classification Rules"
+msgstr "分类规则"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:31
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:82
+msgid "Comment"
+msgstr "注释"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:6
+msgid "DSCP"
+msgstr "DSCP"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:7
+msgid "DSCP Domains"
+msgstr "DSCP域"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:8
+msgid "DSCP by domain"
+msgstr "DSCP按域名"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:57
+msgid "Destination host"
+msgstr "目标主机"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:63
+msgid "Destination ports"
+msgstr "目的端口"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:10
+msgid "Differentiated services"
+msgstr "差异化服务"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:28
+msgid "Direction"
+msgstr "目的"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:15
+msgid "Domain"
+msgstr "域名"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:10
+msgid "Domains"
+msgstr "域"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:80
+msgid "EF - Voice"
+msgstr "EF-语音"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:29
+msgid "EF Voice"
+msgstr "EF 语音"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:4
+msgid "OMR-DSCP"
+msgstr "OMR-DSCP"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:35
+msgid "Protocol"
+msgstr "协议"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:8
+msgid "Set DSCP by domains."
+msgstr "按域设置DSCP."
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:46
+msgid "Source host"
+msgstr "源主机"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:51
+msgid "Source ports"
+msgstr "源端口"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:11
+msgid ""
+"Traffic may be classified by many different parameters, such as source "
+"address, destination address or traffic type and assigned to a specific "
+"traffic class."
+msgstr ""
+"可以通过许多不同的参数（例如源地址，目标地址或流量类型）对流量进行分类，并将"
+"其分配给特定的流量类别."
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:48
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:53
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:59
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:65
+msgid "all"
+msgstr "所有"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:33
+msgid "both"
+msgstr "都"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:32
+msgid "download"
+msgstr "下载"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:31
+msgid "upload"
+msgstr "上传"

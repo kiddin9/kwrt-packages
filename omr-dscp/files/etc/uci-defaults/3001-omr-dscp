@@ -1,0 +1,42 @@
+#!/bin/sh
+
+if [ -z "$(uci -q get firewall.omr_dst_videochat_v4)" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set firewall.omr_dst_videochat_v4=ipset
+		set firewall.omr_dst_videochat_v4.name='omr_dst_videochatv4'
+		set firewall.omr_dst_videochat_v4.family='ipv4'
+		set firewall.omr_dst_videochat_v4.loadfile='/etc/luci-uploads/videochatipv4.list'
+		set firewall.omr_dst_videochat_v4.match='dest_net' 'dest_port'
+		set firewall.omr_dst_videochat_v4.storage='hash'
+		set firewall.omr_dst_videochat_v6=ipset
+		set firewall.omr_dst_videochat_v6.name='omr_dst_videochatv6'
+		set firewall.omr_dst_videochat_v6.family='ipv6'
+		set firewall.omr_dst_videochat_v6.loadfile='/etc/luci-uploads/videochatipv6.list'
+		set firewall.omr_dst_videochat_v6.match='dest_net' 'dest_port'
+		set firewall.omr_dst_videochat_v6.storage='hash'
+		set firewall.omr_dst_videochatrule_v4=rule
+		set firewall.omr_dst_videochatrule_v4.name='omr_dst_videochatrule_v4'
+		set firewall.omr_dst_videochatrule_v4.family='ipv4'
+		set firewall.omr_dst_videochatrule_v4.src='*'
+		set firewall.omr_dst_videochatrule_v4.ipset='omr_dst_videochat_v4'
+		set firewall.omr_dst_videochatrule_v4.dest='*'
+		set firewall.omr_dst_videochatrule_v4.target='DSCP'
+		set firewall.omr_dst_videochatrule_v4.set_dscp='AF41'
+		set firewall.omr_dst_videochatrule_v4.enabled='1'
+		set firewall.omr_dst_videochatrule_v6=rule
+		set firewall.omr_dst_videochatrule_v6.name='omr_dst_videochatrule_v6'
+		set firewall.omr_dst_videochatrule_v6.family='ipv6'
+		set firewall.omr_dst_videochatrule_v6.src='*'
+		set firewall.omr_dst_videochatrule_v6.ipset='omr_dst_videochat_v6'
+		set firewall.omr_dst_videochatrule_v6.dest='*'
+		set firewall.omr_dst_videochatrule_v6.target='DSCP'
+		set firewall.omr_dst_videochatrule_v6.set_dscp='AF41'
+		set firewall.omr_dst_videochatrule_v6.enabled='1'
+		commit firewall
+	EOF
+fi
+
+if [ -z "$(grep videochat | /etc/crontab)" ]; then
+	echo '0 1 * * * /usr/bin/wget -O /etc/luci-uploads/videochatipv4.list https://files-update.openmptcprouter.com/videochatipv4.list' > /etc/crontab
+	echo '1 1 * * * /usr/bin/wget -O /etc/luci-uploads/videochatipv6.list https://files-update.openmptcprouter.com/videochatipv6.list && /etc/init.d/firewall reload' > /etc/crontab
+fi

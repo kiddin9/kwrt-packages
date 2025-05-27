@@ -1,0 +1,10 @@
+--- a/Makefile	2019-08-03 22:52:54.541484359 +0200
++++ b/Makefile	2019-08-03 22:53:00.901364600 +0200
+@@ -5,7 +5,6 @@
+ 
+ dsvpn: $(CFLAGS_FILE) Makefile src/vpn.c src/charm.c src/os.c include/charm.h include/vpn.h include/os.h
+ 	$(CC) $$(cat "$(CFLAGS_FILE)") $(OPTFLAGS) -Iinclude -o $@ src/vpn.c src/charm.c src/os.c
+-	strip $@
+ 
+ install: dsvpn
+ 	install -m 0755 dsvpn $(PREFIX)/sbin

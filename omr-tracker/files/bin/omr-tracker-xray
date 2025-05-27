@@ -1,0 +1,182 @@
+#!/bin/sh
+# vim: set noexpandtab tabstop=4 shiftwidth=4 softtabstop=4 :
+
+name=$0
+basename="$(basename $0)"
+
+if [ -e /usr/sbin/iptables-nft ]; then
+	IPTABLES="/usr/sbin/iptables-nft"
+else
+	IPTABLES="/usr/sbin/iptables"
+fi
+
+export OMR_TRACKER_STATUS
+export OMR_TRACKER_PREV_STATUS
+export OMR_TRACKER_STATUS_MSG
+
+_log() {
+	logger -p daemon.info -t "${basename}" "$@"
+}
+
+_post_tracking() {
+	[ -d /usr/share/omr/xray-post-tracking.d ] && {
+		for tracker_bin in /usr/share/omr/xray-post-tracking.d/*; do
+			[ -x "$tracker_bin" ] && (
+				_log() {
+					logger -t "xray-post-tracking-${tracker_bin##*/}" "$*"
+				}
+				. "$tracker_bin" 2>&1
+			)
+		done
+	}
+	[ -d /usr/share/omr/proxy-post-tracking.d ] && {
+		for tracker_bin in /usr/share/omr/proxy-post-tracking.d/*; do
+			[ -x "$tracker_bin" ] && (
+				_log() {
+					logger -t "proxy-post-tracking-${tracker_bin##*/}" "$*"
+				}
+				. "$tracker_bin" 2>&1
+			)
+		done
+	}
+}
+
+_ping_server() {
+	local host=$1
+	ret=$(ping \
+	    -w "$OMR_TRACKER_TIMEOUT" \
+	    -c 1 \
+	    -q \
+	    "${host}"
+	) && echo "$ret" | grep -sq " 0% packet loss" && {
+		server_ping=true
+	}
+}
+
+_get_ip() {
+	uci -q set openmptcprouter.omr=router
+	if [ "$(uci -q get openmptcprouter.settings.external_check)" != "0" ]; then
+		check_ipv4_website="$(uci -q get openmptcprouter.settings.check_ipv4_website)"
+		[ -z "$check_ipv4_website" ] && check_ipv4_website="http://ip.openmptcprouter.com"
+		check_ipv6_website="$(uci -q get openmptcprouter.settings.check_ipv6_website)"
+		[ -z "$check_ipv6_website" ] && check_ipv6_website="http://ipv6.openmptcprouter.com"
+		public_ipv4="$(curl -s -4 -m 3 $check_ipv4_website)"
+		uci -q set openmptcprouter.omr.detected_public_ipv4="${public_ipv4}"
+		[ -n "${public_ipv4}" ] && {
+			uci -q set upnpd.config.external_ip="${public_ipv4}"
+			uci -q commit upnpd
+		}
+		if [ "$(uci -q get openmptcprouter.omr.xray)" != "down" ]; then
+			uci -q set openmptcprouter.omr.detected_ss_ipv4="$(curl -s -4 --socks5 "${proxy}" --max-time 3 $check_ipv4_website)"
+		else
+			uci -q del openmptcprouter.omr.detected_ss_ipv4
+		fi
+		if [ "$(uci -q get openmptcprouter.settings.disable_ipv6)" != "1" ]; then
+			uci -q set openmptcprouter.omr.detected_public_ipv6="$(curl -s -6 -m 3 $check_ipv6_website)"
+		else
+			uci -q del openmptcprouter.omr.detected_public_ipv6
+		#	uci -q set openmptcprouter.omr.detected_ss_ipv6=$(curl -s -6 --socks5 ":::1111" --max-time 3 http://ip.openmptcprouter.com)
+		fi
+	fi
+	uci -q commit openmptcprouter
+}
+
+timeout=${OMR_TRACKER_TIMEOUT:-5}
+interval=${OMR_TRACKER_INTERVAL:-10}
+retry=${OMR_TRACKER_TRIES:-4}
+proxy=${OMR_TRACKER_PROXY:-127.0.0.1:1111}
+hosts=${OMR_TRACKER_HOSTS:-1.1.1.1 1.0.0.1}
+wait_test=${OMR_TRACKER_WAIT_TEST:-0}
+
+nodns=0
+
+last=0
+nocontact=""
+uci -q set openmptcprouter.omr=router
+uci -q delete openmptcprouter.omr.xray
+_get_ip
+
+OMR_TRACKER_PREV_STATUS=""
+while true; do
+	host="${hosts%% *}"
+	[ "$host" = "$hosts" ] || {
+		hosts="${hosts#* } $host"
+	}
+	if [ "$(curl -s -I -w %{http_code} --socks5 ${proxy} --max-time ${timeout} $host -o /dev/null)" != "000" ]; then
+		nocontact=""
+		[ "${last}" -ge "${retry}" ] || [ "$(uci -q get openmptcprouter.omr.xray)" = "" ] && {
+			_log "xray is up (can contact via http ${host})"
+			OMR_TRACKER_STATUS_MSG="xray is up (can contact via http ${host})"
+			uci -q set openmptcprouter.omr.xray="up"
+			uci -q commit openmptcprouter.omr
+			/etc/init.d/openmptcprouter-vps set_vps_firewall
+			mail_alert="$(uci -q get omr-tracker.proxy.mail_alert)"
+			#[ -z "$mail_alert" ] && mail_alert="$(uci -q get omr-tracker.defaults.mail_alert)"
+			[ "$mail_alert" = "1" ] && [ -n "$(uci -q get mail.default.to)" ] && {
+				OMR_SYSNAME="$(uci -q get system.@system[0].hostname)"
+				if [ "$(uci -q get omr-tracker.defaults.mail_up_subject)" != "" ] && [ "$(uci -q get omr-tracker.defaults.mail_up_message)" != "" ]; then
+					mail_subject="$(uci -q get omr-tracker.defaults.mail_up_subject)"
+					mail_subject=`echo $mail_subject | sed -e "s/%SYSNAME%/$OMR_SYSNAME/g" -e "s/%INTERFACE%/xray Proxy/g" -e "s/%DEVICE%/Shadowsocks Proxy/g" -e "s/%MESSAGE%/$OMR_TRACKER_STATUS_MSG/g"`
+					mail_message="$(uci -q get omr-tracker.defaults.mail_up_message)"
+					mail_message=`echo $mail_message | sed -e "s/%SYSNAME%/$OMR_SYSNAME/g" -e "s/%INTERFACE%/xray Proxy/g" -e "s/%DEVICE%/Shadowsocks Proxy/g" -e "s/%MESSAGE%/$OMR_TRACKER_STATUS_MSG/g"`
+					echo -e "Subject: ${mail_subject}\n\n${mail_message}" | sendmail $(uci -q get mail.default.to)
+				else
+					echo -e "Subject: $OMR_SYSNAME: xray Proxy is UP." | sendmail $(uci -q get mail.default.to)
+				fi
+			}
+			script_alert_up="$(uci -q get omr-tracker.proxy.script_alert_up)"
+			[ -n "$script_alert_up" ] && eval $script_alert_up
+			_get_ip
+		}
+		if [ -z "$($IPTABLES -w -t nat -L -n 2>/dev/null | grep ^xr)" ] && [ -z "$(nft list ruleset 2>/dev/null | grep 'chain xr')" ]; then
+			_log "Reload xray rules"
+			/etc/init.d/xray rules_up 2> /dev/null
+			_get_ip
+		fi
+		[ "$(uci -q get openmptcprouter.omr.detected_public_ipv4)" = "" ] || ([ "$(uci -q get openmptcprouter.settings.disable_ipv6)" != "1" ] && [ "$(uci -q get openmptcprouter.omr.detected_public_ipv6)" = "" ]) && _get_ip
+		last=0
+		OMR_TRACKER_STATUS="OK"
+	else
+		last=$((last + 1 ))
+		[ -z "$nocontact" ] && nocontact="$host" || nocontact="$nocontact, $host"
+		[ "${last}" -ge "${retry}" ] && {
+			if [ -n "$($IPTABLES -w -t nat -L -n 2>/dev/null | grep ^xr)" ] || [ -n "$(nft list ruleset 2>/dev/null | grep 'chain xr')" ]; then
+				_log "xray is down (can't contact via http ${nocontact})"
+				OMR_TRACKER_STATUS_MSG="xray is down (can't contact via http ${nocontact})"
+				uci -q set openmptcprouter.omr.xray="down"
+				uci -q commit openmptcprouter.omr
+				/etc/init.d/openmptcprouter-vps set_vps_firewall
+				/etc/init.d/xray rules_down 2> /dev/null
+				_get_ip
+				server_ping=false
+				server="$(uci -q get xray.omrout.s_vless_address)"
+				_ping_server $server
+				if [ "$server_ping" = false ]; then
+					_log "Server ($server) seems down, no answer to ping"
+					OMR_TRACKER_STATUS_MSG="${OMR_TRACKER_STATUS_MSG} - Server ($server) seems down, no answer to ping"
+				fi
+				mail_alert="$(uci -q get omr-tracker.proxy.mail_alert)"
+				#[ -z "$mail_alert" ] && mail_alert="$(uci -q get omr-tracker.defaults.mail_alert)"
+				[ "$mail_alert" = "1" ] && [ -n "$(uci -q get mail.default.to)" ] && {
+					OMR_SYSNAME="$(uci -q get system.@system[0].hostname)"
+					if [ "$(uci -q get omr-tracker.defaults.mail_down_subject)" != "" ] && [ "$(uci -q get omr-tracker.defaults.mail_down_message)" != "" ]; then
+						mail_subject="$(uci -q get omr-tracker.defaults.mail_down_subject)"
+						mail_subject=`echo $mail_subject | sed -e "s/%SYSNAME%/$OMR_SYSNAME/g" -e "s/%INTERFACE%/xray Proxy/g" -e "s/%DEVICE%/xray Proxy/g" -e "s/%MESSAGE%/$OMR_TRACKER_STATUS_MSG/g"`
+						mail_message="$(uci -q get omr-tracker.defaults.mail_down_message)"
+						mail_message=`echo $mail_message | sed -e "s/%SYSNAME%/$OMR_SYSNAME/g" -e "s/%INTERFACE%/xray Proxy/g" -e "s/%DEVICE%/xray Proxy/g" -e "s/%MESSAGE%/$OMR_TRACKER_STATUS_MSG/g"`
+						echo -e "Subject: ${mail_subject}\n\n${mail_message}" | sendmail $(uci -q get mail.default.to)
+					else
+						echo -e "Subject: $OMR_SYSNAME: xray Proxy is down\n\nConnection failure of xray proxy detected. The reason is \"$OMR_TRACKER_STATUS_MSG\"." | sendmail $(uci -q get mail.default.to)
+					fi
+				}
+				script_alert_down="$(uci -q get omr-tracker.proxy.script_alert_down)"
+				[ -n "$script_alert_down" ] && eval $script_alert_down
+				sleep $wait_test
+			fi
+		}
+		OMR_TRACKER_STATUS="ERROR"
+	fi
+	_post_tracking
+	OMR_TRACKER_PREV_STATUS="$OMR_TRACKER_STATUS"
+	sleep "${interval}"
+done

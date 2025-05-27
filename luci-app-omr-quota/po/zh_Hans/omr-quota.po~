@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-06-11 16:36+0000\n"
+"Last-Translator: antrouter <xinyangla@188.com>\n"
+"Language-Team: Chinese (Simplified) <http://weblate.openmptcprouter.com/"
+"projects/omr/luciapplicationsomr-quota/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.0.4\n"
+
+#: luci-app-omr-quota/luasrc/view/omr-quota/cbi-select-add.htm:8
+msgid "Add"
+msgstr "添加"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:21
+msgid "Enable"
+msgstr "开启"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:10
+msgid "Interfaces"
+msgstr "网卡"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:33
+msgid "Interval between check (s)"
+msgstr "两次检查间隔 (秒)"
+
+#: luci-app-omr-quota/luasrc/view/omr-quota/cbi-select-add.htm:9
+msgid "Invalid"
+msgstr "无效"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:8
+msgid "Monthly Quota"
+msgstr "每月配额"
+
+#: luci-app-omr-quota/luasrc/controller/quota.lua:11
+msgid "Quota"
+msgstr "配额"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:27
+msgid "RX quota (kbit)"
+msgstr "接收配额 (kbit)"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:8
+msgid "Set monthly quota, when quota is reached interface state is set to down"
+msgstr "设置每月配额，达到配额后将接口状态设置为关闭"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:24
+msgid "TX quota (kbit)"
+msgstr "发送配额 (kbit)"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:30
+msgid "TX+RX quota (kbit)"
+msgstr "发送+接收配额 (kbit)"

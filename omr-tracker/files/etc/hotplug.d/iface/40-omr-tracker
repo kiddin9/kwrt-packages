@@ -1,0 +1,13 @@
+#!/bin/sh
+[ "$ACTION" = ifup -o "$ACTION" = ifupdate -o "$ACTION" = ifdown -o "$ACTION" = iflink ] || exit 0
+
+/etc/init.d/omr-tracker enabled || exit 0
+
+if [ "$ACTION" = ifup -o "$ACTION" = ifupdate -o "$ACTION" = iflink ]; then
+	#if [ "$(uci -q get network.${INTERFACE}.multipath)" = "on" ] || [ "$(uci -q get network.${INTERFACE}.multipath)" = "master" ]; then
+	if [ "$INTERFACE" = "omrvpn" ]; then
+		logger -t "OMR-Tracker" "Reloading OMR-Tracker due to $ACTION of $INTERFACE ($DEVICE)"
+		/etc/init.d/omr-tracker restart "$INTERFACE" >/dev/null || exit 0
+	fi
+fi
+

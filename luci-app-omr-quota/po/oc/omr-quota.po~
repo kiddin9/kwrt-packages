@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-08-21 20:21+0000\n"
+"Last-Translator: Quentin PAGÈS <githubou@quentino.fr>\n"
+"Language-Team: Occitan <http://weblate.openmptcprouter.com/projects/omr/"
+"luciapplicationsomr-quota/oc/>\n"
+"Language: oc\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.0.4\n"
+
+#: luci-app-omr-quota/luasrc/view/omr-quota/cbi-select-add.htm:8
+msgid "Add"
+msgstr "Ajustar"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:21
+msgid "Enable"
+msgstr "Activat"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:10
+msgid "Interfaces"
+msgstr "Interfàcias"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:33
+msgid "Interval between check (s)"
+msgstr "Interval entre las verificacions (s)"
+
+#: luci-app-omr-quota/luasrc/view/omr-quota/cbi-select-add.htm:9
+msgid "Invalid"
+msgstr "Invalid"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:8
+msgid "Monthly Quota"
+msgstr "Quòta mesadièra"
+
+#: luci-app-omr-quota/luasrc/controller/quota.lua:11
+msgid "Quota"
+msgstr "Quòta"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:27
+msgid "RX quota (kbit)"
+msgstr "RX quòta (kbit)"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:8
+msgid "Set monthly quota, when quota is reached interface state is set to down"
+msgstr ""
+"Definir la quòta mesadièra, quand es atenguda l'interfàcia es desactivada"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:24
+msgid "TX quota (kbit)"
+msgstr "TX quòta (kbit)"
+
+#: luci-app-omr-quota/luasrc/model/cbi/quota/quota.lua:30
+msgid "TX+RX quota (kbit)"
+msgstr "TX+RX quòta (kbit)"

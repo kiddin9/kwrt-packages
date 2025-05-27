@@ -1,0 +1,28 @@
+#!/bin/sh
+
+[ "$OMR_TRACKER_INTERFACE" != "omrvpn" ] && exit 0
+[ "$OMR_TRACKER_PREV_STATUS" = "$OMR_TRACKER_STATUS" ] && exit 0
+
+set_leds() {
+	local cfg=$1
+	config_get trigger $cfg trigger
+	[ "$trigger" != "vpn" ] && return
+	config_get sysfs $cfg sysfs
+	config_get vpn_status $cfg vpn_status
+	if [ "$vpn_status" = "off" ]; then
+		if [ "$OMR_TRACKER_STATUS" = "ERROR" ]; then
+			echo 'default-on' > /sys/class/leds/${sysfs}/trigger
+		else
+			echo 'none' > /sys/class/leds/${sysfs}/trigger
+		fi
+	elif [ "$vpn_status" = "on" ]; then
+		if [ "$OMR_TRACKER_STATUS" = "ERROR" ]; then
+			echo 'none' > /sys/class/leds/${sysfs}/trigger
+		else
+			echo 'default-on' > /sys/class/leds/${sysfs}/trigger
+		fi
+	fi
+}
+
+config_load system
+config_foreach set_leds led

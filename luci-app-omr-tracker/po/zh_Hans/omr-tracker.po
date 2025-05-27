@@ -1,0 +1,173 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2021-05-13 21:38+0000\n"
+"Last-Translator: justbin <419989953@qq.com>\n"
+"Language-Team: Chinese (Simplified) <http://weblate.openmptcprouter.com/"
+"projects/omr/luciapplicationsomr-tracker/zh_Hans/>\n"
+"Language: zh_Hans\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.6.1\n"
+
+#: luci-app-omr-tracker/luasrc/view/omr-tracker/cbi-select-add.htm:8
+msgid "Add"
+msgstr "添加"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:117
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:192
+msgid ""
+"Always ping gateway, then test connection by ping, httping or dns. None mode "
+"only ping gateway."
+msgstr "总是ping网关，然后通过ping, http或dns测试连接。无模式仅ping网关。"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:123
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:198
+msgid "Check if connection work with http by sending a request to server"
+msgstr "通过向服务器发送请求，检查连接是否与http工作"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:87
+msgid "Defaults Settings"
+msgstr "默认设置"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:7
+msgid "Detect if Proxy is down and stop traffic redirection over it."
+msgstr "检测代理是否关闭并停止通过它的流量重定向。"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:50
+msgid "Detect if Server is down and use defined backup server in this case."
+msgstr "检测服务器是否关闭，并在这种情况下使用定义的备份服务器。"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:17
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:60
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:90
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:165
+msgid "Enable"
+msgstr "启用"
+
+#: luci-app-omr-tracker/root/usr/share/rpcd/acl.d/luci-app-omr-tracker.json:3
+msgid "Grant UCI access for luci-app-omr-tracker"
+msgstr "授权UCI访问聚合跟踪器"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:44
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:144
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:219
+msgid "Hosts"
+msgstr "主机"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:149
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:224
+msgid "Hosts IPv6"
+msgstr "IPv6 主机"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:44
+msgid "IPs or domains must be available over http"
+msgstr "ip或域必须在http上可用"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:154
+msgid "Interfaces"
+msgstr "接口"
+
+#: luci-app-omr-tracker/luasrc/view/omr-tracker/cbi-select-add.htm:9
+msgid "Invalid"
+msgstr "无效的"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:130
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:205
+msgid "Mail alert"
+msgstr "邮件提醒"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:144
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:149
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:219
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:224
+msgid "Must be IPs and not domains"
+msgstr "必须是ip而不是域"
+
+#: luci-app-omr-tracker/luasrc/controller/omr-tracker.lua:5
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:5
+#: luci-app-omr-tracker/root/usr/share/luci/menu.d/luci-app-omr-tracker.json:3
+msgid "OMR-Tracker"
+msgstr "聚合跟踪器"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:87
+msgid ""
+"OMR-Tracker create needed routes and detect when a connection is down or up"
+msgstr "聚合跟踪器创建所需的路径，并检测连接何时断开或接通"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:7
+msgid "Proxy tracker Settings"
+msgstr "代理跟踪设置"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:137
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:212
+msgid "Restart if down"
+msgstr "如果关闭，重新启动"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:137
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:212
+msgid "Restart interface if detected as down"
+msgstr "如果检测到接口关闭，重新启动接口"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:32
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:75
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:105
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:180
+msgid "Retry interval (s)"
+msgstr "重试时间间隔(秒)"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:130
+msgid "Send a mail when connection state change"
+msgstr "当连接状态改变时发送邮件"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:205
+msgid ""
+"Send a mail when connection status change. You need to configure e-mail "
+"settings <a href=\"/cgi-bin/luci/admin/services/mail\">here</a>."
+msgstr ""
+"当连接状态发生变化时发送邮件。你需要配置电子邮件设置<a href=\"/cgi-bin/luci/"
+"admin/services/mail\">这里</a>。"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:123
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:198
+msgid "Server http test"
+msgstr "服务器http测试"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:50
+msgid "Server tracker Settings"
+msgstr "服务器跟踪设置"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:20
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:63
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:93
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:168
+msgid "Timeout (s)"
+msgstr "超时(秒)"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:26
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:69
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:99
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:174
+msgid "Tries"
+msgstr "尝试"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:117
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:192
+msgid "Type"
+msgstr "类型"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:38
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:81
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:111
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:186
+msgid "Wait after a failed test (s)"
+msgstr "在测试失败后等待（秒）"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:17
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:90
+msgid "When tracker is disabled, connection failover is also disabled"
+msgstr "禁用跟踪器时，也禁用连接故障转移"
+
+#: luci-app-omr-tracker/luasrc/model/cbi/omr-tracker.lua:60
+msgid "When tracker is disabled, server failover is also disabled"
+msgstr "禁用跟踪器时，也禁用服务器故障转移"

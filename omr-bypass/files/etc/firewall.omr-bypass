@@ -1,0 +1,2 @@
+#!/bin/sh
+[ ! -e /usr/sbin/nft ] && [ -z "$(pgrep -f omr-bypass 2>&1 >/dev/null)" ] && logger -t "firewall.omr-bypass" "reload omr-bypass rules" && /etc/init.d/omr-bypass reload_rules

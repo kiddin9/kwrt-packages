@@ -1,0 +1,187 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-omr-bypass.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-omr-bypass.json << EEOF
+{
+    "config": "omr-bypass",
+    "init": "omr-bypass"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@omr-bypass[-1]
+	add ucitrack omr-bypass
+	set ucitrack.@omr-bypass[-1].init=omr-bypass
+	commit ucitrack
+EOF
+
+if [ -n "$(uci -q get omr-bypass.dpi)" ]; then
+	proto=$(uci -q get omr-bypass.dpi.proto)
+	[ -n "$proto" ] && {
+		for pro in $proto; do
+			uci -q batch <<-EOF >/dev/null
+				set omr-bypass.dpi[-1]=dpi
+				set omr-bypass.dpi[-1].proto=$pro
+				set omr-bypass.dpi[-1].interface=all
+			EOF
+		done
+		uci -q commit omr-bypass
+	}
+fi
+
+if [ -n "$(uci -q get omr-bypass.ips)" ]; then
+	ips=$(uci -q get omr-bypass.ips.ip)
+	[ -n "$ips" ] && {
+		for ip in $ips; do
+			uci -q batch <<-EOF >/dev/null
+				set omr-bypass.ips[-1]=ips
+				set omr-bypass.ips[-1].ip=$ip
+				set omr-bypass.ips[-1].interface=all
+			EOF
+		done
+		uci -q commit omr-bypass
+	}
+fi
+
+if [ -n "$(uci -q get dhcp.dnsmasq[0].ipset)" ]; then
+	domains="$(uci -q get dhcp.dnsmasq[0].ipset | sed -e 's:/::' -e 's:/ss_rules_dst_bypass_all::' -e 's:/: :g')"
+	[ -n "$domains" ] && {
+		for domain in $domains; do
+			uci -q batch <<-EOF >/dev/null
+				set omr-bypass.domains[-1]=domains
+				set omr-bypass.domains[-1].name=$domain
+				set omr-bypass.domains[-1].interface=all
+			EOF
+		done
+		uci -q commit omr-bypass
+	}
+fi
+
+if [ "$(uci -q get ucitrack.@shadowsocks-libev[-1].affects | grep omr-bypass)" != "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		del_list ucitrack.@shadowsocks-libev[-1].affects=omr-bypass
+		commit ucitrack
+	EOF
+fi
+
+if [ "$(uci -q get firewall.omr_bypass)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set firewall.omr_bypass=include
+		set firewall.omr_bypass.path=/etc/firewall.omr-bypass
+		commit firewall
+	EOF
+fi
+
+if [ "$(uci -q get omr-bypass.m6replay)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.m6replay=proto
+		add_list omr-bypass.m6replay.url='m6web.fr'
+		add_list omr-bypass.m6replay.url='6play.fr'
+		add_list omr-bypass.m6replay.url='6cloud.fr'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.mycanal)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.mycanal=proto
+		add_list omr-bypass.mycanal.url='mycanal.fr'
+		add_list omr-bypass.mycanal.url='canal-plus.com'
+		add_list omr-bypass.mycanal.url='canalplus.com'
+		add_list omr-bypass.mycanal.url='canalplus-cdn.net'
+		add_list omr-bypass.mycanal.url='canalplus.pro'
+		add_list omr-bypass.mycanal.url='canal-plus.net'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.minecraft)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.minecraft=proto
+		add_list omr-bypass.minecraft.url='authserver.mojang.com'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.lesnumeriques)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.lesnumeriques=proto
+		add_list omr-bypass.lesnumeriques.url='lesnumeriques.com'
+		add_list omr-bypass.lesnumeriques.url='botscorner.com'
+		add_list omr-bypass.lesnumeriques.url='app.botscorner.com'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.disneyplus)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.disneyplus=proto
+		add_list omr-bypass.disneyplus.url='bamgrid.com'
+		add_list omr-bypass.disneyplus.url='disney-plus.net'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.amazonvideo)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.amazonvideo=proto
+		add_list omr-bypass.amazonvideo.url='cloudfront.net'
+		add_list omr-bypass.amazonvideo.url='llnw.net'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.free)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.free=proto
+		add_list omr-bypass.free.url='free.fr'
+		add_list omr-bypass.free.url='freebox.fr'
+		add_list omr-bypass.free.url='oqee.tv'
+		add_list omr-bypass.free.url='oqee.net'
+		add_list omr-bypass.free.url='proxad.net'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.orange)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.orange=proto
+		add_list omr-bypass.orange.url='orange.fr'
+		add_list omr-bypass.orange.url='sosh.fr'
+		add_list omr-bypass.orange.url='liveperson.net'
+		add_list omr-bypass.orange.url='liveperson.com'
+		add_list omr-bypass.orange.url='lpsn.net'
+		add_list omr-bypass.orange.url='lpsnmedia.net'
+		add_list omr-bypass.orange.url='francetelecom.fr'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.sky)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.sky=proto
+		add_list omr-bypass.sky.url='sky.com'
+		add_list omr-bypass.sky.url='skycdp.com'
+		add_list omr-bypass.sky.url='skyanywhere.com'
+		add_list omr-bypass.sky.url='epgsky.com'
+		add_list omr-bypass.sky.url='skycdn.it'
+		commit omr-bypass
+	EOF
+fi
+if [ "$(uci -q get omr-bypass.captive_portal)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+		set omr-bypass.captive_portal=proto
+		add_list omr-bypass.captive_portal.url='captive.apple.com'
+		add_list omr-bypass.captive_portal.url='connectivitycheck.gstatic.com'
+		add_list omr-bypass.captive_portal.url='clients3.google.com'
+		add_list omr-bypass.captive_portal.url='www.msftconnecttest.com'
+		add_list omr-bypass.captive_portal.url='www.msftncsi.com'
+		add_list omr-bypass.captive_portal.url='nmcheck.gnome.org'
+		add_list omr-bypass.captive_portal.url='networkcheck.kde.org'
+		commit omr-bypass
+	EOF
+fi
+#if [ "$(uci -q get omr-bypass.global)" = "" ]; then
+#	uci -q batch <<-EOF >/dev/null
+#		set omr-bypass.global=global
+#		set omr-bypass.global.noipv6='0'
+#		commit omr-bypass
+#	EOF
+#fi
+if [ ! -f /etc/crontabs/root ] || [ "$(cat /etc/crontabs/root | grep bypass)" = "" ]; then
+	echo "0 2 * * * /etc/init.d/omr-bypass bypass_asn" >> /etc/crontabs/root
+fi
+rm -f /tmp/luci-indexcache
+exit 0

@@ -1,0 +1,158 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-08-31 17:15+0000\n"
+"Last-Translator: Quentin PAGÈS <githubou@quentino.fr>\n"
+"Language-Team: Occitan <http://weblate.openmptcprouter.com/projects/omr/"
+"luciapplicationsomr-dscp/oc/>\n"
+"Language: oc\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.0.4\n"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:21
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:72
+msgid "CS0 - Normal/Best Effort"
+msgstr "CS0 - Esfòrç normal / optimal"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:22
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:73
+msgid "CS1 - Low priority"
+msgstr "CS1 - Prioritat febla"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:23
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:74
+msgid "CS2 - High priority"
+msgstr "CS2 - Prioritat nauta"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:24
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:75
+msgid "CS3 - SIP"
+msgstr "CS3 - SIP"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:25
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:76
+msgid "CS4 - Streaming video"
+msgstr "CS4 - Difusion vidèo"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:26
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:77
+msgid "CS5"
+msgstr "CS5"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:27
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:78
+msgid "CS6 - Network routing"
+msgstr "CS6 - Partiment ret"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:28
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:79
+msgid "CS7"
+msgstr "CS7"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:20
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:71
+msgid "Class"
+msgstr "Classa"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:15
+msgid "Classification Rules"
+msgstr "Règlas de classificacion"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:31
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:82
+msgid "Comment"
+msgstr "Comentari"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:6
+msgid "DSCP"
+msgstr "DSCP"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:7
+msgid "DSCP Domains"
+msgstr "DSCP Domenis"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:8
+msgid "DSCP by domain"
+msgstr "DSCP per domeni"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:57
+msgid "Destination host"
+msgstr "Òste de destinacion"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:63
+msgid "Destination ports"
+msgstr "Pòrts de destinacion"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:10
+msgid "Differentiated services"
+msgstr "Servicis diferenciats"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:28
+msgid "Direction"
+msgstr "Direccion"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:15
+msgid "Domain"
+msgstr "Domeni"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:10
+msgid "Domains"
+msgstr "Domenis"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:80
+msgid "EF - Voice"
+msgstr "EF - Votz"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:29
+msgid "EF Voice"
+msgstr "EF - Votz"
+
+#: luci-app-omr-dscp/luasrc/controller/omr-dscp.lua:4
+msgid "OMR-DSCP"
+msgstr "OMR-DSCP"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:35
+msgid "Protocol"
+msgstr "Protocòl"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp-domains.lua:8
+msgid "Set DSCP by domains."
+msgstr "Configurar DSCP per domeni."
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:46
+msgid "Source host"
+msgstr "Òste font"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:51
+msgid "Source ports"
+msgstr "Pòrts fonts"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:11
+msgid ""
+"Traffic may be classified by many different parameters, such as source "
+"address, destination address or traffic type and assigned to a specific "
+"traffic class."
+msgstr ""
+"Lo trafic pòt èsser classat segon mantuns paramètres diferents, coma "
+"l’adreça font, l’adreça de destinacion o lo tipe de trafic e atribuit a una "
+"classa de trafic especifica."
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:48
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:53
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:59
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:65
+msgid "all"
+msgstr "totes"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:33
+msgid "both"
+msgstr "Los dos"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:32
+msgid "download"
+msgstr "Telecargament"
+
+#: luci-app-omr-dscp/luasrc/model/cbi/dscp.lua:31
+msgid "upload"
+msgstr "Mandadís"

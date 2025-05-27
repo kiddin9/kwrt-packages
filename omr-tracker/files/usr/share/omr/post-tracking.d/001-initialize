@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Copyright (C) 2018-2025 Ycarus (Yannick Chabanois) <ycarus@zugaina.org> for OpenMPTCProuter
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+# This script check if MPTCP status is correct on interface and if modems are correctly set on z8102ax
+
+# Set default multipath status
+[ "$OMR_TRACKER_INTERFACE" = "omrvpn" ] && multipath "$OMR_TRACKER_DEVICE" off >/dev/null 2>&1
+[ "$OMR_TRACKER_INTERFACE" = "omr6in4" ] && multipath "$OMR_TRACKER_DEVICE" off >/dev/null 2>&1
+
+if [ -n "$OMR_TRACKER_INTERFACE" ] && [ -n "$OMR_TRACKER_DEVICE" ] && [ "$OMR_TRACKER_INTERFACE" != "omrvpn" ] && [ "$OMR_TRACKER_INTERFACE" != "omr6in4" ]; then
+	if [ "$(uci -q get network.$OMR_TRACKER_INTERFACE.disabled)" = "1" ]; then
+		_log "Disable MPTCP & Tracker on the disabled interface $OMR_TRACKER_INTERFACE ($OMR_TRACKER_DEVICE)"
+		/etc/init.d/mptcp reload "$OMR_TRACKER_DEVICE" >/dev/null 2>&1
+		/etc/init.d/omr-tracker restart >/dev/null 2>&1
+		exit 0
+	fi
+	metric="$(uci -q get network.$OMR_TRACKER_INTERFACE.metric)"
+	if [ -z "$metric" ] || { [ -n "$OMR_TRACKER_DEVICE_IP" ] && [ -z "$(ip route show table $metric | grep $OMR_TRACKER_DEVICE)" ]; } || { [ -n "$OMR_TRACKER_DEVICE_IP6" ] && [ -z "$(ip -6 route show table 6${metric} | grep $OMR_TRACKER_DEVICE)" ]; }; then
+		_log "Routes not correctly set for $OMR_TRACKER_INTERFACE ($OMR_TRACKER_DEVICE table $metric) with IPs $OMR_TRACKER_DEVICE_IP $OMR_TRACKER_DEVICE_IP6"
+		/etc/init.d/mptcp reload "$OMR_TRACKER_DEVICE" >/dev/null 2>&1
+		_log "Restart OMR-Tracker"
+		/etc/init.d/omr-tracker restart >/dev/null 2>&1
+		exit 0
+	fi
+fi
+
+if [ -n "$(grep z8102ax /etc/board.json)" ] && [ "$(uci -q get network.modem1.proto)" = "modemmanager" ]; then
+	if [ -e /sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.1 ]; then
+		uci -q batch <<-EOF
+		set network.modem1.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.1'
+		set network.modem2.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.2'
+		EOF
+	elif [ -e /sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.1 ]; then
+		uci -q batch <<-EOF
+		set network.modem1.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.1'
+		set network.modem2.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.2'
+		EOF
+	fi
+	[ -n "$(uci -q changes network)" ] && uci -q commit network
+fi
+if [ -n "$(grep z8109ax /etc/board.json)" ] && [ "$(uci -q get network.modem1.proto)" = "modemmanager" ]; then
+	if [ -e /sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.1 ]; then
+		uci -q batch <<-EOF
+		set network.modem1.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.1'
+		set network.modem2.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.2'
+		set network.modem3.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.3'
+		set network.modem4.device='/sys/devices/platform/soc/11200000.usb/usb1/1-1/1-1.4'
+		EOF
+	elif [ -e /sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.1 ]; then
+		uci -q batch <<-EOF
+		set network.modem1.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.1'
+		set network.modem2.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.2'
+		set network.modem3.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.3'
+		set network.modem4.device='/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.4'
+		EOF
+	fi
+	[ -n "$(uci -q changes network)" ] && uci -q commit network
+fi

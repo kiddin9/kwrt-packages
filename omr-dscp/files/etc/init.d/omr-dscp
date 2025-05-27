@@ -1,0 +1,250 @@
+#!/bin/sh /etc/rc.common
+# vim: set noexpandtab tabstop=4 shiftwidth=4 softtabstop=4 :
+
+# shellcheck disable=SC2034
+START=90
+# shellcheck disable=SC2034
+STOP=10
+# shellcheck disable=SC2034
+USE_PROCD=1
+
+# shellcheck disable=SC1091
+. /lib/functions.sh
+
+if [ -e /usr/sbin/iptables-nft ]; then
+	IPTABLES="/usr/sbin/iptables-nft"
+	IP6TABLES="/usr/sbin/ip6tables-nft"
+else
+	IPTABLES="/usr/sbin/iptables"
+	IP6TABLES="/usr/sbin/ip6tables"
+fi
+
+# Get the lan interface name
+lan_device=
+config_load network
+config_get lan_device lan ifname
+
+config_load dscp
+
+_ipt4() {
+	$IPTABLES -w -t mangle "$@" 2>&1 >/dev/null
+}
+_ipt6() {
+	$IP6TABLES -w -t mangle "$@" 2>&1 >/dev/null
+}
+
+_add_dscp_rule() {
+	_ipt4 -A dscp_prerouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j DSCP --set-dscp-class "$class"
+	_ipt4 -A dscp_prerouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j RETURN
+	_ipt4 -A dscp_postrouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j DSCP --set-dscp-class "$class"
+	_ipt4 -A dscp_postrouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j RETURN
+	_ipt6 -A dscp_prerouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j DSCP --set-dscp-class "$class"
+	_ipt6 -A dscp_prerouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j RETURN
+	_ipt6 -A dscp_postrouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j DSCP --set-dscp-class "$class"
+	_ipt6 -A dscp_postrouting -p "$proto" -s "$src_ip" -d "$dest_ip" "$@" -m comment --comment "$comment" -j RETURN
+}
+
+_add_dscp_domain() {
+	domain=""; config_get domain "$1" name ""
+	class=""; config_get class "$1" class ""
+	[ -n "$domain" ] && [ -n "$class" ] && {
+		if [ "$(uci -q get dhcp.@dnsmasq[0].ipset | grep /$domain/)" = "" ]; then
+			uci -q add_list dhcp.@dnsmasq[0].ipset="/$domain/omr_dscp-$class,omr_dscp6-$class"
+		else
+			dnsmasqipset=$(uci -q get dhcp.@dnsmasq[0].ipset | sed 's/ /\n/g')
+			for dnsipset in $dnsmasqipset; do
+				if [ "$(echo $dnsipset | cut -d/ -f2)" = "$domain" ]; then
+					uci -q del_list dhcp.@dnsmasq[0].ipset=$dnsipset
+					uci -q add_list dhcp.@dnsmasq[0].ipset="$dnsipset,omr_dscp-$class,omr_dscp6-$class"
+				fi
+			done
+		fi
+	}
+}
+
+_add_dscp_domains_rules() {
+	for class in cs0 cs1 cs2 cs3 cs4 cs5 cs6 cs7 ef; do
+		ipset -q --exist restore <<-EOF
+		create omr_dscp-$class hash:net hashsize 64
+		create omr_dscp6-$class hash:net family inet6 hashsize 64
+		EOF
+		_ipt4 -A dscp_prerouting -m set --match-set omr_dscp-$class src,dst -m comment --comment "$class" -j DSCP --set-dscp-class "$class"
+		_ipt4 -A dscp_prerouting -m set --match-set omr_dscp-$class src,dst -m comment --comment "$class" -j RETURN
+		_ipt4 -A dscp_postrouting -m set --match-set omr_dscp-$class src,dst -m comment --comment "$class" -j DSCP --set-dscp-class "$class"
+		_ipt4 -A dscp_postrouting -m set --match-set omr_dscp-$class src,dst -m comment --comment "$class" -j RETURN
+		_ipt6 -A dscp_prerouting -m set --match-set omr_dscp6-$class src,dst -m comment --comment "$class" -j DSCP --set-dscp-class "$class"
+		_ipt6 -A dscp_prerouting -m set --match-set omr_dscp6-$class src,dst -m comment --comment "$class" -j RETURN
+		_ipt6 -A dscp_postrouting -m set --match-set omr_dscp6-$class src,dst -m comment --comment "$class" -j DSCP --set-dscp-class "$class"
+		_ipt6 -A dscp_postrouting -m set --match-set omr_dscp6-$class src,dst -m comment --comment "$class" -j RETURN
+	done
+}
+
+_add_dscp_rules() {
+	proto=""     ; config_get proto "$1" proto all
+	src_ip=""    ; config_get src_ip "$1" src_ip 0.0.0.0/0
+	src_port=""  ; config_get src_port "$1" src_port 0:65535
+	dest_ip=""   ; config_get dest_ip "$1" dest_ip 0.0.0.0/0
+	dest_port="" ; config_get dest_port "$1" dest_port 0:65535
+	class=""     ; config_get class "$1" class
+	direction="" ; config_get direction "$1" direction "upload"
+	comment=""   ; config_get comment "$1" comment "-"
+
+	src_port="$(echo $src_port | sed 's/-/:/g')"
+	dest_port="$(echo $dest_port | sed 's/-/:/g')"
+	case "$direction" in
+		upload|both)
+			# Apply the rule locally
+			case "$proto" in
+				tcp|udp)
+					_add_dscp_rule -m multiport --sports "$src_port" -m multiport --dports "$dest_port"
+					;;
+				*)
+					_add_dscp_rule
+					;;
+			esac
+			;;
+		download|both)
+			;;
+	esac
+}
+
+_add_prerouting_chain() {
+	_ipt4 -N "$1"
+	_ipt4 -I PREROUTING -i "$lan_device" -j "$1"
+	_ipt6 -N "$1"
+	_ipt6 -I PREROUTING -i "$lan_device" -j "$1"
+}
+
+_add_postrouting_chain() {
+	_ipt4 -N "$1"
+	_ipt4 -I POSTROUTING -j "$1"
+	_ipt6 -N "$1"
+	_ipt6 -I POSTROUTING -j "$1"
+}
+
+_add_fwmark_chain() {
+	_ipt4 -N dscp_mark
+	_ipt4 -A PREROUTING -i "$lan_device" -j dscp_mark
+	_ipt4 -A POSTROUTING -j dscp_mark
+	_ipt6 -N dscp_mark
+	_ipt6 -A PREROUTING -i "$lan_device" -j dscp_mark
+	_ipt6 -A POSTROUTING -j dscp_mark
+	for class in cs4 cs5 cs6 cs7; do
+		# xtun (hex) -> 0x7874756e
+		_ipt4 -A dscp_mark \
+			-m comment --comment "$class" \
+			-m dscp --dscp-class "$class" \
+			-j MARK --set-mark 0x7874756e
+		_ipt6 -A dscp_mark \
+			-m comment --comment "$class" \
+			-m dscp --dscp-class "$class" \
+			-j MARK --set-mark 0x7874756e
+	done
+}
+
+_add_dscp_output_chain() {
+	_ipt4 -N dscp_output
+	_ipt4 -I OUTPUT -j dscp_output
+	_ipt6 -N dscp_output
+	_ipt6 -I OUTPUT -j dscp_output
+}
+
+_remove_prerouting_chain() {
+	_ipt4 -F "$1" 2>/dev/null || return
+	_ipt4 -D PREROUTING -i "$lan_device" -j "$1"
+	_ipt4 -X "$1" 2>/dev/null
+	_ipt6 -F "$1" 2>/dev/null || return
+	_ipt6 -D PREROUTING -i "$lan_device" -j "$1"
+	_ipt6 -X "$1" 2>/dev/null
+}
+
+_remove_postrouting_chain() {
+	_ipt4 -F "$1" 2>/dev/null || return
+	_ipt4 -D POSTROUTING -j "$1"
+	_ipt4 -X "$1" 2>/dev/null
+	_ipt6 -F "$1" 2>/dev/null || return
+	_ipt6 -D POSTROUTING -j "$1"
+	_ipt6 -X "$1" 2>/dev/null
+}
+
+_remove_output_chain() {
+	_ipt4 -F "$1" 2>/dev/null || return
+	_ipt4 -D OUTPUT -j "$1"
+	_ipt4 -X "$1" 2>/dev/null
+	_ipt6 -F "$1" 2>/dev/null || return
+	_ipt6 -D OUTPUT -j "$1"
+	_ipt6 -X "$1" 2>/dev/null
+}
+
+_remove_ipset_dnsmasq() {
+	#dnsmasqipset=$(uci -q get dhcp.@dnsmasq[0].ipset | sed 's/ /\n/g' | grep -v omr_dscp)
+	# Remove DSCP ipset in DNSMASQ and keep others
+	dnsmasqipset=$(uci -q get dhcp.@dnsmasq[0].ipset | sed 's/ /\n/g')
+	uci -q delete dhcp.@dnsmasq[0].ipset
+	if [ -n "$dnsmasqipset" ]; then
+		for dnsipset in $dnsmasqipset; do
+			ipsets=""
+			allipsets=$(echo $dnsipset | cut -d/ -f3 | sed 's/,/\n/g')
+			for ipset in $allipsets; do
+				[ "$(echo $ipset | grep -v omr_dscp)" != "" ] && {
+					[ "$ipsets" != "" ] && ipsets="$ipsets,$ipset"
+					[ "$ipsets" = "" ] && ipsets="$ipset"
+				}
+			done
+			if [ "$ipsets" != "" ]; then
+				resultipset="/$(echo $dnsipset | cut -d/ -f2)/$ipsets"
+				uci -q add_list dhcp.@dnsmasq[0].ipset=$resultipset
+			fi
+		done
+	fi
+}
+
+_setup_tunnel() {
+	# Mark the packets to route through xtun0
+	_add_fwmark_chain
+	# tun0: cs0 (default)
+	# xtun0: cs6
+	_ipt4 -A dscp_output -o "tun0" -j DSCP --set-dscp-class cs6
+	_ipt6 -A dscp_output -o "tun0" -j DSCP --set-dscp-class cs6
+}
+
+_cleanup() {
+	_remove_prerouting_chain dscp_prerouting
+	_remove_prerouting_chain dscp_mark
+	_remove_postrouting_chain dscp_postrouting
+	_remove_postrouting_chain dscp_mark
+	_remove_output_chain dscp_output
+	_remove_ipset_dnsmasq
+	uci -q commit dhcp
+}
+
+start_service() {
+	# Cleanup
+	_cleanup
+
+	# Add chains
+	_add_prerouting_chain dscp_prerouting
+	_add_postrouting_chain dscp_postrouting
+	_add_dscp_output_chain
+	_add_dscp_domains_rules
+
+	# Setup the tunnels dscp / marks
+	_setup_tunnel
+
+	# Add rules base on the user configuration
+	config_foreach _add_dscp_rules classify
+	config_foreach _add_dscp_domain domains
+	uci -q commit dhcp
+}
+
+stop_service() {
+	_cleanup
+}
+
+reload_service() {
+	start
+}
+
+service_triggers() {
+	procd_add_reload_trigger dscp glorytun
+}

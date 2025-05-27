@@ -1,0 +1,17 @@
+{
+    "luci-app-omr-tracker": {
+	"description": "Grant UCI access for luci-app-omr-tracker",
+	"read": {
+	    "uci": [ "omr-tracker" ],
+	    "file": {
+		"/usr/bin/httping": [ "list" ],
+		"/usr/bin/dig": [ "list" ],
+		"/usr/bin/nping": [ "list" ],
+		"/usr/bin/arping": [ "list" ]
+	    }
+	},
+	"write": {
+	    "uci": [ "omr-tracker" ]
+	}
+    }
+}

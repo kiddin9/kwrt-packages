@@ -1,0 +1,13 @@
+{
+	"admin/network/quota": {
+		"title": "Quota",
+		"order": 90,
+		"action": {
+			"type": "cbi",
+			"path": "quota/quota"
+		},
+		"depends": {
+			"acl": [ "luci-app-omr-quota" ]
+		}
+	}
+}
