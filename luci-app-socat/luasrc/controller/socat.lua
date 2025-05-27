@@ -1,5 +1,4 @@
 -- Copyright 2020 Lienol <lawlienol@gmail.com>
-
 module("luci.controller.socat", package.seeall)
 
 function index()
@@ -16,7 +15,7 @@ end
 function act_status()
 	local e = {}
 	e.index = luci.http.formvalue("index")
-	e.status = luci.sys.call(string.format("ps -w | grep -v 'grep' | grep '/var/etc/socat/%s' >/dev/null", luci.http.formvalue("id"))) == 0
+	e.status = luci.sys.call(string.format("busybox ps -w | grep -v 'grep' | grep '/var/etc/socat/%s' >/dev/null", luci.http.formvalue("id"))) == 0
 	luci.http.prepare_content("application/json")
 	luci.http.write_json(e)
 end
