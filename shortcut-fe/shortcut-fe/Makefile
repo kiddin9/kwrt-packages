@@ -58,6 +58,7 @@ define KernelPackage/shortcut-fe-cm
 	   CONFIG_NF_CONNTRACK_CHAIN_EVENTS=y \
 	   CONFIG_NF_CONNTRACK_EVENTS=y \
 	   CONFIG_XFRM=y
+  CONFLICTS:=kmod-shortcut-fe-drv
 endef
 
 define KernelPackage/shortcut-fe-cm/Description
