@@ -11,6 +11,7 @@ START=99
 
 CONF="ss-redir"
 PROG="/usr/bin/ss-redir"
+GO_SS2="/usr/bin/go-ss2"
 CONFILE="/tmp/ss-redir.json"
 
 mk_ss_redir_conf() {
@@ -62,7 +63,7 @@ add_ss_redir_rule() {
     nft add rule inet fw4 ss-redir_chain ip daddr @ss-redir_set meta l4proto udp redirect to 1088
     nft add rule inet fw4 ss-redir_chain ip6 daddr @ss-redir_set6 meta l4proto udp redirect to 1088
     nft add rule inet fw4 ss-redir_chain ip6 daddr @ss-redir_set6 meta l4proto tcp redirect to 1088
-    
+
 }
 
 clear_ss_redir_rule() {
@@ -90,6 +91,14 @@ ss_redir_rule() {
     add_ss_redir_rule
 }
 
+get_proxy_command() {
+    if [ -x "$GO_SS2" ]; then
+        echo "$GO_SS2 -c 'ss://$encrypt:$password@$server:$server_port' -redir :$local_port"
+    else
+        echo "$PROG -c $CONFILE"
+    fi
+}
+
 start_service() {
     config_load "$CONF"
     local enabled
@@ -97,26 +106,33 @@ start_service() {
     config_get_bool enabled "server" "enabled" "0"
     [ "$enabled" -eq "1" ] || {
         echo "service does not enabled"
-		clear_ss_redir_rule
+        clear_ss_redir_rule
         return 1
     }
 
     mk_ss_redir_conf
     [ ! -f $CONFILE ] && return 1
 
-	procd_open_instance
-	procd_set_param command "$PROG" -c "$CONFILE" 
-	procd_set_param respawn
-	procd_close_instance
+
+    procd_open_instance
+    if [ -x "$GO_SS2" ]; then
+        procd_set_param command "$GO_SS2" -c "ss://$encrypt:$password@$server:$server_port" -verbose -redir ":$local_port"
+        procd_set_param stdout 1
+        procd_set_param stderr 1
+    else
+        procd_set_param command "$PROG" -c "$CONFILE"
+    fi
+    procd_set_param respawn
+    procd_close_instance
 
     ss_redir_rule
 }
 
 reload_service() {
-	stop
-	start
+    stop
+    start
 }
 
 service_triggers() {
-	procd_add_reload_trigger "$CONF"
+    procd_add_reload_trigger "$CONF"
 }

@@ -740,6 +740,7 @@ return view.extend({
         o = s_basic.option(form.ListValue, 'ROOT_QDISC', _('Root Queueing Discipline'), _('Select the root queueing discipline'));
         o.value('hfsc', _('HFSC'));
         o.value('cake', _('CAKE'));
+        o.value('hybrid', _('Hybrid'));
         o.default = 'hfsc';
         o.onchange = function(ev, section_id, value) {
             var downrate = this.map.lookupOption('DOWNRATE', section_id)[0];
