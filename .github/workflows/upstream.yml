@@ -377,7 +377,7 @@ jobs:
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/packages" net/ss-redir
         ) &
         git_sparse_clone openwrt-24.10 "https://github.com/coolsnowwolf/luci" applications themes/luci-theme-design libs/luci-lib-fs
-        mv -f applications luciapp
+        mv -f applications luciapp;rm -rf luciapp/luci-app-turboacc
         git_sparse_clone master "https://github.com/coolsnowwolf/luci" applications
         mv -n applications/* luciapp/; rm -rf applications
         rm -rf luciapp/{luci-app-qbittorrent,luci-app-zerotier,luci-app-cpufreq,luci-app-e2guardian,luci-app-aliyundrive-fuse,luci-app-syncdial,luci-app-firewall}
