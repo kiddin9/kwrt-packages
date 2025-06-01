@@ -72,7 +72,7 @@ return view.extend({
         s.anonymous = true;
         s.render = function() {
             var statusView = E('p', { id: 'control_status' }, 
-                '<span class="spinning">⏳</span> ' + _('Checking status...'));
+                '<span class="spinning"> </span> ' + _('Checking status...'));
             
             poll.add(function() {
                 return checkProcess()
@@ -91,7 +91,18 @@ return view.extend({
             });
 
             poll.start();
-            return E('div', { class: 'cbi-section', id: 'status_bar' }, statusView);
+            return E('div', { class: 'cbi-section', id: 'status_bar' }, [ statusView ,
+	       E('div', { 'style': 'text-align: right; font-style: italic;' }, [
+                    E('span', {}, [
+                    _('© github '),
+                    E('a', { 
+                        'href': 'https://github.com/sirpdboy', 
+                        'target': '_blank',
+                        'style': 'text-decoration: none;'
+                    }, 'by sirpdboy')
+                ])
+            ])
+]);
         }
 
 		s = m.section(form.NamedSection, 'config', 'watchdog', _(''));
@@ -174,7 +185,8 @@ return view.extend({
 		o.description = _('\"0\" in ipset means permanent release, use with caution');
 		o.depends('port_release_enable', '1');
 
-
+	        
 		return m.render();
+
 	}
 });

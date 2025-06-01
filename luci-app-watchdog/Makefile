@@ -6,19 +6,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-watchdog
-PKG_VERSION:=1.0.3
-PKG_RELEASE:=1
+PKG_VERSION:=1.0.4
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=sirpdboy  <herboy2008@gmail.com>
 PKG_CONFIG_DEPENDS:=
 
 LUCI_TITLE:=LuCI support for watchdog
 LUCI_PKGARCH:=all
-LUCI_DEPENDS:=+curl +bash
-
-define Package/$(PKG_NAME)/conffiles
-/etc/config/watchdog
-endef
+LUCI_DEPENDS:=+watchdog
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

@@ -96,7 +96,7 @@ return view.extend({
 				E('small', {}, _('Refresh every 5 seconds.').format(L.env.pollinterval)),
 				E('div', { 'class': 'cbi-section-actions cbi-section-actions-right' })
 			]),
-		E('div', { 'style': 'text-align: center; padding: 10px; font-style: italic;' }, [
+		E('div', { 'style': 'text-align: right;  font-style: italic;' }, [
                 E('span', {}, [
                     _('© github '),
                     E('a', { 
