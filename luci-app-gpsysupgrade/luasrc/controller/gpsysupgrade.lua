@@ -31,7 +31,7 @@ function sysversion_update()
 	if task == "flash" then
 		json = sysupgrade.to_flash(http.formvalue("file"),http.formvalue("retain"))
 	else
-		json = sysupgrade.to_download(http.formvalue("url"),http.formvalue("md5"))
+		json = sysupgrade.to_download(http.formvalue("url"))
 	end
 
 	http_write_json(json)

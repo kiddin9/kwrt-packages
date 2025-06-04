@@ -130,8 +130,7 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 		// Download file
 		XHR.get(sysUpgradeUrl, {
 			token: tokenStr,
-			url: sysUpgradeInfo ? sysUpgradeInfo.url : '',
-			md5: sysUpgradeInfo ? sysUpgradeInfo.md5 : ''
+			url: sysUpgradeInfo ? sysUpgradeInfo.url : ''
 		}, function(x,json) {
 			if(json.code) {
 				removePageNotice_sysup();
