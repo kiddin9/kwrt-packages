@@ -54,7 +54,8 @@ pinger_binary=$(uci -q get sqm.${INTERFACE}.pinger || echo 'tsping')
 # so e.g. if 6 reflectors are specified and the number of pingers is set to 4, the first 4 reflectors will be used initially
 # and the remaining 2 reflectors in the list will be used in the event any of the first 4 go bad
 # a bad reflector will go to the back of the queue on reflector rotation
-reflectors=( $(uci -q get omr-tracker.defaults.hosts) )
+country="$(uci -q get omr-tracker.defaults.hosts)"
+reflectors=( $(uci -q get omr-tracker.${country}.hosts) )
 #reflectors=(
 #"1.1.1.1" "1.0.0.1"  # Cloudflare
 #"8.8.8.8" "8.8.4.4"  # Google
