@@ -39,10 +39,10 @@ start_vntcli() {
                    echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 找到上传的程序/tmp/vnt-cli，替换为$clibin " >>/tmp/vnt-cli.log
                    upsize="$(du -k /tmp/vnt-cli | cut -f1)"
                    result=$(expr $size - $upsize)
-                   if [ "$(($(/tmp/vnt-cli -h 2>&1 | wc -l)))" -gt 3 ] && [ "$result" -gt 500 ] ; then
+                   if [[ "$(/tmp/vnt-cli -h 2>&1 | wc -l)" -gt 3 ]] && [ "$result" -gt 500 ] ; then
                      mv -f /tmp/vnt-cli "$clibin"
                      else
-		     [ -z "$size" ] && [ "$(($(/tmp/vnt-cli -h 2>&1 | wc -l)))" -gt 3 ] && mv -f /tmp/vnt-cli "$clibin"
+		     [ -z "$size" ] && [[ "$(/tmp/vnt-cli -h 2>&1 | wc -l)" -gt 3 ]] && mv -f /tmp/vnt-cli "$clibin"
                      echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 无法替换，上传的程序不完整或自定义路径的可用空间不足，当前空间剩余${size}kb" >>/tmp/vnt-cli.log
                    fi
                 fi
@@ -51,7 +51,7 @@ start_vntcli() {
                     sed -i "/clibin/c option clibin '/tmp/vnt-cli' " /etc/config/vnt 
                     clibin=/tmp/vnt-cli
                 fi
-		if [ "$($clibin -h 2>&1 | wc -l)" -lt 3 ] || [ ! -f "$clibin" ] ; then
+		if [[ "$($clibin -h 2>&1 | wc -l)" -lt 3 ]] || [ ! -f "$clibin" ] ; then
 		 echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 未找到程序 $clibin 开始在线下载，下载较慢耐心等候" >>/tmp/vnt-cli.log
                  mkdir -p "$path"
 		if [ -z "$curltest" ] || [ ! -s "`which curl`" ] ; then
@@ -63,7 +63,7 @@ start_vntcli() {
        			[ -z "$tag" ] && tag="$( curl -k --connect-timeout 3 --user-agent "$user_agent" -s  https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
        			[ -z "$tag" ] && tag="$( curl -Lk --connect-timeout 5 --user-agent "$user_agent" -s  https://dl.cnqq.cloudns.ch/https://api.github.com/repos/vnt-dev/vnt/releases/latest  2>&1 | grep 'tag_name' | cut -d\" -f4 )"
    		fi
-		[ -z "$tag" ] && tag="1.2.15"
+		[ -z "$tag" ] && tag="v1.2.16"
 		case "${cpucore}" in 
              		"mipsle") url="mipsel-unknown-linux-musl"
 	     		;;
@@ -86,7 +86,7 @@ start_vntcli() {
 				tar -zxf /tmp/vnt-cli.tar.gz -C $path
 				rm -f /tmp/vnt-cli.tar.gz ${path}/vn-link-cli ${path}/README.md >/dev/null 2>&1
 				chmod +x "$clibin"
- 				if [ "$($clibin -h 2>&1 | wc -l)" -gt 3 ]; then
+ 				if [[ "$($clibin -h 2>&1 | wc -l)" -gt 3 ]] ; then
     					echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : ${clibin} 下载成功" >>/tmp/vnt-cli.log
 					break
  				else
@@ -356,12 +356,12 @@ time="$(($(uci -q get vnt.@vnt-cli[0].checktime) * 60))"
   fi 
 while true; do
   if [ "$(uci -q get vnt.@vnt-cli[0].enabled)" = "1" ] ; then
-    ping -c 3 223.5.5.5 -w 5 >/dev/null 2>&1
+    /bin/ping -c 3 223.5.5.5 -w 5 >/dev/null 2>&1
     if [ "$?" == "0" ]; then
         if [ ! -z "$(uci -q get vnt.@vnt-cli[0].checkip)" ] ; then
            online=""
            for ip in $(uci -q get vnt.@vnt-cli[0].checkip); do
-           ms=`echo $(ping -4 $ip -c 2 -w 4 -q) | awk -F '/' '{print $4}'`
+           ms=`echo $(/bin/ping -4 $ip -c 2 -w 4 -q) | awk -F '/' '{print $4}'`
            [ ! -z "$ms" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 通断检测：${ip} 延迟：${ms}ms " >>/tmp/vnt-cli.log && online=1
            [ -z "$ms" ] && echo "$(date '+%Y-%m-%d %H:%M:%S') vnt-cli : 通断检测：${ip} 网络中断 " >>/tmp/vnt-cli.log
            done     
@@ -403,10 +403,10 @@ start_vnts() {
                    echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : 找到上传的程序/tmp/vnts，替换为$vntsbin " >>/tmp/vnts.log
                    upsize="$(du -k /tmp/vnts | cut -f1)"
                    result=$(expr $size - $upsize)
-                   if [ "$(($(/tmp/vnts -h 2>&1 | wc -l)))" -gt 3 ] && [ "$result" -gt 500 ] ; then
+                   if [[ "$(/tmp/vnts -h 2>&1 | wc -l)" -gt 3 ]] && [ "$result" -gt 500 ] ; then
                      mv -f /tmp/vnts "$vntsbin"
                      else
-		     [ -z "$size" ] && [ "$(($(/tmp/vnts -h 2>&1 | wc -l)))" -gt 3 ] && mv -f /tmp/vnts "$vntsbin"
+		     [ -z "$size" ] && [[ "$(/tmp/vnts -h 2>&1 | wc -l)" -lt 3 ]] && mv -f /tmp/vnts "$vntsbin"
                      echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : 无法替换，上传的程序不完整或自定义路径的可用空间不足，当前空间剩余${size}kb" >>/tmp/vnts.log
                    fi
                 fi
@@ -419,7 +419,7 @@ start_vnts() {
                 path=$(dirname "$vntsbin")
                 key_path="${path}/key"
                 log_path="${path}/log"
-		if [ "$($vntsbin -h 2>&1 | wc -l)" -lt 3 ] || [ ! -f "$vntsbin" ] ; then
+		if [[ "$($vntsbin -h 2>&1 | wc -l)" -lt 3 ]] || [ ! -f "$vntsbin" ] ; then
 		echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : ${vntsbin} 不存在，开始在线下载，下载较慢耐心等候..." >>/tmp/vnts.log
                 mkdir -p "$path"
 		if [ -z "$curltest" ] || [ ! -s "`which curl`" ] ; then
@@ -455,7 +455,7 @@ start_vnts() {
                    	tar zxf /tmp/vnts.tar.gz -C /tmp/
                    	chmod +x /tmp/vnts
                    	rm -rf /tmp/vnts.tar.gz
-                  	if [ "$(($(/tmp/vnts -h 2>&1 | wc -l)))" -gt 3 ]; then
+                  	if [[ "$(/tmp/vnts -h 2>&1 | wc -l)" -gt 3 ]] ; then
                     		echo "$(date '+%Y-%m-%d %H:%M:%S') vnts : /tmp/vnts 下载成功" >>/tmp/vnts.log
                     		mv -f /tmp/vnts "$vntsbin"
 				break
