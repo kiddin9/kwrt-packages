@@ -63,7 +63,7 @@ start_service() {
 	   exit 1
 	else
 	   chmod +x $PROG
-	   if [ $(($($PROG -h | wc -l))) -lt 3 ] ;then
+	   if [[ "$($PROG -h 2>&1 | wc -l)" -lt 3 ]] ;then
 	      uci -q set caddy.@caddy[0].enabled=0 
 	      uci commit caddy 
 	      echo "$(TZ=UTC-8 date -R +%Y年%m月%d日\ %X) : $PROG 程序不完整或CPU架构不支持的程序，无法启动!" >>$log_dir 2>&1
