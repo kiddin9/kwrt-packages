@@ -10,7 +10,7 @@ if autoupgrade_fm == '1' then
 <script>
 var tokenStr = '<%=token%>';
 
-		XHR.get('<%=url([[admin]], [[services]], [[gpsysupgrade]], [[sysversion_check]])%>', {
+		XHR.get('<%=url([[admin]], [[system]], [[gpsysupgrade]], [[sysversion_check]])%>', {
 			token: tokenStr,
 			model: ''
 		}, function(x,json) {
@@ -24,7 +24,7 @@ var tokenStr = '<%=token%>';
 					if(ckeckDetailElm) {
 						var urlNode = '';
 						if(json.version) {
-							urlNode = '<div class="alert-message fade-in success" style="display:flex;margin-top: -1.5rem;padding: 0.31rem 0rem;"><div style="flex:10"><a href="<%=url([[admin]], [[services]], [[gpsysupgrade]])%>"><p><%:New version available%>：' + json.version + '</p></a></div></div>';
+							urlNode = '<div class="alert-message fade-in success" style="display:flex;margin-top: -1.5rem;padding: 0.31rem 0rem;"><div style="flex:10"><a href="<%=url([[admin]], [[system]], [[gpsysupgrade]])%>"><p><%:New version available%>：' + json.version + '</p></a></div></div>';
 							 ckeckDetailElm.innerHTML=urlNode+ckeckDetailElm.innerHTML;
 						}
 					
