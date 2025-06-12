@@ -8,7 +8,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=r8152
 PKG_VERSION:=2.20.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/wget/realtek-r8152-linux/tar.gz/v$(PKG_VERSION)?
@@ -30,7 +30,7 @@ define KernelPackage/usb-net-rtl8152-vendor
 endef
 
 define KernelPackage/usb-net-rtl8152-vendor/description
-  Kernel module for Realtek RTL8152 USB Ethernet chipsets
+  Kernel module for Realtek Realtek USB 1G / 2.5G / 5G / 10G Ethernet Chipsets
 endef
 
 define Build/Compile
