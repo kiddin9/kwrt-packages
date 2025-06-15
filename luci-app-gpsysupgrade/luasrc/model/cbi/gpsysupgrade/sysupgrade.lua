@@ -34,6 +34,7 @@ function to_check()
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
 	model = target.. "/" ..board_name
     if board_name == "x86_64" then
+	model = "x86_64"
     	check_update()
     	if fs.access("/sys/firmware/efi") then
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/kwrt-" ..remote_version.. "-x86-64-generic-squashfs-combined-efi.img.gz"
@@ -41,6 +42,7 @@ function to_check()
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/kwrt-" ..remote_version.. "-x86-64-generic-squashfs-combined.img.gz"
     	end
     elseif board_name == "x86_generic" then
+	model = "x86_32"
     	check_update()
     	if fs.access("/sys/firmware/efi") then
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/kwrt-" ..remote_version.. "-x86-generic-squashfs-combined-efi.img.gz"
