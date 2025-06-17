@@ -601,6 +601,276 @@ return view.extend({
         return result;
     },
 
+    // Process Hybrid statistics (HFSC + CAKE)
+    processHybridStats: function(data) {
+        if (!data || (!data.egress_leaf_qdiscs && !data.ingress_leaf_qdiscs)) {
+            return { tables: [], charts: [] };
+        }
+        
+        var result = { tables: [], charts: [] };
+        var self = this;
+        
+        // Process egress hybrid statistics
+        if (data.egress_leaf_qdiscs && data.egress_leaf_qdiscs.length > 0) {
+            var egressRows = [];
+            
+            // Process all qdiscs first and collect data (hybrid only has 1:11, 1:13, 1:15)
+            var classData = {};
+            
+            data.egress_leaf_qdiscs.forEach(function(qdisc) {
+                if (!qdisc.parent) return;
+                
+                var classId = qdisc.parent;
+                var classDesc = '';
+                var queueType = '';
+                var sortOrder = 999;
+                
+                // Hybrid class mapping based on setup_hybrid() function
+                if (classId.includes('1:11')) {
+                    classDesc = _('Realtime Gaming');
+                    queueType = data.gameqdisc || 'pfifo';
+                    sortOrder = 3;
+                }
+                else if (classId.includes('1:13')) {
+                    classDesc = _('Default (CAKE)');
+                    queueType = 'cake';
+                    sortOrder = 2;
+                }
+                else if (classId.includes('1:15')) {
+                    classDesc = _('Bulk');
+                    queueType = 'fq_codel';
+                    sortOrder = 1;
+                }
+                else return; // Skip unknown classes
+                
+                classData[classId] = {
+                    classId: classId,
+                    classDesc: classDesc,
+                    queueType: queueType,
+                    sortOrder: sortOrder,
+                    bytes: qdisc.bytes || 0,
+                    packets: qdisc.packets || 0,
+                    drops: qdisc.drops || 0,
+                    overlimits: qdisc.overlimits || 0
+                };
+            });
+            
+            // Convert to array and sort
+            var sortedClassData = Object.values(classData).sort(function(a, b) {
+                return b.sortOrder - a.sortOrder; // Higher priority first
+            });
+            
+            // Create rows from sorted data
+            sortedClassData.forEach(function(item) {
+                egressRows.push([
+                    item.classId,
+                    item.classDesc,
+                    item.queueType,
+                    formatSize(item.bytes),
+                    item.packets,
+                    item.drops,
+                    item.overlimits
+                ]);
+            });
+            
+            // Create table for Hybrid egress classes
+            result.tables.push(self.createStatsTable(
+                _('Hybrid Egress Class Statistics'),
+                [_('Class ID'), _('Description'), _('Queue Type'), _('Bytes'), _('Packets'), _('Drops'), _('Overlimits')],
+                egressRows
+            ));
+            
+            // Create charts
+            var classLabels = sortedClassData.map(function(item) { return item.classDesc; });
+            var sentBytes = sortedClassData.map(function(item) { 
+                return parseSizeToBytes(formatSize(item.bytes));
+            });
+            var sentPackets = sortedClassData.map(function(item) { return item.packets; });
+            var droppedPackets = sortedClassData.map(function(item) { return item.drops; });
+            
+            result.charts.push(self.createChart(
+                'hybrid-egress-bytes',
+                _('Egress Bytes Sent by Class'),
+                sentBytes,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'hybrid-egress-packets',
+                _('Egress Packets Sent by Class'),
+                sentPackets,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'hybrid-egress-dropped',
+                _('Egress Dropped Packets by Class'),
+                droppedPackets,
+                classLabels,
+                chartColors
+            ));
+        }
+        
+        // Process ingress hybrid statistics
+        if (data.ingress_leaf_qdiscs && data.ingress_leaf_qdiscs.length > 0) {
+            var ingressRows = [];
+            
+            var classData = {};
+            
+            data.ingress_leaf_qdiscs.forEach(function(qdisc) {
+                if (!qdisc.parent) return;
+                
+                var classId = qdisc.parent;
+                var classDesc = '';
+                var queueType = '';
+                var sortOrder = 999;
+                
+                // Hybrid class mapping
+                if (classId.includes('1:11')) {
+                    classDesc = _('Realtime Gaming');
+                    queueType = data.gameqdisc || 'pfifo';
+                    sortOrder = 3;
+                }
+                else if (classId.includes('1:13')) {
+                    classDesc = _('Default (CAKE)');
+                    queueType = 'cake';
+                    sortOrder = 2;
+                }
+                else if (classId.includes('1:15')) {
+                    classDesc = _('Bulk');
+                    queueType = 'fq_codel';
+                    sortOrder = 1;
+                }
+                else return;
+                
+                classData[classId] = {
+                    classId: classId,
+                    classDesc: classDesc,
+                    queueType: queueType,
+                    sortOrder: sortOrder,
+                    bytes: qdisc.bytes || 0,
+                    packets: qdisc.packets || 0,
+                    drops: qdisc.drops || 0,
+                    overlimits: qdisc.overlimits || 0
+                };
+            });
+            
+            var sortedClassData = Object.values(classData).sort(function(a, b) {
+                return b.sortOrder - a.sortOrder;
+            });
+            
+            sortedClassData.forEach(function(item) {
+                ingressRows.push([
+                    item.classId,
+                    item.classDesc,
+                    item.queueType,
+                    formatSize(item.bytes),
+                    item.packets,
+                    item.drops,
+                    item.overlimits
+                ]);
+            });
+            
+            result.tables.push(self.createStatsTable(
+                _('Hybrid Ingress Class Statistics'),
+                [_('Class ID'), _('Description'), _('Queue Type'), _('Bytes'), _('Packets'), _('Drops'), _('Overlimits')],
+                ingressRows
+            ));
+            
+            var classLabels = sortedClassData.map(function(item) { return item.classDesc; });
+            var sentBytes = sortedClassData.map(function(item) { 
+                return parseSizeToBytes(formatSize(item.bytes));
+            });
+            var sentPackets = sortedClassData.map(function(item) { return item.packets; });
+            var droppedPackets = sortedClassData.map(function(item) { return item.drops; });
+            
+            result.charts.push(self.createChart(
+                'hybrid-ingress-bytes',
+                _('Ingress Bytes Sent by Class'),
+                sentBytes,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'hybrid-ingress-packets',
+                _('Ingress Packets Sent by Class'),
+                sentPackets,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'hybrid-ingress-dropped',
+                _('Ingress Dropped Packets by Class'),
+                droppedPackets,
+                classLabels,
+                chartColors
+            ));
+        }
+        
+        // Add CAKE details for the 1:13 class if available
+        if (data.hybrid_cake_egress && Object.keys(data.hybrid_cake_egress).length > 0) {
+            var cakeEgressData = data.hybrid_cake_egress;
+            if (cakeEgressData.tins && cakeEgressData.tins.length > 0) {
+                var cakeEgressRows = [];
+                                 cakeEgressData.tins.forEach(function(tin, index) {
+                     cakeEgressRows.push([
+                         'Tin ' + index,
+                         bytesToKbits(tin.threshold_rate) + ' Kbit/s',
+                         formatTime(tin.target_us),
+                         formatTime(tin.interval_us),
+                         formatTime(tin.peak_delay_us),
+                         formatTime(tin.avg_delay_us),
+                         formatTime(tin.base_delay_us),
+                         formatSize(tin.sent_bytes),
+                         tin.sent_packets,
+                         tin.drops,
+                         tin.ecn_mark
+                     ]);
+                 });
+                 
+                 result.tables.push(self.createStatsTable(
+                     _('CAKE Statistics for Default Class (Egress)'),
+                     [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Peak Delay'), _('Avg Delay'), _('Sparse Delay'), _('Bytes'), _('Packets'), _('Dropped'), _('ECN Marked')],
+                     cakeEgressRows
+                 ));
+            }
+        }
+        
+        if (data.hybrid_cake_ingress && Object.keys(data.hybrid_cake_ingress).length > 0) {
+            var cakeIngressData = data.hybrid_cake_ingress;
+            if (cakeIngressData.tins && cakeIngressData.tins.length > 0) {
+                var cakeIngressRows = [];
+                                 cakeIngressData.tins.forEach(function(tin, index) {
+                     cakeIngressRows.push([
+                         'Tin ' + index,
+                         bytesToKbits(tin.threshold_rate) + ' Kbit/s',
+                         formatTime(tin.target_us),
+                         formatTime(tin.interval_us),
+                         formatTime(tin.peak_delay_us),
+                         formatTime(tin.avg_delay_us),
+                         formatTime(tin.base_delay_us),
+                         formatSize(tin.sent_bytes),
+                         tin.sent_packets,
+                         tin.drops,
+                         tin.ecn_mark
+                     ]);
+                 });
+                 
+                 result.tables.push(self.createStatsTable(
+                     _('CAKE Statistics for Default Class (Ingress)'),
+                     [_('Tin'), _('Threshold'), _('Target'), _('Interval'), _('Peak Delay'), _('Avg Delay'), _('Sparse Delay'), _('Bytes'), _('Packets'), _('Dropped'), _('ECN Marked')],
+                     cakeIngressRows
+                 ));
+            }
+        }
+        
+        return result;
+    },
+
     render: function(data) {
         var view = this;
         var qosStats = data[0];
@@ -744,7 +1014,7 @@ return view.extend({
                     row.appendChild(E('span', {}, qosStats.priority_queue_egress || '-'));
                     infoContainer.appendChild(row);
                 }
-            } else if (qosStats.root_qdisc === 'hfsc') {
+            } else if (qosStats.root_qdisc === 'hfsc' || qosStats.root_qdisc === 'hybrid') {
                 if (qosStats.gameqdisc) {
                     var row = E('div', { 'style': 'margin-right: 1.5em; margin-bottom: 0.3em;' });
                     row.appendChild(E('span', { 'style': 'font-weight: bold;' }, _('Game Queue Discipline:')));
@@ -934,6 +1204,97 @@ return view.extend({
                                 egressCharts.push(hfscResults.charts[i]);
                             } else if (titleText.includes('Ingress')) {
                                 ingressCharts.push(hfscResults.charts[i]);
+                            }
+                        }
+                        
+                        // Create egress charts section
+                        if (egressCharts.length > 0) {
+                            var egressChartsContainer = E('div', { 'class': 'cbi-section-node' });
+                            var egressGrid = E('div', { 
+                                'style': 'display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;' 
+                            });
+                            
+                            egressCharts.forEach(function(chart) {
+                                egressGrid.appendChild(chart);
+                            });
+                            
+                            egressChartsContainer.appendChild(egressGrid);
+                            tabContents[0].appendChild(egressChartsContainer);
+                        }
+                        
+                        // Create ingress charts section
+                        if (ingressCharts.length > 0) {
+                            var ingressChartsContainer = E('div', { 'class': 'cbi-section-node' });
+                            var ingressGrid = E('div', { 
+                                'style': 'display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;' 
+                            });
+                            
+                            ingressCharts.forEach(function(chart) {
+                                ingressGrid.appendChild(chart);
+                            });
+                            
+                            ingressChartsContainer.appendChild(ingressGrid);
+                            tabContents[1].appendChild(ingressChartsContainer);
+                        }
+                    }
+                }
+            } else if (qosStats.root_qdisc === 'hybrid') {
+                var hybridResults = this.processHybridStats(qosStats);
+                
+                // Process and display tables in appropriate tabs
+                if (hybridResults.tables.length > 0) {
+                    // Separate tables by type
+                    var egressClassTable = null;
+                    var ingressClassTable = null;
+                    var cakeEgressTable = null;
+                    var cakeIngressTable = null;
+                    
+                    // Categorize tables by their titles
+                    for (var i = 0; i < hybridResults.tables.length; i++) {
+                        var titleElement = hybridResults.tables[i].querySelector('h3, .table-title');
+                        if (titleElement) {
+                            var title = titleElement.textContent || titleElement.innerText;
+                            if (title.includes('Hybrid Egress Class')) {
+                                egressClassTable = hybridResults.tables[i];
+                            } else if (title.includes('Hybrid Ingress Class')) {
+                                ingressClassTable = hybridResults.tables[i];
+                            } else if (title.includes('CAKE') && title.includes('Egress')) {
+                                cakeEgressTable = hybridResults.tables[i];
+                            } else if (title.includes('CAKE') && title.includes('Ingress')) {
+                                cakeIngressTable = hybridResults.tables[i];
+                            }
+                        }
+                    }
+                    
+                    // Add tables to appropriate tabs
+                    if (egressClassTable) {
+                        tabContents[0].appendChild(egressClassTable);
+                    }
+                    if (cakeEgressTable) {
+                        tabContents[0].appendChild(cakeEgressTable);
+                    }
+                    
+                    if (ingressClassTable) {
+                        tabContents[1].appendChild(ingressClassTable);
+                    }
+                    if (cakeIngressTable) {
+                        tabContents[1].appendChild(cakeIngressTable);
+                    }
+                    
+                    // Process charts
+                    if (hybridResults.charts.length > 0) {
+                        var egressCharts = [];
+                        var ingressCharts = [];
+                        
+                        // Categorize charts as egress or ingress based on their titles
+                        for (var i = 0; i < hybridResults.charts.length; i++) {
+                            var chartTitle = hybridResults.charts[i].querySelector('h3');
+                            var titleText = chartTitle ? (chartTitle.textContent || chartTitle.innerText) : '';
+                            
+                            if (titleText.includes('Egress')) {
+                                egressCharts.push(hybridResults.charts[i]);
+                            } else if (titleText.includes('Ingress')) {
+                                ingressCharts.push(hybridResults.charts[i]);
                             }
                         }
                         

@@ -7,20 +7,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openlist
-PKG_WEB_VERSION:=4.0.0-rc.2
-PKG_RELEASE:=1
+PKG_WEB_VERSION:=4.0.0-rc.4
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/OpenListTeam/OpenList.git
-PKG_SOURCE_DATE:=2025-06-16
-PKG_SOURCE_VERSION:=b1afadd1296c8d48fcece077be75b017bfdd2c8b
+PKG_SOURCE_DATE:=2025-06-17
+PKG_SOURCE_VERSION:=87ca1b96aeefb2221a4f9ae401d6895bd48931b6
 PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILE:=LICENSE
 PKG_MAINTAINER:=sbwml <admin@cooluc.com>
 
-define Download/$(PKG_NAME)-web
+define Download/openlist-frontend
   FILE:=openlist-frontend-dist-v$(PKG_WEB_VERSION).tar.gz
   URL:=https://github.com/OpenListTeam/OpenList-Frontend/releases/download/v$(PKG_WEB_VERSION)/
   HASH:=skip
@@ -46,7 +46,7 @@ endif
 include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
 
-define Package/$(PKG_NAME)
+define Package/openlist
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Web Servers/Proxies
@@ -55,12 +55,12 @@ define Package/$(PKG_NAME)
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle
 endef
 
-define Package/$(PKG_NAME)/conffiles
+define Package/openlist/conffiles
 /etc/openlist
 /etc/config/openlist
 endef
 
-define Package/$(PKG_NAME)/description
+define Package/openlist/description
   A file list program that supports multiple storage, powered by Gin and Solidjs.
 endef
 
@@ -83,7 +83,7 @@ define Build/Prepare
 	$(SED) 's_https://docs.oplist.org/logo.svg_/assets/logo.svg_g' $(PKG_BUILD_DIR)/public/dist/index.html
 endef
 
-define Package/$(PKG_NAME)/install
+define Package/openlist/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/OpenList $(1)/usr/bin/openlist
@@ -93,5 +93,5 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DATA) $(CURDIR)/files/data.db $(1)/etc/openlist/data.db
 endef
 
-$(eval $(call Download,$(PKG_NAME)-web))
-$(eval $(call BuildPackage,$(PKG_NAME)))
+$(eval $(call Download,openlist-frontend))
+$(eval $(call BuildPackage,openlist))

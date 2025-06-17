@@ -107,8 +107,8 @@ get_stats() {
                 cake_egress: $ce,
                 cake_ingress: $ci
             }' 2>/dev/null)
-    elif [ "$root_qdisc" = "hfsc" ]; then
-        # Extract HFSC root qdiscs and classes
+    elif [ "$root_qdisc" = "hfsc" ] || [ "$root_qdisc" = "hybrid" ]; then
+        # Extract HFSC root qdiscs and classes (hybrid uses HFSC root)
         local hfsc_egress_qdisc
         hfsc_egress_qdisc=$(get_tc_json tc -s -j qdisc show dev "$wan_interface" | jq -c "[.[] | select(.kind == \"hfsc\")]" 2>/dev/null || echo "[]")
         debug_log "HFSC egress qdisc: $hfsc_egress_qdisc"
@@ -146,13 +146,24 @@ get_stats() {
         # Process the output to ensure it's valid JSON and filter non-HFSC qdiscs
         ingress_leaf_qdiscs=$(echo "$ingress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "hfsc" and .parent != null)]' 2>/dev/null || echo "[]")
 
-        # Get game qdisc type
+        # Get game qdisc type (used by both HFSC and hybrid)
         local gameqdisc
         gameqdisc=$(uci -q get qosmate.hfsc.gameqdisc || echo "pfifo")
 
         # Extract the main HFSC qdisc objects for UI compatibility
         local hfsc_egress=$(echo "$hfsc_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
         local hfsc_ingress=$(echo "$hfsc_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+
+        # For hybrid mode, also extract CAKE statistics from the 1:13 classes
+        local hybrid_cake_egress="{}"
+        local hybrid_cake_ingress="{}"
+        if [ "$root_qdisc" = "hybrid" ]; then
+            # Get CAKE stats from the 1:13 parent classes
+            hybrid_cake_egress=$(echo "$egress_leaf_qdiscs" | jq -c '[.[] | select(.kind == "cake" and (.parent == "1:13" or .parent == "1:13:"))] | .[0] // {}' 2>/dev/null || echo "{}")
+            hybrid_cake_ingress=$(echo "$ingress_leaf_qdiscs" | jq -c '[.[] | select(.kind == "cake" and (.parent == "1:13" or .parent == "1:13:"))] | .[0] // {}' 2>/dev/null || echo "{}")
+            debug_log "Hybrid CAKE egress: $hybrid_cake_egress"
+            debug_log "Hybrid CAKE ingress: $hybrid_cake_ingress"
+        fi
 
         # Create final JSON output using jq to ensure proper escaping
         result=$(jq -n \
@@ -167,6 +178,8 @@ get_stats() {
             --argjson hic "$hfsc_ingress_classes" \
             --argjson elq "$egress_leaf_qdiscs" \
             --argjson ilq "$ingress_leaf_qdiscs" \
+            --argjson hce "$hybrid_cake_egress" \
+            --argjson hci "$hybrid_cake_ingress" \
             '{
                 root_qdisc: $rq,
                 wan_interface: $wi,
@@ -178,7 +191,9 @@ get_stats() {
                 hfsc_egress_classes: $hec,
                 hfsc_ingress_classes: $hic,
                 egress_leaf_qdiscs: $elq,
-                ingress_leaf_qdiscs: $ilq
+                ingress_leaf_qdiscs: $ilq,
+                hybrid_cake_egress: $hce,
+                hybrid_cake_ingress: $hci
             }' 2>/dev/null)
     fi
 
