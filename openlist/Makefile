@@ -8,12 +8,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openlist
 PKG_WEB_VERSION:=4.0.0-rc.4
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/OpenListTeam/OpenList.git
 PKG_SOURCE_DATE:=2025-06-17
-PKG_SOURCE_VERSION:=87ca1b96aeefb2221a4f9ae401d6895bd48931b6
+PKG_SOURCE_VERSION:=7613f886d0e2b745d4ddcca2fbe007b38ce51c86
 PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=GPL-3.0
@@ -36,8 +36,8 @@ GO_PKG_LDFLAGS:= \
 	-X '$(GO_PKG)/internal/conf.BuiltAt=$(shell date '+%Y-%m-%d %H:%M:%S %z')' \
 	-X '$(GO_PKG)/internal/conf.GoVersion=$(shell $(STAGING_DIR_HOSTPKG)/bin/go version | sed 's/go version //')' \
 	-X '$(GO_PKG)/internal/conf.GitAuthor=The OpenList Projects Contributors <noreply@openlist.team>' \
-	-X '$(GO_PKG)/internal/conf.GitCommit=tarball/$(shell echo $(PKG_HASH) | cut -c 1-7)' \
-	-X '$(GO_PKG)/internal/conf.Version=v$(PKG_VERSION) (OpenWrt $(ARCH_PACKAGES))' \
+	-X '$(GO_PKG)/internal/conf.GitCommit=$(shell echo $(PKG_SOURCE_VERSION) | cut -c 1-7)' \
+	-X '$(GO_PKG)/internal/conf.Version=$(PKG_SOURCE_DATE) (OpenWrt $(ARCH_PACKAGES))' \
 	-X '$(GO_PKG)/internal/conf.WebVersion=v$(PKG_WEB_VERSION)'
 ifneq ($(CONFIG_ARCH_64BIT),y)
   GO_PKG_EXCLUDES:=drivers/lark

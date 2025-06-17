@@ -140,10 +140,6 @@ return view.extend({
 		o.defaulValue = true;
 
 		o = ss.option(widgets.DeviceSelect, 'gateway_name', _('Gateway Name'));
-		o.filter = function(section_id, name) {
-			var dev = this.devices.filter(function(dev) { return dev.getName() == name })[0];
-			return (dev && dev.getType() == 'bridge');
-		};
 		o.rmempty = false;
 		o.nocreate = true;
 		o.allowany = true;
