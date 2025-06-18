@@ -226,14 +226,22 @@ return view.extend({
                 
                 section.appendChild(channelEl);
                 
+                function isLikelyCommitHash(s) {
+                    // Check if string is a hex string longer than 10 chars.
+                    return typeof s === 'string' && s.length > 10 && /^[a-fA-F0-9]+$/.test(s);
+                }
+                
+                var currentVersionText = isLikelyCommitHash(info.current) ? info.current.substring(0, 7) : info.current;
+                var latestVersionText = isLikelyCommitHash(info.latest) ? info.latest.substring(0, 7) : info.latest;
+                
                 var versionInfo = E('div', { 'style': 'display: inline-block; margin-right: 10px;' }, [
-                    info.current, 
+                    currentVersionText, 
                     ' → ',
                     E('span', { 
                         'style': (title === 'Backend' && backendUpdateAvailable) || 
                                  (title === 'Frontend' && frontendUpdateAvailable) ? 
                                  'color: #ff7d7d; font-weight: bold;' : ''
-                    }, info.latest)
+                    }, latestVersionText)
                 ]);
                 
                 section.appendChild(versionInfo);

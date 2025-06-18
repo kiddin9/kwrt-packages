@@ -65,7 +65,10 @@ return view.extend({
 
     load: function() {
         return Promise.all([
-            callQoSmateConntrackDSCP()
+            callQoSmateConntrackDSCP().catch(function(err) {
+                console.warn('Initial load failed:', err);
+                return { connections: {} };
+            })
         ]);
     },
 
@@ -102,160 +105,183 @@ return view.extend({
             ])
         ]);
 
-        view.updateTable = function(connections) {
-            // Remove all rows except the header
+        view.showErrorMessage = function(message) {
+            // Clear table and show error message
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
-        
-            var currentTime = Date.now() / 1000;
-            var timeDiff = currentTime - view.lastUpdateTime;
-            view.lastUpdateTime = currentTime;
-        
-            connections.forEach(function(conn) {
-                var key = conn.layer3 + conn.protocol + conn.src + conn.sport + conn.dst + conn.dport;
-                var lastConn = view.lastData[key];
-                
-                if (!view.connectionHistory[key]) {
-                    view.connectionHistory[key] = {
-                        inPpsHistory: [],
-                        outPpsHistory: [],
-                        inBpsHistory: [],
-                        outBpsHistory: [],
-                        lastInPackets: conn.in_packets,
-                        lastOutPackets: conn.out_packets,
-                        lastInBytes: conn.in_bytes,
-                        lastOutBytes: conn.out_bytes,
-                        lastTimestamp: currentTime
-                    };
+            table.appendChild(E('tr', { 'class': 'tr' }, [
+                E('td', { 'class': 'td', 'colspan': '9', 'style': 'text-align: center; color: red; padding: 20px;' }, 
+                    message)
+            ]));
+        };
+
+        view.updateTable = function(connections) {
+            try {
+                // Remove all rows except the header
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
                 }
-        
-                var history = view.connectionHistory[key];
-                var instantInPps = 0, instantOutPps = 0, instantInBps = 0, instantOutBps = 0;
-        
-                if (lastConn && timeDiff > 0) {
-                    var inPacketDiff = Math.max(0, conn.in_packets - history.lastInPackets);
-                    var outPacketDiff = Math.max(0, conn.out_packets - history.lastOutPackets);
-                    var inBytesDiff = Math.max(0, conn.in_bytes - history.lastInBytes);
-                    var outBytesDiff = Math.max(0, conn.out_bytes - history.lastOutBytes);
+            
+                var currentTime = Date.now() / 1000;
+                var timeDiff = currentTime - view.lastUpdateTime;
+                view.lastUpdateTime = currentTime;
+            
+                connections.forEach(function(conn) {
+                    var key = conn.layer3 + conn.protocol + conn.src + conn.sport + conn.dst + conn.dport;
+                    var lastConn = view.lastData[key];
                     
-                    instantInPps = Math.round(inPacketDiff / timeDiff);
-                    instantOutPps = Math.round(outPacketDiff / timeDiff);
-                    instantInBps = Math.round(inBytesDiff / timeDiff);
-                    instantOutBps = Math.round(outBytesDiff / timeDiff);
-        
-                    history.inPpsHistory.push(instantInPps);
-                    history.outPpsHistory.push(instantOutPps);
-                    history.inBpsHistory.push(instantInBps);
-                    history.outBpsHistory.push(instantOutBps);
-        
-                    if (history.inPpsHistory.length > view.historyLength) {
-                        history.inPpsHistory.shift();
-                        history.outPpsHistory.shift();
-                        history.inBpsHistory.shift();
-                        history.outBpsHistory.shift();
+                    if (!view.connectionHistory[key]) {
+                        view.connectionHistory[key] = {
+                            inPpsHistory: [],
+                            outPpsHistory: [],
+                            inBpsHistory: [],
+                            outBpsHistory: [],
+                            lastInPackets: conn.in_packets,
+                            lastOutPackets: conn.out_packets,
+                            lastInBytes: conn.in_bytes,
+                            lastOutBytes: conn.out_bytes,
+                            lastTimestamp: currentTime
+                        };
                     }
-                }
-        
-                history.lastInPackets = conn.in_packets;
-                history.lastOutPackets = conn.out_packets;
-                history.lastInBytes = conn.in_bytes;
-                history.lastOutBytes = conn.out_bytes;
-                history.lastTimestamp = currentTime;
-        
-                var avgInPps = Math.round(history.inPpsHistory.reduce((a, b) => a + b, 0) / history.inPpsHistory.length) || 0;
-                var avgOutPps = Math.round(history.outPpsHistory.reduce((a, b) => a + b, 0) / history.outPpsHistory.length) || 0;
-                var avgInBps = Math.round(history.inBpsHistory.reduce((a, b) => a + b, 0) / history.inBpsHistory.length) || 0;
-                var avgOutBps = Math.round(history.outBpsHistory.reduce((a, b) => a + b, 0) / history.outBpsHistory.length) || 0;
-                var maxInPps = Math.max(...history.inPpsHistory, 0);
-                var maxOutPps = Math.max(...history.outPpsHistory, 0);
-        
-                conn.avgInPps = avgInPps;
-                conn.avgOutPps = avgOutPps;
-                conn.maxInPps = maxInPps;
-                conn.maxOutPps = maxOutPps;
-                conn.avgInBps = avgInBps;
-                conn.avgOutBps = avgOutBps;
-                view.lastData[key] = conn;
-            });
-        
-            connections.sort(view.sortFunction.bind(view));
-        
-            connections.forEach(function(conn) {
-                if (view.filter) {
-                    // Split the filter string by whitespace to get individual tokens
-                    var tokens = view.filter.split(/\s+/).map(function(token) {
-                        return token.trim().toLowerCase();
-                    });
-
-                    // Collect the relevant fields for matching
-                    var dscpString = dscpToString(conn.dscp);
-                    var srcFull = conn.src + (conn.sport !== "-" ? ':' + conn.sport : '');
-                    var dstFull = conn.dst + (conn.dport !== "-" ? ':' + conn.dport : '');
-                    var fields = [
-                        conn.protocol.toLowerCase(),
-                        srcFull.toLowerCase(),
-                        dstFull.toLowerCase(),
-                        dscpString.toLowerCase()
-                    ];
-
-                    // Each token must match at least one field (AND logic across tokens, OR logic across fields)
-                    var pass = tokens.every(function(t) {
-                        return fields.some(function(field) {
-                            return field.includes(t);
+            
+                    var history = view.connectionHistory[key];
+                    var instantInPps = 0, instantOutPps = 0, instantInBps = 0, instantOutBps = 0;
+            
+                    if (lastConn && timeDiff > 0) {
+                        var inPacketDiff = Math.max(0, conn.in_packets - history.lastInPackets);
+                        var outPacketDiff = Math.max(0, conn.out_packets - history.lastOutPackets);
+                        var inBytesDiff = Math.max(0, conn.in_bytes - history.lastInBytes);
+                        var outBytesDiff = Math.max(0, conn.out_bytes - history.lastOutBytes);
+                        
+                        instantInPps = Math.round(inPacketDiff / timeDiff);
+                        instantOutPps = Math.round(outPacketDiff / timeDiff);
+                        instantInBps = Math.round(inBytesDiff / timeDiff);
+                        instantOutBps = Math.round(outBytesDiff / timeDiff);
+            
+                        history.inPpsHistory.push(instantInPps);
+                        history.outPpsHistory.push(instantOutPps);
+                        history.inBpsHistory.push(instantInBps);
+                        history.outBpsHistory.push(instantOutBps);
+            
+                        if (history.inPpsHistory.length > view.historyLength) {
+                            history.inPpsHistory.shift();
+                            history.outPpsHistory.shift();
+                            history.inBpsHistory.shift();
+                            history.outBpsHistory.shift();
+                        }
+                    }
+            
+                    history.lastInPackets = conn.in_packets;
+                    history.lastOutPackets = conn.out_packets;
+                    history.lastInBytes = conn.in_bytes;
+                    history.lastOutBytes = conn.out_bytes;
+                    history.lastTimestamp = currentTime;
+            
+                    var avgInPps = Math.round(history.inPpsHistory.reduce((a, b) => a + b, 0) / history.inPpsHistory.length) || 0;
+                    var avgOutPps = Math.round(history.outPpsHistory.reduce((a, b) => a + b, 0) / history.outPpsHistory.length) || 0;
+                    var avgInBps = Math.round(history.inBpsHistory.reduce((a, b) => a + b, 0) / history.inBpsHistory.length) || 0;
+                    var avgOutBps = Math.round(history.outBpsHistory.reduce((a, b) => a + b, 0) / history.outBpsHistory.length) || 0;
+                    var maxInPps = Math.max(...history.inPpsHistory, 0);
+                    var maxOutPps = Math.max(...history.outPpsHistory, 0);
+            
+                    conn.avgInPps = avgInPps;
+                    conn.avgOutPps = avgOutPps;
+                    conn.maxInPps = maxInPps;
+                    conn.maxOutPps = maxOutPps;
+                    conn.avgInBps = avgInBps;
+                    conn.avgOutBps = avgOutBps;
+                    view.lastData[key] = conn;
+                });
+            
+                connections.sort(view.sortFunction.bind(view));
+            
+                connections.forEach(function(conn) {
+                    if (view.filter) {
+                        // Split the filter string by whitespace to get individual tokens
+                        var tokens = view.filter.split(/\s+/).map(function(token) {
+                            return token.trim().toLowerCase();
                         });
-                    });
-                    if (!pass) {
-                        return;
+
+                        // Collect the relevant fields for matching
+                        var dscpString = dscpToString(conn.dscp);
+                        var srcFull = conn.src + (conn.sport !== "-" ? ':' + conn.sport : '');
+                        var dstFull = conn.dst + (conn.dport !== "-" ? ':' + conn.dport : '');
+                        var fields = [
+                            conn.protocol.toLowerCase(),
+                            srcFull.toLowerCase(),
+                            dstFull.toLowerCase(),
+                            dscpString.toLowerCase()
+                        ];
+
+                        // Each token must match at least one field (AND logic across tokens, OR logic across fields)
+                        var pass = tokens.every(function(t) {
+                            return fields.some(function(field) {
+                                return field.includes(t);
+                            });
+                        });
+                        if (!pass) {
+                            return;
+                        }
                     }
+                    var srcFull = conn.src + ':' + (conn.sport || '-');
+                    var dstFull = conn.dst + ':' + (conn.dport || '-');
+                    var dscpString = dscpToString(conn.dscp);
+                    
+                    table.appendChild(E('tr', { 'class': 'tr' }, [
+                        E('td', { 'class': 'td' }, conn.protocol.toUpperCase()),
+                        E('td', { 'class': 'td' }, srcFull),
+                        E('td', { 'class': 'td' }, dstFull),
+                        E('td', { 'class': 'td' }, dscpString),
+                        E('td', { 'class': 'td' }, 
+                            E('div', {}, [
+                                E('span', {}, _('In: ') + formatSize(conn.in_bytes)),
+                                E('br'),
+                                E('span', {}, _('Out: ') + formatSize(conn.out_bytes))
+                            ])
+                        ),
+                        E('td', { 'class': 'td' }, 
+                            E('div', {}, [
+                                E('span', {}, _('In: ') + conn.in_packets),
+                                E('br'),
+                                E('span', {}, _('Out: ') + conn.out_packets)
+                            ])
+                        ),
+                        E('td', { 'class': 'td' }, 
+                            E('div', {}, [
+                                E('span', {}, _('In: ') + conn.avgInPps),
+                                E('br'),
+                                E('span', {}, _('Out: ') + conn.avgOutPps)
+                            ])
+                        ),
+                        E('td', { 'class': 'td' }, 
+                            E('div', {}, [
+                                E('span', {}, _('In: ') + conn.maxInPps),
+                                E('br'),
+                                E('span', {}, _('Out: ') + conn.maxOutPps)
+                            ])
+                        ),
+                        E('td', { 'class': 'td' }, 
+                            E('div', {}, [
+                                E('span', {}, _('In: ') + convertToKbps(conn.avgInBps)),
+                                E('br'),
+                                E('span', {}, _('Out: ') + convertToKbps(conn.avgOutBps))
+                            ])
+                        )
+                    ]));
+                });
+                view.updateSortIndicators();
+            } catch (e) {
+                console.error('Error updating table:', e);
+                // Show error message instead of crashing
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
                 }
-                var srcFull = conn.src + ':' + (conn.sport || '-');
-                var dstFull = conn.dst + ':' + (conn.dport || '-');
-                var dscpString = dscpToString(conn.dscp);
-                
                 table.appendChild(E('tr', { 'class': 'tr' }, [
-                    E('td', { 'class': 'td' }, conn.protocol.toUpperCase()),
-                    E('td', { 'class': 'td' }, srcFull),
-                    E('td', { 'class': 'td' }, dstFull),
-                    E('td', { 'class': 'td' }, dscpString),
-                    E('td', { 'class': 'td' }, 
-                        E('div', {}, [
-                            E('span', {}, _('In: ') + formatSize(conn.in_bytes)),
-                            E('br'),
-                            E('span', {}, _('Out: ') + formatSize(conn.out_bytes))
-                        ])
-                    ),
-                    E('td', { 'class': 'td' }, 
-                        E('div', {}, [
-                            E('span', {}, _('In: ') + conn.in_packets),
-                            E('br'),
-                            E('span', {}, _('Out: ') + conn.out_packets)
-                        ])
-                    ),
-                    E('td', { 'class': 'td' }, 
-                        E('div', {}, [
-                            E('span', {}, _('In: ') + conn.avgInPps),
-                            E('br'),
-                            E('span', {}, _('Out: ') + conn.avgOutPps)
-                        ])
-                    ),
-                    E('td', { 'class': 'td' }, 
-                        E('div', {}, [
-                            E('span', {}, _('In: ') + conn.maxInPps),
-                            E('br'),
-                            E('span', {}, _('Out: ') + conn.maxOutPps)
-                        ])
-                    ),
-                    E('td', { 'class': 'td' }, 
-                        E('div', {}, [
-                            E('span', {}, _('In: ') + convertToKbps(conn.avgInBps)),
-                            E('br'),
-                            E('span', {}, _('Out: ') + convertToKbps(conn.avgOutBps))
-                        ])
-                    )
+                    E('td', { 'class': 'td', 'colspan': '9', 'style': 'text-align: center; color: red;' }, 
+                        _('Error displaying connections. System may be overloaded.'))
                 ]));
-            });
-            view.updateSortIndicators();            
+            }
         };
 
         view.updateTable(connections);
@@ -476,8 +502,14 @@ function adaptivePoll(view) {
         if (result && result.connections) {
             view.updateTable(Object.values(result.connections));
         } else {
-            console.error('Invalid data received:', result);
+            console.warn('Invalid data received:', result);
+            // Show error message to user
+            view.showErrorMessage('No connection data received');
         }
+    }).catch(function(error) {
+        console.error('Polling error:', error);
+        // Show error message to user instead of keeping old data
+        view.showErrorMessage('Connection error - check network');
     }).finally(function() {
         // Schedule the next poll only if auto-refresh is not paused
         if (view.autoRefresh) {

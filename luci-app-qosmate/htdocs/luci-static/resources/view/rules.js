@@ -56,7 +56,7 @@ return view.extend({
             E('h4', _('HFSC Mapping:')),
             E('table', { 'class': 'table' }, [
                 E('tr', { 'class': 'tr' }, [
-                    E('td', { 'class': 'td left', 'width': '50%' }, _('High Priority [Realtime] (1:11)')),
+                    E('td', { 'class': 'td left', 'width': '25%' }, _('High Priority [Realtime] (1:11)')),
                     E('td', { 'class': 'td left' }, 'EF, CS5, CS6, CS7')
                 ]),
                 E('tr', { 'class': 'tr' }, [
@@ -76,10 +76,14 @@ return view.extend({
                     E('td', { 'class': 'td left' }, 'CS1')
                 ])
             ]),
+            E('p', { 'style': 'font-size:0.9em; margin: -5px 0 15px 5px;' }, [
+                E('strong', _('Hybrid Note:')), ' ', 
+                _('Uses Realtime (1:11) & Bulk (1:15) classes with their dscp values from HFSC. All other traffic is handled by a single CAKE class (1:13).')
+            ]),
             E('h4', _('CAKE Mapping (diffserv4):')),
             E('table', { 'class': 'table' }, [
                 E('tr', { 'class': 'tr' }, [
-                    E('td', { 'class': 'td left', 'width': '50%' }, _('Voice (Highest Priority)')),
+                    E('td', { 'class': 'td left', 'width': '25%' }, _('Voice (Highest Priority)')),
                     E('td', { 'class': 'td left' }, 'CS7, CS6, EF, VA, CS5, CS4')
                 ]),
                 E('tr', { 'class': 'tr' }, [
