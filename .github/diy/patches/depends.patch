@@ -68,18 +68,6 @@
  
  include $(INCLUDE_DIR)/package.mk
 
---- a/wifidog-wiwiz/Makefile
-+++ b/wifidog-wiwiz/Makefile
-@@ -21,7 +21,7 @@ define Package/wifidog-wiwiz
-   SUBMENU:=Portal
-   SECTION:=net
-   CATEGORY:=Wiwiz/PinPinWiFi
--  DEPENDS:=+iptables-mod-extra +iptables-mod-ipopt +iptables-mod-nat-extra +libpthread +curl
-+  DEPENDS:=+luci-app-eqos +dcc2-wiwiz-nossl +iptables-mod-extra +iptables-mod-ipopt +iptables-mod-nat-extra +libpthread +curl
-   TITLE:=wifidog-wiwiz
-   URL:=http://www.wiwiz.com
-   MENU:=1
-
 --- a/luci-app-rclone/Makefile
 +++ b/luci-app-rclone/Makefile
 @@ -9,7 +9,7 @@ PKG_VERSION:=1.4.1-3
