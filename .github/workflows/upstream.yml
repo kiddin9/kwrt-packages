@@ -128,7 +128,7 @@ jobs:
         git_clone https://github.com/sirpdboy/luci-app-taskplan taskplan && mvdir taskplan
         git_clone https://github.com/sirpdboy/luci-app-lucky oplucky && mvdir oplucky
         git_clone https://github.com/sirpdboy/luci-app-partexp partexp && mvdir partexp
-        git_clone https://github.com/sirpdboy/netspeedtest && mvdir netspeedtest
+        git_clone https://github.com/sirpdboy/luci-app-netspeedtest speedtest && rm -rf speedtest/{iperf*,演示.gif};mvdir speedtest
         git_clone https://github.com/sirpdboy/luci-app-parentcontrol
         git_clone https://github.com/sirpdboy/luci-app-poweroffdevice poweroffdevice && mvdir poweroffdevice
         git_clone https://github.com/sirpdboy/luci-app-watchdog watchdog1 && mvdir watchdog1
