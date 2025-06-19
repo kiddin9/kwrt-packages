@@ -8,8 +8,12 @@ LUCI_TITLE:=LuCI for Tailscale
 LUCI_DEPENDS:=+tailscale
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=1.2.6
-PKG_RELEASE:=12
+PKG_VERSION:=1.2.2
+PKG_RELEASE:=13
+
+define Package/luci-app-tailscale/conffiles
+/etc/config/tailscale
+endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
