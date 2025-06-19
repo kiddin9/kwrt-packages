@@ -362,7 +362,7 @@ jobs:
         ) &
         (
         git_sparse_clone master "https://github.com/xiaoqingfengATGH/feeds-xiaoqingfeng" homeredirect luci-app-homeredirect
-        git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/immortalwrt" \
+        git_sparse_clone master "https://github.com/immortalwrt/immortalwrt" \
         package/kernel/rtl8189es package/emortal/autocore package/emortal/automount \
         package/network/utils/fullconenat package/emortal/cpufreq package/network/utils/fullconenat-nft \
         package/utils/mhz package/utils/pcat-manager
