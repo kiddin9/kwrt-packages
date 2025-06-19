@@ -2,9 +2,22 @@ listen_addrs_ipv6 = ["::1"]
 
 [[zones]]
 zone = "."
-
 zone_type = "External"
-stores = { type = "forward", name_servers = [
-        { socket_addr = "[2400:3200:baba::1]:853", protocol = { type = "quic", server_name = "dns.alidns.com" }, trust_negative_responses = false },
-        { socket_addr = "[2400:3200::1]:853", protocol = { type = "quic", server_name = "dns.alidns.com" }, trust_negative_responses = false },
-    ], options = { edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 1, server_ordering_strategy = "RoundRobin" }}
+
+[[zones.stores]]
+type = "forward"
+options = { edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 1, server_ordering_strategy = "RoundRobin" }
+
+[[zones.stores.name_servers]]
+ip = "2400:3200:baba::1"
+trust_negative_responses = false
+connections = [
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } }
+]
+
+[[zones.stores.name_servers]]
+ip = "2400:3200::1"
+trust_negative_responses = false
+connections = [
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } }
+]
