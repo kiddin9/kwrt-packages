@@ -7,14 +7,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openlist
+PKG_VERSION:=4.0.0
 PKG_WEB_VERSION:=4.0.0-rc.4
-PKG_RELEASE:=11
+PKG_RELEASE:=12
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/OpenListTeam/OpenList.git
-PKG_SOURCE_DATE:=2025-06-19
-PKG_SOURCE_VERSION:=5d4480606466a7af0ee19f34badd9de32174bc4d
-PKG_MIRROR_HASH:=skip
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/OpenListTeam/OpenList/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=skip
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/OpenList-$(PKG_VERSION)
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILE:=LICENSE
