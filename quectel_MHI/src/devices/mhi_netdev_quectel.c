@@ -63,8 +63,8 @@ struct rmnet_nss_cb {
 	int (*nss_tx)(struct sk_buff *skb);
 };
 static struct rmnet_nss_cb __read_mostly *nss_cb = NULL;
-#if defined(CONFIG_PINCTRL_IPQ807x) || defined(CONFIG_PINCTRL_IPQ5018)
-#ifdef CONFIG_RMNET_DATA
+#if defined(CONFIG_PINCTRL_IPQ807x) || defined(CONFIG_PINCTRL_IPQ5018) || defined(CONFIG_PINCTRL_IPQ8074)
+//#ifdef CONFIG_RMNET_DATA //spf12.x have no macro defined, just for spf11.x
 #define CONFIG_QCA_NSS_DRV
 #define CONFIG_USE_RMNET_DATA_FOR_SKIP_MEMCPY
 /* define at qca/src/linux-4.4/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c */ //for spf11.x
@@ -72,9 +72,9 @@ static struct rmnet_nss_cb __read_mostly *nss_cb = NULL;
 /* set at qsdk/qca/src/data-kernel/drivers/rmnet-nss/rmnet_nss.c */
 /* need add DEPENDS:= kmod-rmnet-core in feeds/makefile */
 extern struct rmnet_nss_cb *rmnet_nss_callbacks __rcu __read_mostly;
+//#endif
 #endif
-#endif
-	
+
 
 int mhi_netdev_use_xfer_type_dma(unsigned chan)
 {
@@ -2589,14 +2589,9 @@ static const struct net_device_ops mhi_netdev_ops_ip = {
 static void mhi_netdev_get_drvinfo (struct net_device *ndev, struct ethtool_drvinfo *info)
 {
 	//struct mhi_netdev *mhi_netdev = ndev_to_mhi(ndev);
-	/* strlcpy() is deprecated in kernel 6.8.0+, using strscpy instead */
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(6,8,0))
-	strlcpy(info->driver, "pcie_mhi", sizeof(info->driver));
-	strlcpy(info->version, PCIE_MHI_DRIVER_VERSION, sizeof(info->version));
-#else
-	strscpy(info->driver, "pcie_mhi", sizeof(info->driver));
-	strscpy(info->version, PCIE_MHI_DRIVER_VERSION, sizeof(info->version));
-#endif
+
+	strscpy (info->driver, "pcie_mhi", sizeof info->driver);
+	strscpy (info->version, PCIE_MHI_DRIVER_VERSION, sizeof info->version);
 }
 
 static const struct ethtool_ops mhi_netdev_ethtool_ops = {

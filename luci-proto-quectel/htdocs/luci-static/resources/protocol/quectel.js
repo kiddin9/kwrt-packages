@@ -31,7 +31,7 @@ return network.registerProtocol('quectel', {
 		return this._ubus('l3_device') || 'quectel-%s'.format(this.sid);
 	},
 
-	getPackageName: function() {
+	getOpkgPackage: function() {
 		return 'quectel-cm';
 	},
 

@@ -1,0 +1,42 @@
+--- a/QmiWwanCM.c
++++ b/QmiWwanCM.c
+@@ -8,7 +8,7 @@ typedef unsigned short sa_family_t;
+ #include "QMIThread.h"
+ 
+ #ifdef CONFIG_QMIWWAN
+-#define FIBO_QMI_PROXY "fibo_qmimsg_server"
++#define FIBO_QMI_PROXY "fibocom-qmimsg-server"
+ static int cdc_wdm_fd = -1;
+ 
+ static UCHAR GetQCTLTransactionId(void)
+--- a/fibo_qmimsg_server.c
++++ b/fibo_qmimsg_server.c
+@@ -984,7 +984,7 @@ qmi_proxy_init_fail:
+ }
+ //2021-06-03 willa.liu@fibocom.com changed begin
+ static void qmi_start_server(void) {
+-    qmi_proxy_server_fd = create_local_server("fibo_qmimsg_server");
++    qmi_proxy_server_fd = create_local_server("fibocom-qmimsg-server");
+     printf("%s: qmi_proxy_server_fd = %d\n", __func__, qmi_proxy_server_fd);
+     if (qmi_proxy_server_fd == -1) {
+ 		dprintf("%s Failed to create %s, errno: %d (%s)\n", __func__, "fibocom-qmi-proxy", errno, strerror(errno));
+--- a/multi-pdn-manager.c
++++ b/multi-pdn-manager.c
+@@ -812,7 +812,7 @@ int main(int argc, char *argv[])
+         {
+             dbg_time("The Fibocom multi-pdn-manager is already running! So killall multi-pdn-manager!");
+             system("killall -9 fibocom-dial");
+-            system("killall -9 multi-pdn-manager");
++            system("killall -9 fibocom-multi-pdn-manager");
+         }
+     }
+     else
+@@ -846,7 +846,7 @@ int main(int argc, char *argv[])
+     if (is_pcie_dial())
+     {
+         dbg_time("start qmi proxy server");
+-        //system("./fibo_qmimsg_server -d /dev/mhi_QMI0 &");
++        //system("./fibocom-qmimsg-server -d /dev/mhi_QMI0 &");
+     }
+     while (1)
+     {

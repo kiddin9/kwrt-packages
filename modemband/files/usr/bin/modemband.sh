@@ -3,6 +3,8 @@
 #
 # (c) 2022-2024 Cezary Jackiewicz <cezary@eko.one.pl>
 #
+# (c) 2022-2024 modified by Rafał Wabik - IceG - From eko.one.pl forum
+#
 
 hextobands() {
 	BANDS=""
@@ -326,7 +328,7 @@ if [ -z "$_DEVICE" ]; then
 	fi
 	exit 0
 else
-	_DEVICE1=$(uci -q get 3ginfo.@3ginfo[0].device)
+	_DEVICE1=$(uci -q get modemband.@modemband[0].set_port)
 	if [ -n "$_DEVICE1" ]; then
 		_DEVICE=$_DEVICE1
 	fi
