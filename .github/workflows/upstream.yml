@@ -229,10 +229,10 @@ jobs:
         git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
         git_clone https://github.com/sirpdboy/luci-app-eqosplus
         git_clone https://github.com/JiaY-shi/fancontrol fanc && mv fanc/{fancontrol,luci-app-fancontrol} ./;rm -rf fanc
-        git_sparse_clone master "https://github.com/coolsnowwolf/lede" package/wwan package/system/fstools && cp -rf wwan/*/* ./ ; rm -Rf wwan
         git_clone https://github.com/Siriling/5G-Modem-Support && rm -rf 5G-Modem-Support/rooter && mvdir 5G-Modem-Support
         git_clone https://github.com/aa65535/openwrt-dist-luci
         git_clone https://github.com/morytyann/OpenWrt-msd && mvdir OpenWrt-msd
+        git_clone https://github.com/immortalwrt/wwan-packages && cp -rf wwan-packages/*/* ./;rm -rf wwan-packages
         ) &
         (
         git_clone https://github.com/muink/luci-app-dnsproxy
