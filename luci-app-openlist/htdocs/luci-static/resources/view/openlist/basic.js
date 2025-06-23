@@ -23,12 +23,18 @@ function getServiceStatus() {
 	});
 }
 
-function renderStatus(isRunning, protocol, webport) {
+function renderStatus(isRunning, protocol, webport, site_url) {
 	var spanTemp = '<em><span style="color:%s"><strong>%s %s</strong></span></em>';
 	var renderHTML;
 	if (isRunning) {
-		var button = String.format('<input class="cbi-button-reload" type="button" style="margin-left: 50px" value="%s" onclick="window.open(\'%s//%s:%s/\')">',
-			_('Open Web Interface'), protocol, window.location.hostname, webport);
+		var buttonUrl = '';
+		if (site_url && site_url.trim() !== '') {
+			buttonUrl = site_url;
+		} else {
+			buttonUrl = String.format('%s//%s:%s/', protocol, window.location.hostname, webport);
+		}
+		var button = String.format('<input class="cbi-button-reload" type="button" style="margin-left: 50px" value="%s" onclick="window.open(\'%s\')">',
+			_('Open Web Interface'), buttonUrl);
 		renderHTML = spanTemp.format('green', 'OpenList', _('RUNNING')) + button;
 	} else {
 		renderHTML = spanTemp.format('red', 'OpenList', _('NOT RUNNING'));
@@ -71,6 +77,7 @@ return view.extend({
 		} else if (ssl === '1') {
 			protocol = 'https:';
 		}
+		var site_url = uci.get(data[0], '@openlist[0]', 'site_url') || '';
 
 		m = new form.Map('openlist', _('OpenList'),
 			_('A file list program that supports multiple storage.'));
@@ -83,7 +90,7 @@ return view.extend({
 			poll.add(function () {
 				return L.resolveDefault(getServiceStatus()).then(function (res) {
 					var view = document.getElementById('service_status');
-					view.innerHTML = renderStatus(res, protocol, webport);
+					view.innerHTML = renderStatus(res, protocol, webport, site_url);
 				});
 			});
 
