@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-qosmate
 PKG_VERSION:=1.0.14
-PKG_RELEASE:=18
+PKG_RELEASE:=19
 
 PKG_MAINTAINER:=Markus Hütter <mh@hudra.net>
 PKG_LICENSE:=GPL-3.0-or-later

@@ -14,6 +14,60 @@ var callInitAction = rpc.declare({
     expect: { result: false }
 });
 
+// IPv6 suffix matching validation helpers
+function isIPv6SuffixFormat(value) {
+    // Format: ::suffix/::mask - allow empty suffix/mask with * instead of +
+    return /^::([0-9a-fA-F:]*)\/::([0-9a-fA-F:]*)$/.test(value);
+}
+
+function validateIPv6Part(part) {
+    // Special case: empty part is valid (for ::/::mask)
+    if (part === '') return true;
+    
+    // Check for multiple consecutive colons (:: can only appear once)
+    if (/:{3,}/.test(part)) return false;
+    if (/[^0-9a-fA-F:]/.test(part)) return false; // Only hex and colons allowed
+    
+    // Check if :: appears more than once
+    var doubleColonCount = (part.match(/::/g) || []).length;
+    if (doubleColonCount > 1) return false;
+    
+    // For suffix matching, we already have :: at the start, so no more :: allowed
+    if (doubleColonCount > 0) return false;
+    
+    // Split by colons and check each segment
+    var segments = part.split(':');
+    
+    // Can't have more than 8 segments (for a full IPv6) 
+    if (segments.length > 8) return false;
+    
+    for (var i = 0; i < segments.length; i++) {
+        var seg = segments[i];
+        // Each segment must be 0-4 hex digits
+        if (!/^[0-9a-fA-F]{0,4}$/.test(seg)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function parseIPv6Suffix(value) {
+    const match = value.match(/^::([0-9a-fA-F:]*)\/::([0-9a-fA-F:]*)$/);
+    if (!match) return null;
+    
+    // Validate both parts
+    if (!validateIPv6Part(match[1]) || !validateIPv6Part(match[2])) {
+        return null;
+    }
+    
+    return {
+        suffix: match[1],
+        mask: match[2],
+        isSuffixMatch: true
+    };
+}
+
 return view.extend({
     handleSaveApply: function(ev) {
         return this.handleSave(ev)
@@ -163,7 +217,7 @@ return view.extend({
 
         o = s.taboption('general', form.DynamicList, 'src_ip', _('Source IP'));
         o.datatype = 'string';
-        o.placeholder = _('IP address or @setname');
+        o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
         o.validate = function(section_id, value) {
             if (!value || value.length === 0) {
@@ -175,11 +229,23 @@ return view.extend({
             
             for (var i = 0; i < values.length; i++) {
                 var v = values[i].replace(/^!(?!=)/, '!=');
+                
+                // Check for set reference
                 if (v.startsWith('@')) {
                     if (!/^@[a-zA-Z0-9_]+$/.test(v)) {
                         return _('Invalid set name format. Must start with @ followed by letters, numbers, or underscore');
                     }
-                } else {
+                } 
+                // Check for IPv6 suffix format
+                else if (isIPv6SuffixFormat(v)) {
+                    // Validate suffix and mask format
+                    var suffixData = parseIPv6Suffix(v);
+                    if (!suffixData) {
+                        return _('Invalid IPv6 suffix format. Use ::suffix/::mask with valid IPv6 segments (e.g. ::1234:5678/::ffff:ffff)');
+                    }
+                    // Additional validation could be added here
+                }
+                else {
                     if (!ipCidrRegex.test(v)) {
                         return _('Invalid IP address or CIDR format: ') + v;
                     }
@@ -207,7 +273,7 @@ return view.extend({
         
         o = s.taboption('general', form.DynamicList, 'dest_ip', _('Destination IP'));
         o.datatype = 'string';
-        o.placeholder = _('IP address or @setname');
+        o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
         o.validate = function(section_id, value) {
             if (!value || value.length === 0) {
@@ -219,11 +285,23 @@ return view.extend({
             
             for (var i = 0; i < values.length; i++) {
                 var v = values[i].replace(/^!(?!=)/, '!=');
+                
+                // Check for set reference
                 if (v.startsWith('@')) {
                     if (!/^@[a-zA-Z0-9_]+$/.test(v)) {
                         return _('Invalid set name format. Must start with @ followed by letters, numbers, or underscore');
                     }
-                } else {
+                } 
+                // Check for IPv6 suffix format
+                else if (isIPv6SuffixFormat(v)) {
+                    // Validate suffix and mask format
+                    var suffixData = parseIPv6Suffix(v);
+                    if (!suffixData) {
+                        return _('Invalid IPv6 suffix format. Use ::suffix/::mask with valid IPv6 segments (e.g. ::1234:5678/::ffff:ffff)');
+                    }
+                    // Additional validation could be added here
+                }
+                else {
                     if (!ipCidrRegex.test(v)) {
                         return _('Invalid IP address or CIDR format: ') + v;
                     }
