@@ -3,7 +3,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nvtop
 PKG_VERSION:=3.2.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Syllo/$(PKG_NAME)/tar.gz/$(PKG_VERSION)?
@@ -20,6 +20,7 @@ define Package/nvtop
   CATEGORY:=Utilities
   TITLE:=NVTOP
   DEPENDS:=@(aarch64||x86_64) +libncursesw +libudev +libdrm
+  URL:=https://github.com/Syllo/nvtop
 endef
 
 define Package/nvtop/description

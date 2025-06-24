@@ -219,6 +219,17 @@ return view.extend({
         o.datatype = 'string';
         o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
+        
+        // Warning message after Source IP
+        var src_ip_warning = s.taboption('general', form.DummyValue, '_src_ip_warning', _(''));
+        src_ip_warning.rawhtml = true;
+        src_ip_warning.modalonly = true;
+        src_ip_warning.cfgvalue = function() {
+            return '<div style="color: #d63031; font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 20em; padding: 0;">' +
+                   '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
+                   _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
+                   '</div>';
+        };
         o.validate = function(section_id, value) {
             if (!value || value.length === 0) {
                 return true;
@@ -226,6 +237,10 @@ return view.extend({
             
             var values = Array.isArray(value) ? value : value.split(/\s+/);
             var ipCidrRegex = /^(?:(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)(?:\.(?:25[0-5]|2[0-4]\d|[01]?\d\d?)){3})(?:\/(?:[0-9]|[1-2]\d|3[0-2]))?|(?:(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,7}:|(?:[A-Fa-f0-9]{1,4}:){1,6}:[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,5}(?::[A-Fa-f0-9]{1,4}){1,2}|(?:[A-Fa-f0-9]{1,4}:){1,4}(?::[A-Fa-f0-9]{1,4}){1,3}|(?:[A-Fa-f0-9]{1,4}:){1,3}(?::[A-Fa-f0-9]{1,4}){1,4}|(?:[A-Fa-f0-9]{1,4}:){1,2}(?::[A-Fa-f0-9]{1,4}){1,5}|[A-Fa-f0-9]{1,4}:(?:(?::[A-Fa-f0-9]{1,4}){1,6})|:(?:(?::[A-Fa-f0-9]{1,4}){1,7}|:))(?:\/(?:[0-9]|[1-9]\d|1[0-1]\d|12[0-8]))?)$/;
+            
+            // Check for mixed IPv4/IPv6 within this field
+            var hasIPv4 = false;
+            var hasIPv6 = false;
             
             for (var i = 0; i < values.length; i++) {
                 var v = values[i].replace(/^!(?!=)/, '!=');
@@ -235,22 +250,34 @@ return view.extend({
                     if (!/^@[a-zA-Z0-9_]+$/.test(v)) {
                         return _('Invalid set name format. Must start with @ followed by letters, numbers, or underscore');
                     }
+                    continue; // Don't check IP version for sets
                 } 
                 // Check for IPv6 suffix format
                 else if (isIPv6SuffixFormat(v)) {
-                    // Validate suffix and mask format
                     var suffixData = parseIPv6Suffix(v);
                     if (!suffixData) {
                         return _('Invalid IPv6 suffix format. Use ::suffix/::mask with valid IPv6 segments (e.g. ::1234:5678/::ffff:ffff)');
                     }
-                    // Additional validation could be added here
+                    hasIPv6 = true;
                 }
                 else {
                     if (!ipCidrRegex.test(v)) {
                         return _('Invalid IP address or CIDR format: ') + v;
                     }
+                    // Detect IP version
+                    if (v.indexOf(':') !== -1) {
+                        hasIPv6 = true;
+                    } else {
+                        hasIPv4 = true;
+                    }
                 }
             }
+            
+            // Check for mixed IP versions
+            if (hasIPv4 && hasIPv6) {
+                return _('Cannot mix IPv4 and IPv6 addresses in the same field. This will cause the rule to be skipped.');
+            }
+            
             return true;
         };
         o.write = function(section_id, formvalue) {
@@ -275,6 +302,17 @@ return view.extend({
         o.datatype = 'string';
         o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
+        
+        // Warning message after Destination IP
+        var dest_ip_warning = s.taboption('general', form.DummyValue, '_dest_ip_warning', _(''));
+        dest_ip_warning.rawhtml = true;
+        dest_ip_warning.modalonly = true;
+        dest_ip_warning.cfgvalue = function() {
+            return '<div style="color: #d63031; font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 20em; padding: 0;">' +
+                   '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
+                   _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
+                   '</div>';
+        };
         o.validate = function(section_id, value) {
             if (!value || value.length === 0) {
                 return true;
@@ -282,6 +320,10 @@ return view.extend({
             
             var values = Array.isArray(value) ? value : value.split(/\s+/);
             var ipCidrRegex = /^(?:(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)(?:\.(?:25[0-5]|2[0-4]\d|[01]?\d\d?)){3})(?:\/(?:[0-9]|[1-2]\d|3[0-2]))?|(?:(?:[A-Fa-f0-9]{1,4}:){7}[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,7}:|(?:[A-Fa-f0-9]{1,4}:){1,6}:[A-Fa-f0-9]{1,4}|(?:[A-Fa-f0-9]{1,4}:){1,5}(?::[A-Fa-f0-9]{1,4}){1,2}|(?:[A-Fa-f0-9]{1,4}:){1,4}(?::[A-Fa-f0-9]{1,4}){1,3}|(?:[A-Fa-f0-9]{1,4}:){1,3}(?::[A-Fa-f0-9]{1,4}){1,4}|(?:[A-Fa-f0-9]{1,4}:){1,2}(?::[A-Fa-f0-9]{1,4}){1,5}|[A-Fa-f0-9]{1,4}:(?:(?::[A-Fa-f0-9]{1,4}){1,6})|:(?:(?::[A-Fa-f0-9]{1,4}){1,7}|:))(?:\/(?:[0-9]|[1-9]\d|1[0-1]\d|12[0-8]))?)$/;
+            
+            // Check for mixed IPv4/IPv6 within this field
+            var hasIPv4 = false;
+            var hasIPv6 = false;
             
             for (var i = 0; i < values.length; i++) {
                 var v = values[i].replace(/^!(?!=)/, '!=');
@@ -291,22 +333,34 @@ return view.extend({
                     if (!/^@[a-zA-Z0-9_]+$/.test(v)) {
                         return _('Invalid set name format. Must start with @ followed by letters, numbers, or underscore');
                     }
+                    continue; // Don't check IP version for sets
                 } 
                 // Check for IPv6 suffix format
                 else if (isIPv6SuffixFormat(v)) {
-                    // Validate suffix and mask format
                     var suffixData = parseIPv6Suffix(v);
                     if (!suffixData) {
                         return _('Invalid IPv6 suffix format. Use ::suffix/::mask with valid IPv6 segments (e.g. ::1234:5678/::ffff:ffff)');
                     }
-                    // Additional validation could be added here
+                    hasIPv6 = true;
                 }
                 else {
                     if (!ipCidrRegex.test(v)) {
                         return _('Invalid IP address or CIDR format: ') + v;
                     }
+                    // Detect IP version
+                    if (v.indexOf(':') !== -1) {
+                        hasIPv6 = true;
+                    } else {
+                        hasIPv4 = true;
+                    }
                 }
             }
+            
+            // Check for mixed IP versions
+            if (hasIPv4 && hasIPv6) {
+                return _('Cannot mix IPv4 and IPv6 addresses in the same field. This will cause the rule to be skipped.');
+            }
+            
             return true;
         };
         o.write = function(section_id, formvalue) {
