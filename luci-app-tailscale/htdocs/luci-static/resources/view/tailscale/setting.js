@@ -251,7 +251,6 @@ return view.extend({
 		s.description = String.format(_('Use %s to deploy a private server.'), '<a href="https://github.com/juanfont/headscale" target="_blank">headscale</a>');
 
 		o = s.option(form.Value, 'login_server', _('Server Address'));
-		o.datatype = 'host';
 		o.default = '';
 		o.rmempty = true;
 
