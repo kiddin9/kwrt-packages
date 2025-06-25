@@ -225,7 +225,7 @@ return view.extend({
         src_ip_warning.rawhtml = true;
         src_ip_warning.modalonly = true;
         src_ip_warning.cfgvalue = function() {
-            return '<div style="color: #d63031; font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 20em; padding: 0;">' +
+            return '<div style="color:rgb(133, 126, 126); font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 17em; padding: 0;">' +
                    '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
                    _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
                    '</div>';
@@ -292,9 +292,26 @@ return view.extend({
         o.placeholder = _('any');
         o.rmempty = true;
         o.write = function(section_id, formvalue) {
-            var values = formvalue.map(function(v) {
-                return v.replace(/^!(?!=)/, '!=');
-            });
+            var values;
+            // Handle array and string inputs
+            if (Array.isArray(formvalue)) {
+                values = formvalue.map(function(v) {
+                    // Also handle if individual values contain spaces
+                    if (typeof v === 'string' && v.indexOf(' ') !== -1) {
+                        return v.split(/\s+/).map(function(part) {
+                            return part.replace(/^!(?!=)/, '!=');
+                        }).join(' ');
+                    }
+                    return typeof v === 'string' ? v.replace(/^!(?!=)/, '!=') : v;
+                });
+            } else if (typeof formvalue === 'string') {
+                // If it's a string, split by spaces and process each part
+                values = formvalue.split(/\s+/).map(function(v) {
+                    return v.replace(/^!(?!=)/, '!=');
+                });
+            } else {
+                values = formvalue;
+            }
             return this.super('write', [section_id, values]);
         };
         
@@ -308,7 +325,7 @@ return view.extend({
         dest_ip_warning.rawhtml = true;
         dest_ip_warning.modalonly = true;
         dest_ip_warning.cfgvalue = function() {
-            return '<div style="color: #d63031; font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 20em; padding: 0;">' +
+            return '<div style="color:rgb(133, 126, 126); font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 17em; padding: 0;">' +
                    '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
                    _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
                    '</div>';
@@ -375,9 +392,26 @@ return view.extend({
         o.placeholder = _('any');
         o.rmempty = true;
         o.write = function(section_id, formvalue) {
-            var values = formvalue.map(function(v) {
-                return v.replace(/^!(?!=)/, '!=');
-            });
+            var values;
+            // Handle array and string inputs
+            if (Array.isArray(formvalue)) {
+                values = formvalue.map(function(v) {
+                    // Also handle if individual values contain spaces
+                    if (typeof v === 'string' && v.indexOf(' ') !== -1) {
+                        return v.split(/\s+/).map(function(part) {
+                            return part.replace(/^!(?!=)/, '!=');
+                        }).join(' ');
+                    }
+                    return typeof v === 'string' ? v.replace(/^!(?!=)/, '!=') : v;
+                });
+            } else if (typeof formvalue === 'string') {
+                // If it's a string, split by spaces and process each part
+                values = formvalue.split(/\s+/).map(function(v) {
+                    return v.replace(/^!(?!=)/, '!=');
+                });
+            } else {
+                values = formvalue;
+            }
             return this.super('write', [section_id, values]);
         };
 
