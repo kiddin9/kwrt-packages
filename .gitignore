@@ -48,7 +48,8 @@
 /quectel_SRPD_PCIE
 /fibocom_MHI
 /meig_QMI_WWAN
-/quectel_Gobinet
+/quectel-gobinet
+/quectel-qmi-wwanq
 /vsftpd-alt
 /luci-app-nginx-pingos
 /configs
