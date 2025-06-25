@@ -49,6 +49,7 @@
 /fibocom_MHI
 /meig_QMI_WWAN
 /quectel-gobinet
+/quectel_Gobinet
 /quectel-qmi-wwanq
 /vsftpd-alt
 /luci-app-nginx-pingos
