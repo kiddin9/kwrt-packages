@@ -335,7 +335,7 @@ jobs:
         ) &
         (
         git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/mwol net/n2n net/dae \
-        net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/cloudreve \
+        net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
