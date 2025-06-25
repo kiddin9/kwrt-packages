@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-ui
-PKG_VERSION:=2.1.7
-PKG_RELEASE:=32
+PKG_VERSION:=2.1.8
+PKG_RELEASE:=33
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/0xJacky/nginx-ui/archive/refs/tags/
