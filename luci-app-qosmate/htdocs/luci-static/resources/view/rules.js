@@ -118,11 +118,6 @@ function validateIPField(section_id, value) {
         }
     }
     
-    // Check for mixed IP versions
-    if (hasIPv4 && hasIPv6) {
-        return _('Cannot mix IPv4 and IPv6 addresses in the same field. This will cause the rule to be skipped.');
-    }
-    
     return true;
 }
 
@@ -277,17 +272,6 @@ return view.extend({
         o.datatype = 'string';
         o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
-        
-        // Warning message after Source IP
-        var src_ip_warning = s.taboption('general', form.DummyValue, '_src_ip_warning', _(''));
-        src_ip_warning.rawhtml = true;
-        src_ip_warning.modalonly = true;
-        src_ip_warning.cfgvalue = function() {
-            return '<div style="color:rgb(133, 126, 126); font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 17em; padding: 0;">' +
-                   '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
-                   _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
-                   '</div>';
-        };
         o.validate = function(section_id, value) {
             return validateIPField(section_id, value);
         };
@@ -330,17 +314,6 @@ return view.extend({
         o.datatype = 'string';
         o.placeholder = _('IP address, @setname or ::suffix/::mask');
         o.rmempty = true;
-        
-        // Warning message after Destination IP
-        var dest_ip_warning = s.taboption('general', form.DummyValue, '_dest_ip_warning', _(''));
-        dest_ip_warning.rawhtml = true;
-        dest_ip_warning.modalonly = true;
-        dest_ip_warning.cfgvalue = function() {
-            return '<div style="color:rgb(133, 126, 126); font-size: 0.9em; margin: 0px 0 0px 0; margin-left: 17em; padding: 0;">' +
-                   '<strong><i class="cbi-icon cbi-icon-warning" style="margin-right: 5px;"></i>' +
-                   _('Warning: Do not mix IPv4 and IPv6 addresses in the same rule. Mixed IP versions will cause the rule to be skipped.') + '</strong>' +
-                   '</div>';
-        };
         o.validate = function(section_id, value) {
             return validateIPField(section_id, value);
         };
