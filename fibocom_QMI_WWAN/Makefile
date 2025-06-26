@@ -7,22 +7,23 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=pcie_mhi
-PKG_VERSION:=1.3.8
-PKG_RELEASE:=9
+PKG_NAME:=qmi_wwan_f
+PKG_VERSION:=1.0
+PKG_RELEASE:=8
 
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/pcie_mhi
+define KernelPackage/qmi_wwan_f
   SUBMENU:=WWAN Support
-  TITLE:=Kernel pcie driver for MHI device
-  FILES:=$(PKG_BUILD_DIR)/pcie_mhi.ko
-  AUTOLOAD:=$(call AutoLoad,90,pcie_mhi)
+  TITLE:=Fibocom Linux USB QMI WWAN Driver
+  DEPENDS:=+kmod-usb-net +kmod-usb-wdm
+  FILES:=$(PKG_BUILD_DIR)/qmi_wwan_f.ko
+  AUTOLOAD:=$(call AutoLoad,82,qmi_wwan_f)
 endef
 
-define KernelPackage/pcie_mhi/description
-  Kernel module for register a custom pciemhi platform device.
+define KernelPackage/qmi_wwan_f/description
+  Fibocom Linux USB QMI WWAN Driver
 endef
 
 MAKE_OPTS:= \
@@ -43,4 +44,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,pcie_mhi))
+$(eval $(call KernelPackage,qmi_wwan_f))

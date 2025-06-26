@@ -1,34 +1,28 @@
-include $(TOPDIR)/rules.mk#将openwrt顶层目录下的rules.mk文件中的内容导入进来
- 
-PKG_NAME:=sendat#软件包名
-PKG_VERSION:=6.8.2#软件包版本
-PKG_RELEASE:=6
-PKG_BUILD_DIR:= $(BUILD_DIR)/$(PKG_NAME)#真正编译当前软件包的目录
- 
- 
-include $(INCLUDE_DIR)/package.mk#将$(TOPDIR)/include目录下的package.mk文件中的内容导入进来
- 
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=sendat
+PKG_RELEASE:=7
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/ouyangzq/sendat.git
+PKG_SOURCE_DATE:=2023-10-26
+PKG_SOURCE_VERSION:=624c58f6331e5be3eac6d144ed985b4a4af94b10
+PKG_MIRROR_HASH:=skip
+
+MAKE_PATH:=src
+
+include $(INCLUDE_DIR)/package.mk
+
 define Package/sendat
-	SECTION:=wrtnode#软件包类型
-	CATEGORY:=Daocaoren#menuconfig中软件包所属的一级目录
-	SUBMENU :=CPE#menuconfig中软件包所属的二级目录
-	TITLE:=Sendat AT#软件包标题
-	DEPENDS:=+libpthread#运行本软件依赖的其他包
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=Send AT Commnad
+  DEPENDS:=+libpthread
 endef
- 
-define Package/sendat/description	#软件包描述
-	A sample for sendat test
+
+define Package/sendat/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/sendat $(1)/usr/bin/
 endef
- 
-define Build/Prepare	#编译之前的准备动作
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./src/* $(PKG_BUILD_DIR)/
-endef
- 
- 
-define Package/sendat/install	#软件包的安装方法，主要就是将一系列编译好的文件、启动脚本、UCI配置文件等拷贝到指定位置
-	$(INSTALL_DIR) $(1)/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sendat $(1)/bin/
-endef
- 
+
 $(eval $(call BuildPackage,sendat))

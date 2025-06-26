@@ -1,36 +1,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=quectel-cm
-PKG_VERSION:=1.6.5
-PKG_RELEASE:=14
+PKG_VERSION:=1.6.7
+PKG_RELEASE:=15
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/quectel-open-source/Quectel_QConnectManager_Linux
+PKG_SOURCE_VERSION:=4dd7951dd9cbd078fbe50221d93ed098f7e38289
+PKG_MIRROR_HASH:=skip
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
 
 define Package/quectel-cm
   SECTION:=net
   CATEGORY:=Network
-  SUBMENU:=WWAN
-  TITLE:=Qconnector Manager for Quectel WWAN modules
-  DEPENDS:= \
-    +kmod-usb-net-cdc-mbim \
-    +kmod-usb-net-qmi-wwan \
-    +kmod-usb-net-qmi-wwan-fibocom \
-    +kmod-usb-net-qmi-wwan-quectel \
-    +kmod-usb-serial-option
+  TITLE:=Quectel dial program
+  DEPENDS:=+libpthread
 endef
 
 define Package/quectel-cm/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/quectel-CM $(1)/usr/bin/quectel-cm
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/quectel-{mbim,qmi}-proxy $(1)/usr/bin/
-
-	$(INSTALL_DIR) $(1)/lib/netifd/proto
-	$(INSTALL_BIN) ./files/quectel.sh $(1)/lib/netifd/proto/
-
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/net
-	$(INSTALL_BIN) ./files/smp-affinity-mhi-pcie.sh $(1)/etc/hotplug.d/net/21-smp-affinity-mhi-pcie
-	$(INSTALL_BIN) ./files/smp-affinity-qmi-usb.sh $(1)/etc/hotplug.d/net/22-smp-affinity-qmi-usb
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/quectel-CM $(1)/usr/bin
 endef
 
 $(eval $(call BuildPackage,quectel-cm))
