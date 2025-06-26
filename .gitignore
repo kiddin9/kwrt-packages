@@ -48,11 +48,7 @@
 /quectel_SRPD_PCIE
 /fibocom_MHI
 /meig_QMI_WWAN
-/quectel-gobinet
 /quectel_Gobinet
-/quectel-qmi-wwan
-/quectel-mhi-pcie
-/fibocom_QMI_WWAN
 /vsftpd-alt
 /luci-app-nginx-pingos
 /configs
@@ -61,4 +57,3 @@
 /v2ray-core
 /v2ray-geodata
 /k3screenctrl
-
