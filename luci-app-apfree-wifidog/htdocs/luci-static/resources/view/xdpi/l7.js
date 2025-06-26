@@ -12,6 +12,7 @@ var currentSortInfo = {
 	column: null,
 	reverse: false
 };
+var sidLookupTable = {}; // Add lookup table for SID to domain/protocol mapping
 
 return view.extend({
 	load: function() {
@@ -198,9 +199,20 @@ return view.extend({
 			data.data.sort((a, b) => b.incoming.rate - a.incoming.rate);
 			
 			data.data.forEach(function(item) {
-				// Get domain name or protocol description based on sid_type
-				var domainOrProto = item.sid_type === 'Domain' ? item.domain : 
-								   (item.sid_type === 'L7' ? item.l7_proto_desc : '-');
+				// Get domain name or protocol description from lookup table or fallback to original data
+				var domainOrProto = 'unknown';
+				var lookupInfo = sidLookupTable[item.sid];
+				
+				if (lookupInfo) {
+					// Use lookup table information (preferred)
+					domainOrProto = lookupInfo.name;
+				} else if (item.sid_type === 'Domain' && item.domain && item.domain !== 'unknown') {
+					// Fallback to domain field if available and not "unknown"
+					domainOrProto = item.domain;
+				} else if (item.sid_type === 'L7' && item.l7_proto_desc && item.l7_proto_desc !== 'unknown') {
+					// Fallback to protocol description if available and not "unknown"
+					domainOrProto = item.l7_proto_desc;
+				}
 				
 				// outgoing is upload (rx), incoming is download (tx)
 				rows.push([
@@ -268,16 +280,37 @@ return view.extend({
 		this.kpi('sid-tx-rate', '%1024.2mbps'.format(tx_rate_total));  // Download total
 		this.kpi('sid-rx-rate', '%1024.2mbps'.format(rx_rate_total));  // Upload total
 		this.kpi('sid-total', '%u'.format(rows.length));
+		
+		// Update filter status display
+		var filterStatusEl = document.getElementById('filter-status');
+		if (filterStatusEl) {
+			var sortByText = {
+				'download_total': _('Download Total'),
+				'upload_total': _('Upload Total'), 
+				'download_rate': _('Download Speed'),
+				'upload_rate': _('Upload Speed')
+			};
+			filterStatusEl.innerHTML = _('Showing top %d by %s').format(filterSettings.topN, sortByText[filterSettings.sortBy] || filterSettings.sortBy);
+		}
 	},
 
 	renderL7ProtoData: function(data) {
 		var rows = [];
 		var self = this;
 		
+		// Clear and rebuild the SID lookup table
+		sidLookupTable = {};
+		
 		if (data && data.status === 'success' && data.data) {
 			// Handle protocols section
 			if (Array.isArray(data.data.protocols)) {
 				data.data.protocols.forEach(function(item) {
+					// Add to lookup table
+					sidLookupTable[item.sid] = {
+						type: 'protocol',
+						name: item.protocol
+					};
+					
 					rows.push([
 						item.id,
 						item.protocol,
@@ -290,6 +323,12 @@ return view.extend({
 			// Handle domains section
 			if (Array.isArray(data.data.domains)) {
 				data.data.domains.forEach(function(item) {
+					// Add to lookup table
+					sidLookupTable[item.sid] = {
+						type: 'domain',
+						name: item.domain
+					};
+					
 					rows.push([
 						item.id,
 						'-', // Empty protocol field for domain entries
@@ -298,6 +337,8 @@ return view.extend({
 					]);
 				});
 			}
+			
+			console.log('Built SID lookup table with', Object.keys(sidLookupTable).length, 'entries:', sidLookupTable);
 		}
 
 		var table = document.getElementById('l7proto-data');
@@ -320,11 +361,23 @@ return view.extend({
 	pollL7Data: function() {
 		var self = this;
 		
-		// Load L7 protocol data once
+		// Load L7 protocol data first to build lookup table
 		this.loadL7ProtoData().then(function(data) {
 			self.renderL7ProtoData(data);
+			
+			// Load SID data immediately for the first time
+			self.loadSIDData().then(function(data) {
+				self.renderSIDData(data);
+			});
 		});
-
+		
+		// Poll L7 protocol data every 30 seconds to update lookup table
+		poll.add(function() {
+			return self.loadL7ProtoData().then(function(data) {
+				self.renderL7ProtoData(data);
+			});
+		}, 30);
+		
 		// Poll SID data every 5 seconds
 		poll.add(function() {
 			return self.loadSIDData().then(function(data) {
