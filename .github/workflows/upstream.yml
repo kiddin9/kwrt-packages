@@ -339,23 +339,23 @@ jobs:
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
-        net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/verysync net/vlmcsd net/dnsforwarder net/tcpping \
+        net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder net/tcpping \
         net/mentohust net/ps3netsrv net/brook net/q net/quectel-cm net/speedtest-cli net/tcping-simple \
-        net/vsftpd net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
+        net/vsftpd net/smartdns net/miniupnpd net/p910nd net/ddns-scripts net/shadow-tls \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
         utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench \
         utils/coremark utils/watchcat utils/cgroupfs-mount multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice admin/gotop \
-        lang/lua-periphery lang/lua-neturl lang/lua-maxminddb
+        lang/lua-periphery lang/lua-neturl lang/lua-maxminddb devel/gn
         ) &
         (
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
         multimedia/UnblockNeteaseMusic multimedia/aliyundrive-webdav net/gowebdav net/kismet net/mstpd \
         net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
         net/uugamebooster net/pgyvpn net/ooniprobe net/polipo net/rosy-file-server \
-        net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater \
+        net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater net/verysync \
         net/vpnbypass net/vpn-policy-routing utils/qfirehose
         git_sparse_clone master "https://github.com/lunatickochiya/Matrix-Action-Openwrt" package/kochiya/brlaser package/kochiya/luci-app-banmac-ipt package/kochiya/luci-app-banmac-nft package/kochiya/luci-app-nvr package/kochiya/luci-app-openvpn-server
         git_sparse_clone main https://github.com/sbwml/openwrt_pkgs luci-app-socat
