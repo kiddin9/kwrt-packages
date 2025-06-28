@@ -340,7 +340,7 @@ jobs:
         net/subconverter net/ngrokc net/njitclient net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
         net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder net/tcpping \
-        net/mentohust net/ps3netsrv net/brook net/q net/quectel-cm net/speedtest-cli net/tcping-simple \
+        net/mentohust net/ps3netsrv net/brook net/q net/speedtest-cli net/tcping-simple \
         net/vsftpd net/smartdns net/miniupnpd net/p910nd net/ddns-scripts net/shadow-tls \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/cxxopts libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
