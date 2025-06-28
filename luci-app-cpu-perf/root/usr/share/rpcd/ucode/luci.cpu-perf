@@ -1,0 +1,126 @@
+
+'use strict';
+
+import { lsdir, readfile, stat } from 'fs';
+
+const sysCpuDir          = '/sys/devices/system/cpu';
+const sysOndemandDir     = sysCpuDir + '/cpufreq/ondemand';
+const sysConservativeDir = sysCpuDir + '/cpufreq/conservative';
+
+function readFile(path) {
+	let r = readfile(path);
+	return r && trim(r);
+}
+
+function parseMultiValue(s, number) {
+	if(!s) {
+		return null;
+	}
+	let t = [];
+	for(let i in split(s, /[[:space:]]+/)) {
+		push(t, number ? int(i) : i);
+	}
+	return t;
+}
+
+const methods = {
+	getCpuPerf: {
+		call: function() {
+			let cpuPerf      = {};
+			let ondemand     = {};
+			let conservative = {};
+			let cpus         = {};
+			if(stat(sysOndemandDir)?.type == 'directory') {
+				let upThreshold   = readFile(sysOndemandDir + '/up_threshold');
+				let ignNiceLoad   = readFile(sysOndemandDir + '/ignore_nice_load');
+				let smpDownFactor = readFile(sysOndemandDir + '/sampling_down_factor');
+				if(upThreshold) {
+					ondemand['upThreshold'] = int(upThreshold);
+				}
+				if(ignNiceLoad) {
+					ondemand['ignNiceLoad'] = int(ignNiceLoad);
+				}
+				if(smpDownFactor) {
+					ondemand['smpDownFactor'] = int(smpDownFactor);
+				}
+				cpuPerf['ondemand'] = ondemand;
+			}
+			if(stat(sysConservativeDir)?.type == 'directory') {
+				let freqStep      = readFile(sysConservativeDir + '/freq_step');
+				let downThreshold = readFile(sysConservativeDir + '/down_threshold');
+				let smpDownFactor = readFile(sysConservativeDir + '/sampling_down_factor');
+				if(freqStep) {
+					conservative['freqStep'] = int(freqStep);
+				}
+				if(downThreshold) {
+					conservative['downThreshold'] = int(downThreshold);
+				}
+				if(smpDownFactor) {
+					conservative['smpDownFactor'] = int(smpDownFactor);
+				}
+				cpuPerf['conservative'] = conservative;
+			}
+			if(stat(sysCpuDir)?.type == 'directory') {
+				for(let item in lsdir(sysCpuDir)) {
+					if(match(item, /^cpu[0-9]+$/)) {
+						let deviceDirPath = sprintf('%s/%s/cpufreq', sysCpuDir, item);
+						if(stat(deviceDirPath)?.type == 'directory') {
+							let m       = match(item, /[0-9]+/);
+							let dNumber = m && m[0];
+							if(dNumber) {
+								let sCurFreq    = readFile(deviceDirPath + '/scaling_cur_freq');
+								let curFreq     = readFile(deviceDirPath + '/cpuinfo_cur_freq');
+								let sMinFreq    = readFile(deviceDirPath + '/scaling_min_freq');
+								let minFreq     = readFile(deviceDirPath + '/cpuinfo_min_freq');
+								let sMaxFreq    = readFile(deviceDirPath + '/scaling_max_freq');
+								let maxFreq     = readFile(deviceDirPath + '/cpuinfo_max_freq');
+								let governor    = readFile(deviceDirPath + '/scaling_governor');
+								let sAvailFreqs = readFile(deviceDirPath + '/scaling_available_frequencies');
+								if(sAvailFreqs) {
+									sAvailFreqs = parseMultiValue(sAvailFreqs, true);
+								}
+								let sAvailGovernors = readFile(deviceDirPath + '/scaling_available_governors');
+								if(sAvailGovernors) {
+									sAvailGovernors = parseMultiValue(sAvailGovernors);
+								}
+								let d = { number: int(dNumber) };
+								if(sCurFreq) {
+									d['sCurFreq'] = int(sCurFreq);
+								}
+								if(curFreq) {
+									d['curFreq'] = int(curFreq);
+								}
+								if(sMinFreq) {
+									d['sMinFreq'] = int(sMinFreq);
+								}
+								if(minFreq) {
+									d['minFreq'] = int(minFreq);
+								}
+								if(sMaxFreq) {
+									d['sMaxFreq'] = int(sMaxFreq);
+								}
+								if(maxFreq) {
+									d['maxFreq'] = int(maxFreq);
+								}
+								if(governor) {
+									d['governor'] = governor;
+								}
+								if(sAvailFreqs) {
+									d['sAvailFreqs'] = sAvailFreqs;
+								}
+								if(sAvailGovernors) {
+									d['sAvailGovernors'] = sAvailGovernors;
+								}
+								cpus[dNumber] = d;
+							}
+						}
+					}
+				}
+				cpuPerf['cpus'] = cpus;
+			}
+			return cpuPerf;
+		},
+	},
+};
+
+return { 'luci.cpu-perf': methods };
