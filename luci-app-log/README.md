@@ -1,22 +1,24 @@
 # luci-app-log-viewer
 Advanced syslog and kernel log (tail, search, etc) for LuCI (OpenWrt webUI).
 
-OpenWrt >= 21.02.
+OpenWrt >= 22.03.
 
 Supported LuCI themes: luci-theme-bootstrap, luci-theme-material, luci-theme-openwrt-2020.
 
+**Dependences:** ucode, ucode-mod-fs.
+
 ## Installation notes
 
-    wget --no-check-certificate -O /tmp/luci-app-log-viewer_1.3.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-log-viewer_1.3.0-r1_all.ipk
-    opkg install /tmp/luci-app-log-viewer_1.3.0-r1_all.ipk
-    rm /tmp/luci-app-log-viewer_1.3.0-r1_all.ipk
+    wget --no-check-certificate -O /tmp/luci-app-log-viewer_1.4.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-log-viewer_1.4.0-r1_all.ipk
+    opkg install /tmp/luci-app-log-viewer_1.4.0-r1_all.ipk
+    rm /tmp/luci-app-log-viewer_1.4.0-r1_all.ipk
     service rpcd restart
 
 i18n-ru:
 
-    wget --no-check-certificate -O /tmp/luci-i18n-log-viewer-ru_1.3.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-i18n-log-viewer-ru_1.3.0-r1_all.ipk
-    opkg install /tmp/luci-i18n-log-viewer-ru_1.3.0-r1_all.ipk
-    rm /tmp/luci-i18n-log-viewer-ru_1.3.0-r1_all.ipk
+    wget --no-check-certificate -O /tmp/luci-i18n-log-viewer-ru_1.4.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-i18n-log-viewer-ru_1.4.0-r1_all.ipk
+    opkg install /tmp/luci-i18n-log-viewer-ru_1.4.0-r1_all.ipk
+    rm /tmp/luci-i18n-log-viewer-ru_1.4.0-r1_all.ipk
 
 ## Screenshots:
 

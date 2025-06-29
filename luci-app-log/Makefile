@@ -7,9 +7,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-log-viewer
-PKG_VERSION:=1.3.0
-PKG_RELEASE:=11
+PKG_VERSION:=1.4.0
+PKG_RELEASE:=12
 LUCI_TITLE:=Advanced syslog and kernel log (tail, search, etc)
+LUCI_DEPENDS:=+ucode +ucode-mod-fs
 LUCI_PKGARCH:=all
 #LUCI_PKGARCH:=noarch
 PKG_LICENSE:=MIT

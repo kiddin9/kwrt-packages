@@ -1,0 +1,67 @@
+
+'use strict';
+
+import { popen, stat } from 'fs';
+
+const dmesgCmd   = '/bin/dmesg';
+const logreadCmd = (
+	(stat('/sbin/logread')?.perm?.user_exec) ? '/sbin/logread' :
+		((stat('/usr/sbin/logread')?.perm?.user_exec) ? '/usr/sbin/logread' : null));
+
+if(!logreadCmd) {
+	die('Error! Logread not found!');
+}
+
+function getCmdOutput(cmd, number) {
+	let ret = '';
+	const fd = popen(cmd, 'r');
+	if(fd) {
+		let c = fd.read('all');
+		fd.close();
+		if(c) {
+			c = trim(c);
+			ret = number ? int(c) : c;
+		}
+	}
+	return ret;
+}
+
+const methods = {
+	getSyslogSize: {
+		call: function() {
+			return { 'bytes': getCmdOutput(logreadCmd + ' | wc -c', true) };
+		},
+	},
+
+	getSyslogHash: {
+		call: function() {
+			return { 'hash': getCmdOutput(logreadCmd + ' -t -l 1') };
+		},
+	},
+
+	getDmesgSize: {
+		call: function() {
+			return { 'bytes': getCmdOutput(dmesgCmd + ' | wc -c', true) };
+		},
+	},
+
+	getDmesgHash: {
+		call: function() {
+			return { 'hash': getCmdOutput(dmesgCmd + ' | tail -n 1') };
+		},
+	},
+
+	getLogfileSize: {
+		args: { fpath: 'fpath' },
+		call: function(request) {
+			let ret    = '';
+			const path = request.args?.fpath;
+			if(path) {
+				ret = stat(path)?.size;
+			}
+			return { 'bytes': ret ?? '' };
+		},
+	},
+};
+
+return { 'luci.log-viewer': methods };
