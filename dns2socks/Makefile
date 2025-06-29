@@ -6,10 +6,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dns2socks
 PKG_VERSION:=2.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
-PKG_SOURCE:=SourceCode.zip
-PKG_SOURCE_URL:=@SF/dns2socks
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).zip
+PKG_SOURCE_URL:=@SF/dns2socks/SourceCode.zip?
 PKG_SOURCE_DATE:=2020-02-18
 PKG_HASH:=skip
 
