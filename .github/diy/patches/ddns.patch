@@ -12,15 +12,6 @@
 
 --- a/ddns-scripts/Makefile
 +++ b/ddns-scripts/Makefile
-@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
- 
- PKG_NAME:=ddns-scripts
- PKG_VERSION:=2.8.2
--PKG_RELEASE:=73
-+PKG_RELEASE:=74
- 
- PKG_LICENSE:=GPL-2.0
- 
 @@ -342,6 +342,16 @@ define Package/ddns-scripts-huaweicloud/description
    Dynamic DNS Client scripts extension for huaweicloud.com API (require curl and openssl)
  endef
