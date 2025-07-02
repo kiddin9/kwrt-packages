@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=openlist
 PKG_VERSION:=4.0.5
 PKG_WEB_VERSION:=4.0.5
-PKG_RELEASE:=20
+PKG_RELEASE:=21
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/OpenListTeam/OpenList/tar.gz/v$(PKG_VERSION)?
@@ -83,16 +83,23 @@ define Build/Prepare
 	$(SED) 's_https://docs.oplist.org/logo.png_/assets/logo.png_g' $(PKG_BUILD_DIR)/public/dist/index.html
 	$(SED) 's_https://docs.oplist.org/logo.svg_/assets/logo.svg_g' $(PKG_BUILD_DIR)/public/dist/index.html
 	$(SED) 's_https://docs.oplist.org/logo.png_/assets/logo.png_g' $(PKG_BUILD_DIR)/public/dist/static/manifest.json
+	$(SED) '/SiteTitle/s_Value: "OpenList"_Value: "OpenList for OpenWrt"_' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) '/PreviewArchivesByDefault/s_Value: "true"_Value: "false"_' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) '/SignAll/s_Value: "true"_Value: "false"_' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) 's_api.example.com/ocr/file/json_api.cooluc.com/ocr/file/json_g' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) 's_https://cdnjs.cloudflare.com/polyfill/v3/_/assets/_g' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) 's_https://cdn.oplist.org/gh/OpenListTeam/Logo@main/logo.svg_/assets/logo.svg_g' $(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
+	$(SED) '/Announcement/s_Value: "### repo\\nhttps:\/\/github.com\/OpenListTeam\/OpenList"_Value: "### repo\\nhttps:\/\/github.com\/sbwml\/luci-app-openlist"_' \
+	$(PKG_BUILD_DIR)/internal/bootstrap/data/setting.go
 endef
 
 define Package/openlist/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/OpenList $(1)/usr/bin/openlist
-	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d $(1)/etc/openlist
+	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
 	$(INSTALL_CONF) $(CURDIR)/files/openlist.config $(1)/etc/config/openlist
 	$(INSTALL_BIN) $(CURDIR)/files/openlist.init $(1)/etc/init.d/openlist
-	$(INSTALL_DATA) $(CURDIR)/files/data.db $(1)/etc/openlist/data.db
 endef
 
 $(eval $(call Download,openlist-frontend))

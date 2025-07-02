@@ -253,6 +253,7 @@ start_service() {
 	json_dump > "$data_dir/config.json"
 
 	procd_open_instance openlist
+	procd_set_param env OPENLIST_ADMIN_PASSWORD=admin
 	procd_set_param command $PROG
 	procd_append_param command server
 	procd_append_param command --data "$data_dir"
