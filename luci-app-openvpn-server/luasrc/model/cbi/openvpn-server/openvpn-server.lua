@@ -166,7 +166,7 @@ if pid == "" then
         message = luci.util.exec("/etc/init.d/openvpn start 2>&1")
         luci.util.exec("sleep 2")
         luci.http.redirect(
-                luci.dispatcher.build_url("admin", "services", "openvpn-server") .. "?message=" .. message
+                luci.dispatcher.build_url("admin", "vpn", "openvpn-server") .. "?message=" .. message
         )
   end
 else
@@ -177,7 +177,7 @@ else
         luci.util.exec("/etc/init.d/openvpn stop")
         luci.util.exec("sleep 2")
         luci.http.redirect(
-                luci.dispatcher.build_url("admin", "services", "openvpn-server")
+                luci.dispatcher.build_url("admin", "vpn", "openvpn-server")
         )
   end
 end
