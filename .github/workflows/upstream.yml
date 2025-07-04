@@ -323,7 +323,6 @@ jobs:
         (
         #git_clone https://github.com/bobbyunknown/luci-app-insomclash
         git_clone https://github.com/muink/luci-app-ssrust
-        git_clone https://github.com/muink/openwrt-shadowsocks-rust
         git_clone https://github.com/hudra0/qosmate
         git_clone https://github.com/muink/luci-app-netdata
         git_clone https://github.com/xptsp/luci-app-ympd
