@@ -1,4 +1,4 @@
-m = Map("cloudreve", translate("Cloudreve"), translate("Self-hosted file management and sharing system, supports multiple storage providers.").."<br/>"..translate("Default login username: admin@cloudreve.org, password: password."))
+m = Map("cloudreve", translate("Cloudreve"), translate("Self-hosted file management and sharing system, supports multiple storage providers."))
 
 m:section(SimpleSection).template="cloudreve/cloudreve_status"
 
