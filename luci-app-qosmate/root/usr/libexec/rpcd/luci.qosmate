@@ -73,63 +73,81 @@ end
 -- Retrieve all current connections from nf_conntrack
 local function get_connections()
     local conn_list = {}
+    
+    -- Read MAX_CONNECTIONS from config
+    local max_connections = 0
+    local config = io.popen("uci get qosmate.advanced.MAX_CONNECTIONS 2>/dev/null")
+    if config then
+        local value = config:read("*line")
+        config:close()
+        if value and value ~= "" then
+            max_connections = tonumber(value) or 0
+        end
+    end
+    
     local f = io.open("/proc/net/nf_conntrack", "r")
     if not f then
-        return {}
+        return {}, max_connections
     end
 
-    -- Read all connections from nf_conntrack
+    local count = 0
+    
+    -- Read connections from nf_conntrack (with early exit if limited)
     for line in f:lines() do
+        -- Early exit if we have a limit and reached it
+        if max_connections > 0 and count >= max_connections then
+            break
+        end
+        
         local conn = parse_connection(line)
         if conn then
             conn.total_bytes = (conn.in_bytes or 0) + (conn.out_bytes or 0)
             table.insert(conn_list, conn)
+            count = count + 1
         end
     end
     f:close()
 
-    -- Sort the entire list in descending order by total_bytes
+    -- Sort only the connections we actually loaded
     table.sort(conn_list, function(a, b)
         return a.total_bytes > b.total_bytes
     end)
 
-    -- Determine max_entries based on system load
-    local load_avg = io.open("/proc/loadavg"):read("*a")
-    local load1 = tonumber(load_avg:match("^(%d+%.%d+)")) or 0
-    
-    -- Default: no limit
-    local max_entries = math.huge
-    
-    -- Simple thresholds based on absolute load
-    if load1 > 2.0 then
-        max_entries = 100
-        -- io.popen("logger -t qosmate 'Critical load! Limiting to 100 connections'")
-    elseif load1 > 1.5 then
-        max_entries = 500
-        -- io.popen("logger -t qosmate 'High load! Limiting to 500 connections'")
-    elseif load1 > 0.8 then
-        max_entries = 1000
-        -- io.popen("logger -t qosmate 'Moderate load! Limiting to 1000 connections'")
+    -- Determine max_entries based on system load (only if no manual limit)
+    local max_entries = #conn_list
+    if max_connections == 0 then
+        local load_avg = io.open("/proc/loadavg"):read("*a")
+        local load1 = tonumber(load_avg:match("^(%d+%.%d+)")) or 0
+        
+        -- Apply load-based limits only if no manual limit
+        if load1 > 2.0 then
+            max_entries = math.min(100, #conn_list)
+        elseif load1 > 1.5 then
+            max_entries = math.min(500, #conn_list)
+        elseif load1 > 0.8 then
+            max_entries = math.min(1000, #conn_list)
+        end
     end
 
     -- Final connections table
     local connections = {}
-    for i = 1, math.min(max_entries, #conn_list) do
+    for i = 1, max_entries do
         local conn = conn_list[i]
+        if not conn then break end
         local key = string.format("%s:%s:%s:%s:%s:%s",
             conn.layer3, conn.protocol, conn.src, conn.sport, conn.dst, conn.dport)
         connections[key] = conn
     end
 
-    return connections
+    return connections, max_connections
 end
 
 -- Define RPC methods
 local methods = {
     getConntrackDSCP = {
         call = function()
-            local connections = get_connections()
-            return {result = jsonc.stringify({connections = connections})}
+            local connections, max_connections = get_connections()
+            return {result = jsonc.stringify({connections = connections, max_connections = max_connections})}
         end
     }
 }

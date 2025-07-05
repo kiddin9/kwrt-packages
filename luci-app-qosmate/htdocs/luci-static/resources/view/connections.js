@@ -4,6 +4,7 @@
 'require rpc';
 'require ui';
 'require form';
+'require uci';
 
 var callQoSmateConntrackDSCP = rpc.declare({
     object: 'luci.qosmate',
@@ -65,16 +66,23 @@ return view.extend({
 
     load: function() {
         return Promise.all([
-            L.resolveDefault(callQoSmateConntrackDSCP(), { connections: {} })
+            L.resolveDefault(callQoSmateConntrackDSCP(), { connections: {} }),
+            uci.load('qosmate')
         ]);
     },
 
     render: function(data) {
         var view = this;
         var connections = [];
+        var max_connections = 0;
+        
         if (data[0] && data[0].connections) {
             connections = Object.values(data[0].connections);
+            max_connections = data[0].max_connections || 0;
         }
+        
+        // Get current UCI value for dropdown
+        var current_uci_limit = uci.get('qosmate', 'advanced', 'MAX_CONNECTIONS') || '0';
 
         var filterInput = E('input', {
             'type': 'text',
@@ -87,6 +95,77 @@ return view.extend({
             view.filter = ev.target.value.toLowerCase();
             view.updateTable(connections);
         });
+
+        // Create connection limit dropdown
+        var limitSelect = E('select', {
+            'id': 'connection_limit_select',
+            'style': 'margin-left: 10px;',
+            'change': function(ev) {
+                var newLimit = parseInt(ev.target.value);
+                
+                applyConnectionLimit(newLimit);
+            }
+        }, [
+            E('option', { 'value': '0' }, _('Unlimited')),
+            E('option', { 'value': '10' }, _('10')),
+            E('option', { 'value': '50' }, _('50')),
+            E('option', { 'value': '100' }, _('100')),
+            E('option', { 'value': '500' }, _('500')),
+            E('option', { 'value': '1000' }, _('1000')),
+            E('option', { 'value': '2000' }, _('2000')),
+            E('option', { 'value': '5000' }, _('5000'))
+        ]);
+
+        // Set current value from UCI
+        limitSelect.value = current_uci_limit;
+
+        // Function to apply connection limit directly
+        function applyConnectionLimit(newLimit) {
+            return uci.load('qosmate').then(function() {
+                uci.set('qosmate', 'advanced', 'MAX_CONNECTIONS', newLimit.toString());
+                return uci.save();
+            }).then(function() {
+                return uci.apply();
+            }).then(function() {
+                uci.unload('qosmate');
+                return uci.load('qosmate');
+            }).then(function() {
+                setTimeout(function() {
+                    view.load().then(function(newData) {
+                        var newConnections = [];
+                        var newMaxConnections = 0;
+                        if (newData[0] && newData[0].connections) {
+                            newConnections = Object.values(newData[0].connections);
+                            newMaxConnections = newData[0].max_connections || 0;
+                        }
+                        view.updateTable(newConnections);
+                        view.updateLimitWarning(newMaxConnections, newConnections.length);
+                        
+                        // Update dropdown to reflect current value
+                        limitSelect.value = newMaxConnections.toString();
+                    });
+                }, 1000);
+            }).catch(function(error) {
+                console.error('Error applying UCI changes:', error);
+                // Show error but don't persist notification
+                ui.addNotification(null, E('p', _('Failed to apply connection limit: %s').format(error.message || error)), 'error');
+            });
+        }
+
+        // Create limit warning (initially hidden)
+        var limitWarning = E('div', {
+            'id': 'limit_warning',
+            'style': 'background-color: #fff3cd; color: #856404; padding: 10px; margin: 10px 0; border-radius: 5px; display: none;'
+        });
+
+        view.updateLimitWarning = function(maxConnections, currentCount) {
+            if (maxConnections > 0) {
+                limitWarning.innerHTML = '⚠️ ' + _('Limited to %d connections. Some connections may not be shown.').format(maxConnections);
+                limitWarning.style.display = 'block';
+            } else {
+                limitWarning.style.display = 'none';
+            }
+        };
 
         var table = E('table', { 'class': 'table cbi-section-table', 'id': 'qosmate_connections' }, [
             E('tr', { 'class': 'tr table-titles' }, [
@@ -294,6 +373,7 @@ return view.extend({
         };
 
         view.updateTable(connections);
+        view.updateLimitWarning(max_connections, connections.length);
         this.updateSortIndicators();
 
         // Trigger the adaptive polling:
@@ -382,18 +462,22 @@ return view.extend({
             'style': 'float: right; margin-left: 10px; font-weight: bold; line-height: 2.5em;'
         }, _('Connections: 0'));
 
-        // Include pollIntervalDisplay in the top container
+        // Include limit elements in the top container
         return E('div', { 'class': 'cbi-map' }, [
             style,
             E('h2', _('QoSmate Connections')),
+            limitWarning,
             E('div', { 'style': 'margin-bottom: 10px;' }, [
                 filterInput,
-                ' ',  // Space between elements.
+                ' ',
+                E('span', _('Max Connections:')),
+                limitSelect,
+                ' ',
                 E('span', _('Zoom:')),
                 zoomSelect,
                 pollIntervalDisplay,
                 connectionCountDisplay,
-                ' ',  // Space between elements.
+                ' ',
                 E('button', {
                     'type': 'button',
                     'style': 'margin-left: 10px;',
@@ -501,6 +585,7 @@ function adaptivePoll(view) {
     var startTime = Date.now();
     L.resolveDefault(callQoSmateConntrackDSCP(), { connections: {} }).then(function(result) {
         var responseTime = Date.now() - startTime;
+        
         // Adjust the polling interval based on response time.        
         if (!view.hasPolledOnce) {
             view.pollInterval = 3;
@@ -515,8 +600,13 @@ function adaptivePoll(view) {
         if (pollDisplay) {
             pollDisplay.textContent = _('Polling Interval: ') + view.pollInterval + ' s';
         }
+        
         if (result && result.connections) {
-            view.updateTable(Object.values(result.connections));
+            var connections = Object.values(result.connections);
+            var max_connections = result.max_connections || 0;
+            
+            view.updateTable(connections);
+            view.updateLimitWarning(max_connections, connections.length);
         } else {
             console.warn('Invalid data received:', result);
             // Show error message to user
