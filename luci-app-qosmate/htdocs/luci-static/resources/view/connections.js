@@ -65,10 +65,7 @@ return view.extend({
 
     load: function() {
         return Promise.all([
-            callQoSmateConntrackDSCP().catch(function(err) {
-                console.warn('Initial load failed:', err);
-                return { connections: {} };
-            })
+            L.resolveDefault(callQoSmateConntrackDSCP(), { connections: {} })
         ]);
     },
 
@@ -271,6 +268,12 @@ return view.extend({
                     ]));
                 });
                 view.updateSortIndicators();
+                
+                // Update connection count display
+                var connectionCountDisplay = document.getElementById('connection_count_display');
+                if (connectionCountDisplay) {
+                    connectionCountDisplay.textContent = _('Connections: ') + connections.length;
+                }
             } catch (e) {
                 console.error('Error updating table:', e);
                 // Show error message instead of crashing
@@ -281,6 +284,12 @@ return view.extend({
                     E('td', { 'class': 'td', 'colspan': '9', 'style': 'text-align: center; color: red;' }, 
                         _('Error displaying connections. System may be overloaded.'))
                 ]));
+                
+                // Update connection count display for error case
+                var connectionCountDisplay = document.getElementById('connection_count_display');
+                if (connectionCountDisplay) {
+                    connectionCountDisplay.textContent = _('Connections: Error');
+                }
             }
         };
 
@@ -366,6 +375,12 @@ return view.extend({
             'id': 'poll_interval_display',
             'style': 'margin-left: 10px;'
         }, _('Polling Interval: ') + this.pollInterval + ' s');
+        
+        // Display connection count
+        var connectionCountDisplay = E('span', {
+            'id': 'connection_count_display',
+            'style': 'float: right; margin-left: 10px; font-weight: bold; line-height: 2.5em;'
+        }, _('Connections: 0'));
 
         // Include pollIntervalDisplay in the top container
         return E('div', { 'class': 'cbi-map' }, [
@@ -377,6 +392,7 @@ return view.extend({
                 E('span', _('Zoom:')),
                 zoomSelect,
                 pollIntervalDisplay,
+                connectionCountDisplay,
                 ' ',  // Space between elements.
                 E('button', {
                     'type': 'button',
@@ -483,7 +499,7 @@ function adaptivePoll(view) {
         return; // Do not schedule a new poll if auto-refresh is paused
     }
     var startTime = Date.now();
-    callQoSmateConntrackDSCP().then(function(result) {
+    L.resolveDefault(callQoSmateConntrackDSCP(), { connections: {} }).then(function(result) {
         var responseTime = Date.now() - startTime;
         // Adjust the polling interval based on response time.        
         if (!view.hasPolledOnce) {

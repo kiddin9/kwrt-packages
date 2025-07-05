@@ -1,67 +1,43 @@
 # SPDX-License-Identifier: GPL-2.0-only
+#
+# Copyright (C) 2025 ImmortalWrt.org
 
 include $(TOPDIR)/rules.mk
-include $(INCLUDE_DIR)/package.mk
 
 PKG_NAME:=shadow-tls
 PKG_VERSION:=0.2.25
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/ihciah/shadow-tls/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=skip
+
+PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
+PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=FluffyTigerFear
-RELEASE_HEAD:=$(PKG_NAME)
-RELEASE_FOOT:=unknown-linux-musl
-ifeq ($(ARCH),aarch64)
-	RELEASE_ARCH:=$(RELEASE_HEAD)-aarch64-$(RELEASE_FOOT)
-	PKG_HASH:=skip
-else ifeq ($(ARCH),arm)
-    ifeq ($(CONFIG_CPU_TYPE),cortex-a7)
-        RELEASE_ARCH:=$(RELEASE_HEAD)-armv7-$(RELEASE_FOOT)eabihf
-        PKG_HASH:=skip
-    else ifeq ($(CONFIG_CPU_TYPE),cortex-a9)
-        RELEASE_ARCH:=$(RELEASE_HEAD)-armv7-$(RELEASE_FOOT)eabihf
-        PKG_HASH:=skip
-    else
-        RELEASE_ARCH:=$(RELEASE_HEAD)-arm-$(RELEASE_FOOT)eabi
-        PKG_HASH:=skip
-    endif
-else ifeq ($(ARCH),x86_64)
-	RELEASE_ARCH:=$(RELEASE_HEAD)-x86_64-$(RELEASE_FOOT)
-	PKG_HASH:=skip
-else
-	PKG_SOURCE:=dummy
-	PKG_HASH:=skip
-endif
 
-define Download/shadow-tls
-	URL:=https://github.com/ihciah/shadow-tls/releases/download/v$(PKG_VERSION)
-	URL_FILE:=$(RELEASE_ARCH)
-	FILE:=$(RELEASE_ARCH)
-	HASH:=skip
-endef
+PKG_BUILD_DEPENDS:=rust/host
+PKG_BUILD_PARALLEL:=1
+
+include $(INCLUDE_DIR)/package.mk
+include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
 
 define Package/shadow-tls
-	SECTION:=net
-	CATEGORY:=Network
-	SUBMENU:=Web Servers/Proxies
-	TITLE:=A proxy to expose real tls handshake to the firewall.
-	URL:=https://github.com/ihciah/shadow-tls
-	DEPENDS:=@USE_MUSL @(aarch64||arm||x86_64) @!(TARGET_x86_geode||TARGET_x86_legacy)
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=Web Servers/Proxies
+  TITLE:=A proxy to expose real tls handshake to the firewall
+  URL:=https://github.com/ihciah/shadow-tls
+  DEPENDS:=@(aarch64||arm||x86_64)
 endef
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-ifneq ($(CONFIG_PACKAGE_shadow-tls),)
-	$(call Download,shadow-tls)
-endif
+define Package/shadow-tls/description
+  A proxy to expose real tls handshake to the firewall.
+
+  It works like trojan but it does not require signing certificate.
+  The firewall will see real tls handshake with valid certificate
+  that you choose.
 endef
 
-define Build/Compile
-endef
-
-define Package/shadow-tls/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(DL_DIR)/$(RELEASE_ARCH) $(1)/usr/bin/shadow-tls
-endef
-
+$(eval $(call RustBinPackage,shadow-tls))
 $(eval $(call BuildPackage,shadow-tls))
