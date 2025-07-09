@@ -1458,3 +1458,102 @@ msgstr "开启上网记录功能"
 
 msgid "Enable logging of internet access events and user activities."
 msgstr "启用互联网访问事件和用户活动的日志记录功能。"
+
+msgid "apfree-wifidog Status"
+msgstr "apfree-wifidog状态"
+
+msgid "Client Status"
+msgstr "客户端状态"
+
+msgid "Authentication Server Status"
+msgstr "认证服务器状态"
+
+msgid "Internet Connected"
+msgstr "互联网连接"
+
+msgid "Auth Server Connected"
+msgstr "认证服务器连接"
+
+msgid "Auth Server Mode"
+msgstr "认证服务器模式"
+
+msgid "Online Clients"
+msgstr "在线客户端"
+
+msgid "Active Clients"
+msgstr "活跃客户端"
+
+msgid "Connected Clients"
+msgstr "已连接客户端"
+
+msgid "IP Address"
+msgstr "IP地址"
+
+msgid "MAC Address"
+msgstr "MAC地址"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Online Time"
+msgstr "在线时间"
+
+msgid "Connection Type"
+msgstr "连接类型"
+
+msgid "Gateway ID"
+msgstr "网关ID"
+
+msgid "Online"
+msgstr "在线"
+
+msgid "Offline"
+msgstr "离线"
+
+msgid "Wired"
+msgstr "有线"
+
+msgid "Wireless"
+msgstr "无线"
+
+msgid "Auth Server Online"
+msgstr "认证服务器在线"
+
+msgid "Authentication Servers"
+msgstr "认证服务器"
+
+msgid "Failed to get wifidogx status"
+msgstr "获取wifidogx状态失败"
+
+msgid "Failed to get client status"
+msgstr "获取客户端状态失败"
+
+msgid "Failed to get auth server status"
+msgstr "获取认证服务器状态失败"
+
+msgid "Error getting status information: "
+msgstr "获取状态信息错误："
+
+msgid "Cloud Auth"
+msgstr "云认证"
+
+msgid "Local Auth"
+msgstr "本地认证"
+
+msgid "Bypass Auth"
+msgstr "旁路认证"
+
+msgid "Unknown"
+msgstr "未知"
+
+msgid "d"
+msgstr "天"
+
+msgid "h"
+msgstr "小时"
+
+msgid "m"
+msgstr "分钟"
+
+msgid "s"
+msgstr "秒"
