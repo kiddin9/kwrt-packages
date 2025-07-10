@@ -36,7 +36,7 @@ find . -type f \
             echo "EEOF"
             echo "}"
              # 如果第一行不包含 #!/bin/，在这里输出
-            if [[ "$first_line" != "#!/bin/"* ]]; then
+            if [[ "$first_line" != "#!/bin/"* && -n "$first_line" ]]; then
                 echo "$first_line"
             fi
             # 获取其余内容
