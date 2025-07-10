@@ -7,8 +7,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-temp-status
-PKG_VERSION:=0.7.0
-PKG_RELEASE:=21
+PKG_VERSION:=0.7.1
+PKG_RELEASE:=22
 LUCI_TITLE:=Temperature sensors data for the LuCI status page
 LUCI_DEPENDS:=+ucode +ucode-mod-fs
 LUCI_PKGARCH:=all
