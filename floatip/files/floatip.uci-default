@@ -1,4 +1,3 @@
-
 [ ! -f "/usr/share/ucitrack/luci-app-floatip.json" ] && {
     cat > /usr/share/ucitrack/luci-app-floatip.json << EEOF
 {
@@ -7,6 +6,7 @@
 }
 EEOF
 }
+
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@floatip[-1]
 	add ucitrack floatip

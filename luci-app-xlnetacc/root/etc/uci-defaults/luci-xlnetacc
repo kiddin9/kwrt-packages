@@ -1,4 +1,3 @@
-uci batch <<EOF
 [ ! -f "/usr/share/ucitrack/luci-app-xlnetacc.json" ] && {
     cat > /usr/share/ucitrack/luci-app-xlnetacc.json << EEOF
 {
@@ -7,6 +6,7 @@ uci batch <<EOF
 }
 EEOF
 }
+uci batch <<EOF
 	delete ucitrack.@xlnetacc[-1]
 	add ucitrack xlnetacc
 	set ucitrack.@xlnetacc[-1].init=xlnetacc
