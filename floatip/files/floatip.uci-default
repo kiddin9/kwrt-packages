@@ -6,7 +6,6 @@
 }
 EEOF
 }
-
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@floatip[-1]
 	add ucitrack floatip
