@@ -213,7 +213,6 @@ msgstr "设备3"
 msgid "Device 4"
 msgstr "设备4"
 
-
 msgid "Device %s logged into router via %s"
 msgstr "设备 %s 通过 %s 登录了路由器"
 
@@ -230,13 +229,13 @@ msgid "Device %s (%s) frequently attempted %s %s login"
 msgstr "设备 %s (%s) 频繁尝试 %s %s 登录"
 
 msgid "%s logged into router via %s"
-msgstr "%s 通过 %s 登录了路由器"
+msgstr "%s 通过 %s 登录路由器"
 
 msgid "Login Information"
 msgstr "登录信息"
 
 msgid "Device %s (%s) logged into router via %s %s"
-msgstr "设备 %s (%s) 通过 %s %s 登录了路由器"
+msgstr "设备 %s (%s) 通过 %s %s 登录路由器"
 
 msgid "Time:"
 msgstr "时间："
@@ -247,13 +246,11 @@ msgstr "设备 IP："
 msgid "Login Method:"
 msgstr "登录方式："
 
-
 msgid "Initialization completed"
 msgstr "初始化完成"
 
-msgid "Start running..."
-msgstr "开始运行..."
-
+msgid "Start running"
+msgstr "开始运行"
 
 msgid "[Ban information]Cancel the ban IP:%s"
 msgstr "[封禁信息]取消封禁IP：%s "
@@ -261,7 +258,33 @@ msgstr "[封禁信息]取消封禁IP：%s "
 msgid "[Block Information]Add to blacklist IP: %s Attempts:%s Time:%s"
 msgstr "[封禁信息]添加黑名单IP：%s 尝试次数: %s 时间：%s"
 
-
 msgid "Failed to add to blacklist, invalid IP format: %s (removed from list)"
 msgstr "黑名单添加失败，IP %s 格式错误，已从列表中移除"
+
+msgid "Multiple interfaces detected or configuration error"
+msgstr "检测到多个接口或配置错误"
+
+msgid "Failed to read settings, please check configuration."
+msgstr "读取设置失败，请检查配置。"
+
+msgid "Log exceeded limit, keeping last 300 entries"
+msgstr "日志超出限制，保留最后300条记录"
+
+msgid "Whitelist add failed, IP format error"
+msgstr "白名单添加失败，IP格式错误"
+
+msgid "Failed to add to blacklist, invalid IP format: %s (removed from list)"
+msgstr "添加到黑名单失败，IP格式无效：%s（已从列表中删除）"
+
+msgid "[Ban information]Cancel the ban IP:%s"
+msgstr "[封禁信息]取消封禁IP:%s"
+
+msgid "[Block Information]Add to blacklist IP: %s Attempts:%s Time:%s"
+msgstr "[阻止信息]添加到黑名单IP:%s尝试次数：%s时间：%s"
+
+msgid ""
+msgstr ""
+
+msgid ""
+msgstr ""
 

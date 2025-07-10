@@ -51,8 +51,6 @@ read_config() {
 
 	ipv4_urllist=$(cat /usr/share/$APP/api/ipv4.list) 2>/dev/null
 	ipv6_urllist=$(cat /usr/share/$APP/api/ipv6.list) 2>/dev/null
-	[ -z "$get_ipv4_mode" ] && get_ipv4_mode=0
-	[ -z "$get_ipv6_mode" ] && get_ipv6_mode=0
 	[ -z "$sleeptime" ] && sleeptime="60"
 	[ -z "$login_ip_black_timeout" ] && login_ip_black_timeout="86400"
 	[ -z "$login_ip_white_timeout" ] && login_ip_white_timeout="600"
@@ -68,14 +66,12 @@ init() {
 	enable_test
 	[ -f "$logfile" ] && local logrow=$(grep -c "" "$logfile") || local logrow="0"
 	[ "$logrow" -ne 0 ] && echo "----------------------------------" >>${logfile}
-	log "[INFO] $(translate "Start running...")"
+	log "[INFO] $(translate "Start running")"
 	if [ -f "/usr/share/$APP/errlog" ]; then
 		cat /usr/share/$APP/errlog >${logfile}
 		log "[ERROR] $(translate "Loaded logs from previous restart")"
 	fi
 
-
-	local interfacelist=$(getinterfacelist) && [ -z "$interfacelist" ] && log "[WARN] $(translate "Multiple interfaces detected or configuration error, may not get interface uptime information, please confirm if plugin is running properly")"
 	# 文件清理
 	rm -f  "/usr/share/$APP/errlog"  >/dev/null 2>&1
 	LockFile unlock
@@ -307,15 +303,6 @@ deltemp() {
 # 信息获取类
 
 
-# 获取接口信息
-getinterfacelist() {
-	[ $(ubus list | grep -w -i "network.interface.wan" | wc -l) -ge "1" ] && ubus call network.interface.wan status || ubus call network.interface.lan status && return
-	[ -n "$ipv4_interface" ] && local device_name=$ipv4_interface || [ -n "$ipv6_interface" ] && local device_name=$ipv6_interface
-	[ -n "$device_name" ] && local interface_name=$(ubus call network.interface dump | jq -r --arg intf "$device_name" '.interface[] | select(.device == $intf and (.interface | endswith("6") | not)) | .interface')
-	[ -z "$interface_name" ] && local interface_name=$(ubus list | grep -i "network.interface." | grep -v "loopback" | grep -v -i "wan6" | grep -v -i "wan_6" | grep -v -i "lan6" | grep -v -i "ipsec.*" | grep -v -i "VPN.*" | grep -v -i "DOCKER.*" | awk -F '.' '{print $3}' | head -n1)
-	ubus call network.interface.${interface_name} status && return
-}
-
 # 查询 IP 归属地
 get_ip_attribution() {
 	ip="$1"
@@ -325,7 +312,6 @@ get_ip_attribution() {
 	local ip_attribution_url
 	while IFS= read -r ip_attribution_url; do
 		local login_ip_attribution=$(eval curl --connect-timeout 2 -m 2 -k -s "$ip_attribution_url" 2>/dev/null)
-		#[ -z "$login_ip_attribution" ] && echo "$(date "+%Y-%m-%d %H:%M:%S") [DEBUG] $(translate "Location query timeout, current API: %s" "$ip_attribution_url")" >> "${logfile}"
 		[ -n "$login_ip_attribution" ] && echo "$login_ip_attribution" && break
 	done <<<"$sorted_attribution_urls"
 }
@@ -607,7 +593,7 @@ login_send() {
 	[ -z "$login_ip" ] && return
 
 	[[ "$log_type" == "web"* ]] && local log_type_short="Web" || local log_type_short="SSH"
-	[ -f "$logfile" ] && login_log=$(grep -w "$login_ip" "$logfile" | grep -v "\【info\】" | tail -n 1)
+	[ -f "$logfile" ] && login_log=$(grep -w "$login_ip" "$logfile" | grep -v "\[info\]" | tail -n 1)
 	[ -n "$login_log" ] && log_timestamp=$(date -d "$(echo "$login_log" | awk '{print $1, $2}')" +%s) || log_timestamp=0
 
 	# 查询 IP 归属地

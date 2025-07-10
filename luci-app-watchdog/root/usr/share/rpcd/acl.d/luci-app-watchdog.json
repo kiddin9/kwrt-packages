@@ -8,6 +8,7 @@
 				"/tmp/watchdog/*": [ "read" ],
 				"/usr/share/watchdog/api/*": [ "read" ],
 				"/usr/libexec/watchdog-call": [ "exec" ]
+				"/bin/pidof": [ "exec" ]
 			},
 			"ubus": {
 				"control": [ "list" ]
