@@ -23,7 +23,10 @@ find . -type f \
         
         # 构建新文件内容
         {
-            echo "$first_line"
+            # 检查第一行是否包含 #!/bin/
+            if [[ "$first_line" == "#!/bin/"* ]]; then
+                echo "$first_line"
+            fi
             echo "[ ! -f \"/usr/share/ucitrack/luci-app-${xx}.json\" ] && {"
             echo "    cat > /usr/share/ucitrack/luci-app-${xx}.json << EEOF"
             echo "{"
@@ -32,6 +35,10 @@ find . -type f \
             echo "}"
             echo "EEOF"
             echo "}"
+             # 如果第一行不包含 #!/bin/，在这里输出
+            if [[ "$first_line" != "#!/bin/"* ]]; then
+                echo "$first_line"
+            fi
             # 获取其余内容
             sed '1d' "$file"
         } > "${file}.tmp"
