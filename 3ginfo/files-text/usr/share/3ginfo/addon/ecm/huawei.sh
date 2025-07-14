@@ -57,7 +57,7 @@ getvalue() {
 
 addon() {
 	[ -n "$ADDON" ] && ADDON="$ADDON,"
-	ADDON="$ADDON"'{"idx":'$1',"key":"'$2'","value":"'$3'"}'
+	ADDON="$ADDON"'{"idx":'$1',"key":"'$2'","value":"'${3//$'\r'/}'"}'
 }
 
 cookie=$(mktemp)

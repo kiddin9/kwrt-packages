@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# (c) 2010-2024 Cezary Jackiewicz <cezary@eko.one.pl>
+# (c) 2010-2025 Cezary Jackiewicz <cezary@eko.one.pl>
 #
 
 band4g() {
@@ -179,7 +179,7 @@ getdevicevendorproduct() {
 
 addon() {
 	[ -n "$ADDON" ] && ADDON="$ADDON,"
-	ADDON="$ADDON"'{"idx":'$1',"key":"'$2'","value":"'$3'"}'
+	ADDON="$ADDON"'{"idx":'$1',"key":"'$2'","value":"'${3//$'\r'/}'"}'
 }
 
 RES="/usr/share/3ginfo"
