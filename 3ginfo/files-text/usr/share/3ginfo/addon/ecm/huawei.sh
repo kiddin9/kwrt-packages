@@ -23,6 +23,7 @@ cat <<EOF
 "operator_name":"",
 "operator_mcc":"",
 "operator_mnc":"",
+"country":"",
 "mode":"",
 "registration":"",
 "lac_dec":"",
@@ -128,6 +129,8 @@ COPS=$(getvalue net-current-plmn FullName)
 T=$(getvaluen net-current-plmn Numeric)
 COPS_MCC=$(echo "$T" | cut -c1-3)
 COPS_MNC=$(echo "$T" | cut -c4- )
+COUNTRY=""
+[ -n "$COPS_MCC" ] && COUNTRY=$(awk -F[\;] '/^'$COPS_MCC';/ {print $2}' /usr/share/3ginfo/mcc.dat)
 
 T=$(getvaluen monitoring-status CurrentNetworkType)
 case $T in
@@ -156,16 +159,16 @@ case $T in
 	24) MODE="EVDO rev. 0";;
 	25) MODE="EVDO rev. A";;
 	26) MODE="EVDO rev. B";;
-	27) MODE="Hybrydowa CDMA1x";;
-	28) MODE="Hybrydowa EVDO rev. 0";;
-	29) MODE="Hybrydowa EVDO rev. A";;
-	30) MODE="Hybrydowa EVDO rev. B";;
+	27) MODE="Hybrid CDMA1x";;
+	28) MODE="Hybrid EVDO rev. 0";;
+	29) MODE="Hybrid EVDO rev. A";;
+	30) MODE="Hybrid EVDO rev. B";;
 	31) MODE="EHRPD rev. 0";;
 	32) MODE="EHRPD rev. A";;
 	33) MODE="EHRPD rev. B";;
-	34) MODE="Hybrydowa EHRPD rev. 0";;
-	35) MODE="Hybrydowa EHRPD rev. A";;
-	36) MODE="Hybrydowa EHRPD rev. B";;
+	34) MODE="Hybrid EHRPD rev. 0";;
+	35) MODE="Hybrid EHRPD rev. A";;
+	36) MODE="Hybrid EHRPD rev. B";;
 	41) MODE="WCDMA (UMTS)";;
 	42) MODE="HSDPA";;
 	43) MODE="HSUPA";;
@@ -232,6 +235,7 @@ cat <<EOF
 "operator_name":"$COPS",
 "operator_mcc":"$COPS_MCC",
 "operator_mnc":"$COPS_MNC",
+"country":"$COUNTRY",
 "mode":"$MODE",
 "registration":"$REG",
 "lac_dec":"$LAC_DEC",

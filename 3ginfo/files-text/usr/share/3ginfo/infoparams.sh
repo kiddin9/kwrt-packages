@@ -213,6 +213,7 @@ else
 fi
 
 # COPS
+COUNTRY=""
 COPS=""
 COPS_MCC=""
 COPS_MNC=""
@@ -228,6 +229,7 @@ else
 	[ -n "$COPS_NUM" ] && COPS=$(awk -F[\;] '/^'$COPS_NUM';/ {print $2}' $RES/mccmnc.dat)
 fi
 [ -z "$COPS" ] && COPS=$COPS_NUM
+[ -n "$COPS_MCC" ] && COUNTRY=$(awk -F[\;] '/^'$COPS_MCC';/ {print $2}' $RES/mcc.dat)
 
 # CREG
 eval $(echo "$O" | busybox awk -F[,] '/^\+CREG/ {gsub(/[[:space:]"]+/,"");printf "T=\"%d\";LAC_HEX=\"%X\";CID_HEX=\"%X\";LAC_DEC=\"%d\";CID_DEC=\"%d\";MODE_NUM=\"%d\"", $2, "0x"$3, "0x"$4, "0x"$3, "0x"$4, $5}')
@@ -300,6 +302,7 @@ cat <<EOF
 "operator_name":"$COPS",
 "operator_mcc":"$COPS_MCC",
 "operator_mnc":"$COPS_MNC",
+"country":"$COUNTRY",
 "mode":"$MODE",
 "registration":"$REG",
 "lac_dec":"$LAC_DEC",

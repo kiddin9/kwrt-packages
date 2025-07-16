@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# (c) 2024 Cezary Jackiewicz <cezary@eko.one.pl>
+# (c) 2024-2025 Cezary Jackiewicz <cezary@eko.one.pl>
 #
 
 . /lib/functions.sh
@@ -63,10 +63,11 @@ parse_section() {
 		else
 			json_load "$($RES/infoparams.sh "$device")"
 		fi
-		json_get_vars signal operator_name operator_mcc operator_mnc mode registration lac_dec lac_hex cid_dec cid_hex
+		json_get_vars signal operator_name operator_mcc operator_mnc country mode registration lac_dec lac_hex cid_dec cid_hex
 		echo "Signal: ${signal} %"
 		echo "Mode: ${mode}"
 		echo "Operator: ${operator_name} (${operator_mcc} ${operator_mnc})"
+		[ -n "$country" ] && echo "Country: ${country}"
 		case $registration in
 			0) REG="not registered";;
 			1) REG="registered, home network";;
@@ -78,6 +79,7 @@ parse_section() {
 			*) REG="$registration";;
 		esac
 		echo "Registration: ${REG}"
+		echo ""
 		T="21;CellID: ${cid_dec} (${cid_hex})"
 		T="${T}\n22;LAC: ${lac_dec} (${lac_hex})"
 		if json_is_a addon array; then

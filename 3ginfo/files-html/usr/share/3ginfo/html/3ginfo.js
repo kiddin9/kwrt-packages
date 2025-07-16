@@ -336,6 +336,9 @@ function showmodemparams() {
 				setValue('mode' + idx, mode);
 
 				arrmodemaddon[idx].push({'idx':1, 'key':'Mode', 'value':data.mode});
+				if (data.country) {
+					arrmodemaddon[idx].push({'idx':19, 'key':'Country', 'value':data.country});
+				}
 				if (data.operator_mcc && data.operator_mcc != '' && data.operator_mnc && data.operator_mnc != '') {
 					arrmodemaddon[idx].push({'idx':20, 'key':'MCC MNC', 'value':data.operator_mcc + ' ' + data.operator_mnc});
 				}
