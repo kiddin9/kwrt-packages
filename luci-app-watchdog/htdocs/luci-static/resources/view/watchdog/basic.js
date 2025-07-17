@@ -111,7 +111,6 @@ return view.extend({
 		s.addremove = false;
 		s.anonymous = true;
 
-		// 基本设置
 		o = s.taboption('basic', form.Flag, 'enable', _('Enabled'));
 		o = s.taboption('basic', form.Value, 'sleeptime', _('Check Interval (s)'));
 		o.rmempty = false;
@@ -162,12 +161,6 @@ return view.extend({
 		};
 		o.depends('login_web_black', '1');
 		o.description = _('Automatic ban blacklist list, with the ban time following the IP address');
-
-		//o = s.taboption('blacklist', form.Flag, 'port_release_enable', _('Release port'));
-		//o.default = '0';
-		//o.description = _('If you have disabled LAN port inbound and forwarding in Firewall - Zone Settings, it won\'t work.');
-		//o.depends({ login_control: "web_login_failed", '!contains': true });
-		//o.depends({ login_control: "ssh_login_failed", '!contains': true });
 
 		o = s.taboption('blacklist', form.Value, 'login_port_white', _('Port'));
 		o.default = '';

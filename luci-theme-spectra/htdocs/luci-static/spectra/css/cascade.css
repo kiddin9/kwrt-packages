@@ -1707,6 +1707,7 @@ ul.tabs li {
 	border-radius: 6px;
 	font-size: 14px;
 	font-weight: 500;
+        border-radius: 0.5rem !important;
 	transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 	border: none;
@@ -2018,6 +2019,35 @@ input[type="checkbox"]:hover {
 	background-color: #f1f1f1 !important;
 }
 
+.cbi-dropdown[disabled] {
+	pointer-events: auto !important;
+	opacity: 1 !important;
+}
+
+.cbi-dropdown ul {
+	bottom: 100% !important;
+	top: auto !important;
+        max-height: 300px !important;  
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+}
+
+.cbi-dynlist .item span {
+	user-select: text !important;
+	-webkit-user-select: text !important;
+	cursor: text !important;
+}
+
+.cbi-dropdown ul::-webkit-scrollbar {
+        width: 6px !important;
+}
+
+.cbi-dropdown ul::-webkit-scrollbar-thumb {
+        background: #ccc !important;
+        border-radius: 3px !important;
+}
+
 .cbi-page-actions {
 	display: flex !important;
 	justify-content: center !important;
@@ -2111,7 +2141,7 @@ button.cbi-button {
 
 ul.tabs, ul.cbi-tabmenu {
 	padding: 10px;
-	border-radius: 5px;
+	border-radius: 12px;
 	margin: 10px 0;
 	border-bottom: none !important;
 }
@@ -2228,6 +2258,12 @@ div.pure-u-1-4:has(h4#status_dns),
 div.pure-u-1-4:has(h4#status_haproxy),
 div.pure-u-1-4:has(h4#status_instagram) {
         display: none !important;
+}
+
+div.pure-u-1-4.check:has(h4#status_baidu) div.img-con img {
+    content: url('/luci-static/ipip/img/site_icon_01.png') !important;
+    width: 57px !important;
+    height: auto !important;
 }
 
 #cbi-passwall2-cfg09b7d7-_stop .cbi-button-remove,
@@ -5523,9 +5559,6 @@ pre.command-output {
                 padding: 0.2rem !important;
         }
 
-        .block img {
-                width: 36px !important;
-        }
 }
 
 @media screen and (max-width: 600px) {
@@ -5533,5 +5566,75 @@ pre.command-output {
 		display: block !important;
 		white-space: normal !important;
 		word-break: break-word !important;
+	}
+}
+
+@media (max-width: 768px) {
+	#logo {
+		margin: 0 auto !important;
+	}
+
+	.sidenav-header {
+		display: flex !important;
+		justify-content: center !important;
+		align-items: center !important;
+	}
+}
+
+@media (max-width: 768px) {
+	tr[id^="cbi-passwall-"],
+        tr[id^="cbi-passwall2-"] {
+		display: block;
+		padding-left: 1.5em;
+		font-size: 13px;
+		line-height: 1.4;
+
+	}
+
+	tr[id^="cbi-passwall-"] td,
+        tr[id^="cbi-passwall2-"] td {
+		display: block;
+		width: 100% !important;
+		border: none !important;
+		padding: 2px 0;
+	}
+
+	div[id^="cbi-passwall-"][id$="-remarks"],
+        div[id^="cbi-passwall2-"][id$="-remarks"] {
+		font-weight: bold;
+	}
+
+	div[id^="cbi-passwall-"][id$="-ping"],
+        div[id^="cbi-passwall-"][id$="-tcping"],
+        div[id^="cbi-passwall-"][id$="-_url_test"],
+        div[id^="cbi-passwall2-"][id$="-ping"],
+        div[id^="cbi-passwall2-"][id$="-tcping"],
+        div[id^="cbi-passwall2-"][id$="-_url_test"] {
+		display: inline-block;
+		margin-right: 1em;
+		white-space: nowrap;
+	}
+
+	tr[id^="cbi-passwall-"] .cbi-section-actions input,
+        tr[id^="cbi-passwall2-"] .cbi-section-actions input {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 768px) {
+	.cbi-map-descr {
+		width: 100% !important;
+		box-sizing: border-box;
+		padding: 2px 6px;
+		border-radius: 8px;
+		margin: 1px 0;
+	}
+
+	.cbi-map-descr h3 {
+		font-size: 14px !important;
+		line-height: 1.2;
+		text-align: center;
+		word-break: break-all;
+		margin: 0;
 	}
 }
