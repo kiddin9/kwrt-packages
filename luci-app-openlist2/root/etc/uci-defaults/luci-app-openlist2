@@ -1,0 +1,21 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-openlist2.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-openlist2.json << EEOF
+{
+    "config": "openlist2",
+    "init": "openlist2"
+}
+EEOF
+}
+
+[ -f "/etc/config/ucitrack" ] && {
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@openlist2[-1]
+	add ucitrack openlist2
+	set ucitrack.@openlist2[-1].init=openlist2
+	commit ucitrack
+EOF
+}
+
+rm -rf /tmp/luci-*
+exit 0
