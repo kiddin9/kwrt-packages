@@ -5,7 +5,10 @@ function index()
 	if not nixio.fs.access("/etc/config/vnt") then
 		return
 	end
-                  
+	
+        -- 先创建顶级的 vpn 菜单（如果不存在），依赖 false 保证总显示
+    	entry({"admin", "vpn"}, firstchild(), _("VPN"), 40).dependent = false
+	
         entry({"admin", "vpn", "vnt"}, alias("admin", "vpn", "vnt", "vnt"),_("VNT"), 44).dependent = true
 	entry({"admin", "vpn", "vnt", "vnt"}, cbi("vnt"),_("VNT"), 45).leaf = true
 	entry({"admin", "vpn",  "vnt",  "vnt_log"}, form("vnt_log"),_("客户端日志"), 46).leaf = true
