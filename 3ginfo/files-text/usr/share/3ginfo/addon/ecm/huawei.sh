@@ -11,7 +11,8 @@ cat <<EOF
 "product":"",
 "revision":"",
 "imei":"",
-"iccid":""
+"iccid":"",
+"imsi":""
 }
 EOF
 	fi
@@ -96,6 +97,7 @@ if [ -n "$device" ]; then
 	REVISION="${T1}/${T2}"
 	IMEI=$(getvalue device-information Imei)
 	ICCID=$(getvalue device-information Iccid)
+	IMSI=$(getvalue device-information Imsi)
 else
 	device=$(getvalue device-basic_information devicename)
 	class=$(getvalue device-basic_information classify)
@@ -108,7 +110,8 @@ cat <<EOF
 "product":"${PRODUCT}",
 "revision":"${REVISION}",
 "imei":"${IMEI}",
-"iccid":"${ICCID}"
+"iccid":"${ICCID}",
+"imsi":"${IMSI}"
 }
 EOF
 fi

@@ -20,6 +20,10 @@ opengt
  let $r="+CGSN:"
  gosub readatcmdfl
 
+ let $c="AT+CIMI^m"
+ let $r="+CIMI:"
+ gosub readatcmdfl
+
  let $c="AT\^ICCID?^m"
  gosub readatcmd
  let $c="AT+ICCID^m"

@@ -42,11 +42,12 @@ parse_section() {
 		else
 			json_load "$($RES/infoproduct.sh "$device")"
 		fi
-		json_get_vars vendor product revision imei iccid
+		json_get_vars vendor product revision imei iccid imsi
 		echo "Device: ${vendor} ${product}"
 		echo "Revision: ${revision}"
 		echo "IMEI: ${imei}"
 		echo "ICCID: ${iccid}"
+		echo "IMSI: ${imsi}"
 		echo ""
 
 		json_init
