@@ -133,7 +133,10 @@ jobs:
         git_clone https://github.com/sirpdboy/luci-app-poweroffdevice poweroffdevice && mvdir poweroffdevice
         git_clone https://github.com/sirpdboy/luci-app-watchdog watchdog1 && mvdir watchdog1
         git_clone https://github.com/sirpdboy/luci-app-cupsd cupsd1 && mv -n cupsd1/{luci-app-cupsd,cups} ./ ; rm -rf cupsd1
-        git_clone https://github.com/muink/openwrt-fastfetch
+        git_clone https://github.com/sirpdboy/luci-app-timecontrol timecontrol && mvdir timecontrol
+        git_clone https://github.com/sirpdboy/luci-theme-kucat kucat && mvdir kucat
+        git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
+        git_clone https://github.com/sirpdboy/luci-app-eqosplus
         # git_clone https://github.com/muink/luci-app-homeproxy
         ) &
         (
@@ -145,6 +148,7 @@ jobs:
         git_clone https://github.com/brvphoenix/wrtbwmon wrtbwmon2 && mvdir wrtbwmon2
         #git_clone https://github.com/QiuSimons/openwrt-mos && mv -n openwrt-mos/{*mosdns,v2ray-geodata} ./ ; rm -rf openwrt-mos
         git_clone https://github.com/sbwml/luci-app-mosdns openwrt-mos && mv -n openwrt-mos/{*mosdns,v2dat} ./; rm -rf openwrt-mos
+        git_clone https://github.com/muink/openwrt-fastfetch
         ) &
         (
         git_clone https://github.com/everburstSun/tencentcloud-openwrt-plugin-ddns && mv -n tencentcloud-openwrt-plugin-ddns/tencentcloud_ddns ./luci-app-tencentddns; rm -rf tencentcloud-openwrt-plugin-ddns
@@ -226,10 +230,7 @@ jobs:
         git_clone https://github.com/hzyitc/mnh-openwrt && mvdir mnh-openwrt
         ) &
         (
-        git_clone https://github.com/sirpdboy/luci-theme-kucat kucat && mvdir kucat
         git_clone https://github.com/QiuSimons/luci-app-daed-next daed1 && mvdir daed1
-        git_clone https://github.com/sirpdboy/luci-app-chatgpt-web
-        git_clone https://github.com/sirpdboy/luci-app-eqosplus
         git_clone https://github.com/JiaY-shi/fancontrol fanc && mv fanc/{fancontrol,luci-app-fancontrol} ./;rm -rf fanc
         git_sparse_clone master "https://github.com/coolsnowwolf/lede" package/wwan package/lean package/network/services/shellsync package/qca/shortcut-fe && cp -rf wwan/*/* ./ ; rm -Rf wwan
         git_clone https://github.com/Siriling/5G-Modem-Support && rm -rf 5G-Modem-Support/rooter && mvdir 5G-Modem-Support
