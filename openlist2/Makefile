@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=openlist2
 PKG_VERSION:=4.0.8
 PKG_WEB_VERSION:=4.0.8
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=openlist-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/OpenListTeam/OpenList/tar.gz/v$(PKG_VERSION)?
@@ -57,7 +57,7 @@ define Package/openlist2
 endef
 
 define Package/openlist2/conffiles
-/etc/openlist
+/etc/openlist2
 /etc/config/openlist2
 endef
 
@@ -88,10 +88,10 @@ define Package/openlist2/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/OpenList $(1)/usr/bin/openlist2
-	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d $(1)/etc/openlist
+	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d $(1)/etc/openlist2
 	$(INSTALL_CONF) $(CURDIR)/files/openlist2.config $(1)/etc/config/openlist2
 	$(INSTALL_BIN) $(CURDIR)/files/openlist2.init $(1)/etc/init.d/openlist2
-	$(INSTALL_DATA) $(CURDIR)/files/data.db $(1)/etc/openlist/data.db
+	$(INSTALL_DATA) $(CURDIR)/files/data.db $(1)/etc/openlist2/data.db
 endef
 
 $(eval $(call Download,openlist-frontend))
