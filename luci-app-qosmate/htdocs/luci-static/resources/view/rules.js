@@ -215,8 +215,12 @@ return view.extend({
         o.cfgvalue = function(section_id) {
             var proto = uci.get('qosmate', section_id, 'proto');
             if (Array.isArray(proto)) {
-                return proto.map(function(p) { return p.toUpperCase(); }).join(', ');
+                return proto.map(function(p) { 
+                    if (p === 'ipv6-icmp') return 'ICMPv6';
+                    return p.toUpperCase(); 
+                }).join(', ');
             } else if (typeof proto === 'string') {
+                if (proto === 'ipv6-icmp') return 'ICMPv6';
                 return proto.toUpperCase();
             }
             return _('Any');
@@ -226,6 +230,7 @@ return view.extend({
         o.value('tcp', _('TCP'));
         o.value('udp', _('UDP'));
         o.value('icmp', _('ICMP'));
+        o.value('ipv6-icmp', _('ICMPv6'));
         o.rmempty = true;
         o.default = 'tcp udp';
         o.modalonly = true;
@@ -253,7 +258,7 @@ return view.extend({
                 return true;
             }
             
-            var valid = ['tcp', 'udp', 'icmp'];
+            var valid = ['tcp', 'udp', 'icmp', 'ipv6-icmp'];
             var toValidate = Array.isArray(value) ? value : value.split(/\s+/);
             
             for (var i = 0; i < toValidate.length; i++) {

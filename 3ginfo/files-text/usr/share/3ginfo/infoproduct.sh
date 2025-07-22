@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# (c) 2024 Cezary Jackiewicz <cezary@eko.one.pl>
+# (c) 2024-2025 Cezary Jackiewicz <cezary@eko.one.pl>
 #
 
 DEVICE=$1
@@ -17,6 +17,8 @@ if [ -n "$DEVICE" ] && [ -e "$DEVICE" ]; then
 	[ -n "$T" ] && IMEI="$T"
 	T=$(echo "$O" | awk '/CCID:/{gsub(/.*CCID[ ]*:[ ]*/,"");gsub(/"/,"");print $0}')
 	[ -n "$T" ] && ICCID="$T"
+	T=$(echo "$O" | awk '/CIMI:/{gsub(/.*CIMI[ ]*:[ ]*/,"");gsub(/"/,"");print $0}')
+	[ -n "$T" ] && IMSI="$T"
 fi
 
 cat <<EOF
@@ -25,7 +27,8 @@ cat <<EOF
 "product":"${PRODUCT}",
 "revision":"${REVISION}",
 "imei":"${IMEI}",
-"iccid":"${ICCID}"
+"iccid":"${ICCID}",
+"imsi":"${IMSI}"
 }
 EOF
 

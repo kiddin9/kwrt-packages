@@ -242,6 +242,7 @@ function showmodeminfo() {
 			setValue('revision' + idx, data.revision == '' ? '-' : data.revision);
 			setValue('imei' + idx, data.imei == '' ? '-' : data.imei);
 			setValue('iccid' + idx, data.iccid == '' ? '-' : data.iccid);
+			setValue('imsi' + idx, data.imsi == '' ? '-' : data.imsi);
 		});
 
 		showmodemparams();
