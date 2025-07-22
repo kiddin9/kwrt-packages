@@ -953,6 +953,7 @@ function getPluginInfo()
 	usb_driver_info["qmi_wwan_q.ko"]="Not loaded"
 	usb_driver_info["qmi_wwan_f.ko"]="Not loaded"
 	usb_driver_info["qmi_wwan_m.ko"]="Not loaded"
+	usb_driver_info["qmi_wwan_t.ko"]="Not loaded"
 	usb_driver_info["meig_cdc_driver.ko"]="Not loaded"
 	setModelStatus(usb_driver_info)
 
