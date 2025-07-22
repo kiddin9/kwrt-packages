@@ -40,8 +40,8 @@ msgstr "运行中"
 msgid "Users can limit their internet usage time through MAC and IP, with available IP ranges such as 192.168.110.00 to 192.168.10.200"
 msgstr "可以通过MAC，IP限制用户上网时间，可用IP范围如：192.168.10.100-192.168.10.200."
 
-msgid "MAC/IP"
-msgstr "MAC/IP"
+msgid "IP/MAC"
+msgstr "IP/MAC"
 
 msgid "Comment"
 msgstr "备注"

@@ -41,7 +41,7 @@ e = t:option(Flag, "enable", translate("Enabled"))
 e.rmempty = false
 e.size = 4
 
-ip = t:option(Value, "mac", translate("IP/MAC/Hostname"))
+ip = t:option(Value, "mac", translate("IP/MAC"))
 ip.size = 8
 
 -- 替换原有的 get_devices() 函数
