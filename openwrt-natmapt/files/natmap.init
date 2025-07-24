@@ -110,6 +110,7 @@ validate_section_natmap() {
 		'family:or("ipv4", "ipv6"):ipv4' \
 		'bind_ifname:network' \
 		'port:or(port, portrange)' \
+		'port_pointer:bool:0' \
 		'forward:bool:0' \
 		'forward_mode:or("dnat", "via"):via' \
 		'natloopback:bool:1' \
@@ -178,7 +179,7 @@ natmap_instance() {
 		${stun_server:+-s "$stun_server"} \
 		${http_server:+-h "$http_server"} \
 		${fwmark_value:+-f "$fwmark_value"} \
-		${port:+-b "$port"} \
+		${port:+-b "$([ "$port_pointer" = 1 ] && echo ${port/-/\~} || echo $port)"} \
 
 	[ "${family}" = ipv4 ] && procd_append_param command -4
 	[ "${family}" = ipv6 ] && procd_append_param command -6
@@ -355,7 +356,7 @@ launcher() {
 	esac
 	[ -z "$bind_ip" ] && >&2 echo "$(basename $0): section $1 option bind_ip parsing failed, there may be no $family network connection" && let error++
 	[ -z "$port" ] && err_msg__empty $1 port && let error++
-	grep -qE '^([1-9]\d*)(-([1-9]\d*))*$' <<< "$port" || { >&2 echo "$(basename $0): section $1 option port '$port' is invalid"; let error++; }
+	grep -qE '^([1-9]\d*)(-([1-9]\d*))?$' <<< "$port" || { >&2 echo "$(basename $0): section $1 option port '$port' is invalid"; let error++; }
 	[ -z "$fwmark_value" -o -n "$(fwmark_match "$fwmark_value")" ] || { >&2 echo "$(basename $0): section $1 option fwmark_value '$fwmark_value' is invalid"; let error++; }
 	## forward
 	if   [ "$forward" = 1 ]; then
@@ -397,7 +398,7 @@ launcher() {
 
 	# review
 	[ -n "$NATMAP_DEBUG" ] && {
-		local v ucivv="enable interval stun_cycle stun_server http_server fwmark_value comment udp_mode proto family bind_ifname ifname bind_ip lan_addr port forward forward_mode natloopback forward_timeout forward_target forward_port refresh clt_script clt_scheme clt_web_port clt_username clt_password notify_enable notify_script notify_tokens notify_custom_domain notify_text ddns_enable ddns_script ddns_tokens ddns_a ddns_aaaa ddns_srv ddns_srv_serv ddns_srv_proto ddns_srv_target ddns_srv_priority ddns_srv_weight ddns_https ddns_https_target ddns_https_svcparams ddns_https_priority custom_script"
+		local v ucivv="enable interval stun_cycle stun_server http_server fwmark_value comment udp_mode proto family bind_ifname ifname bind_ip lan_addr port port_pointer forward forward_mode natloopback forward_timeout forward_target forward_port refresh clt_script clt_scheme clt_web_port clt_username clt_password notify_enable notify_script notify_tokens notify_custom_domain notify_text ddns_enable ddns_script ddns_tokens ddns_a ddns_aaaa ddns_srv ddns_srv_serv ddns_srv_proto ddns_srv_target ddns_srv_priority ddns_srv_weight ddns_https ddns_https_target ddns_https_svcparams ddns_https_priority custom_script"
 		for v in $ucivv; do eval "echo $1 $v=\'\$$v\'"; done # ash not support ${!v}
 	}
 	[ "$error" -gt 0 ] && return 1

@@ -376,13 +376,19 @@ return view.extend({
 		o.datatype = "or(port, portrange)";
 		o.rmempty = false;
 		o.validate = function(section_id, value) {
-			let regexp = new RegExp(/^([1-9]\d*)(-([1-9]\d*))*$/)
+			let regexp = new RegExp(/^([1-9]\d*)(-([1-9]\d*))?$/)
 
 			if (!regexp.test(value))
 				return _('Expecting: %s').format(_('Non-0 port'));
 
 			return true;
 		};
+
+		o = s.taboption('general', form.Flag, 'port_pointer', _('Randomly allocation ports'),
+			_('Allocation ports randomly instead of sequentially.'));
+		o.default = o.disabled;
+		o.depends({port: /^[1-9]\d*-[1-9]\d*$/});
+		o.modalonly = true;
 
 		o = s.taboption('forward', form.Flag, 'forward', _('Forward mode'));
 		o.default = o.disabled;

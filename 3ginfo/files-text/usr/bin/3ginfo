@@ -11,7 +11,7 @@ FORMAT=1
 [ "x$1" = "xjson" ] && FORMAT=2
 ECM=""
 
-RES="/usr/share/3ginfo"
+RES="/usr/share/modemdata"
 
 SEPARATOR=""
 parse_section() {
@@ -19,14 +19,15 @@ parse_section() {
 	local section="$1"
 	config_get device "$section" device ""
 	config_get network "$section" network ""
+	config_get force_plmn "$section" force_plmn "0"
 
 	if echo "x$device" | grep -q "192.168."; then
 		ECM="$RES/addon/ecm/huawei.sh $device"
 	else
 		ECM=""
 		if [ ! -e /var/state/3ginfo-detected ]; then
-			[ -z "$device" ] && device=$($RES/detectdevice.sh)
-			[ -z "$network" ] && network=$($RES/detectsection.sh "$section")
+			[ -z "$device" ] && device=$(/usr/share/3ginfo/detectdevice.sh)
+			[ -z "$network" ] && network=$(/usr/share/3ginfo/detectsection.sh "$section")
 		fi
 		config_get pincode "$section" pincode ""
 		if [ -n "$pincode" ] && [ ! -e /var/state/3ginfo-pincode ]; then
@@ -40,7 +41,7 @@ parse_section() {
 		if [ -n "$ECM" ]; then
 			json_load "$($ECM product)"
 		else
-			json_load "$($RES/infoproduct.sh "$device")"
+			json_load "$($RES/product.sh "$device")"
 		fi
 		json_get_vars vendor product revision imei iccid imsi
 		echo "Device: ${vendor} ${product}"
@@ -51,7 +52,7 @@ parse_section() {
 		echo ""
 
 		json_init
-		json_load "$($RES/infonetwork.sh "$network")"
+		json_load "$($RES/network.sh "$network")"
 		json_get_vars conn_time rx tx
 		echo "Connected time: ${conn_time}"
 		echo "TX: ${tx}"
@@ -62,7 +63,7 @@ parse_section() {
 		if [ -n "$ECM" ]; then
 			json_load "$($ECM params)"
 		else
-			json_load "$($RES/infoparams.sh "$device")"
+			json_load "$($RES/params.sh "$device" "$force_plmn")"
 		fi
 		json_get_vars signal operator_name operator_mcc operator_mnc country mode registration lac_dec lac_hex cid_dec cid_hex
 		echo "Signal: ${signal} %"
@@ -104,15 +105,15 @@ parse_section() {
 		if [ -n "$ECM" ]; then
 			$ECM product
 			echo ","
-			$RES/infonetwork.sh "$network"
+			$RES/network.sh "$network"
 			echo ","
 			$ECM params
 		else
-			$RES/infoproduct.sh "$device"
+			$RES/product.sh "$device"
 			echo ","
-			$RES/infonetwork.sh "$network"
+			$RES/network.sh "$network"
 			echo ","
-			$RES/infoparams.sh "$device"
+			$RES/params.sh "$device" "$force_plmn"
 		fi
 		echo "]"
 	fi

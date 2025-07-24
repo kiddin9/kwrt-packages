@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=3ginfo
-PKG_VERSION:=20250721
-PKG_RELEASE:=5
+PKG_VERSION:=20250724
+PKG_RELEASE:=6
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -49,7 +49,7 @@ endef
 define Package/3ginfo-text
 $(call Package/3ginfo/Default)
 	TITLE+= (text version)
-	DEPENDS:=+comgt +sms-tool +@BUSYBOX_DEFAULT_AWK
+	DEPENDS:=+comgt +sms-tool +modemdata
 endef
 
 define Package/3ginfo-text/conffiles
@@ -110,7 +110,6 @@ endef
 
 define Package/3ginfo-text/install
 	$(CP) ./files-text/* $(1)
-	wget -O - https://codeload.github.com/obsy/packages/tar.gz/refs/heads/master | tar -xz -C $(1)/usr/share/3ginfo/ --strip=7 "packages-master/easyconfig/files/usr/share/easyconfig/modem/addon"
 endef
 
 

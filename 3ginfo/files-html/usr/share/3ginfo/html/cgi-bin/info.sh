@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #
-# (c) 2024 Cezary Jackiewicz <cezary@eko.one.pl>
+# (c) 2024-2025 Cezary Jackiewicz <cezary@eko.one.pl>
 #
 
 . /lib/functions.sh
 
-RES="/usr/share/3ginfo"
+RES="/usr/share/modemdata"
 ECM=""
 
 SEPARATOR=""
@@ -15,13 +15,15 @@ parse_section() {
 	local section="$1"
 	config_get device "$section" device ""
 	config_get network "$section" network ""
+	config_get force_plmn "$section" force_plmn "0"
+
 	if echo "x$device" | grep -q "192.168."; then
 		ECM="$RES/addon/ecm/huawei.sh $device"
 	else
 		ECM=""
 		if [ ! -e /var/state/3ginfo-detected ]; then
-			[ -z "$device" ] && device=$($RES/detectdevice.sh)
-			[ -z "$network" ] && network=$($RES/detectsection.sh "$section")
+			[ -z "$device" ] && device=$(/usr/share/3ginfo/detectdevice.sh)
+			[ -z "$network" ] && network=$(/usr/share/3ginfo/detectsection.sh "$section")
 		fi
 		config_get pincode "$section" pincode ""
 		if [ -n "$pincode" ] && [ ! -e /var/state/3ginfo-pincode ]; then
@@ -29,12 +31,12 @@ parse_section() {
 		fi
 	fi
 	echo "["
-	$RES/infonetwork.sh "$network" | tr -d '\n'
+	$RES/network.sh "$network" | tr -d '\n'
 	echo ","
 	if [ -n "$ECM" ]; then
 		$ECM params
 	else
-		$RES/infoparams.sh "$device" | tr -d '\n'
+		$RES/params.sh "$device" "$force_plmn" | tr -d '\n'
 	fi
 	echo "]"
 	SEPARATOR=","

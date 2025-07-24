@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #
-# (c) 2024 Cezary Jackiewicz <cezary@eko.one.pl>
+# (c) 2024-2025 Cezary Jackiewicz <cezary@eko.one.pl>
 #
 
 . /lib/functions.sh
 
-RES="/usr/share/3ginfo"
+RES="/usr/share/modemdata"
 
 SEPARATOR=""
 parse_section() {
@@ -15,17 +15,18 @@ parse_section() {
 	local device
 	local network
 	config_get device "$section" device ""
+
 	if echo "x$device" | grep -q "192.168."; then
 		$RES/addon/ecm/huawei.sh $device product
 	else
 		if [ ! -e /var/state/3ginfo-detected ]; then
-			[ -z "$device" ] && device=$($RES/detectdevice.sh)
+			[ -z "$device" ] && device=$(/usr/share/3ginfo/detectdevice.sh)
 		fi
 		config_get pincode "$section" pincode ""
 		if [ -n "$pincode" ] && [ ! -e /var/state/3ginfo-pincode ]; then
 			[ -n "$device" ] && sms_tool -d "$device" at "at+cpin=\"$pincode\""
 		fi
-		$RES/infoproduct.sh "$device" | tr -d '\n'
+		$RES/product.sh "$device" | tr -d '\n'
 	fi
 	SEPARATOR=","
 }
