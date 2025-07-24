@@ -175,12 +175,15 @@ function getModemDeviceInfo(at_port)
 		if at_port == modem_device["at_port"] then
 			--获取数据接口
 			local data_interface=modem_device["data_interface"]:upper()
+			--获取网络驱动
+			local net_driver=modem_device["net_driver"]
 			--获取连接状态
 			local connect_status=getModemConnectStatus(modem_device["at_port"],modem_device["manufacturer"],modem_device["define_connect"])
 
 			--设置值
 			modem_device_info=modem_device
 			modem_device_info["data_interface"]=data_interface
+			modem_device_info["net_driver"]=net_driver
 			modem_device_info["connect_status"]=connect_status
 			return true
 		end

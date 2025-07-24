@@ -305,17 +305,25 @@ quectel_get_temperature()
     
     #Temperature（温度）
     at_command="AT+QTEMP"
+    response=$(sh ${SCRIPT_DIR}/modem_at.sh ${at_port} ${at_command} | grep "+QTEMP:")
 
-    local line=1
-    while true; do
-        response=$(sh ${SCRIPT_DIR}/modem_at.sh ${at_port} ${at_command} | grep "+QTEMP:" | sed -n "${line}p" | awk -F'"' '{print $4}')
-        [ $response -gt 0 ] && break
-        line=$((line+1))
-    done
+    #获取温度数
+    local temperature_num
+    if [[ "$response" == *"\",\""* ]]; then
+        local line=1
+        local time=5
+        for i in $(seq 1 ${time}); do
+            temperature_num=$(echo "${response}" | sed -n "${line}p" | awk -F'"' '{print $4}')
+            [ $temperature_num -gt 0 ] && break
+            line=$((line+1))
+        done
+    else
+        temperature_num=$(echo "${response}" | sed -n "1p" | awk -F',' '{print $1}' | awk -F' ' '{print $2}')
+    fi
 
     local temperature
-	if [ -n "$response" ]; then
-		temperature="${response}$(printf "\xc2\xb0")C"
+	if [ -n "$temperature_num" ]; then
+		temperature="${temperature_num}$(printf "\xc2\xb0")C"
 	fi
 
     # response=$(sh ${SCRIPT_DIR}/modem_at.sh ${at_port} ${at_command} | grep "+QTEMP:")
@@ -455,7 +463,7 @@ quectel_sim_info()
     #ISP（互联网服务提供商）
     at_command="AT+COPS?"
     isp=$(sh ${SCRIPT_DIR}/modem_at.sh $at_port $at_command | sed -n '2p' | awk -F'"' '{print $2}')
-    # if [ "$isp" = "CHN-CMCC" ] || [ "$isp" = "CMCC" ]|| [ "$isp" = "46000" ]; then
+    # if [ "$isp" = "CHN-CMCC" ] || [ "$isp" = "CMCC" ] || [ "$isp" = "46000" ]; then
     #     isp="中国移动"
     # # elif [ "$isp" = "CHN-UNICOM" ] || [ "$isp" = "UNICOM" ] || [ "$isp" = "46001" ]; then
     # elif [ "$isp" = "CHN-UNICOM" ] || [ "$isp" = "CUCC" ] || [ "$isp" = "46001" ]; then

@@ -311,7 +311,7 @@ fibocom_set_network_prefer()
         "3") network_prefer_config="20" ;;
         *) network_prefer_config="10" ;;
     esac
-echo "$network_prefer_config" >> /root/a
+
     #设置模组
     at_command="AT+GTACT=${network_prefer_config}"
     sh ${SCRIPT_DIR}/modem_at.sh $at_port "$at_command"
@@ -468,7 +468,7 @@ fibocom_sim_info()
     #ISP（互联网服务提供商）
     at_command="AT+COPS?"
     isp=$(sh ${SCRIPT_DIR}/modem_at.sh ${at_port} ${at_command} | grep "+COPS" | awk -F'"' '{print $2}')
-    # if [ "$isp" = "CHN-CMCC" ] || [ "$isp" = "CMCC" ]|| [ "$isp" = "46000" ]; then
+    # if [ "$isp" = "CHN-CMCC" ] || [ "$isp" = "CMCC" ] || [ "$isp" = "46000" ]; then
     #     isp="中国移动"
     # elif [ "$isp" = "CHN-UNICOM" ] || [ "$isp" = "UNICOM" ] || [ "$isp" = "46001" ]; then
     #     isp="中国联通"

@@ -3,7 +3,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: luci-app-modem 1.4.1-1\n"
+"Project-Id-Version: luci-app-modem 1.4.6-1\n"
 "POT-Creation-Date: 2024-04-20 12:07+0100\n"
 "PO-Revision-Date: 2024-04-24 18:08+0000\n"
 "Last-Translator: Siriling <siriling@gmail.com>\n"
@@ -82,8 +82,8 @@ msgstr "未启用"
 msgid "Data Interface"
 msgstr "数据接口"
 
-msgid "Driver"
-msgstr "驱动"
+msgid "Network Driver"
+msgstr "网络驱动"
 
 msgid "Mode"
 msgstr "模式"

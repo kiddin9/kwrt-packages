@@ -1,0 +1,15 @@
+diff --git a/libfuse/Makefile b/libfuse/Makefile
+index a20b0742..53959713 100644
+--- a/libfuse/Makefile
++++ b/libfuse/Makefile
+@@ -136,8 +136,8 @@ strip:
+ install-utils: mergerfs-fusermount mount.mergerfs strip
+ 	install -D build/mergerfs-fusermount "$(INSTALLBINDIR)/mergerfs-fusermount"
+ 	install -D build/mount.mergerfs "$(INSTALLSBINDIR)/mount.mergerfs"
+-	chown root "$(INSTALLBINDIR)/mergerfs-fusermount"
+-	chmod u+s "$(INSTALLBINDIR)/mergerfs-fusermount"
++#	chown root "$(INSTALLBINDIR)/mergerfs-fusermount"
++#	chmod u+s "$(INSTALLBINDIR)/mergerfs-fusermount"
+ 
+ install: $(INSTALLUTILS)
+ 
