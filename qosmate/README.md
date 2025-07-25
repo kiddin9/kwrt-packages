@@ -33,6 +33,10 @@ QoSmate allows you to prioritize specific traffic types, but it's crucial to use
 
 > Remember that for every packet given preferential treatment, others may experience increased delay or even drops. The goal is to create a balanced, efficient network environment, not to prioritize everything.
 
+## Requirements
+
+QoSmate requires OpenWrt version 23.05 or later, utilizing Firewall 4 and nftables. While OpenWrt 22.03 offers nftables support, it lacks certain features essential for QoSmate's full functionality. A legacy branch is available for 22.03 compatibility, but I strongly recommend upgrading to the latest OpenWrt version, as there is generally no compelling reason to remain on 22.03.
+
 ## 1. Installation
 
 Before installing QoSmate, ensure that:
@@ -844,6 +848,16 @@ rm /usr/share/rpcd/acl.d/luci-app-qosmate.json
 /etc/init.d/uhttpd restart
 ```
 5. Reboot your router to clear any remaining settings.
+
+## Resetting to Default Configuration
+
+To reset QoSmate to its default configuration, you can use the following command. This will backup your current configuration and download the default one from the repository:
+
+```bash
+mv /etc/config/qosmate /etc/config/qosmate.old && wget -O /etc/config/qosmate https://raw.githubusercontent.com/hudra0/qosmate/main/etc/config/qosmate && /etc/init.d/qosmate restart
+```
+
+Note: Make sure to review and adjust the default configuration as needed for your specific setup.
 
 ## Building qosmate and Luci-app-qosmate Packages for OpenWrt
 
