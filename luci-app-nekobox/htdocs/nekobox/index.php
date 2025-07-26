@@ -876,7 +876,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
-<h2 id="neko-title" class="royal-style">NekoBox</h2>
+<h2 id="neko-title" class="neko-title-style" style="cursor: pointer;" onclick="toggleControlPanel()">
+    NekoBox
+    <span id="control-panel-text" class="ms-2 text-success d-none" data-translate="control_panel">Control_Panel</span>
+</h2>
 <style>
 
     .nav-pills .nav-link {
@@ -998,7 +1001,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 @media (max-width: 768px) {
-	#neko-title.royal-style {
+	#neko-title.neko-title-style {
 		font-size: 2.5rem !important;
 	}
 }
