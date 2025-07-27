@@ -265,7 +265,7 @@ natmap_instance() {
 			json_add_string family "$family"
 			json_add_string proto "$proto"
 			json_add_string src "$($FW -q device $bind_ifname)"
-			json_add_string src_dip "$bind_ip"
+			#json_add_string src_dip "$bind_ip" # fix for #11 (The external address of the firewall will not be updated), fw4 cannot add `iifname` rule in `<action>_<fw zone>` chain
 			json_add_string src_dport "$port"
 			#json_add_string dest '' # zlan or zwan
 			json_add_string dest_ip "$forward_target"
@@ -282,9 +282,10 @@ natmap_instance() {
 			json_add_string name "$1"
 			json_add_string family "$family"
 			json_add_string proto "$proto"
+			json_add_string direction in
 			json_add_string src "$($FW -q device $bind_ifname)"
 			#json_add_string dest '' # '' = input
-			json_add_string dest_ip "$bind_ip"
+			#json_add_string dest_ip "$bind_ip" # fix for #11 (The external address of the firewall will not be updated), fw4 cannot add `iifname` rule in `<action>_<fw zone>` chain
 			json_add_string dest_port "$port"
 			json_close_object
 		fi
@@ -455,7 +456,7 @@ stop_service() {
 service_stopped() {
 	sleep 1s # Wait for procd_kill complete
 
-	ps | grep natmap | awk '{print $1}' | xargs kill -9 
+	ps | grep natmap | awk '{print $1}' | xargs kill -9
 }
 
 reload_service() {

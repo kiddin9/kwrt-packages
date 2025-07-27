@@ -23,6 +23,7 @@ fallloop() {
 	done
 }
 
+# keep dest_port(forward port) consistent with public port
 if [ -n "$RWFW" -a "$($INITD info|jsonfilter -qe "@['$(basename $INITD)'].instances['$SECTIONID'].data.firewall[0].dest_port")" != "$port" ]; then
 	export PUBPORT="$port" #PROCD_DEBUG=1
 	$INITD start "$SECTIONID"
