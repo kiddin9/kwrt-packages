@@ -157,7 +157,8 @@ function gen_outbound(flag, node, tag, proxy_table)
 				tlsSettings = (node.stream_security == "tls") and {
 					serverName = node.tls_serverName,
 					allowInsecure = (node.tls_allowInsecure == "1") and true or false,
-					fingerprint = (node.type == "Xray" and node.utls == "1" and node.fingerprint and node.fingerprint ~= "") and node.fingerprint or nil
+					fingerprint = (node.type == "Xray" and node.utls == "1" and node.fingerprint and node.fingerprint ~= "") and node.fingerprint or nil,
+					echConfigList = (node.ech == "1") and node.ech_config or nil
 				} or nil,
 				realitySettings = (node.stream_security == "reality") and {
 					serverName = node.tls_serverName,
@@ -165,7 +166,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 					shortId = node.reality_shortId or "",
 					spiderX = node.reality_spiderX or "/",
 					fingerprint = (node.type == "Xray" and node.fingerprint and node.fingerprint ~= "") and node.fingerprint or "chrome",
-					mldsa65Verify = (node.reality_mldsa65Verify and node.reality_mldsa65Verify ~= "") and node.reality_mldsa65Verify or nil
+					mldsa65Verify = (node.use_mldsa65Verify == "1") and node.reality_mldsa65Verify or nil
 				} or nil,
 				rawSettings = ((node.transport == "raw" or node.transport == "tcp") and node.protocol ~= "socks" and (node.tcp_guise and node.tcp_guise ~= "none")) and {
 					header = {
@@ -464,7 +465,8 @@ function gen_config_server(node)
 								certificateFile = node.tls_certificateFile,
 								keyFile = node.tls_keyFile
 							}
-						}
+						},
+						echServerKeys = (node.ech == "1") and node.ech_key or nil
 					} or nil,
 					rawSettings = (node.transport == "raw" or node.transport == "tcp") and {
 						header = {
@@ -550,7 +552,7 @@ function gen_config_server(node)
 				serverNames = node.reality_serverNames or {},
 				privateKey = node.reality_private_key,
 				shortIds = node.reality_shortId or "",
-				mldsa65Seed = (node.reality_mldsa65Seed and node.reality_mldsa65Seed ~= "") and node.reality_mldsa65Seed or nil
+				mldsa65Seed = (node.use_mldsa65Seed == "1") and node.reality_mldsa65Seed or nil
 			} or nil
 		end
 	end
