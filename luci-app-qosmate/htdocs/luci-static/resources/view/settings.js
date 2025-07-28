@@ -758,6 +758,37 @@ return view.extend({
                 uprate.map.checkDepends();
             }
         };
+
+        // Warning for bandwidth ratio
+        o = s_basic.option(form.DummyValue, '_ratio_warning', _('Bandwidth Ratio Warning'));
+        o.rawhtml = true;
+        o.render = function(section_id) {
+            var downrate = uci.get('qosmate', 'settings', 'DOWNRATE') || '90000';
+            var uprate = uci.get('qosmate', 'settings', 'UPRATE') || '45000';
+            var bwmaxratio = uci.get('qosmate', 'advanced', 'BWMAXRATIO') || '20';
+            
+            downrate = parseInt(downrate);
+            uprate = parseInt(uprate);
+            bwmaxratio = parseInt(bwmaxratio);
+            
+            if (uprate > 0 && downrate / uprate > bwmaxratio) {
+                var ratio = Math.floor(downrate / uprate);
+                var upload_mbps = Math.floor(uprate / 1000);
+                var limited_download = Math.floor(bwmaxratio * uprate / 1000);
+                return E('div', { 'class': 'cbi-value' }, [
+                    E('label', { 'class': 'cbi-value-title' }, E('span', { 'style': 'color: orange; font-weight: bold;' }, '⚠️')),
+                    E('div', { 'class': 'cbi-value-field', 'style': 'color: orange;' }, [
+                        E('strong', {}, _('Large download/upload difference detected (') + ratio + ':1 ratio)'),
+                        E('br'),
+                        _('Your download speed has been limited to prevent connection issues.'),
+                        E('br'),
+                        _('Current limit: ') + limited_download + _(' Mbps (based on your ') + upload_mbps + _(' Mbps upload)') + _('To override: Advanced Settings → BWMAXRATIO'),
+                    ])
+                ]);
+            } else {
+                return E('div');
+            }
+        };
         
         return m.render();
     }
