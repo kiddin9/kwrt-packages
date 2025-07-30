@@ -1,3 +1,99 @@
+<style>
+.modal {
+        opacity: 0;
+        visibility: hidden;
+}
+
+.modal.show {
+        opacity: 1;
+        visibility: visible;
+}
+
+#theme-loader {
+	position: fixed;
+	inset: 0;
+	background: linear-gradient(
+        135deg,
+        var(--accent-color),
+        color-mix(in oklch, var(--accent-color), white 30%),
+        color-mix(in oklch, var(--accent-color), black 30%)
+        );
+	background-size: 300% 300%;
+	animation: animated-gradient 6s ease infinite;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 0.6s ease;
+	color: var(--text-primary);
+	font-family: "Segoe UI", sans-serif;
+}
+
+.theme-loader-content {
+	text-align: center;
+	backdrop-filter: var(--glass-blur);
+	padding: 2rem 3rem;
+	border-radius: var(--radius);
+	background: color-mix(in oklch, var(--bg-container), white 10%);
+	box-shadow: 0 0 20px oklch(0 0 0 / 0.2);
+}
+
+.loader-icon {
+	font-size: 3.5rem;
+	animation: bounceIn 1s ease-in-out infinite alternate;
+}
+
+.loader-title {
+	font-size: 1.25rem;
+	margin-top: 1rem;
+	opacity: 0.85;
+}
+
+@keyframes animated-gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes bounceIn {
+	0% {
+		transform: scale(1) translateY(0);
+	}
+
+	100% {
+		transform: scale(1.1) translateY(-10px);
+	}
+}
+</style>
+
+<div id="theme-loader" style="display: none;">
+  <div class="theme-loader-content">
+    <div class="loader-icon">🚀</div>
+    <div class="loader-title">Updating...</div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const loader = document.getElementById("theme-loader");
+
+  document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", () => {
+      if (loader) {
+        loader.style.display = "flex";
+      }
+    });
+  });
+});
+</script>
 
 <?php include './language.php'; include './cfg.php'; ?>
 <html lang="<?php echo $currentLang; ?>">
@@ -329,7 +425,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<div id="animationModal" class="animation-modal">
+<div id="animationModal" class="animation-modal" style="display: none;">
     <div class="animation-modal-content">
         <button id="toggleAnimationBtn" data-translate="start_cube_animation">🖥️ Start Cube Animation</button>
         <button id="toggleSnowBtn" data-translate="start_snow_animation">❄️ Start Snow Animation</button>
@@ -826,62 +922,54 @@ logMessages.forEach(message => {
 }
 
 .animation-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: none;
-	align-items: center;
-	justify-content: center;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: 9999;
-	backdrop-filter: blur(4px);
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        display: none;
 }
 
 .animation-modal-content {
-	background: #111;
-	color: #fff;
-	border-radius: 16px;
-	padding: 24px;
-	max-width: 600px;
-	width: 90%;
-	box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-	justify-content: center;
-	align-items: center;
-}
-
-@media (min-width: 600px) {
-	.animation-modal-content {
-		flex-direction: row;
-	}
-}
-
-@media (max-width: 599px) {
-	.animation-modal-content {
-		flex-direction: column;
-	}
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        padding: 30px 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        color: white;
+        animation: scaleIn 0.3s ease;
 }
 
 .animation-modal-content button {
-	background: linear-gradient(135deg, #4d79ff, #6dd5ed);
-	border: none;
-	color: #fff;
-	padding: 12px 20px;
-	font-size: 1rem;
-	border-radius: 12px;
-	cursor: pointer;
-	transition: transform 0.2s, box-shadow 0.2s;
-	width: 100%;
-	max-width: 220px;
+        display: block;
+        width: 100%;
+        padding: 12px 20px;
+        margin: 10px 0;
+        font-size: 1rem;
+        border: none;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
 }
 
 .animation-modal-content button:hover {
-	transform: scale(1.05);
-	box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.03);
+}
+
+@keyframes scaleIn {
+        from {
+            transform: scale(0.85);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
 }
 </style>
 
@@ -3008,7 +3096,7 @@ function updateToggleIcon() {
     }
 }
 
-function startAutoCheck() {
+function startAutoCheck(shouldAnnounce = false) {
     if (autoCheckInterval) clearInterval(autoCheckInterval);
     autoCheckInterval = setInterval(() => {
         if (userInteracted) {
@@ -3022,14 +3110,14 @@ function startAutoCheck() {
     localStorage.setItem('autoCheckEnabled', 'true');
     updateToggleIcon();
     
-    if (userInteracted) {
+    if (shouldAnnounce && userInteracted) {
         const msg = translations['autoCheckEnabled'] || "Auto check enabled";
         speakMessage(msg);
         showLogMessage(msg);
     }
 }
 
-function stopAutoCheck() {
+function stopAutoCheck(shouldAnnounce = false) {
     if (autoCheckInterval) {
         clearInterval(autoCheckInterval);
         autoCheckInterval = null;
@@ -3039,7 +3127,7 @@ function stopAutoCheck() {
     localStorage.setItem('autoCheckEnabled', 'false');
     updateToggleIcon();
     
-    if (userInteracted) {
+    if (shouldAnnounce && userInteracted) {
         const msg = translations['autoCheckDisabled'] || "Auto check disabled";
         speakMessage(msg);
         showLogMessage(msg);
@@ -3056,15 +3144,15 @@ document.addEventListener('click', function() {
 document.getElementById('autoCheckIcon').addEventListener('click', function(event) {
     event.stopPropagation();
     if (isAutoCheckEnabled) {
-        stopAutoCheck();
+        stopAutoCheck(true);
     } else {
-        startAutoCheck();
+        startAutoCheck(true);
     }
 });
 
 updateToggleIcon();
 if (isAutoCheckEnabled) {
-    startAutoCheck();
+    startAutoCheck(false);
 }
 
 let isDetectionStarted = false;
