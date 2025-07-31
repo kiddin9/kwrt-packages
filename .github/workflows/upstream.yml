@@ -370,6 +370,7 @@ jobs:
         (
         git_sparse_clone master "https://github.com/x-wrt/com.x-wrt" luci-app-macvlan luci-app-xwan
         git_sparse_clone master "https://github.com/obsy/packages" oscam luci-proto-wwan 3ginfo modemband
+        git_sparse_clone c45c2f3c1cc3721704a60d73f9e08cc52dea9289 "https://github.com/openwrt/openwrt" package/utils/ucode
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
