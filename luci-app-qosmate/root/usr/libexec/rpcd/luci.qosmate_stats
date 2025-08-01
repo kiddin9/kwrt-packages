@@ -195,6 +195,61 @@ get_stats() {
                 hybrid_cake_egress: $hce,
                 hybrid_cake_ingress: $hci
             }' 2>/dev/null)
+    elif [ "$root_qdisc" = "htb" ]; then
+        local htb_egress_qdisc
+        htb_egress_qdisc=$(get_tc_json tc -s -j qdisc show dev "$wan_interface" | jq -c "[.[] | select(.kind == \"htb\")]" 2>/dev/null || echo "[]")
+        debug_log "HTB egress qdisc: $htb_egress_qdisc"
+        
+        local htb_egress_classes
+        htb_egress_classes=$(get_tc_json tc -s -j class show dev "$wan_interface")
+        debug_log "HTB egress classes: $htb_egress_classes"
+        htb_egress_classes=$(echo "$htb_egress_classes" | jq -c '.' 2>/dev/null || echo "[]")
+        
+        local htb_ingress_qdisc
+        htb_ingress_qdisc=$(get_tc_json tc -s -j qdisc show dev "$ifb_interface" | jq -c "[.[] | select(.kind == \"htb\")]" 2>/dev/null || echo "[]")
+        debug_log "HTB ingress qdisc: $htb_ingress_qdisc"
+        
+        local htb_ingress_classes
+        htb_ingress_classes=$(get_tc_json tc -s -j class show dev "$ifb_interface")
+        debug_log "HTB ingress classes: $htb_ingress_classes"
+        htb_ingress_classes=$(echo "$htb_ingress_classes" | jq -c '.' 2>/dev/null || echo "[]")
+        
+        local egress_leaf_qdiscs
+        egress_leaf_qdiscs=$(get_tc_json tc -s -j qdisc show dev "$wan_interface")
+        debug_log "Egress leaf qdiscs: $egress_leaf_qdiscs"
+        egress_leaf_qdiscs=$(echo "$egress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "htb" and .parent != null)]' 2>/dev/null || echo "[]")
+        
+        local ingress_leaf_qdiscs
+        ingress_leaf_qdiscs=$(get_tc_json tc -s -j qdisc show dev "$ifb_interface")
+        debug_log "Ingress leaf qdiscs: $ingress_leaf_qdiscs"
+        ingress_leaf_qdiscs=$(echo "$ingress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "htb" and .parent != null)]' 2>/dev/null || echo "[]")
+        
+        local htb_egress=$(echo "$htb_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local htb_ingress=$(echo "$htb_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        
+        result=$(jq -n \
+            --arg rq "$root_qdisc" \
+            --arg wi "$wan_interface" \
+            --arg ii "$ifb_interface" \
+            --argjson fs "$filtered_stats" \
+            --argjson he "$htb_egress" \
+            --argjson hi "$htb_ingress" \
+            --argjson hec "$htb_egress_classes" \
+            --argjson hic "$htb_ingress_classes" \
+            --argjson elq "$egress_leaf_qdiscs" \
+            --argjson ilq "$ingress_leaf_qdiscs" \
+            '{
+                root_qdisc: $rq,
+                wan_interface: $wi,
+                ifb_interface: $ii,
+                qdisc_stats: $fs,
+                htb_egress: $he,
+                htb_ingress: $hi,
+                htb_egress_classes: $hec,
+                htb_ingress_classes: $hic,
+                egress_leaf_qdiscs: $elq,
+                ingress_leaf_qdiscs: $ilq
+            }' 2>/dev/null)
     fi
 
     echo "$result"

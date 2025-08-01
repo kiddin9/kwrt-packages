@@ -871,6 +871,206 @@ return view.extend({
         return result;
     },
 
+    // Process HTB statistics
+    processHtbStats: function(data) {
+        if (!data || (!data.egress_leaf_qdiscs && !data.ingress_leaf_qdiscs)) {
+            return { tables: [], charts: [] };
+        }
+        
+        var result = { tables: [], charts: [] };
+        var self = this;
+        
+        // Process egress HTB statistics
+        if (data.egress_leaf_qdiscs && data.egress_leaf_qdiscs.length > 0) {
+            var egressRows = [];
+            
+            // Process all qdiscs first and collect data
+            var classData = {};
+            
+            data.egress_leaf_qdiscs.forEach(function(qdisc) {
+                if (!qdisc.parent) return;
+                
+                var classId = qdisc.parent;
+                var classDesc = '';
+                var sortOrder = 999; // Default high value for unknown classes
+                
+                // Determine class description based on ID and skip those that don't match
+                if (classId.includes('1:11')) {
+                    classDesc = _('Priority');
+                    sortOrder = 3;
+                }
+                else if (classId.includes('1:13')) {
+                    classDesc = _('Best Effort');
+                    sortOrder = 2;
+                }
+                else if (classId.includes('1:15')) {
+                    classDesc = _('Background');
+                    sortOrder = 1;
+                }
+                else return; // Skip this qdisc if it doesn't match any of the expected classes
+                
+                classData[classId] = {
+                    classId: classId,
+                    classDesc: classDesc,
+                    sortOrder: sortOrder,
+                    bytes: qdisc.bytes || 0,
+                    packets: qdisc.packets || 0,
+                    drops: qdisc.drops || 0,
+                    overlimits: qdisc.overlimits || 0
+                };
+            });
+            
+            // Convert to array and sort based on sortOrder
+            var sortedClassData = Object.values(classData).sort(function(a, b) {
+                return b.sortOrder - a.sortOrder; // Higher priority first
+            });
+            
+            // Create rows from sorted data
+            sortedClassData.forEach(function(item) {
+                egressRows.push([
+                    item.classId,
+                    item.classDesc,
+                    formatSize(item.bytes),
+                    item.packets,
+                    item.drops,
+                    item.overlimits
+                ]);
+            });
+            
+            // Create table for HTB egress classes
+            result.tables.push(self.createStatsTable(
+                _('HTB Egress Class Statistics'),
+                [_('Class ID'), _('Description'), _('Bytes'), _('Packets'), _('Drops'), _('Overlimits')],
+                egressRows
+            ));
+            
+            // Create charts for HTB egress classes
+            var classLabels = sortedClassData.map(function(item) { return item.classDesc; });
+            var sentBytes = sortedClassData.map(function(item) { 
+                return parseSizeToBytes(formatSize(item.bytes));
+            });
+            var sentPackets = sortedClassData.map(function(item) { return item.packets; });
+            var droppedPackets = sortedClassData.map(function(item) { return item.drops; });
+            
+            result.charts.push(self.createChart(
+                'htb-egress-bytes',
+                _('Egress Bytes Sent by Class'),
+                sentBytes,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'htb-egress-packets',
+                _('Egress Packets Sent by Class'),
+                sentPackets,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'htb-egress-dropped',
+                _('Egress Dropped Packets by Class'),
+                droppedPackets,
+                classLabels,
+                chartColors
+            ));
+        }
+        
+        // Process ingress HTB statistics
+        if (data.ingress_leaf_qdiscs && data.ingress_leaf_qdiscs.length > 0) {
+            var ingressRows = [];
+            
+            var classData = {};
+            
+            data.ingress_leaf_qdiscs.forEach(function(qdisc) {
+                if (!qdisc.parent) return;
+                
+                var classId = qdisc.parent;
+                var classDesc = '';
+                var sortOrder = 999;
+                
+                if (classId.includes('1:11')) {
+                    classDesc = _('Priority');
+                    sortOrder = 3;
+                }
+                else if (classId.includes('1:13')) {
+                    classDesc = _('Best Effort');
+                    sortOrder = 2;
+                }
+                else if (classId.includes('1:15')) {
+                    classDesc = _('Background');
+                    sortOrder = 1;
+                }
+                else return;
+                
+                classData[classId] = {
+                    classId: classId,
+                    classDesc: classDesc,
+                    sortOrder: sortOrder,
+                    bytes: qdisc.bytes || 0,
+                    packets: qdisc.packets || 0,
+                    drops: qdisc.drops || 0,
+                    overlimits: qdisc.overlimits || 0
+                };
+            });
+            
+            var sortedClassData = Object.values(classData).sort(function(a, b) {
+                return b.sortOrder - a.sortOrder;
+            });
+            
+            sortedClassData.forEach(function(item) {
+                ingressRows.push([
+                    item.classId,
+                    item.classDesc,
+                    formatSize(item.bytes),
+                    item.packets,
+                    item.drops,
+                    item.overlimits
+                ]);
+            });
+            
+            result.tables.push(self.createStatsTable(
+                _('HTB Ingress Class Statistics'),
+                [_('Class ID'), _('Description'), _('Bytes'), _('Packets'), _('Drops'), _('Overlimits')],
+                ingressRows
+            ));
+            
+            var classLabels = sortedClassData.map(function(item) { return item.classDesc; });
+            var sentBytes = sortedClassData.map(function(item) { 
+                return parseSizeToBytes(formatSize(item.bytes));
+            });
+            var sentPackets = sortedClassData.map(function(item) { return item.packets; });
+            var droppedPackets = sortedClassData.map(function(item) { return item.drops; });
+            
+            result.charts.push(self.createChart(
+                'htb-ingress-bytes',
+                _('Ingress Bytes Sent by Class'),
+                sentBytes,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'htb-ingress-packets',
+                _('Ingress Packets Sent by Class'),
+                sentPackets,
+                classLabels,
+                chartColors
+            ));
+            
+            result.charts.push(self.createChart(
+                'htb-ingress-dropped',
+                _('Ingress Dropped Packets by Class'),
+                droppedPackets,
+                classLabels,
+                chartColors
+            ));
+        }
+        
+        return result;
+    },
+
     render: function(data) {
         var view = this;
         var qosStats = data[0];
@@ -1295,6 +1495,84 @@ return view.extend({
                                 egressCharts.push(hybridResults.charts[i]);
                             } else if (titleText.includes('Ingress')) {
                                 ingressCharts.push(hybridResults.charts[i]);
+                            }
+                        }
+                        
+                        // Create egress charts section
+                        if (egressCharts.length > 0) {
+                            var egressChartsContainer = E('div', { 'class': 'cbi-section-node' });
+                            var egressGrid = E('div', { 
+                                'style': 'display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;' 
+                            });
+                            
+                            egressCharts.forEach(function(chart) {
+                                egressGrid.appendChild(chart);
+                            });
+                            
+                            egressChartsContainer.appendChild(egressGrid);
+                            tabContents[0].appendChild(egressChartsContainer);
+                        }
+                        
+                        // Create ingress charts section
+                        if (ingressCharts.length > 0) {
+                            var ingressChartsContainer = E('div', { 'class': 'cbi-section-node' });
+                            var ingressGrid = E('div', { 
+                                'style': 'display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;' 
+                            });
+                            
+                            ingressCharts.forEach(function(chart) {
+                                ingressGrid.appendChild(chart);
+                            });
+                            
+                            ingressChartsContainer.appendChild(ingressGrid);
+                            tabContents[1].appendChild(ingressChartsContainer);
+                        }
+                    }
+                }
+            } else if (qosStats.root_qdisc === 'htb') {
+                var htbResults = this.processHtbStats(qosStats);
+                
+                // Process and display tables in appropriate tabs
+                if (htbResults.tables.length > 0) {
+                    // Separate tables by type
+                    var egressClassTable = null;
+                    var ingressClassTable = null;
+                    
+                    // Categorize tables by their titles
+                    for (var i = 0; i < htbResults.tables.length; i++) {
+                        var titleElement = htbResults.tables[i].querySelector('h3, .table-title');
+                        if (titleElement) {
+                            var title = titleElement.textContent || titleElement.innerText;
+                            if (title.includes('HTB Egress Class')) {
+                                egressClassTable = htbResults.tables[i];
+                            } else if (title.includes('HTB Ingress Class')) {
+                                ingressClassTable = htbResults.tables[i];
+                            }
+                        }
+                    }
+                    
+                    // Add tables to appropriate tabs
+                    if (egressClassTable) {
+                        tabContents[0].appendChild(egressClassTable);
+                    }
+                    if (ingressClassTable) {
+                        tabContents[1].appendChild(ingressClassTable);
+                    }
+                    
+                    // Process charts
+                    if (htbResults.charts.length > 0) {
+                        var egressCharts = [];
+                        var ingressCharts = [];
+                        
+                        // Categorize charts as egress or ingress based on their titles
+                        for (var i = 0; i < htbResults.charts.length; i++) {
+                            var chartTitle = htbResults.charts[i].querySelector('h3');
+                            var titleText = chartTitle ? (chartTitle.textContent || chartTitle.innerText) : '';
+                            
+                            if (titleText.includes('Egress')) {
+                                egressCharts.push(htbResults.charts[i]);
+                            } else if (titleText.includes('Ingress')) {
+                                ingressCharts.push(htbResults.charts[i]);
                             }
                         }
                         
