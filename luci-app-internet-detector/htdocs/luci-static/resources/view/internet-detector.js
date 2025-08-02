@@ -710,13 +710,19 @@ return view.extend({
 
 		if(this.currentAppMode !== '2') {
 
-			// enable_logger
-			o = s.option(form.Flag, 'enable_logger',
-				_('Enable logging'),
-				_('Write messages to the system log.')
+			// logging_level
+			o = s.option(form.ListValue, 'logging_level',
+				_('Logging'),
+				_('Log event level.')
 			);
+			o.value(-1, _('Disabled'));
+			o.value(3, _('Error'));
+			o.value(4, _('Warning'));
+			o.value(5, _('Notice'));
+			o.value(6, _('Info'));
+			o.value(7, _('Debug'));
 			o.rmempty = false;
-			o.default = '1';
+			o.default = '6';
 		};
 
 		s = m.section(form.GridSection, 'instance');
@@ -881,11 +887,11 @@ return view.extend({
 
 				// LED control
 
-				o = s.taboption('led_control', form.DummyValue, '_dummy');
-					o.rawhtml = true;
-					o.default = '<div class="cbi-section-descr">' +
-						_('<abbr title="Light Emitting Diode">LED</abbr> indicates the Internet status.') +
-						'</div>';
+				o         = s.taboption('led_control', form.DummyValue, '_dummy');
+				o.rawhtml = true;
+				o.default = '<div class="cbi-section-descr">' +
+					_('<abbr title="Light Emitting Diode">LED</abbr> indicates the Internet status.') +
+					'</div>';
 				o.modalonly = true;
 
 				if(this.leds.length > 0) {
@@ -1043,7 +1049,7 @@ return view.extend({
 					'mod_network_restart_attempt_interval', _('Attempt interval'),
 					_('Interval between network restarts.')
 				);
-				o.default   = '15';
+				o.default   = '60';
 				o.rmempty   = false;
 				o.modalonly = true;
 
@@ -1129,7 +1135,7 @@ return view.extend({
 							'mod_modem_restart_attempt_interval', _('Attempt interval'),
 							_('Interval between modem restarts.')
 						);
-						o.default   = '15';
+						o.default   = '60';
 						o.rmempty   = false;
 						o.modalonly = true;
 
@@ -1521,11 +1527,11 @@ return view.extend({
 
 				// User scripts
 
-				o = s.taboption('user_scripts', form.DummyValue, '_dummy');
-					o.rawhtml = true;
-					o.default = '<div class="cbi-section-descr">' +
-						_('Shell commands to run when connected or disconnected from the Internet.') +
-						'</div>';
+				o         = s.taboption('user_scripts', form.DummyValue, '_dummy');
+				o.rawhtml = true;
+				o.default = '<div class="cbi-section-descr">' +
+					_('Shell commands to run when connected or disconnected from the Internet.') +
+					'</div>';
 				o.modalonly = true;
 
 				// enabled
@@ -1585,7 +1591,7 @@ return view.extend({
 					'mod_user_scripts_up_script_attempt_interval', _('Attempt interval'),
 					_('Interval between up-script runs.')
 				);
-				o.default   = '15';
+				o.default   = '60';
 				o.rmempty   = false;
 				o.modalonly = true;
 
@@ -1600,11 +1606,11 @@ return view.extend({
 				// down-script tab
 				ss.tab('user_scripts_down_script', 'down-script');
 
-				o = ss.taboption('user_scripts_down_script', form.DummyValue, '_dummy');
-					o.rawhtml = true;
-					o.default = '<div class="cbi-section-descr">' +
-						_('Shell commands to run when disconnected from the Internet.') +
-						'</div>';
+				o         = ss.taboption('user_scripts_down_script', form.DummyValue, '_dummy');
+				o.rawhtml = true;
+				o.default = '<div class="cbi-section-descr">' +
+					_('Shell commands to run when disconnected from the Internet.') +
+					'</div>';
 				o.modalonly = true;
 
 				// down_script edit
@@ -1644,7 +1650,7 @@ return view.extend({
 					'mod_user_scripts_down_script_attempt_interval', _('Attempt interval'),
 					_('Interval between down-script runs.')
 				);
-				o.default   = '15';
+				o.default   = '60';
 				o.rmempty   = false;
 				o.modalonly = true;
 
