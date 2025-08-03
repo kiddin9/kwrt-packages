@@ -18,13 +18,13 @@ function index()
 		return
 	end
 
-	entry({"admin", "services", "openvpn-server"},firstchild(), _("OpenVPN Server"), 1).dependent = true
+	entry({"admin", "vpn", "openvpn-server"},firstchild(), _("OpenVPN Server"), 1).dependent = true
 
-	entry({"admin", "services", "openvpn-server", "general"}, cbi("openvpn-server/openvpn-server"), _("OpenVPN Server"), 1).leaf = true
-	entry({"admin", "services", "openvpn-server", "client"},cbi("openvpn-server/openvpn-server_ovpn"), _("Client"), 2).leaf = true
-	entry({"admin", "services", "openvpn-server", "log"},form("openvpn-server/openvpn-server_run_log"), _("Running log"), 3).leaf = true
+	entry({"admin", "vpn", "openvpn-server", "general"}, cbi("openvpn-server/openvpn-server"), _("OpenVPN Server"), 1).leaf = true
+	entry({"admin", "vpn", "openvpn-server", "client"},cbi("openvpn-server/openvpn-server_ovpn"), _("Client"), 2).leaf = true
+	entry({"admin", "vpn", "openvpn-server", "log"},form("openvpn-server/openvpn-server_run_log"), _("Running log"), 3).leaf = true
 
-	entry({"admin", "services", "openvpn-server","status"},call("act_status")).leaf=true
+	entry({"admin", "vpn", "openvpn-server","status"},call("act_status")).leaf=true
 end
 
 function act_status()

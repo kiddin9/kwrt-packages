@@ -1,6 +1,6 @@
 #!/bin/sh
 
-grep -q "myvpn" /etc/config/openvpn || cp -f /etc/config/openvpn-opkg /etc/config/openvpn
+grep -qv "myvpn" /etc/config/openvpn && grep -q "myvpn" /etc/config/openvpn-opkg && cp -f /etc/config/openvpn-opkg /etc/config/openvpn
 
 openvpn_port="$(uci -q get openvpn.myvpn.port)"
 [ -z "$openvpn_port" ] && openvpn_port=1194
