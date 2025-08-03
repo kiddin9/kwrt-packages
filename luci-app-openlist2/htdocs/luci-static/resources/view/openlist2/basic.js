@@ -54,7 +54,8 @@ return view.extend({
 		var data_dir = uci.get(data[0], '@openlist2[0]', 'data_dir') || '/etc/openlist2';
 		try {
 			var newpassword = await fs.exec('/usr/bin/openlist2', ['admin', 'random', '--data', data_dir]);
-			var new_password = newpassword.stderr.match(/password:\s*(\S+)/)[1];
+			var new_password = newpassword.stdout.match(/password:\s*(\S+)/)[1];
+
 			const textArea = document.createElement('textarea');
 			textArea.value = new_password;
 			document.body.appendChild(textArea);
@@ -220,39 +221,39 @@ return view.extend({
 		o.value('postgres', _('PostgreSQL'));
 
 		o = s.taboption('database', form.Value, 'mysql_host', _('Database Host'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_port', _('Database Port'));
 		o.datatype = 'port';
 		o.default = '3306';
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_username', _('Database Username'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_password', _('Database Password'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_database', _('Database Name'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_table_prefix', _('Database Table Prefix'));
 		o.default = 'x_';
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_ssl_mode', _('Database SSL Mode'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		o = s.taboption('database', form.Value, 'mysql_dsn', _('Database DSN'));
-		o.depends('database_type','mysql');
-		o.depends('database_type','postgres');
+		o.depends('database_type', 'mysql');
+		o.depends('database_type', 'postgres');
 
 		// scheme
 		o = s.taboption('scheme', form.Flag, 'ssl', _('Enable SSL'));
