@@ -23,7 +23,7 @@ return view.extend({
                 return callInitAction('qosmate', 'restart');
             })
             .then(() => {
-                ui.addNotification(null, E('p', _('Custom rules have been saved and applied.')), 'success');
+                ui.addNotification(null, E('p', _('All rules have been saved and applied.')), 'success');
             })
             .catch((err) => {
                 ui.addNotification(null, E('p', _('Failed to save settings or restart QoSmate: ') + err.message), 'error');
@@ -39,12 +39,14 @@ return view.extend({
                     return content.trim();
                 })
                 .catch(() => ''),
+            fs.read('/etc/qosmate.d/inline_dscptag.nft')
+                .catch(() => ''),
             fs.read('/tmp/qosmate_custom_rules_validation.txt')
                 .catch(() => '')
         ]);
     },
 
-    render: function([customRules, validationResult]) {
+    render: function([customRules, inlineRules, validationResult]) {
         var m, s, o;
 
         m = new form.Map('qosmate', _('QoSmate Custom Rules'),
@@ -69,12 +71,20 @@ return view.extend({
                     E('button', {
                         'class': 'btn cbi-button-negative',
                         'click': ui.createHandlerFn(this, function() {
-                            var textarea = document.querySelector('textarea[name="cbid.qosmate.custom_rules.custom_rules"]');
-                            if (textarea) {
-                                textarea.value = '';
+                            var customTextarea = document.querySelector('textarea[name="cbid.qosmate.custom_rules.custom_rules"]');
+                            if (customTextarea) {
+                                customTextarea.value = '';
+                            }
+                            
+                            var inlineTextarea = document.querySelector('textarea[name="cbid.qosmate.custom_rules.inline_rules"]');
+                            if (inlineTextarea) {
+                                inlineTextarea.value = '';
                             }
                             
                             return fs.remove('/etc/qosmate.d/custom_rules.nft')
+                                .then(() => {
+                                    return fs.remove('/etc/qosmate.d/inline_dscptag.nft');
+                                })
                                 .then(() => {
                                     return ui.changes.apply();
                                 })
@@ -83,7 +93,7 @@ return view.extend({
                                 })
                                 .then(() => {
                                     ui.hideModal();
-                                    ui.addNotification(null, E('p', _('Custom rules have been erased and changes applied.')), 'success');
+                                    ui.addNotification(null, E('p', _('All rules have been erased and changes applied.')), 'success');
                                     window.setTimeout(function() {
                                         window.location.reload();
                                     }, 2000);
@@ -99,12 +109,26 @@ return view.extend({
         };
 
         o = s.option(form.TextValue, 'custom_rules', _('Custom nftables Rules'));
-        o.rows = 20;
+        o.rows = 10;
         o.wrap = 'off';
         o.rmempty = true;
         o.monospace = true;
         o.datatype = 'string';
-        o.description = _('Enter your custom nftables rules here. The "table inet qosmate_custom { ... }" wrapper will be added automatically.');
+        o.description = _('Enter your custom nftables rules here. The "table inet qosmate_custom { ... }" wrapper will be added automatically.') +
+            '<div style="margin-top: 8px;">' +
+            '<button type="button" onclick="toggleExample(\'custom\')" class="btn cbi-button" style="font-size: 11px; padding: 3px 6px;">' +
+            '▼ ' + _('Show Examples') + '</button>' +
+            '<div id="custom-example" style="display: none; margin-top: 8px; background:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:8px;">' +
+            '<strong>' + _('Example (Full Table Rules):') + '</strong><br/>' +
+            '<pre style="background:#fff; border:1px solid #ddd; padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+            'chain forward {\n' +
+            '    type filter hook forward priority 0; policy accept;\n' +
+            '    # Mark high-rate TCP traffic from specific IP\n' +
+            '    ip saddr 192.168.138.100 tcp flags & (fin|syn|rst|ack) != 0\n' +
+            '    limit rate over 300/second burst 300 packets\n' +
+            '    counter ip dscp set cs1\n' +
+            '}' +
+            '</pre></div></div>';
         o.load = function(section_id) {
             return customRules;
         };
@@ -122,10 +146,46 @@ ${formvalue.trim()}
                 .then(() => fs.exec('/etc/init.d/qosmate', ['validate_custom_rules']))
                 .then(() => fs.read('/tmp/qosmate_custom_rules_validation.txt'))
                 .then((result) => {
-                    if (result.includes('Custom rules validation successful.')) {
-                        ui.addNotification(null, E('p', _('Custom rules validation successful.')), 'success');
+                    if (result.includes('Overall validation: PASSED')) {
+                        ui.addNotification(null, E('p', _('Rules validation successful.')), 'success');
                     } else {
-                        ui.addNotification(null, E('p', _('Custom rules validation failed. Please check the validation result below.')), 'warning');
+                        ui.addNotification(null, E('p', _('Rules validation failed. Please check the validation result below.')), 'warning');
+                    }
+                });
+        };
+
+        o = s.option(form.TextValue, 'inline_rules', _('Inline Extra Rules'));
+        o.rows = 10;
+        o.wrap = 'off';
+        o.rmempty = true;
+        o.monospace = true;
+        o.datatype = 'string';
+        o.description = _('Statements only – run inside chain dscptag at hook $NFT_HOOK / priority $NFT_PRIORITY. Do not start with \'table\' or \'chain\'. Included only if validation passes.') +
+            '<div style="margin-top: 8px;">' +
+            '<button type="button" onclick="toggleExample(\'inline\')" class="btn cbi-button" style="font-size: 11px; padding: 3px 6px;">' +
+            '▼ ' + _('Show Examples') + '</button>' +
+            '<div id="inline-example" style="display: none; margin-top: 8px; background:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:8px;">' +
+            '<strong>' + _('Example (Inline Rules):') + '</strong><br/>' +
+            '<pre style="background:#fff; border:1px solid #ddd; padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+            '# Mark traffic from specific IP as high priority\n' +
+            'ip saddr 192.168.1.100 ip dscp set cs5 comment "Gaming PC priority"\n\n' +
+            '# Rate limit and mark bulk TCP traffic\n' +
+            'meta l4proto tcp limit rate 100/second ip dscp set cs1 comment "Bulk TCP limit"\n\n' +
+            '# Mark VoIP traffic from specific port range\n' +
+            'udp sport 5060-5070 ip dscp set ef comment "SIP/RTP VoIP traffic"' +
+            '</pre></div></div>';
+        o.load = function(section_id) {
+            return inlineRules;
+        };
+        o.write = function(section_id, formvalue) {
+            return fs.write('/etc/qosmate.d/inline_dscptag.nft', formvalue || '')
+                .then(() => fs.exec('/etc/init.d/qosmate', ['validate_custom_rules']))
+                .then(() => fs.read('/tmp/qosmate_custom_rules_validation.txt'))
+                .then((result) => {
+                    if (result.includes('Overall validation: PASSED')) {
+                        ui.addNotification(null, E('p', _('Rules validation successful.')), 'success');
+                    } else {
+                        ui.addNotification(null, E('p', _('Rules validation failed. Please check the validation result below.')), 'warning');
                     }
                 });
         };
@@ -148,19 +208,25 @@ ${formvalue.trim()}
             var section_id = 'custom_rules'; // Assuming this is the correct section_id
         
             var customRulesTextarea = document.getElementById('widget.cbid.qosmate.' + section_id + '.custom_rules');
-            if (!customRulesTextarea) {
-                ui.addNotification(null, E('p', _('Error: Could not find custom rules textarea')), 'error');
+            var inlineRulesTextarea = document.getElementById('widget.cbid.qosmate.' + section_id + '.inline_rules');
+            
+            if (!customRulesTextarea || !inlineRulesTextarea) {
+                ui.addNotification(null, E('p', _('Error: Could not find rules textareas')), 'error');
                 return;
             }
         
-            var currentRules = customRulesTextarea.value;
-            var fullContent = `table inet qosmate_custom {\n${currentRules.trim()}\n}`;
+            var currentCustomRules = customRulesTextarea.value;
+            var currentInlineRules = inlineRulesTextarea.value;
+            var fullCustomContent = `table inet qosmate_custom {\n${currentCustomRules.trim()}\n}`;
         
             ui.showModal(_('Validating Rules'), [
                 E('p', { 'class': 'spinning' }, _('Please wait while the rules are being validated...'))
             ]);
         
-            return fs.write('/etc/qosmate.d/custom_rules.nft', fullContent)
+            return fs.write('/etc/qosmate.d/custom_rules.nft', fullCustomContent)
+                .then(() => {
+                    return fs.write('/etc/qosmate.d/inline_dscptag.nft', currentInlineRules || '');
+                })
                 .then(() => {
                     return fs.exec('/etc/init.d/qosmate', ['validate_custom_rules']);
                 })
@@ -169,10 +235,10 @@ ${formvalue.trim()}
                 })
                 .then((result) => {
                     ui.hideModal();
-                    if (result.includes('Custom rules validation successful.')) {
-                        ui.addNotification(null, E('p', _('Custom rules validation successful.')), 'success');
+                    if (result.includes('Overall validation: PASSED')) {
+                        ui.addNotification(null, E('p', _('Rules validation successful.')), 'success');
                     } else {
-                        ui.addNotification(null, E('p', _('Custom rules validation failed. Please check the validation result below.')), 'warning');
+                        ui.addNotification(null, E('p', _('Rules validation failed. Please check the validation result below.')), 'warning');
                     }
                     var validationResultElement = document.getElementById('cbid.qosmate.custom_rules._validation_result');
                     if (validationResultElement) {
@@ -200,27 +266,20 @@ ${formvalue.trim()}
                 });
             };
 
-            o = s.option(form.DummyValue, '_rules_info', _('Rules Information'));
-            o.rawhtml = true;
-            o.default = '<div class="cbi-value-description" style="background-color:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:15px; margin-top:10px; margin-bottom:10px; width: 700px;">' +
-                '<p>' + _('Example rules:') + '</p>' +
-                '<pre style="border:1px solid #ddd; padding:10px; background-color:#fff; border-radius:3px; white-space:pre-wrap; word-break:break-word; overflow-x:auto;">' +
-                'chain ingress {\n' +
-                '    type filter hook ingress device eth1 priority -500; policy accept;\n' +
-                '    iif eth1 counter ip dscp set cs0 comment "Wash all ISP DSCP marks to CS0 (IPv4)"\n' +
-                '    iif eth1 counter ip6 dscp set cs0 comment "Wash all ISP DSCP marks to CS0 (IPv6)"\n' +
-                '}\n\n' +
-                'chain forward {\n' +
-                '    type filter hook forward priority 0; policy accept;\n' +
-                '    # Limit and mark high-rate TCP traffic from specific IP\n' +
-                '    ip saddr 192.168.138.100 tcp flags & (fin|syn|rst|ack) != 0\n' +
-                '    limit rate over 300/second burst 300 packets\n' +
-                '    counter ip dscp set cs1\n' +
-                '    comment "Mark TCP traffic from 192.168.138.100 exceeding 300 pps as CS1"\n' +
-                '}\n' +
-                '</pre>' +
-                '<p style="margin-top:10px;"><strong>' + _('Warning:') + '</strong> ' + _('Incorrect rules can disrupt network functionality. Use with caution.') + '</p>' +
-                '</div>';
+        // Add toggle functionality
+        if (typeof window.toggleExample === 'undefined') {
+            window.toggleExample = function(type) {
+                var element = document.getElementById(type + '-example');
+                var button = event.target;
+                if (element.style.display === 'none') {
+                    element.style.display = 'block';
+                    button.innerHTML = '▲ ' + button.innerHTML.split(' ').slice(1).join(' ');
+                } else {
+                    element.style.display = 'none';
+                    button.innerHTML = '▼ ' + button.innerHTML.split(' ').slice(1).join(' ');
+                }
+            };
+        }
 
         return m.render();
     }
