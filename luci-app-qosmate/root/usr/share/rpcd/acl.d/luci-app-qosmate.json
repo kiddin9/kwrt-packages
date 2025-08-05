@@ -15,6 +15,7 @@
                 "/etc/config/qosmate": [ "read" ],   
                 "/tmp/qosmate_auto_setup_output.txt": [ "read" ],
                 "/etc/qosmate.d/custom_rules.nft": [ "read" ],
+                "/etc/qosmate.d/inline_dscptag.nft": [ "read" ],
                 "/tmp/qosmate_custom_rules_validation.txt": [ "read" ],
                 "/tmp/qosmate_stats_history.json": [ "read" ]                                                                     
             }
@@ -28,7 +29,8 @@
                 "/etc/qosmate.sh": [ "write" ],
                 "/etc/init.d/qosmate": [ "write" ],                   
                 "/etc/hotplug.d/iface/13-qosmateHotplug": [ "write" ],
-                "/etc/qosmate.d/custom_rules.nft": [ "write" ]   
+                "/etc/qosmate.d/custom_rules.nft": [ "write" ],
+                "/etc/qosmate.d/inline_dscptag.nft": [ "write" ]   
             }
         }
     }
