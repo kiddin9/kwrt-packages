@@ -5,11 +5,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gost
-PKG_VERSION:=2.12.0
-PKG_RELEASE:=5
+PKG_VERSION:=3.2.2
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/ginuerzh/gost/tar.gz/v$(PKG_VERSION)?
+PKG_SOURCE_URL:=https://codeload.github.com/go-gost/gost/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=skip
 
 PKG_LICENSE:=MIT
@@ -20,8 +20,9 @@ PKG_BUILD_DEPENDS:=golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_FLAGS:=no-mips16
 
-GO_PKG:=github.com/ginuerzh/gost
-GO_PKG_BUILD_PKG:=github.com/ginuerzh/gost/cmd/gost
+GO_PKG:=github.com/go-gost/gost
+GO_PKG_BUILD_PKG:=$(GO_PKG)/cmd/gost
+GO_PKG_LDFLAGS_X:=main.version=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
@@ -30,8 +31,14 @@ define Package/gost
   SECTION:=net
   CATEGORY:=Network
   TITLE:=GO Simple Tunnel
-  URL:=https://github.com/ginuerzh/gost
+  URL:=https://gost.run/
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle
+  USERID:=gost:gost
+endef
+
+define Package/gost/conffiles
+/etc/config/gost
+/etc/gost/
 endef
 
 define Package/gost/install
@@ -41,6 +48,8 @@ define Package/gost/install
 	$(INSTALL_CONF) $(CURDIR)/files/gost.config $(1)/etc/config/gost
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) $(CURDIR)/files/gost.init $(1)/etc/init.d/gost
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) $(CURDIR)/files/gost.uci $(1)/etc/uci-defaults/99-gost-migrate
 endef
 
 $(eval $(call GoBinPackage,gost))

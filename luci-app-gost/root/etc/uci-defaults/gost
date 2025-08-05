@@ -1,17 +1,7 @@
 #!/bin/sh
-[ ! -f "/usr/share/ucitrack/luci-app-gost.json" ] && {
-    cat > /usr/share/ucitrack/luci-app-gost.json << EEOF
-{
-    "config": "gost",
-    "init": "gost"
-}
-EEOF
-}
 
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@gost[-1]
-	add ucitrack gost
-	set ucitrack.@gost[-1].init=gost
 	commit ucitrack
 EOF
 
