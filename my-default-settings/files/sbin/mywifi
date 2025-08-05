@@ -13,6 +13,9 @@ board_name() {
 		
 		if [ "$(uci -q get wireless.${radio}.band)" = "5g" ]; then
 			uci -q set wireless.default_${radio}.ssid="${SSID}_5G"
+			if [[ "$DISTRIB_TARGET" == *ipq60xx ]]; then
+				uci set wireless.${radio}.htmode='HE80'
+			fi
 		elif [ "$(uci -q get wireless.${radio}.band)" = "2g" ]; then
 			uci -q set wireless.default_${radio}.ssid="${SSID}_2.4G"
 		fi
