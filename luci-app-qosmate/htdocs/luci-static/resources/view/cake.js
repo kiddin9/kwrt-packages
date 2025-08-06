@@ -59,29 +59,7 @@ return view.extend({
             }
             return opt;
         }
-
-        o = s.option(form.ListValue, 'COMMON_LINK_PRESETS', _('Common Link Presets'), _('Select common link presets'));
-        o.value('raw', _('Raw (No overhead compensation)'));
-        o.value('conservative', _('Conservative (48 bytes overhead + ATM)'));
-        o.value('ethernet', _('Ethernet'));
-        o.value('docsis', _('DOCSIS cable'));
-        o.value('pppoa-vcmux', _('PPPoA VC-Mux'));
-        o.value('pppoa-llc', _('PPPoA LLC'));
-        o.value('pppoe-vcmux', _('PPPoE VC-Mux'));
-        o.value('pppoe-llcsnap', _('PPPoE LLC-SNAP'));
-        o.value('bridged-vcmux', _('Bridged VC-Mux'));
-        o.value('bridged-llcsnap', _('Bridged LLC-SNAP'));
-        o.value('ipoa-vcmux', _('IPoA VC-Mux'));
-        o.value('ipoa-llcsnap', _('IPoA LLC-SNAP'));
-        o.value('pppoe-ptm', _('PPPoE PTM'));
-        o.value('bridged-ptm', _('Bridged PTM'));
-        o.default = 'ethernet';
-
-        createOption('OVERHEAD', _('Overhead'), _('Set the overhead'), _('Default: based on preset'));
-        createOption('MPU', _('MPU'), _('Minimum packet size CAKE will account for'), _('Default: based on preset'), 'uinteger');
-        createOption('LINK_COMPENSATION', _('Link Compensation'), _('Set the link compensation'), _('Default: based on preset'));
-        createOption('ETHER_VLAN_KEYWORD', _('Ether VLAN Keyword'), _('Set the Ether VLAN keyword'), _('Default: none'));
-
+        
         o = s.option(form.ListValue, 'PRIORITY_QUEUE_INGRESS', _('Priority Queue (Ingress)'), _('Sets CAKE\'s diffserv mode for incoming traffic'));
         o.value('diffserv3', _('Diffserv 3-tier priority'));
         o.value('diffserv4', _('Diffserv 4-tier priority'));

@@ -60,14 +60,6 @@ return view.extend({
             return opt;
         }
 
-        o = s.option(form.ListValue, 'LINKTYPE', _('Link Type'), _('Select the link type'));
-        o.value('ethernet', _('Ethernet'));
-        o.value('atm', _('ATM'));
-        o.value('adsl', _('ADSL'));
-        o.default = 'ethernet';
-
-        createOption('OH', _('Overhead'), _('Set the overhead'), _('Default: 44'), 'uinteger');
-
         o = s.option(form.ListValue, 'gameqdisc', _('Game Queue Discipline'), _('Queueing method for traffic classified as realtime'));
         o.value('pfifo', _('PFIFO'));
         o.value('fq_codel', _('FQ_CODEL'));

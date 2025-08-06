@@ -41,6 +41,55 @@ return view.extend({
 
         m = new form.Map('qosmate', _('QoSmate Advanced Settings'), _('Configure advanced settings for QoSmate.'));
 
+        // Link Layer Settings
+        s = m.section(form.NamedSection, 'advanced', 'advanced', _('Link Layer Settings'));
+        s.anonymous = true;
+        
+        o = s.option(form.ListValue, 'COMMON_LINK_PRESETS', _('Link Type'), 
+            _('Select your connection type for overhead calculation. Used by all QDiscs (HTB, HFSC, Hybrid, CAKE).'));
+        o.value('ethernet', _('Ethernet (HFSC/HTB: 40B, CAKE: 40B override)'));
+        o.value('docsis', _('Cable DOCSIS (25B)'));
+        o.value('atm', _('DSL ATM/ADSL (44B)'));
+        // CAKE native presets
+        o.value('cake-ethernet', _('[CAKE] Ethernet (38B native)'));
+        o.value('raw', _('[CAKE] Raw (No overhead)'));
+        o.value('conservative', _('[CAKE] Conservative (48B + ATM)'));
+        o.value('pppoa-vcmux', _('PPPoA VC-Mux'));
+        o.value('pppoa-llc', _('PPPoA LLC'));
+        o.value('pppoe-vcmux', _('PPPoE VC-Mux'));
+        o.value('pppoe-llcsnap', _('PPPoE LLC-SNAP'));
+        o.value('bridged-vcmux', _('Bridged VC-Mux'));
+        o.value('bridged-llcsnap', _('Bridged LLC-SNAP'));
+        o.value('ipoa-vcmux', _('IPoA VC-Mux'));
+        o.value('ipoa-llcsnap', _('IPoA LLC-SNAP'));
+        o.value('pppoe-ptm', _('PPPoE PTM'));
+        o.value('bridged-ptm', _('Bridged PTM'));
+        o.default = 'ethernet';
+        o.rmempty = false;
+
+        o = s.option(form.Value, 'OVERHEAD', _('Manual Overhead (bytes)'), 
+            _('Override automatic overhead. For HFSC/HTB: Ethernet=40, DOCSIS=25, ATM=44. CAKE will add this to its preset.'));
+        o.placeholder = 'Auto';
+        o.datatype = 'uinteger';
+        o.rmempty = true;
+        
+        o = s.option(form.Value, 'MPU', _('MPU'), 
+            _('Minimum packet unit size. Used primarily by CAKE, ignored by other QDiscs.'));
+        o.placeholder = 'Default: based on preset';
+        o.datatype = 'uinteger';
+        o.rmempty = true;
+        
+        o = s.option(form.Value, 'LINK_COMPENSATION', _('Link Compensation'), 
+            _('Additional link compensation (atm, ptm, noatm). Affects overhead calculations.'));
+        o.placeholder = 'Default: based on preset';
+        o.rmempty = true;
+        
+        o = s.option(form.Value, 'ETHER_VLAN_KEYWORD', _('Ether VLAN Keyword'), 
+            _('Ethernet VLAN keyword for CAKE. Ignored by other QDiscs.'));
+        o.placeholder = 'Default: none';
+        o.rmempty = true;
+
+        // Advanced Settings
         s = m.section(form.NamedSection, 'advanced', 'advanced', _('Advanced Settings'));
         s.anonymous = true;
 
