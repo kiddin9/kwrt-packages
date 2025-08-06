@@ -10,6 +10,8 @@
 'require uci';
 'require view';
 
+'require tools.widgets as widgets';
+
 const callServiceList = rpc.declare({
 	object: 'service',
 	method: 'list',
@@ -18,10 +20,10 @@ const callServiceList = rpc.declare({
 });
 
 function getServiceStatus() {
-	return L.resolveDefault(callServiceList('gost'), {}).then(function(res) {
+	return L.resolveDefault(callServiceList('sysuh3c'), {}).then(function(res) {
 		let isRunning = false;
 		try {
-			isRunning = res['gost']['instances']['instance1']['running'];
+			isRunning = res['sysuh3c']['instances']['instance1']['running'];
 		} catch (e) { }
 		return isRunning;
 	});
@@ -31,9 +33,9 @@ function renderStatus(isRunning) {
 	let spanTemp = '<em><span style="color:%s"><strong>%s %s</strong></span></em>';
 	let renderHTML;
 	if (isRunning)
-		renderHTML = spanTemp.format('green', _('GOST'), _('RUNNING'));
+		renderHTML = spanTemp.format('green', _('sysuh3c'), _('RUNNING'));
 	else
-		renderHTML = spanTemp.format('red', _('GOST'), _('NOT RUNNING'));
+		renderHTML = spanTemp.format('red', _('sysuh3c'), _('NOT RUNNING'));
 
 	return renderHTML;
 }
@@ -42,8 +44,8 @@ return view.extend({
 	render() {
 		let m, s, o;
 
-		m = new form.Map('gost', _('GOST'),
-			_('A simple security tunnel written in Golang.'));
+		m = new form.Map('sysuh3c', _('SYSU H3C Client'),
+			_('Configure SYSU H3C 802.1x client.'));
 
 		s = m.section(form.TypedSection);
 		s.anonymous = true;
@@ -60,26 +62,27 @@ return view.extend({
 			]);
 		}
 
-		s = m.section(form.NamedSection, 'config', 'gost');
+		s = m.section(form.NamedSection, 'config', 'sysuh3c');
 
 		o = s.option(form.Flag, 'enabled', _('Enable'));
 
-		o = s.option(form.Value, 'config_file', _('Configuration file'));
-		o.value('/etc/gost/gost.json');
-		o.datatype = 'path';
+		o = s.option(form.Value, 'username', _('Username'));
+		o.rmempty = false;
 
-		o = s.option(form.DynamicList, 'arguments', _('Arguments'));
-		o.validate = function(section_id) {
-			if (section_id) {
-				let config_file = this.section.formvalue(section_id, 'config_file');
-				let value = this.section.formvalue(section_id, 'arguments');
+		o = s.option(form.Value, 'password', _('Password'));
+		o.password = true;
 
-				if (!config_file && !value?.length)
-					return _('Expecting: %s').format(_('non-empty value'));
-			}
+		o = s.option(form.ListValue, 'method', _('EAP Method'));
+		o.value('md5', _('MD5'));
+		o.value('xor', _('XOR'));
+		o.default = 'xor';
+		o.rmempty = false;
 
-			return true;
-		}
+		o = s.option(widgets.DeviceSelect, 'ifname', _('Interface'));
+		o.multiple = false;
+		o.noaliases = true;
+		o.nocreate = true;
+		o.rmempty = false;
 
 		return m.render();
 	}

@@ -118,9 +118,9 @@ return view.extend({
             '<div style="margin-top: 8px;">' +
             '<button type="button" onclick="toggleExample(\'custom\')" class="btn cbi-button" style="font-size: 11px; padding: 3px 6px;">' +
             '▼ ' + _('Show Examples') + '</button>' +
-            '<div id="custom-example" style="display: none; margin-top: 8px; background:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:8px;">' +
+            '<div id="custom-example" class="cbi-section-node" style="display: none; margin-top: 8px;">' +
             '<strong>' + _('Example (Full Table Rules):') + '</strong><br/>' +
-            '<pre style="background:#fff; border:1px solid #ddd; padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+            '<pre style="background:rgba(255,255,255,0.1); border:1px solid rgba(128,128,128,0.3); padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
             'chain forward {\n' +
             '    type filter hook forward priority 0; policy accept;\n' +
             '    # Mark high-rate TCP traffic from specific IP\n' +
@@ -164,9 +164,9 @@ ${formvalue.trim()}
             '<div style="margin-top: 8px;">' +
             '<button type="button" onclick="toggleExample(\'inline\')" class="btn cbi-button" style="font-size: 11px; padding: 3px 6px;">' +
             '▼ ' + _('Show Examples') + '</button>' +
-            '<div id="inline-example" style="display: none; margin-top: 8px; background:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:8px;">' +
+            '<div id="inline-example" class="cbi-section-node" style="display: none; margin-top: 8px;">' +
             '<strong>' + _('Example (Inline Rules):') + '</strong><br/>' +
-            '<pre style="background:#fff; border:1px solid #ddd; padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+            '<pre style="background:rgba(255,255,255,0.1); border:1px solid rgba(128,128,128,0.3); padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
             '# Mark traffic from specific IP as high priority\n' +
             'ip saddr 192.168.1.100 ip dscp set cs5 comment "Gaming PC priority"\n\n' +
             '# Rate limit and mark bulk TCP traffic\n' +
@@ -193,11 +193,9 @@ ${formvalue.trim()}
         o = s.option(form.DummyValue, '_validation_result', _('Validation Result'));
         o.rawhtml = true;
         o.default = validationResult
-            ? E('div', { 'class': 'cbi-value-field' },
-                E('div', { 'class': 'cbi-section-node', 'style': 'background-color:#f9f9f9; border:1px solid #e5e5e5; border-radius:3px; padding:10px; margin-top:5px; min-width: 700px' },
-                    E('pre', { 'style': 'white-space:pre-wrap; word-break:break-word;' }, validationResult)
-                )
-            )
+            ? '<div class="cbi-section-node" style="margin-top: 8px; min-width: 700px;">' +
+                '<pre style="background:rgba(255,255,255,0.1); border:1px solid rgba(128,128,128,0.3); padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+                validationResult + '</pre></div>'
             : _('No validation performed yet');
 
         o = s.option(form.Button, '_validate', _('Validate Rules'));
@@ -242,7 +240,9 @@ ${formvalue.trim()}
                     }
                     var validationResultElement = document.getElementById('cbid.qosmate.custom_rules._validation_result');
                     if (validationResultElement) {
-                        validationResultElement.innerHTML = E('pre', {}, result).outerHTML;
+                        validationResultElement.innerHTML = '<div class="cbi-section-node" style="margin-top: 8px; min-width: 700px;">' +
+                            '<pre style="background:rgba(255,255,255,0.1); border:1px solid rgba(128,128,128,0.3); padding:6px; margin:4px 0; border-radius:3px; font-size:11px; white-space:pre-wrap; font-family:monospace;">' +
+                            result + '</pre></div>';
                     }
                     ui.showModal(_('Finalizing Validation'), [
                         E('p', { 'class': 'spinning' }, _('Finalizing validation results, please wait...'))
