@@ -5,10 +5,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=antileech
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2019-10-09
+PKG_SOURCE_DATE:=2021-12-05
 PKG_SOURCE_URL:=https://github.com/persmule/amule-dlp.antiLeech.git
 PKG_SOURCE_VERSION:=1b14ed828ed227933333de31ffb8e24e6c10451c
 PKG_MIRROR_HASH:=skip
@@ -39,7 +39,7 @@ define Build/Configure
 	$(SED) "s:^AC_CHECK_PROG.WXCONFIG,.*::g" $(PKG_BUILD_DIR)/configure.ac
 	$(SED) "s:wx-config --cppflags:$(STAGING_DIR)/usr/bin/wx-config --cppflags:g" $(PKG_BUILD_DIR)/configure.ac
 
-	cd $(PKG_BUILD_DIR); $(SHELL) ./autogen.sh
+	( cd $(PKG_BUILD_DIR); $(SHELL) ./autogen.sh; )
 	$(call Build/Configure/Default)
 endef
 
