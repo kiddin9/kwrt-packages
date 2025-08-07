@@ -1,5 +1,20 @@
+--[[
+LuCI - Lua Configuration Interface
+
+Copyright 2025 LunaticKochiya<125438787@qq.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+]]--
 
 --require("luci.tools.webadmin")
+
+local uci = require "luci.model.uci".cursor()
 
 mp = Map("openvpn", "OpenVPN Server",translate("An easy config OpenVPN Server Web-UI"))
 
@@ -8,6 +23,10 @@ mp:section(SimpleSection).template  = "openvpn/openvpn_status"
 s = mp:section(TypedSection, "openvpn")
 s.anonymous = true
 s.addremove = false
+
+s.filter = function(self, section)
+    return section:match("^myvpn") ~= nil
+end
 
 s:tab("basic",  translate("Base Setting"))
 
@@ -39,7 +58,9 @@ comp_lzo:value("adaptive")
 comp_lzo:value("yes")
 comp_lzo:value("no")
 comp_lzo.default="adaptive"
-comp_lzo.description = translate("compess use lzo")
+comp_lzo.description = translate("Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it.")
+comp_lzo:depends("comp_lzo", "yes")
+comp_lzo:depends("comp_lzo", "adaptive")
 
 
 auth_user_pass_verify = s:taboption("basic",Value,"auth_user_pass_verify", translate("user password verify"))
@@ -185,6 +206,12 @@ end
 function mp.on_after_commit(self)
   os.execute("uci set firewall.openvpn.dest_port=$(uci get openvpn.myvpn.port) && uci commit firewall &&  /etc/init.d/firewall restart")
   os.execute("/etc/init.d/openvpn restart")
+      local comp_lzo_val = uci:get("openvpn", "myvpn", "comp_lzo")
+    if comp_lzo_val == "no" then
+        uci:delete("openvpn", "myvpn", "comp_lzo")
+        uci:save("openvpn")
+        uci:commit("openvpn")
+    end
 end
 
 gen = t:option(Button,"cert",translate("OpenVPN Cert"))

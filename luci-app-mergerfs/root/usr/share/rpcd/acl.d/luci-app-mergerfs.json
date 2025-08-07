@@ -1,0 +1,18 @@
+{
+	"luci-app-mergerfs": {
+		"description": "Grant access to LuCI app mergerfs",
+		"read": {
+			"ubus": {
+				"luci": [ "getMountPoints" ]
+			},
+			"uci": [ "mergerfs" ]
+		},
+		"write": {
+			"file": {
+				"/bin/umount": [ "exec" ],
+				"/etc/init.d/mergerfs reload": [ "exec" ]
+			},
+			"uci": [ "mergerfs" ]
+		}
+	}
+}

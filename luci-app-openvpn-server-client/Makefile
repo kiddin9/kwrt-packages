@@ -10,7 +10,7 @@ LUCI_DEPENDS:=+openvpn-openssl +openvpn-easy-rsa
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-openvpn-server-client
 PKG_VERSION:=6.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 MAINTAINER:=lunatickochiya <125438787@qq.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk

@@ -1,3 +1,4 @@
+
 config basic
 	option gouser 'advancedplus'
 	option gohome 'overview'
@@ -7,34 +8,32 @@ config basic
 	option gossr 'passwall'
 	option dayword '0'
 	option background '0'
-	option bklock '1'
+	option bklock '0'
 	option mode 'dark'
-	option bkuse '1'
-	option primary_rgbs_ts '0'
-	option primary_rgbbody '33,45,60'
+	option bkuse '0'
+	option primary_rgbs_ts '0.1'
+	option primary_rgbbody '248,248,248'
 	option primary_opacity '0'
-	option primary_rgbs '76,157,69'
+	option primary_rgbs '28,66,188'
 	option primary_rgbm_ts '0.9'
-	option primary_rgbm '26,131,97'
+	option primary_rgbm '20,109,179'
 	option fontmode '0'
 	option font_d '1.1rem'
 	option font_z '0.92rem'
 	option font_x '0.875rem'
 	option tsoset '1'
-	option set_ttyd '1'
-	option set_firewall_wan '1'
 	option dhcp_domain '1'
-	
+
 config theme
 	option primary_rgbbody '33,45,60'
 	option primary_rgbs '76,157,69'
 	option remarks '隔栏经典蓝色'
 	option primary_opacity '0'
-	option primary_rgbm_ts '0.9'
+	option primary_rgbm_ts '0.8'
 	option bkuse '0'
 	option primary_rgbs_ts '0.1'
-	option mode 'light'
-	option use '0'
+	option mode 'auto'
+	option use '1'
 	option primary_rgbm 'blue'
 
 config theme
@@ -42,11 +41,11 @@ config theme
 	option primary_rgbs '76,157,69'
 	option primary_rgbm_ts '0.9'
 	option primary_opacity '0'
-	option bkuse '0'
+	option bkuse '1'
 	option remarks '无隔栏清爽绿'
 	option primary_rgbs_ts '0'
 	option mode 'dark'
-	option use '1'
+	option use '0'
 	option primary_rgbm 'green'
 
 config theme

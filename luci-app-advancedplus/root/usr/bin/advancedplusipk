@@ -21,21 +21,9 @@ is_iStore() {
 }
 
 is_vip() {
-     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Vip" | cut -d "'" -f 2 | cut -d "-" -f 1)
-    if [ "$DISTRIB_FREE" = "Vip" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-is_free() {
-     DISTRIB_FREE=$(cat /etc/openwrt_release | grep "Free" | cut -d "'" -f 2 | cut -d "-" -f 1)
-    if [ "$DISTRIB_FREE" = "Free" ]; then
-        return 0
-    else
-        return 1
-    fi
+    local ezver
+    ezver=$(grep -o "EZVER=\S*" /etc/ezopenwrt_version 2>/dev/null | cut -d'=' -f2)
+    [[ "${ezver^^}" =~ VIP ]]
 }
 
 istore_install(){
@@ -77,22 +65,7 @@ istore_install(){
                 fi
             else
                 echo "src/gz is_store https://istore.linkease.com/repo/all/store" >/etc/opkg/customfeeds.conf
-		if is_vip; then
-                  local total_lines=$(opkg print-architecture | wc -l)
-                  local architecture=""
-                  local source="https://op.dllkids.xyz/packages/"
-                  if [ "$total_lines" -eq 4 ]; then
-                     architecture=$(opkg print-architecture | awk 'NR==4{print $2}')
-                     echo "No.4 architecture info===="${architecture}
-                     echo "src/gz custom_dllkids "${source}${architecture} >>/etc/opkg/customfeeds.conf
-                   elif [ "$total_lines" -eq 3 ]; then
-                     architecture=$(opkg print-architecture | awk 'NR==3{print $2}')
-                     echo "No.3 architecture info===="${architecture}
-                     echo "src/gz custom_dllkids "${source}${architecture} >>/etc/opkg/customfeeds.conf
-                   else
-                      echo "未知的返回结果行数: $total_lines"
-                   fi
-		fi
+		
                 if ! grep -q " like iStoreOS" /tmp/sysinfo/model; then
                     sed -i '1s/$/ like iStoreOS/' /tmp/sysinfo/model
                 fi

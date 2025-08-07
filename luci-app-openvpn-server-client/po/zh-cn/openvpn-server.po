@@ -207,3 +207,6 @@ msgstr "给OpenVPN客户端配置账号密码文件 "
 
 msgid "Config File Path "
 msgstr "配置文件路径 "
+
+msgid "Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it."
+msgstr "使用LZO压缩，不支持2.5.X以上的版本，不支持DCO，如果你的版本号大于这个版本选择NO来禁用它"

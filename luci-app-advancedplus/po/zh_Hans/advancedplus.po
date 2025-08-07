@@ -399,8 +399,8 @@ msgstr "执行操作"
 msgid "Click to execute"
 msgstr "点击执行"
 
-msgid "Allow TTYD external network access"
-msgstr "允许TTYD外网访问"
+msgid "Console account password login"
+msgstr "控制台帐号密码登录"
 
 msgid "Set up firewall for external network access"
 msgstr "设置防火墙外网访问"

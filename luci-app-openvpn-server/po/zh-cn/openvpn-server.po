@@ -138,3 +138,75 @@ msgstr "点击页面下方的保存应用后会写入到配置文件里"
 
 msgid "Click Enable WAN port input data mode below, so that other machines can access this machine. You can also go to the firewall page to set it yourself."
 msgstr "点击下方的启用WAN口输入数据模式，让别的机器可以访问本机。你也可以去防火墙页面自行设置。(非必要设置，不要重复点击一个按钮）"
+
+msgid "Configuration for OpenVPN client instances. The instance name you provide becomes the UCI section name (e.g., 'client1' leads to `config openvpn 'client1'`)."
+msgstr "OpenVPN 客户端实例的配置。您提供的实例名称将成为 UCI 部分名称（例如，'client1' 对应于 `config openvpn 'client1'`）。"
+
+msgid "OpenVPN Client"
+msgstr "OpenVPN 客户端"
+
+msgid "OpenVPN Client Instances"
+msgstr "OpenVPN 客户端实例"
+
+msgid "Enter a unique identifier (e.g., client1, client2) when adding an instance. This identifier is used for the UCI section name and the corresponding .conf file."
+msgstr "添加实例时输入唯一标识符（例如，client1、client2）。该标识符用于 UCI 部分名称和相应的 .conf 文件。"
+
+msgid "Enable Instance"
+msgstr "启用实例"
+
+msgid "Auto-generated based on instance identifier"
+msgstr "根据实例标识符自动生成"
+
+msgid "Invalid instance identifier."
+msgstr "无效的实例标识符。"
+
+msgid "OpenVPN Configuration (.ovpn/.conf)"
+msgstr "OpenVPN 配置 (.ovpn/.conf)"
+
+msgid "Paste the content of the .ovpn or .conf file here. This will be saved to the path shown in 'Base Settings'."
+msgstr "在此粘贴 .ovpn 或 .conf 文件的内容。将保存到“基本设置”中显示的路径。"
+
+msgid "Cannot read file: Invalid instance identifier used for this section."
+msgstr "无法读取文件：此部分使用的实例标识符无效。"
+
+msgid "Authentication File Path"
+msgstr "认证文件路径"
+
+msgid "Enter the path for the authentication file (e.g., /etc/openvpn/password.txt)"
+msgstr "输入认证文件的路径（例如，/etc/openvpn/password.txt）"
+
+msgid "Authentication File Content"
+msgstr "认证文件内容"
+
+msgid "Enter the content of the authentication file (e.g., username on the first line, password on the second line). This will be saved to the path shown above."
+msgstr "输入认证文件的内容（例如，第一行是用户名，第二行是密码）。将保存到上面显示的路径。"
+
+msgid "Failed to restart OpenVPN service."
+msgstr "重启 OpenVPN 服务失败。"
+
+msgid "Removed config file: "
+msgstr "已移除配置文件："
+
+msgid "Error removing config file "
+msgstr "移除配置文件时出错 "
+
+msgid "Removed authentication file: "
+msgstr "已移除认证文件："
+
+msgid "Error removing authentication file "
+msgstr "移除认证文件时出错 "
+
+msgid "Base Settings "
+msgstr "基本设置 "
+
+msgid "OpenVPN Client Authentication "
+msgstr "OpenVPN客户端认证账号密码 "
+
+msgid "Configure authentication files for OpenVPN client instances. "
+msgstr "给OpenVPN客户端配置账号密码文件 "
+
+msgid "Config File Path "
+msgstr "配置文件路径 "
+
+msgid "Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it."
+msgstr "使用LZO压缩，不支持2.5.X以上的版本，不支持DCO，如果你的版本号大于这个版本选择NO来禁用它"

@@ -1,0 +1,123 @@
+msgid ""
+msgstr ""
+"Language: zh_Hans\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Create policy"
+msgstr "创建策略"
+
+msgid "Each line must be a path starting with a '/' or be a comment starting with '#'."
+msgstr "每行必须是以'/'开头的路径或者以'#'开头的注释。"
+
+msgid "Existing path - all"
+msgstr "现有路径 - 全部"
+
+msgid "Existing path - first found"
+msgstr "现有路径 - 第一个找到的"
+
+msgid "Existing path - least free space"
+msgstr "现有路径 - 最少可用空间"
+
+msgid "Existing path - least used space"
+msgstr "现有路径 - 最少已用空间"
+
+msgid "Existing path - most free space"
+msgstr "现有路径 - 最多可用空间"
+
+msgid "Existing path - percentage free random distribution"
+msgstr "现有路径 - 按可用空间百分比随机分布"
+
+msgid "Existing path - random"
+msgstr "现有路径 - 随机"
+
+msgid "Failed to unmount"
+msgstr "卸载失败"
+
+msgid "First found"
+msgstr "第一个找到的"
+
+msgid "If mounting fails, search \"mergerfs\" in the <a href=\"/cgi-bin/luci/admin/status/logs\">system log</a> for more information."
+msgstr "如果挂载失败，在<a href=\"/cgi-bin/luci/admin/status/logs\">系统日志</a>中搜索\"mergerfs\"以获取信息。"
+
+msgid "Least free space"
+msgstr "最少可用空间"
+
+msgid "Least used space"
+msgstr "最少已用空间"
+
+msgid "List of paths to merge, one per line. Line starting with '#' will be treated as a comment.<br>All paths must existed before mounting or the mounting will fail."
+msgstr "要合并的路径列表，每行一个路径。以'#'开头的行将被视为注释。<br>挂载前所有路径必须存在，否则挂载将失败。"
+
+msgid "MergerFS Pool"
+msgstr "MergerFS 存储池"
+
+msgid "MergerFS is a union filesystem, which allows you to pool multiple directories into a single mount point.<br>This is useful for combining storage space and files from multiple devices or directories into one accessible location.<br>New files can be distributed across the pooled directories based on various policies, such as most free space or first found.<br>More information can be found at <a target=\"_blank\" href=\"https://github.com/trapexit/mergerfs\">GitHub</a>."
+msgstr "MergerFS 是一个联合文件系统，允许您将多个目录池化到一个挂载点。<br>这对于将来自多个设备或目录的存储空间和文件合并到一个可访问的位置很有用。<br>新文件可以根据各种策略（如最多可用空间或第一个找到的）分布在池化的目录中。<br>更多信息可以在 <a target=\"_blank\" href=\"https://github.com/trapexit/mergerfs\">GitHub</a> 找到。"
+
+msgid "Minimum free space"
+msgstr "最小可用空间"
+
+msgid "Most free space"
+msgstr "最多可用空间"
+
+msgid "Most shared path - least free space"
+msgstr "最多共享路径 - 最少可用空间"
+
+msgid "Most shared path - least used space"
+msgstr "最多共享路径 - 最少已用空间"
+
+msgid "Most shared path - most free space"
+msgstr "最多共享路径 - 最多可用空间"
+
+msgid "Most shared path - percentage free random distribution"
+msgstr "最多共享路径 - 按可用空间百分比随机分布"
+
+msgid "Mount Configured MergerFS"
+msgstr "挂载已配置的 MergerFS"
+
+msgid "Mount to this path"
+msgstr "挂载到此路径"
+
+msgid "Mounted MergerFS"
+msgstr "已挂载的 MergerFS"
+
+msgid "No mounted MergerFS found"
+msgstr "未找到已挂载的 MergerFS"
+
+msgid "Mount Point is required, must start with \"/\" and cannot be root \"/\""
+msgstr "挂载点是必需的，必须以\"/\"开头且不能是根目录\"/\""
+
+msgid "Newest file"
+msgstr "最新文件"
+
+msgid "Options"
+msgstr "选项"
+
+msgid "Paths"
+msgstr "路径"
+
+msgid "Percentage free random distribution"
+msgstr "按可用空间百分比随机分布"
+
+msgid "Please enter a value like 4G, 500M, 100K"
+msgstr "请输入类似 4G, 500M, 100K 的值"
+
+msgid "Policy for creating new files"
+msgstr "创建新文件的策略"
+
+msgid "Pool Settings"
+msgstr "存储池设置"
+
+msgid "Put each folder on a new line."
+msgstr "每行放一个文件夹。"
+
+msgid "Random"
+msgstr "随机"
+
+msgid "Read-only"
+msgstr "只读"
+
+msgid "You must provide at least one valid path (not a comment or empty line)."
+msgstr "您必须提供至少一个有效路径（不是注释或空行）。"
