@@ -1,0 +1,28 @@
+From eebe9562d62e990dd80e7b5550492a2b4175cb44 Mon Sep 17 00:00:00 2001
+From: jjm2473 <jjm2473@gmail.com>
+Date: Thu, 7 Aug 2025 21:35:54 +0800
+Subject: [PATCH] fix build on openwrt arm64 target
+
+let openwrt handles stripping
+---
+ libfuse/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libfuse/Makefile b/libfuse/Makefile
+index 53959713..04e03396 100644
+--- a/libfuse/Makefile
++++ b/libfuse/Makefile
+@@ -130,8 +130,8 @@ clean:
+ distclean: clean
+ 
+ strip:
+-	strip --strip-all build/mount.mergerfs
+-	strip --strip-all build/mergerfs-fusermount
++#	strip --strip-all build/mount.mergerfs
++#	strip --strip-all build/mergerfs-fusermount
+ 
+ install-utils: mergerfs-fusermount mount.mergerfs strip
+ 	install -D build/mergerfs-fusermount "$(INSTALLBINDIR)/mergerfs-fusermount"
+-- 
+2.46.0
+
