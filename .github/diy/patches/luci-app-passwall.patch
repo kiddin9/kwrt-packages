@@ -11,7 +11,7 @@
 
 --- a/luci-app-passwall/Makefile
 +++ b/luci-app-passwall/Makefile
-@@ -36,7 +36,31 @@ LUCI_PKGARCH:=all
+@@ -36,7 +35,30 @@ LUCI_PKGARCH:=all
  LUCI_DEPENDS:=+coreutils +coreutils-base64 +coreutils-nohup +curl \
  	+chinadns-ng +dns2socks +dnsmasq-full +ip-full \
  	+libuci-lua +lua +luci-compat +luci-lib-jsonc \
@@ -30,7 +30,6 @@
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client:shadowsocksr-libev-ssr-local \
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Client:shadowsocksr-libev-ssr-redir \
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server:shadowsocksr-libev-ssr-server \
-+	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs \
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs:simple-obfs-client \
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_SingBox:sing-box \
 +	+PACKAGE_$(PKG_NAME)_INCLUDE_Trojan_Plus:trojan-plus \
@@ -83,11 +82,10 @@
  	default y
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
-@@ -121,22 +136,19 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
+@@ -121,21 +137,19 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_ShadowsocksR_Libev_Server
  
  config PACKAGE_$(PKG_NAME)_INCLUDE_Simple_Obfs
  	bool "Include Simple-Obfs (Shadowsocks Plugin)"
--	select PACKAGE_simple-obfs
 -	select PACKAGE_simple-obfs-client
  	default y
  
