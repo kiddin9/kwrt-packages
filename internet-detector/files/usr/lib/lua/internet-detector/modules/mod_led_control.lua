@@ -14,7 +14,7 @@ local Module = {
 	runInterval              = 5,
 	sysLedsDir               = "/sys/class/leds",
 	ledsPerInstance          = 3,
-	ledAction1Default        = 1,	-- 1: off, 2: on, 3: blink, 4: netdev
+	ledAction1Default        = 1,	-- 1: off, 2: on, 3: blinking, 4: netdev
 	ledAction2Default        = 1,
 	ledBlinkDelayDefault     = 500,
 	ledNetlinkDeviceDefault  = nil,
@@ -44,7 +44,10 @@ function Module:setLedAttrs(t)
 		trigger    = self.readValue(t.ledTriggerFile),
 	}
 	if t.ledPrevState.trigger then
-		t.ledPrevState.trigger = t.ledPrevState.trigger:match("%[[%w%-_]+%]"):gsub("[%]%[]", "")
+		local val = t.ledPrevState.trigger:match("%[[%w%-_]+%]")
+		if val then
+			t.ledPrevState.trigger = val:gsub("[%]%[]", "")
+		end
 	end
 end
 
