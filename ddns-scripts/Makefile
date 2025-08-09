@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ddns-scripts
 PKG_VERSION:=2.8.2
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 
 PKG_LICENSE:=GPL-2.0
 
@@ -332,6 +332,7 @@ define Package/ddns-scripts-aliyun
 	$(call Package/ddns-scripts/Default)
 	TITLE:=Extension for Aliyun DNS API
 	DEPENDS:=ddns-scripts +curl +openssl-util
+	PROVIDES:=ddns-scripts_aliyun
 endef
 
 define Package/ddns-scripts-aliyun/description

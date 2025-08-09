@@ -53,6 +53,17 @@ end
 t3.readonly = "readonly"
 t3.description = "OpenVPN Password Log File"
 
+
+
+local clear_btn = f:field(Button, "clear_pass_log")
+clear_btn.title = "清空登陆日志"
+clear_btn.inputstyle = "remove"
+clear_btn.description = "点击清空上面内容"
+
+function clear_btn.write(self, section)
+    fs.writefile(conffile_pass, "")
+end
+
 t4 = f:field(TextValue, "ifconfig_tun")
 t4.rmempty = true
 t4.rows = 10

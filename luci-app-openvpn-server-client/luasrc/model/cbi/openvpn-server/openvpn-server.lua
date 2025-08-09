@@ -15,6 +15,23 @@ $Id$
 --require("luci.tools.webadmin")
 
 local uci = require "luci.model.uci".cursor()
+local sys = require "luci.sys"
+
+local function get_openvpn_info()
+    local version_str = sys.exec("openvpn --version 2>/dev/null | head -n1")
+    local full_output = sys.exec("openvpn --version 2>/dev/null")
+
+    local major, minor, patch = version_str:match("OpenVPN%s+(%d+)%.(%d+)%.(%d+)")
+    if not (major and minor and patch) then
+        return nil, nil, nil, false
+    end
+
+    local lzo_supported = full_output:match("%[LZO%]") ~= nil
+
+    return tonumber(major), tonumber(minor), tonumber(patch), lzo_supported
+end
+
+local major, minor, patch, lzo = get_openvpn_info()
 
 mp = Map("openvpn", "OpenVPN Server",translate("An easy config OpenVPN Server Web-UI"))
 
@@ -23,6 +40,7 @@ mp:section(SimpleSection).template  = "openvpn/openvpn_status"
 s = mp:section(TypedSection, "openvpn")
 s.anonymous = true
 s.addremove = false
+
 
 s.filter = function(self, section)
     return section:match("^myvpn") ~= nil
@@ -52,16 +70,44 @@ proto:value("tcp6")
 proto:value("udp6")
 proto.default ="tcp4"
 
+if (major > 2) or (major == 2 and minor >= 6) then
+disable_dco = s:taboption("basic",Flag,"disable_dco", translate("disable dco"))
+disable_dco.description = translate("Disabling DCO provides better compatibility but disables acceleration.")
+end
+
+if (major > 2) or (major == 2 and minor >= 5) then
+allow_compression = s:taboption("basic",Value,"allow_compression", translate("Allow Compression"))
+allow_compression.datatype = "string"
+allow_compression:value("asym")
+allow_compression:value("yes")
+allow_compression:value("no")
+allow_compression.default="asym"
+allow_compression.description = translate("Allow compression, DCO can only be used when set to NO. asym is compatible mode.")
+
+push_peer_info = s:taboption("basic",Flag,"push_peer_info", translate("push peer info"))
+push_peer_info.description = translate("This will allow the server to know more info about the client like HWADDR, very useful for managing IoT devices.")
+
+end
+
+if lzo then
 comp_lzo = s:taboption("basic",Value,"comp_lzo", translate("comp_lzo"))
 comp_lzo.datatype = "string"
 comp_lzo:value("adaptive")
 comp_lzo:value("yes")
 comp_lzo:value("no")
-comp_lzo.default="adaptive"
-comp_lzo.description = translate("Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it.")
+if (major > 2) or (major == 2 and minor >= 5) then
+comp_lzo:depends("allow_compression", "yes")
+comp_lzo:depends("allow_compression", "asym")
 comp_lzo:depends("comp_lzo", "yes")
 comp_lzo:depends("comp_lzo", "adaptive")
-
+comp_lzo.default="adaptive"
+else
+comp_lzo:depends("comp_lzo", "yes")
+comp_lzo:depends("comp_lzo", "adaptive")
+comp_lzo.default="adaptive"
+end
+comp_lzo.description = translate("Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it.")
+end
 
 auth_user_pass_verify = s:taboption("basic",Value,"auth_user_pass_verify", translate("user password verify"))
 auth_user_pass_verify.datatype = "string"
@@ -203,15 +249,15 @@ else
   end
 end
 
+local comp_lzo_val = uci:get("openvpn", "myvpn", "comp_lzo")
+
 function mp.on_after_commit(self)
   os.execute("uci set firewall.openvpn.dest_port=$(uci get openvpn.myvpn.port) && uci commit firewall &&  /etc/init.d/firewall restart")
   os.execute("/etc/init.d/openvpn restart")
-      local comp_lzo_val = uci:get("openvpn", "myvpn", "comp_lzo")
-    if comp_lzo_val == "no" then
+  if comp_lzo_val == "no" then
         uci:delete("openvpn", "myvpn", "comp_lzo")
-        uci:save("openvpn")
         uci:commit("openvpn")
-    end
+  end
 end
 
 gen = t:option(Button,"cert",translate("OpenVPN Cert"))

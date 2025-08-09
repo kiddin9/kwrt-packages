@@ -210,3 +210,9 @@ msgstr "配置文件路径 "
 
 msgid "Using LZO compression, it does not support versions above 2.5.X, does not support DCO; if your version number is greater than this version, select NO to disable it."
 msgstr "使用LZO压缩，不支持2.5.X以上的版本，不支持DCO，如果你的版本号大于这个版本选择NO来禁用它"
+
+msgid "This will allow the server to know more info about the client like HWADDR, very useful for managing IoT devices."
+msgstr "这将允许服务器获取更多关于客户端的信息，比如硬件地址（HWADDR），这对于管理物联网设备非常有用。"
+
+msgid "Disabling DCO provides better compatibility but disables acceleration."
+msgstr "禁用DCO可以提供更好的兼容性，但会关闭加速功能。"
