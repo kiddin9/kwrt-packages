@@ -96,6 +96,7 @@ interface_max_metric() {
 		uci -q batch <<-EOF >/dev/null
 			set network.${config}.metric=1500
 			set network.${config}.ip4table=1500
+			set network.${config}.ip6table=61500
 			commit network
 			set openmptcprouter.${config}.metric=1500
 			commit openmptcprouter
@@ -104,6 +105,7 @@ interface_max_metric() {
 		uci -q batch <<-EOF >/dev/null
 			set network.${config}.metric=1201
 			set network.${config}.ip4table=1201
+			set network.${config}.ip6table=61201
 			commit network
 			set openmptcprouter.${config}.metric=1201
 			commit openmptcprouter
