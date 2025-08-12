@@ -394,11 +394,6 @@ return view.extend({
 		o.placeholder = '192.168.80.0/24';
 
 		// advanced settings
-		o = s.taboption('advanced', form.Flag, 'enable_dns_forward', _('Enable Wildcard Domain'),
-						_('Enable wildcard domain support.'));
-		o.rmempty = false;
-		o.defaulValue = true;
-
 		o = s.taboption('advanced', form.Value, 'check_interval', _('Check Interval'),
 						_('The interval of the check(s).'));
 		o.datatype = 'uinteger';

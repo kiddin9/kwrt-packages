@@ -717,6 +717,13 @@ if (isset($_GET['ajax'])) {
     $cpuLoadAvg5Min = round($cpuLoad[1], 2);
     $cpuLoadAvg15Min = round($cpuLoad[2], 2);
 
+    $timezone = trim(shell_exec("uci get system.@system[0].zonename 2>/dev/null"));
+    if (!$timezone) {
+        $timezone = 'UTC';
+    }
+    date_default_timezone_set($timezone);
+    $currentTime = date("Y-m-d H:i:s");
+
     echo json_encode([
         'systemInfo' => "$devices - $fullOSInfo",
         'ramUsage' => "$ramUsage/$ramTotal MB",
@@ -725,6 +732,8 @@ if (isset($_GET['ajax'])) {
         'cpuLoadAvg1Min' => $cpuLoadAvg1Min,
         'ramTotal' => $ramTotal,
         'ramUsageOnly' => $ramUsage,
+        'timezone' => $timezone,
+        'currentTime' => $currentTime,
     ]);
     exit;
 }
@@ -904,7 +913,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_config'])) {
                             ?>
                         </select>
                         
-                        <div class="btn-group w-100">
+                        <div class="btn-group w-100  position-relative" style="top: 25px;">
                             <button type="submit" name="neko" value="start" 
                                     class="btn btn<?= ($neko_status == 1) ? "-outline" : "" ?>-success">
                                 <i class="bi bi-power"></i> 
@@ -945,7 +954,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_config'])) {
                             <?php endforeach; ?>
                         </select>
                         
-                        <div class="btn-group w-100">
+                        <div class="btn-group w-100 position-relative" style="top: 25px;">
                             <button type="submit" name="singbox" value="start" 
                                     class="btn btn<?= ($singbox_status == 1) ? "-outline" : "" ?>-success">
                                 <i class="bi bi-power"></i> 
@@ -1135,12 +1144,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_config'])) {
               <span id="ramUsage" class="form-control text-start ps-3"></span>
             </div>
           </div>
-          <div class="mb-3 d-flex align-item-center">
+          <div class="mb-3 d-flex align-items-center">
             <h6 class="mb-0" style="width: 320px;">
               <i data-feather="zap" class="me-2"></i><span data-translate="avgLoad">Average Load</span>
             </h6>
             <div class="flex-grow-1">
               <span id="cpuLoad" class="form-control text-start ps-3"></span>
+            </div>
+          </div>
+          <div class="mb-3 d-flex align-items-center">
+            <h6 class="mb-0" style="width: 320px;">
+              <i data-feather="globe" class="me-2"></i><span data-translate="systemTimezone">System Timezone</span>
+            </h6>
+            <div class="flex-grow-1">
+              <span id="systemTimezone" class="form-control text-start ps-3"></span>
+            </div>
+          </div>
+          <div class="mb-3 d-flex align-items-center">
+            <h6 class="mb-0" style="width: 320px;">
+              <i data-feather="clock" class="me-2"></i><span data-translate="currentTime">Current Time</span>
+            </h6>
+            <div class="flex-grow-1">
+              <span id="systemCurrentTime" class="form-control text-start ps-3"></span>
             </div>
           </div>
           <div class="mb-3 d-flex align-items-center">
@@ -1177,6 +1202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_config'])) {
                 document.getElementById('systemInfo').innerText = data.systemInfo;
                 document.getElementById('ramUsage').innerText = data.ramUsage;
                 document.getElementById('cpuLoad').innerText = data.cpuLoad;
+                document.getElementById('systemTimezone').innerText = data.timezone;
+                document.getElementById('systemCurrentTime').innerText = data.currentTime;
 
                 let uptimeText = data.uptime;
                 if (typeof uptimeText === 'string') {
@@ -1451,3 +1478,4 @@ $(document).ready(function() {
     startUpdateTimer();
 });
 </script>
+
