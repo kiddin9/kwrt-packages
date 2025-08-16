@@ -364,7 +364,7 @@ function searchFiles($dir, $term) {
 <style>
 .folder-icon::before{content:"📁";}.file-icon::before{content:"📄";}.file-icon.file-pdf::before{content:"📕";}.file-icon.file-doc::before,.file-icon.file-docx::before{content:"📘";}.file-icon.file-xls::before,.file-icon.file-xlsx::before{content:"📗";}.file-icon.file-ppt::before,.file-icon.file-pptx::before{content:"📙";}.file-icon.file-zip::before,.file-icon.file-rar::before,.file-icon.file-7z::before{content:"🗜️";}.file-icon.file-mp3::before,.file-icon.file-wav::before,.file-icon.file-ogg::before,.file-icon.file-flac::before{content:"🎵";}.file-icon.file-mp4::before,.file-icon.file-avi::before,.file-icon.file-mov::before,.file-icon.file-wmv::before,.file-icon.file-flv::before{content:"🎞️";}.file-icon.file-jpg::before,.file-icon.file-jpeg::before,.file-icon.file-png::before,.file-icon.file-gif::before,.file-icon.file-bmp::before,.file-icon.file-tiff::before{content:"🖼️";}.file-icon.file-txt::before{content:"📝";}.file-icon.file-rtf::before{content:"📄";}.file-icon.file-md::before,.file-icon.file-markdown::before{content:"📑";}.file-icon.file-exe::before,.file-icon.file-msi::before{content:"⚙️";}.file-icon.file-bat::before,.file-icon.file-sh::before,.file-icon.file-command::before{content:"📜";}.file-icon.file-iso::before,.file-icon.file-img::before{content:"💿";}.file-icon.file-sql::before,.file-icon.file-db::before,.file-icon.file-dbf::before{content:"🗃️";}.file-icon.file-font::before,.file-icon.file-ttf::before,.file-icon.file-otf::before,.file-icon.file-woff::before,.file-icon.file-woff2::before{content:"🔤";}.file-icon.file-cfg::before,.file-icon.file-conf::before,.file-icon.file-ini::before{content:"🔧";}.file-icon.file-psd::before,.file-icon.file-ai::before,.file-icon.file-eps::before,.file-icon.file-svg::before{content:"🎨";}.file-icon.file-dll::before,.file-icon.file-so::before{content:"🧩";}.file-icon.file-css::before{content:"🎨";}.file-icon.file-js::before{content:"🟨";}.file-icon.file-php::before{content:"🐘";}.file-icon.file-json::before{content:"📊";}.file-icon.file-html::before,.file-icon.file-htm::before{content:"🌐";}.file-icon.file-bin::before{content:"👾";}
 
-#aceEditor {
+#monacoEditor {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -377,7 +377,7 @@ function searchFiles($dir, $term) {
 	z-index: 1100;
 }
 
-#aceEditorContainer {
+#monacoEditorContainer {
 	flex: 1;
 	width: 90%;
 	margin: 0 auto;
@@ -401,38 +401,134 @@ function searchFiles($dir, $term) {
 	border-bottom: 1px solid #ccc;
 }
 
-#encoding, #editorTheme, #fontSize {
-	background-color: var(--header-bg) !important;
+#fontSize, #editorTheme {
+	display: inline-block;
+	width: auto;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 0.875rem;
+	font-weight: 500;
 	color: #ffffff !important;
-	border: 1px solid #ccc !important;
-	padding: 5px !important;
-	border-radius: 4px !important;
-	appearance: none !important;
+	background-color: var(--accent-color) !important;
+        border-radius: var(--radius);
+	border: 1px solid var(--border-color);
+	border-radius: 0.25rem;
+	padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	transition: all 0.2s ease;
 }
 
-#encoding option,
-#editorTheme option,
-#fontSize option {
-	background-color: #ffffff !important;
-	color: #000000 !important
+.editor-widget.find-widget {
+	display: flex !important;
+	flex-direction: column !important;
+	height: auto !important;
+	padding: 6px !important;
+	gap: 6px !important;
 }
 
-#encoding option:checked,
-#editorTheme option:checked,
-#fontSize option:checked {
-	background-color: #cce5ff !important;
+.editor-widget.find-widget .find-part {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 4px !important;
 }
 
-button.editor-btn {
-	background-color: var(--header-bg) !important;
-	color: #ffffff !important;
-	border: 1px solid var(--header-bg) !important;
-	border-radius: 4px !important;
+.editor-widget.find-widget .monaco-findInput {
+	order: 1 !important;
+	width: 100% !important;
 }
 
-button.editor-btn:hover {
-	background-color: var(--header-bg) !important;
+.editor-widget.find-widget .replace-part {
+	order: 2 !important;
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 4px !important;
 }
+
+.editor-widget.find-widget .replace-part .monaco-findInput {
+	width: 100% !important;
+}
+
+.editor-widget.find-widget .controls {
+	order: 3 !important;
+	display: flex !important;
+	gap: 6px !important;
+	margin-top: 4px !important;
+	flex-wrap: wrap !important;
+}
+
+.editor-widget.find-widget .find-actions {
+	order: 4 !important;
+	display: flex !important;
+	gap: 8px !important;
+	margin-top: 4px !important;
+	align-items: center !important;
+}
+
+.editor-widget.find-widget .replace-actions {
+	order: 5 !important;
+	display: flex !important;
+	gap: 8px !important;
+	margin-top: 4px !important;
+	align-items: center !important;
+}
+
+.editor-widget.find-widget .toggle.left {
+	order: -1 !important;
+	display: inline-flex !important;
+	margin-right: 8px !important;
+	align-self: flex-start !important;
+}
+
+.editor-widget.find-widget .matchesCount {
+	display: inline-block !important;
+	margin-right: 8px !important;
+}
+
+.editor-widget.find-widget .button {
+	display: inline-flex !important;
+}
+
+.editor-widget.find-widget:not(.replaceToggled) .replace-part .monaco-findInput {
+	display: none !important;
+}
+
+.editor-widget.find-widget.replaceToggled .replace-part .monaco-findInput {
+	display: block !important;
+}
+
+.editor-widget.find-widget .replace-actions {
+	display: flex !important;
+	gap: 8px !important;
+	margin-top: 4px !important;
+}
+
+.find-actions {
+	display: flex !important;
+	align-items: center !important;
+	gap: 8px !important;
+}
+
+.find-actions .codicon-widget-close {
+	order: 1 !important;
+}
+
+.find-actions .codicon-find-replace {
+	order: 2 !important;
+	margin-left: 8px !important;
+}
+
+.find-actions .codicon-find-replace-all {
+	order: 3 !important;
+}
+
+.replace-actions {
+	display: none !important;
+}
+
+.find-actions .button.disabled {
+	opacity: 0.5 !important;
+	pointer-events: none !important;
+} 
 
 #leftControls {
 	display: flex;
@@ -460,26 +556,6 @@ button.editor-btn:hover {
 	font-size: 17px;
 	color: var(--text-primary);
 	font-weight: bolder;
-}
-
-#editorControls select,
-#editorControls button {
-	padding: 5px 10px;
-	font-size: 13px;
-	height: 30px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	background-color: #fff;
-	cursor: pointer;
-	flex-shrink: 0;
-}
-
-#editorControls button:hover {
-	background-color: #e8e8e8;
-}
-
-#editorControls select:hover {
-	background-color: #f2f2f2;
 }
 
 .ace_editor {
@@ -814,7 +890,7 @@ table.table tbody tr td.file-icon {
 
 <form id="batchDeleteForm" method="post" action="?dir=<?php echo urlencode($current_dir); ?>" style="display: none;"></form>
 
-<div class="container-fluid text-center">
+<div class="container-fluid text-center"  style="min-height: 70vh;">
     <div class="table-responsive">
         <table class="table table-striped table-bordered align-middle">
             <thead class="table-light">
@@ -1088,14 +1164,14 @@ table.table tbody tr td.file-icon {
 
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary" data-translate="save">Save</button>
-        <button type="button" onclick="openAceEditor()" class="btn btn-danger" data-translate="advancedEdit">Advanced Edit</button>
+        <button type="button" onclick="openMonacoEditor()" class="btn btn-danger" data-translate="advancedEdit">Advanced Edit</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="close">Close</button>
       </div>
     </form>
   </div>
 </div>
 
-<div id="aceEditor">
+<div id="monacoEditor">
     <div id="editorControls">
         <div id="leftControls">
             <select id="fontSize" onchange="changeFontSize()">
@@ -1117,16 +1193,20 @@ table.table tbody tr td.file-icon {
                 <option value="vs-dark">VS Dark</option>
                 <option value="vs">VS Light</option>
                 <option value="hc-black">High Contrast Black</option>
+                <option value="hc-light">High Contrast Light</option>
+                <option value="my-hc-light">My High Contrast Light</option> 
                 <option value="my-custom-theme">My Custom Theme</option>
             </select>
-
-            <button type="button" class="btn btn-sm editor-btn" id="toggleFullscreenBtn" onclick="toggleFullscreen()" data-translate="toggleFullscreen">Fullscreen</button>
-            <button type="button" class="btn btn-sm editor-btn" onclick="formatContent()" data-translate="format">Format</button>
-            <button type="button" class="btn btn-sm editor-btn" id="jsonValidationBtn" onclick="validateJsonSyntax()" style="display:none;" data-translate="validateJson">Validate JSON</button>
-            <button type="button" class="btn btn-sm editor-btn" id="yamlValidationBtn" onclick="validateYamlSyntax()" style="display:none;" data-translate="validateYaml">Validate YAML</button>
-            <button type="button" class="btn btn-sm editor-btn" id="yamlFormatBtn" onclick="formatYamlContent()" style="display:none;" data-translate="formatYaml">Format YAML</button>
-            <button type="button" class="btn btn-sm editor-btn" onclick="saveFullScreenContent()" data-translate="saveButton">Save</button>
-            <button type="button" class="btn btn-sm editor-btn" onclick="closeAceEditor()" data-translate="close">Close</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="openSearch()" data-translate="search"></button>
+            <button type="button" class="btn btn-sm btn-rose-gold" onclick="toggleComment()" data-translate="toggleComment">Toggle Comment</button>
+            <button type="button" class="btn btn-sm btn-teal" onclick="openDiffEditorPrompt()" data-translate="compare">Compare</button>
+            <button type="button" class="btn btn-sm btn-danger" id="toggleFullscreenBtn" onclick="toggleFullscreen()" data-translate="toggleFullscreen">Fullscreen</button>
+            <button type="button" class="btn btn-sm btn-info" onclick="formatContent()" data-translate="format">Format</button>
+            <button type="button" class="btn btn-sm btn-fuchsia" id="jsonValidationBtn" onclick="validateJsonSyntax()" style="display:none;" data-translate="validateJson">Validate JSON</button>
+            <button type="button" class="btn btn-sm btn-pink" id="yamlValidationBtn" onclick="validateYamlSyntax()" style="display:none;" data-translate="validateYaml">Validate YAML</button>
+            <button type="button" class="btn btn-sm btn-warning" id="yamlFormatBtn" onclick="formatYamlContent()" style="display:none;" data-translate="formatYaml">Format YAML</button>
+            <button type="button" class="btn btn-sm btn-success" onclick="saveFullScreenContent()" data-translate="saveButton">Save</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="closeMonacoEditor()" data-translate="close">Close</button>
         </div>        
         <div id="statusInfo">
             <span id="lineColumnDisplay" data-translate="lineColumnDisplay"></span>
@@ -1193,6 +1273,7 @@ table.table tbody tr td.file-icon {
 let selectedFiles = [];
 let selectedFilesSize = 0;
 let monacoEditorInstance = null;
+let diffEditorInstance = null; 
 let currentEncoding = 'UTF-8';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1631,14 +1712,14 @@ function saveEdit() {
 }
 
 const monacoScript = document.createElement('script');
-monacoScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js';
+monacoScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js';
 document.head.appendChild(monacoScript);
 
 monacoScript.onload = function() {
-    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs' } });
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
 };
 
-function openAceEditor() {
+function openMonacoEditor() {
     const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
     if (editModal) {
         editModal.hide();
@@ -1650,14 +1731,66 @@ function openAceEditor() {
     const path = document.getElementById('editPath').value;
     
     const editorContainer = document.createElement('div');
-    editorContainer.id = 'aceEditorContainer';
+    editorContainer.id = 'monacoEditorContainer';
     editorContainer.style.width = '100%';
     editorContainer.style.height = 'calc(100% - 40px)';
     
-    document.getElementById('aceEditor').style.display = 'flex';
-    document.getElementById('aceEditor').appendChild(editorContainer);
+    document.getElementById('monacoEditor').style.display = 'flex';
+    document.getElementById('monacoEditor').appendChild(editorContainer);
     
     require(['vs/editor/editor.main'], function() {
+        monaco.editor.defineTheme('my-custom-theme', {
+            base: 'vs-dark',
+            inherit: true,
+            rules: [
+                { token: 'comment', foreground: 'ffa500', fontStyle: 'italic' },
+                { token: 'keyword', foreground: 'ff79c6' },
+                { token: 'string', foreground: '8be9fd' },
+                { token: 'keyword.php', foreground: 'ff79c6' },
+                { token: 'string.php', foreground: '8be9fd' },
+                { token: 'variable.php', foreground: '50fa7b' }
+            ],
+            colors: {
+                'editor.foreground': '#f8f8f2',
+                'editor.background': '#282a36',
+                'editorCursor.foreground': '#f8f8f0',
+                'editor.lineHighlightBackground': '#44475a',
+                'editorLineNumber.foreground': '#6272a4'
+            }
+        });
+
+        monaco.editor.defineTheme('my-hc-light', {
+            base: 'hc-light',
+            inherit: true,
+            rules: [
+                { token: 'keyword', foreground: '2A7AB0', fontStyle: 'bold' },
+                { token: 'string', foreground: 'C62828', fontStyle: 'italic' },
+                { token: 'comment', foreground: '6B6B6B', fontStyle: 'italic' },
+                { token: 'number', foreground: '2E7D32', fontStyle: 'bold' },
+                { token: 'identifier', foreground: '333333', fontStyle: 'normal' },
+                { token: 'function', foreground: '5F867A', fontStyle: 'bold' },
+                { token: 'operator', foreground: '9C27B0', fontStyle: 'normal' },
+                { token: 'delimiter', foreground: '757575', fontStyle: 'normal' },
+                { token: 'type', foreground: '0277BD', fontStyle: 'italic' },
+                { token: 'keyword.php', foreground: '2A7AB0', fontStyle: 'bold' },
+                { token: 'variable.php', foreground: 'D32F2F', fontStyle: 'normal' }
+            ],
+            colors: {
+                'editor.background': '#F2F9FC',
+                'editor.foreground': '#333333',
+                'editorCursor.foreground': '#2A7AB0',
+                'editor.lineHighlightBackground': '#E0F2F7',
+                'editorLineNumber.foreground': '#6B6B6B',
+                'editor.selectionBackground': '#B3E5FC',
+                'editor.inactiveSelectionBackground': '#E1F5FE',
+                'editorSuggestWidget.background': '#F9FCFE',
+                'editorSuggestWidget.foreground': '#333333',
+                'editorSuggestWidget.selectedBackground': '#E0F2F7',
+                'editorHoverWidget.background': '#F9FCFE',
+                'editorHoverWidget.foreground': '#333333',
+            }
+        });
+
         const defaultFontSize = '20px';
         const defaultTheme = 'vs-dark';
 
@@ -1692,13 +1825,19 @@ function openAceEditor() {
         console.log('Loaded Font Size:', savedFontSize, 'Select Value:', fontSizeSelect ? fontSizeSelect.value : 'N/A');
         console.log('Loaded Theme:', savedTheme, 'Select Value:', themeSelect ? themeSelect.value : 'N/A');
 
-        monacoEditorInstance = monaco.editor.create(document.getElementById('aceEditorContainer'), {
+        monacoEditorInstance = monaco.editor.create(document.getElementById('monacoEditorContainer'), {
             value: content,
             language: 'text',
             theme: savedTheme,
             fontSize: parseInt(savedFontSize.replace('px', '')),
             wordWrap: 'on',
-            automaticLayout: true
+            automaticLayout: true,
+            folding: true,
+            foldingStrategy: 'indentation',
+            multiCursorModifier: 'alt',
+            minimap: {
+                enabled: true
+            }
         });
 
         const ext = path.split('.').pop().toLowerCase();
@@ -1716,36 +1855,71 @@ function openAceEditor() {
         
         detectContentFormat();
         
+        registerCompletionProviders();
+        
         setTimeout(() => {
             monacoEditorInstance.focus();
         }, 100);
     });
     
-    document.getElementById('aceEditor').onclick = function(e) {
+    document.getElementById('monacoEditor').onclick = function(e) {
         if (e.target === this) {
-            closeAceEditor();
+            closeMonacoEditor();
         }
     };
 }
 
-require(['vs/editor/editor.main'], function() {
-    monaco.editor.defineTheme('my-custom-theme', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-            { token: 'comment', foreground: 'ffa500', fontStyle: 'italic' },
-            { token: 'keyword', foreground: 'ff79c6' },
-            { token: 'string', foreground: '8be9fd' }
-        ],
-        colors: {
-            'editor.foreground': '#f8f8f2',
-            'editor.background': '#282a36',
-            'editorCursor.foreground': '#f8f8f0',
-            'editor.lineHighlightBackground': '#44475a',
-            'editorLineNumber.foreground': '#6272a4'
+function registerCompletionProviders() {
+    monaco.languages.registerCompletionItemProvider('php', {
+        provideCompletionItems: function(model, position) {
+            return {
+                suggestions: [
+                    {
+                        label: 'echo',
+                        kind: monaco.languages.CompletionItemKind.Keyword,
+                        insertText: 'echo "${1}";',
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+                    },
+                    {
+                        label: 'function',
+                        kind: monaco.languages.CompletionItemKind.Keyword,
+                        insertText: 'function ${1:name}() {\n\t${2}\n}',
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+                    },
+                    {
+                        label: 'foreach',
+                        kind: monaco.languages.CompletionItemKind.Snippet,
+                        insertText: 'foreach ($${1:array} as $${2:key} => $${3:value}) {\n\t${4}\n}',
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                        documentation: 'Inserts a foreach loop in PHP'
+                    }
+                ]
+            };
         }
     });
-});
+
+    monaco.languages.registerCompletionItemProvider('javascript', {
+        provideCompletionItems: function(model, position) {
+            return {
+                suggestions: [
+                    {
+                        label: 'console.log',
+                        kind: monaco.languages.CompletionItemKind.Function,
+                        insertText: 'console.log(${1});',
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+                    },
+                    {
+                        label: 'for',
+                        kind: monaco.languages.CompletionItemKind.Snippet,
+                        insertText: 'for (let ${1:i} = 0; ${1:i} < ${2:length}; ${1:i}++) {\n\t${3}\n}',
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                        documentation: 'Inserts a for loop in JavaScript'
+                    }
+                ]
+            };
+        }
+    });
+}
 
 function setEditorMode(ext) {
     const modes = {
@@ -1759,22 +1933,55 @@ function setEditorMode(ext) {
         'yml': 'yaml',
         'xml': 'xml',
         'sh': 'shell',
-        'py': 'python'
+        'py': 'python',
+        'ts': 'typescript',
+        'java': 'java',
+        'cs': 'csharp',
+        'cpp': 'cpp',
+        'c': 'c',
+        'go': 'go',
+        'rs': 'rust',
+        'rb': 'ruby',
+        'sql': 'sql',
+        'swift': 'swift',
+        'kt': 'kotlin',
+        'dart': 'dart',
+        'scala': 'scala',
+        'pl': 'perl',
+        'groovy': 'groovy',
+        'docker': 'dockerfile',
+        'ini': 'ini',
+        'bat': 'bat',
+        'lua': 'lua',
+        'r': 'r',
+        'fs': 'fsharp',
+        'vb': 'vb',
+        'ps1': 'powershell',
+        'm': 'objective-c',
+        'txt': 'plaintext'
     };
-    const language = modes[ext] || 'text';
+    const language = modes[ext] || 'plaintext';
     if (monacoEditorInstance) {
         monaco.editor.setModelLanguage(monacoEditorInstance.getModel(), language);
     }
 }
 
-function closeAceEditor() {
+function closeMonacoEditor() {
     if (monacoEditorInstance) {
         document.getElementById('editContent').value = monacoEditorInstance.getValue();
         monacoEditorInstance.dispose();
         monacoEditorInstance = null;
     }
-    document.getElementById('aceEditor').style.display = 'none';
-    const container = document.getElementById('aceEditorContainer');
+    if (diffEditorInstance) {
+        diffEditorInstance.dispose();
+        diffEditorInstance = null;
+        const diffContainer = document.getElementById('diffEditorContainer');
+        if (diffContainer) {
+            diffContainer.remove();
+        }
+    }
+    document.getElementById('monacoEditor').style.display = 'none';
+    const container = document.getElementById('monacoEditorContainer');
     if (container) {
         container.remove();
     }
@@ -1783,8 +1990,79 @@ function closeAceEditor() {
 function saveFullScreenContent() {
     if (monacoEditorInstance) {
         document.getElementById('editContent').value = monacoEditorInstance.getValue();
-        closeAceEditor();
+        closeMonacoEditor();
         document.getElementById('editForm').submit();
+        showLogMessage(translations['save_success'] || 'Saved successfully');
+    }
+}
+
+function toggleComment() {
+    if (monacoEditorInstance) {
+        monacoEditorInstance.getAction('editor.action.commentLine').run();
+    }
+}
+
+function openDiffEditorPrompt() {
+    if (!monacoEditorInstance) return;
+    const originalContent = monacoEditorInstance.getValue();
+    const modifiedContent = prompt(translations['enterModifiedContent'] || 'Enter modified content for comparison:', originalContent);
+    if (modifiedContent !== null) {
+        openDiffEditor(originalContent, modifiedContent);
+    }
+}
+
+function openDiffEditor(originalContent, modifiedContent) {
+    const editorContainer = document.getElementById('monacoEditorContainer');
+    if (editorContainer) {
+        editorContainer.style.display = 'none';
+    }
+
+    const diffContainer = document.createElement('div');
+    diffContainer.id = 'diffEditorContainer';
+    diffContainer.style.width = '100%';
+    diffContainer.style.height = 'calc(100% - 40px)';
+    document.getElementById('monacoEditor').appendChild(diffContainer);
+
+    diffEditorInstance = monaco.editor.createDiffEditor(diffContainer, {
+        theme: localStorage.getItem('editorTheme') || 'vs-dark',
+        automaticLayout: true
+    });
+
+    diffEditorInstance.setModel({
+        original: monaco.editor.createModel(originalContent, 'text'),
+        modified: monaco.editor.createModel(modifiedContent, 'text')
+    });
+
+    const existingCloseDiffBtn = document.querySelector('#leftControls button[data-role="closeDiff"]');
+    if (existingCloseDiffBtn) {
+        existingCloseDiffBtn.remove();
+    }
+
+    const closeDiffBtn = document.createElement('button');
+    closeDiffBtn.type = 'button';
+    closeDiffBtn.className = 'btn btn-sm btn-secondary';
+    closeDiffBtn.textContent = translations['closeDiff'] || 'Close Diff View';
+    closeDiffBtn.setAttribute('data-role', 'closeDiff');
+    closeDiffBtn.onclick = closeDiffEditor;
+    document.getElementById('leftControls').appendChild(closeDiffBtn);
+}
+
+function closeDiffEditor() {
+    if (diffEditorInstance) {
+        diffEditorInstance.dispose();
+        diffEditorInstance = null;
+        const diffContainer = document.getElementById('diffEditorContainer');
+        if (diffContainer) {
+            diffContainer.remove();
+        }
+        const closeDiffBtn = document.querySelector('#leftControls button[data-role="closeDiff"]');
+        if (closeDiffBtn) {
+            closeDiffBtn.remove();
+        }
+        const editorContainer = document.getElementById('monacoEditorContainer');
+        if (editorContainer) {
+            editorContainer.style.display = 'block';
+        }
     }
 }
 
@@ -1831,18 +2109,53 @@ function updateEditorStatus() {
 
 function formatContent() {
     if (!monacoEditorInstance) return;
-    
+
     const content = monacoEditorInstance.getValue();
     const language = monacoEditorInstance.getModel().getLanguageId();
-    
+
+    const autoFormatSupported = [
+        'javascript', 'typescript', 'html', 'css', 'json'
+    ];
+
+    const tryFormat = [
+        'scss', 'less', 'java', 'csharp', 'cpp', 'c', 'go', 'rust',
+        'swift', 'kotlin', 'dart', 'scala', 'sql', 'xml'
+    ];
+
+    const unsupportedLanguages = [
+        'php', 'markdown', 'shell', 'python', 'ruby', 'perl', 'groovy',
+        'dockerfile', 'ini', 'bat', 'lua', 'r', 'fsharp', 'vb',
+        'powershell', 'objective-c', 'plaintext'
+    ];
+
     try {
-        if (language === 'json') {
-            const formatted = JSON.stringify(JSON.parse(content), null, 4);
+        if (autoFormatSupported.includes(language)) {
+            if (language === 'json') {
+                const formatted = JSON.stringify(JSON.parse(content), null, 4);
+                monacoEditorInstance.setValue(formatted);
+            } else {
+                monacoEditorInstance.getAction('editor.action.formatDocument')
+                    .run()
+                    .catch(() => {
+                        alert(translations['format_unsupported'] || 'Formatting is not supported.');
+                    });
+            }
+            alert(translations['format_success'] || 'Formatted successfully');
+        } else if (language === 'yaml') {
+            const obj = jsyaml.load(content);
+            const formatted = jsyaml.dump(obj, { indent: 4 });
             monacoEditorInstance.setValue(formatted);
-            alert(translations['json_format_success'] || 'JSON formatted successfully');
-        } else if (language === 'javascript') {
-            monacoEditorInstance.getAction('editor.action.formatDocument').run();
-            alert(translations['js_format_success'] || 'JavaScript formatted successfully');
+            alert(translations['format_success'] || 'Formatted successfully');
+        } else if (tryFormat.includes(language)) {
+            monacoEditorInstance.getAction('editor.action.formatDocument').run()
+                .then(() => {
+                    alert(translations['format_success'] || 'Formatted successfully');
+                })
+                .catch(() => {
+                    alert(translations['format_unsupported'] || 'Formatting is not supported.');
+                });
+        } else if (unsupportedLanguages.includes(language)) {
+            alert(translations['format_unsupported'] || 'Formatting is not supported.');
         } else {
             alert(translations['unsupported_format'] || 'Current mode does not support formatting');
         }
@@ -1900,7 +2213,6 @@ function formatYamlContent() {
     }
 }
 
-
 function changeFontSize() {
     if (!monacoEditorInstance) return;
     const fontSizeSelect = document.getElementById('fontSize');
@@ -1927,17 +2239,97 @@ function changeEditorTheme() {
     }
 }
 
-
 function openSearch() {
     if (monacoEditorInstance) {
-        monacoEditorInstance.trigger('keyboard', 'editor.action.startFind');
+        monacoEditorInstance.trigger('custom', 'actions.find');
+        setTimeout(localizeSearchWidget, 100);
     } else {
         console.error("Monaco Editor instance not initialized.");
     }
 }
 
+function localizeSearchWidget() {
+    const matchesCountElement = document.querySelector('.find-actions .matchesCount');
+    if (matchesCountElement) {
+        if (matchesCountElement.textContent === 'No results') {
+            matchesCountElement.textContent = translations['search.noResults'] || 'No results';
+        }
+    }
+
+    const buttons = document.querySelectorAll('.find-actions .button, .monaco-custom-toggle, .replace-actions .button');
+    buttons.forEach(button => {
+        let title = button.getAttribute('title');
+        let ariaLabel = button.getAttribute('aria-label');
+        let textToCheck = title || ariaLabel || '';
+
+        let clean = textToCheck.replace(/\(.*?\)/g, '').trim();
+
+        if (clean.includes('Previous Match')) {
+            let v = translations['search.previousMatch'] || 'Previous Match (Shift+Enter)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Next Match')) {
+            let v = translations['search.nextMatch'] || 'Next Match (Enter)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Match Case')) {
+            let v = translations['search.matchCase'] || 'Match Case (Alt+C)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Match Whole Word')) {
+            let v = translations['search.matchWholeWord'] || 'Match Whole Word (Alt+W)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Use Regular Expression')) {
+            let v = translations['search.useRegex'] || 'Use Regular Expression (Alt+R)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Find in Selection')) {
+            let v = translations['search.findInSelection'] || 'Find in Selection (Alt+L)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Close')) {
+            let v = translations['search.close'] || 'Close (Escape)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Toggle Replace')) {
+            let v = translations['search.toggleReplace'] || 'Toggle Replace';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Preserve Case')) {
+            let v = translations['search.preserveCase'] || 'Preserve Case (Alt+P)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Replace All')) {
+            let v = translations['search.replaceAll'] || 'Replace All (Ctrl+Alt+Enter)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        } else if (clean.includes('Replace')) {
+            let v = translations['search.replace'] || 'Replace (Enter)';
+            button.setAttribute('title', v);
+            button.setAttribute('aria-label', v);
+        }
+    });
+
+    const findInput = document.querySelector('.find-part .monaco-inputbox textarea');
+    if (findInput) {
+        const v = translations['search.find'] || 'Find';
+        findInput.setAttribute('placeholder', v);
+        findInput.setAttribute('title', v);
+        findInput.setAttribute('aria-label', v);
+    }
+
+    const replaceInput = document.querySelector('.replace-part .monaco-inputbox textarea');
+    if (replaceInput) {
+        const v = translations['search.replace'] || 'Replace';
+        replaceInput.setAttribute('placeholder', v);
+        replaceInput.setAttribute('title', v);
+        replaceInput.setAttribute('aria-label', v);
+    }
+}
+
 function toggleFullscreen() {
-    const editor = document.getElementById('aceEditor');
+    const editor = document.getElementById('monacoEditor');
     
     if (!document.fullscreenElement) {
         editor.requestFullscreen().catch(err => {
