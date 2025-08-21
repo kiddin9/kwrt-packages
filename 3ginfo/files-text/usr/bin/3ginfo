@@ -13,6 +13,15 @@ ECM=""
 
 RES="/usr/share/modemdata"
 
+format_conn_time() {
+	CT=$1
+	D=$(expr $CT / 60 / 60 / 24)
+	H=$(expr $CT / 60 / 60 % 24)
+	M=$(expr $CT / 60 % 60)
+	S=$(expr $CT % 60)
+	printf "%dd, %02d:%02d:%02d" $D $H $M $S
+}
+
 SEPARATOR=""
 parse_section() {
 	[ -n "$SEPARATOR" ] && echo "$SEPARATOR"
@@ -53,8 +62,8 @@ parse_section() {
 
 		json_init
 		json_load "$($RES/network.sh "$network")"
-		json_get_vars conn_time rx tx
-		echo "Connected time: ${conn_time}"
+		json_get_vars conn_time_sec rx tx
+		echo "Connected time: "$(format_conn_time ${conn_time_sec})
 		echo "TX: ${tx}"
 		echo "RX: ${rx}"
 		echo ""

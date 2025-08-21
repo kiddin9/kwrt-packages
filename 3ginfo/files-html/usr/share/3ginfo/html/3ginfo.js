@@ -75,6 +75,20 @@ function formatDateTime(s) {
 	return s;
 }
 
+function lz(n) {
+	return (n < 10 ? '0' : '' ) + n;
+}
+
+function formatDateTimeForUptime(uptime) {
+	var d = new Date(new Date().getTime() - uptime * 1000);
+	return '' +
+		d.getFullYear() + '-' +
+		lz(d.getMonth() + 1) + '-' +
+		lz(d.getDate()) + ' ' +
+		lz(d.getHours()) + ':' +
+		lz(d.getMinutes()) + ':' +
+		lz(d.getSeconds());
+}
 
 function createRowForModal(key, value) {
 	return '<div class="row"><div class="col-xs-5 col-sm-6 text-right">' + key + '</div><div class="col-xs-7 col-sm-6 text-left"><p>' + value + '</p></div></div>';
@@ -260,7 +274,7 @@ function showmodemparams() {
 			setValue('rx' + idx, data.rx == '' ? '-' : data.rx);
 			setValue('tx' + idx, data.tx == '' ? '-' : data.tx);
 			setValue('uptime' + idx, formatDuration(data.conn_time_sec, false));
-			setValue('uptime_since' + idx, data.conn_time_since == '' ? '' : ' (' + _t('since') + ' ' + formatDateTime(data.conn_time_since) + ')');
+			setValue('uptime_since' + idx, ' (' + _t('since') + ' ' + formatDateTimeForUptime(data.conn_time_sec) + ')');
 
 			var data = data2[1];
 			if (data.error)

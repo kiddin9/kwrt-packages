@@ -8,10 +8,5 @@ function index()
 		return
 	end
 
-	local page
-
-	page = entry({"admin", "system", "webadmin"}, cbi("webadmin"), _("Web Admin"), 1)
-	page.leaf = true
-	page.acl_depends = { "luci-app-webadmin" }
+	entry({"admin", "system", "webadmin"}, cbi("webadmin"), _("Web Admin"), 1).leaf = true
 end
-
