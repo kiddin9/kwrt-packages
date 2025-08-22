@@ -8,7 +8,7 @@ PKG_NAME:=einat-ebpf
 PKG_UPSTREAM_VERSION:=0.1.9
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=50
+PKG_RELEASE:=51
 
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_UPSTREAM_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
@@ -55,7 +55,9 @@ include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
 
 # Don't ignore Cargo.lock
-Build/Compile:=$(call Build/Compile/Cargo,,--locked)
+ifeq ($(shell grep -o 'RUST_PKG_LOCKED' $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk 2>/dev/null),)
+	Build/Compile:=$(call Build/Compile/Cargo,,--locked)
+endif
 
 # The LLVM_PATH var is required so that einat's build script finds llvm-strip
 TARGET_PATH_PKG:=$(LLVM_PATH):$(TARGET_PATH_PKG)
