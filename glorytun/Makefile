@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2015 OVH
-# Copyright (C) 2017-2019 Ycarus (Yannick Chabanois) <ycarus@zugaina.org>
+# Copyright (C) 2017-2025 Ycarus (Yannick Chabanois) <ycarus@zugaina.org>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glorytun
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=203c5f2223d7d5146d659b51159b2f02c2480d15
 PKG_SOURCE:=glorytun-$(PKG_VERSION).tar.gz
@@ -17,7 +17,6 @@ PKG_SOURCE_URL:=https://github.com/Ysurac/glorytun.git
 PKG_VERSION:=0.0.35
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=LICENSE
-PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -34,10 +33,18 @@ define Package/$(PKG_NAME)/description
  A small, simple and secure VPN
 endef
 
-TARGET_CFLAGS += -std=c99 -D_GNU_SOURCE
+# not everything groks --disable-nls
+DISABLE_NLS:=
+TARGET_CFLAGS += -std=c17 -D_GNU_SOURCE
 
 define Package/$(PKG_NAME)/conffiles
 /etc/config/glorytun
+endef
+
+define Build/Configure
+	cd $(PKG_BUILD_DIR); \
+		$(AM_TOOL_PATHS) ./bootstrap.sh
+	$(call Build/Configure/Default)
 endef
 
 define Package/$(PKG_NAME)/install

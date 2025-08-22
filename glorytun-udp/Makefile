@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2015 OVH
-# Copyright (C) 2018-2020 Ycarus (Yannick Chabanois) <ycarus@zugaina.org> for OpenMPTCProuter project
+# Copyright (C) 2018-2025 Ycarus (Yannick Chabanois) <ycarus@zugaina.org> for OpenMPTCProuter project
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,15 +9,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/angt/glorytun.git
-PKG_SOURCE_VERSION:=32267e86a6da05b285bb3bf2b136c105dc0af4bb
+PKG_SOURCE_URL:=https://github.com/ysurac/glorytun.git
+PKG_SOURCE_VERSION:=203c5f2223d7d5146d659b51159b2f02c2480d15
 PKG_NAME:=glorytun-udp
 PKG_VERSION:=0.3.4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_FIXUP:=autoreconf
+#PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -41,6 +41,19 @@ define Build/Prepare
 	$(call Build/Prepare/Default)
 	echo "$(PKG_VERSION)" > $(PKG_BUILD_DIR)/VERSION
 endef
+
+define Build/Configure
+	cd $(PKG_BUILD_DIR); \
+	    $(AM_TOOL_PATHS) ./bootstrap.sh
+	$(call Build/Configure/Default)
+endef
+
+#define Build/Configure
+#	( cd $(PKG_BUILD_DIR); autoupdate; aclocal; libtoolize; autoreconf; );
+#	$(call Build/Configure/Default)
+#endef
+
+
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/sbin
