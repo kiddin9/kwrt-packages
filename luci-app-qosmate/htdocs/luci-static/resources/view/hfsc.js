@@ -6,6 +6,82 @@
 'require rpc';
 'require fs';
 
+// Helper function to add relevance info to descriptions
+function addRelevanceInfo(description, settingName, rootQdisc, gameqdisc) {
+    var isRelevant = true;
+    var note = '';
+    
+    // Check basic ROOT_QDISC relevance
+    if (rootQdisc !== 'hfsc' && rootQdisc !== 'hybrid') {
+        isRelevant = false;
+        note = ' ⚠ Not used with ' + rootQdisc.toUpperCase();
+    } else {
+        // Check gameqdisc-specific dependencies
+        var gameqdiscDependencies = {
+            'netem': ['netemdelayms', 'netemjitterms', 'netemdist', 'netem_direction', 'pktlossp'],
+            'pfifo': ['PFIFOMIN', 'PACKETSIZE'], // PFIFO-specific settings
+            // MAXDEL is used by multiple qdiscs, so handle separately
+        };
+        
+        // Settings that are used by multiple gameqdiscs
+        var multiGameqdiscSettings = {
+            'MAXDEL': ['red', 'pfifo', 'bfifo', 'drr', 'qfq'] // Used for burst/limit calculations
+        };
+        
+        // Check if setting is gameqdisc-specific
+        var isGameqdiscSpecific = false;
+        var requiredGameqdisc = '';
+        var supportedGameqdiscs = [];
+        
+        // Check single-gameqdisc dependencies
+        for (var qdisc in gameqdiscDependencies) {
+            if (gameqdiscDependencies[qdisc].includes(settingName)) {
+                isGameqdiscSpecific = true;
+                if (qdisc !== gameqdisc) {
+                    isRelevant = false;
+                    requiredGameqdisc = qdisc;
+                }
+                break;
+            }
+        }
+        
+        // Check multi-gameqdisc settings
+        if (!isGameqdiscSpecific && multiGameqdiscSettings[settingName]) {
+            supportedGameqdiscs = multiGameqdiscSettings[settingName];
+            isGameqdiscSpecific = true;
+            if (!supportedGameqdiscs.includes(gameqdisc)) {
+                isRelevant = false;
+            }
+        }
+        
+        // Check hybrid-specific settings
+        if (rootQdisc === 'hybrid') {
+            if (settingName === 'nongameqdisc' || settingName === 'nongameqdiscoptions') {
+                isRelevant = false;
+                note = ' ⚠ Hybrid mode uses CAKE for default class and fq_codel for bulk traffic';
+            }
+        }
+        
+        // Generate appropriate note
+        if (isRelevant) {
+            if (isGameqdiscSpecific) {
+                note = ' ✓ Active for ' + rootQdisc.toUpperCase() + ' + ' + gameqdisc.toUpperCase();
+            } else {
+                note = ' ✓ Active for ' + rootQdisc.toUpperCase();
+            }
+        } else {
+            if (requiredGameqdisc) {
+                note = ' ⚠ Only relevant for ' + requiredGameqdisc.toUpperCase() + ' gameqdisc';
+            } else if (supportedGameqdiscs.length > 0) {
+                var gameqdiscList = supportedGameqdiscs.map(function(q) { return q.toUpperCase(); }).join(', ');
+                note = ' ⚠ Only relevant for ' + gameqdiscList + ' gameqdisc' + (supportedGameqdiscs.length > 1 ? 's' : '');
+            }
+        }
+    }
+    
+    return description + note;
+}
+
 var callInitAction = rpc.declare({
     object: 'luci',
     method: 'setInitAction',
@@ -37,12 +113,26 @@ return view.extend({
     },
 
     render: function() {
-        var m, s, o;
+        return Promise.all([
+            uci.load('qosmate')
+        ]).then(() => {
+            var m, s, o;
+            var rootQdisc = uci.get('qosmate', 'settings', 'ROOT_QDISC') || 'hfsc';
+            var gameqdisc = uci.get('qosmate', 'hfsc', 'gameqdisc') || 'pfifo';
 
-        m = new form.Map('qosmate', _('QoSmate HFSC Settings'), _('Configure HFSC settings for QoSmate.'));
+            var relevanceText = '';
+            if (rootQdisc === 'hfsc') {
+                relevanceText = _('HFSC mode active.');
+            } else if (rootQdisc === 'hybrid') {
+                relevanceText = _('Hybrid mode - these settings control realtime traffic (high priority class).');
+            } else {
+                relevanceText = _('Current Root QDisc is %s - HFSC settings are not used.').format(rootQdisc.toUpperCase());
+            }
 
-        s = m.section(form.NamedSection, 'hfsc', 'hfsc', _('HFSC Settings'));
-        s.anonymous = true;
+            m = new form.Map('qosmate', _('QoSmate HFSC Settings'), _('Configure HFSC settings for QoSmate.') + ' ' + relevanceText);
+
+            s = m.section(form.NamedSection, 'hfsc', 'hfsc', _('HFSC Settings'));
+            s.anonymous = true;
 
         function createOption(name, title, description, placeholder, datatype) {
             var opt = s.option(form.Value, name, title, description);
@@ -57,10 +147,15 @@ return view.extend({
                     return true;
                 };
             }
+            
+            // Add relevance info to description
+            opt.description = addRelevanceInfo(description, name, rootQdisc, gameqdisc);
+            
             return opt;
         }
 
-        o = s.option(form.ListValue, 'gameqdisc', _('Game Queue Discipline'), _('Queueing method for traffic classified as realtime'));
+        o = s.option(form.ListValue, 'gameqdisc', _('Game Queue Discipline'), 
+            addRelevanceInfo(_('Queueing method for traffic classified as realtime'), 'gameqdisc', rootQdisc, gameqdisc));
         o.value('pfifo', _('PFIFO'));
         o.value('fq_codel', _('FQ_CODEL'));
         o.value('bfifo', _('BFIFO'));
@@ -71,7 +166,8 @@ return view.extend({
         createOption('GAMEUP', _('Game Upload (kbps)'), _('Bandwidth reserved for realtime upload traffic'), _('Default: 15% of UPRATE + 400'), 'uinteger');
         createOption('GAMEDOWN', _('Game Download (kbps)'), _('Bandwidth reserved for realtime download traffic'), _('Default: 15% of DOWNRATE + 400'), 'uinteger');
 
-        o = s.option(form.ListValue, 'nongameqdisc', _('Non-Game Queue Discipline'), _('Select the queueing discipline for non-realtime traffic'));
+        o = s.option(form.ListValue, 'nongameqdisc', _('Non-Game Queue Discipline'), 
+            addRelevanceInfo(_('Select the queueing discipline for non-realtime traffic'), 'nongameqdisc', rootQdisc, gameqdisc));
         o.value('fq_codel', _('FQ_CODEL'));
         o.value('cake', _('CAKE'));
         o.default = 'fq_codel';
@@ -83,14 +179,16 @@ return view.extend({
         createOption('netemdelayms', _('NETEM Delay (ms)'), _('NETEM delay in milliseconds'), _('Default: 30'), 'uinteger');
         createOption('netemjitterms', _('NETEM Jitter (ms)'), _('NETEM jitter in milliseconds'), _('Default: 7'), 'uinteger');
 
-        o = s.option(form.ListValue, 'netem_direction', _('NETEM Direction'), _('Select which direction to apply the NETEM delay/jitter settings'));
+        o = s.option(form.ListValue, 'netem_direction', _('NETEM Direction'), 
+            addRelevanceInfo(_('Select which direction to apply the NETEM delay/jitter settings'), 'netem_direction', rootQdisc, gameqdisc));
         o.depends('gameqdisc', 'netem');
         o.value('both', _('Both Directions'));
         o.value('egress', _('Egress Only'));
         o.value('ingress', _('Ingress Only'));
-        o.default = 'both';     
+        o.default = 'both';
         
-        o = s.option(form.ListValue, 'netemdist', _('NETEM Distribution'), _('NETEM delay distribution'));
+        o = s.option(form.ListValue, 'netemdist', _('NETEM Distribution'), 
+            addRelevanceInfo(_('NETEM delay distribution'), 'netemdist', rootQdisc, gameqdisc));
         o.value('experimental', _('Experimental'));
         o.value('normal', _('Normal'));
         o.value('pareto', _('Pareto'));
@@ -100,5 +198,6 @@ return view.extend({
         createOption('pktlossp', _('Packet Loss Percentage'), _('Percentage of packet loss'), _('Default: none'));
 
         return m.render();
+        });
     }
 });

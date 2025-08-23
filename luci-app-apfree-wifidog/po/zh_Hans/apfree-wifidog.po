@@ -238,6 +238,9 @@ msgstr "高级设置"
 msgid "Long Connection Settings"
 msgstr "长连接设置"
 
+msgid "Auth Server Settings"
+msgstr "认证服务器设置"
+
 msgid "Rule Settings"
 msgstr "规则设置"
 
@@ -1557,3 +1560,12 @@ msgstr "分钟"
 
 msgid "s"
 msgstr "秒"
+
+msgid "Authentication Server"
+msgstr "认证服务器"
+
+msgid "Select the authentication server to use for cloud authentication."
+msgstr "选择用于云认证的认证服务器"
+
+msgid "Please create an authentication server first"
+msgstr "请先创建认证服务器"

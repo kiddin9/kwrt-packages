@@ -745,13 +745,48 @@ return view.extend({
         createOption('DOWNRATE', _('Download Rate (kbps)'), _('Set the download rate in kbps'), _('Default: 90000'), 'uinteger');
         createOption('UPRATE', _('Upload Rate (kbps)'), _('Set the upload rate in kbps'), _('Default: 45000'), 'uinteger');
         
-        o = s_basic.option(form.ListValue, 'ROOT_QDISC', _('Root Queueing Discipline'), _('Select the root queueing discipline'));
+        // Function to get QDisc description based on value
+        function getQdiscDescriptionForValue(value) {
+            switch(value) {
+                case 'hfsc':
+                    return _('HFSC - Hierarchical Fair Service Curve. Configure realtime traffic settings in the HFSC tab.');
+                case 'cake':
+                    return _('CAKE - Common Applications Kept Enhanced. Configure CAKE-specific parameters in the CAKE tab.');
+                case 'hybrid':
+                    return _('Hybrid - Combines HFSC for realtime traffic with CAKE for default traffic and fq_codel for bulk traffic. Configure realtime settings in HFSC tab and default traffic settings in CAKE tab.');
+                case 'htb':
+                    return _('HTB - Hierarchical Token Bucket. Simple 3-tier priority system with pre-configured settings - no additional qdisc configuration required.');
+                default:
+                    return _('Select the root queueing discipline');
+            }
+        }
+        
+        // Get description for current value
+        function getQdiscDescription() {
+            var rootQdisc = uci.get('qosmate', 'settings', 'ROOT_QDISC') || 'hfsc';
+            return getQdiscDescriptionForValue(rootQdisc);
+        }
+
+        o = s_basic.option(form.ListValue, 'ROOT_QDISC', _('Root Queueing Discipline'), getQdiscDescription());
         o.value('hfsc', _('HFSC'));
         o.value('cake', _('CAKE'));
         o.value('hybrid', _('Hybrid'));
         o.value('htb', _('HTB (Experimental)'));
         o.default = 'hfsc';
         o.onchange = function(ev, section_id, value) {
+            // Update description dynamically using shared function
+            var newDescription = getQdiscDescriptionForValue(value);
+            
+            // Find and update the description element
+            var node = ev.target.closest('.cbi-value');
+            if (node) {
+                var descNode = node.querySelector('.cbi-value-description');
+                if (descNode) {
+                    descNode.textContent = newDescription;
+                }
+            }
+            
+            // Update dependent fields
             var downrate = this.map.lookupOption('DOWNRATE', section_id)[0];
             var uprate = this.map.lookupOption('UPRATE', section_id)[0];
             if (downrate && uprate) {
