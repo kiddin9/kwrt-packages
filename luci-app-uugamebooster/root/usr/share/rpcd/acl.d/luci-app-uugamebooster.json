@@ -2,10 +2,13 @@
 	"luci-app-uugamebooster": {
 		"description": "Grant UCI access for luci-app-uugamebooster",
 		"read": {
-			"uci": [ "uuplugin" ]
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"uci": [ "uugamebooster" ]
 		},
 		"write": {
-			"uci": [ "uuplugin" ]
+			"uci": [ "uugamebooster" ]
 		}
 	}
 }
