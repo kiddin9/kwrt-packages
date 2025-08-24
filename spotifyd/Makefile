@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=spotifyd
 PKG_VERSION:=0.4.1
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Spotifyd/spotifyd/tar.gz/v$(PKG_VERSION)?
@@ -22,8 +22,9 @@ define Package/spotifyd
   SECTION:=sound
   CATEGORY:=Sound
   TITLE:=A spotify daemon
-  DEPENDS:=$(RUST_ARCH_DEPENDS) @(!arm||TARGET_bcm53xx||HAS_FPU) @!(mips||mipsel) +alsa-lib
+  DEPENDS:=$(RUST_ARCH_DEPENDS) @(!arm||TARGET_bcm53xx||HAS_FPU) @!(i386||mips||mipsel) +alsa-lib
   URL:=https://spotifyd.rs/
+  USERID:=spotifyd:spotifyd
 endef
 
 define Package/spotifyd/description
@@ -47,6 +48,8 @@ define Package/spotifyd/install
 	$(INSTALL_CONF) $(CURDIR)/files/spotifyd.config $(1)/etc/config/spotifyd
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) $(CURDIR)/files/spotifyd.init $(1)/etc/init.d/spotifyd
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) $(CURDIR)/files/spotifyd.uci $(1)/etc/uci-defaults/99-spotifyd-migration
 endef
 
 $(eval $(call RustBinPackage,spotifyd))
