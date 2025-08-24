@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hickory-dns
 PKG_VERSION:=2025.07.31
-PKG_RELEASE:=40
+PKG_RELEASE:=41
 
 HICKORY_COMMIT:=1bb22495264f6e3bd873a01fc0eaba8911ae1650
 
@@ -12,7 +12,7 @@ PKG_HASH:=skip
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-1bb22495264f6e3bd873a01fc0eaba8911ae1650
 
-PKG_BUILD_DEPENDS:=rust/host
+PKG_BUILD_DEPENDS:=rust/host 
 PKG_BUILD_PARALLEL:=1
 
 RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,sqlite,prometheus-metrics
