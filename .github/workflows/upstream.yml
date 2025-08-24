@@ -493,6 +493,7 @@ jobs:
         echo "#page>div:first-child{display:none}
         button.btn_styles.color1:last-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
         sed -i 's/+php8-cgi /+php8-cgi +php8-fastcgi /' luci-theme-spectra/Makefile
+        sed -i 's/rust\/host/rust\/host /' */Makefile
 
         while [[ ! -f /tmp/ok || ! -f /tmp/ok2 || ! -f /tmp/ok3 ]]; do
             echo "wait"
