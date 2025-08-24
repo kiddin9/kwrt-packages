@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dufs
 PKG_VERSION:=0.44.0
-PKG_RELEASE:=11
+PKG_RELEASE:=12
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/sigoden/dufs/tar.gz/v$(PKG_VERSION)?
@@ -16,7 +16,7 @@ PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 PKG_LICENSE:=Apache-2.0 MIT
 PKG_LICENSE_FILES:=LICENSE-APACHE LICENSE-MIT
 
-PKG_BUILD_DEPENDS:=rust/host 
+PKG_BUILD_DEPENDS:=rust/host
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk

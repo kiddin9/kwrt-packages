@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aliyundrive-webdav
 PKG_VERSION:=2.3.3
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -18,7 +18,7 @@ PKG_MIRROR_HASH:=skip
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=messense <messense@icloud.com>
 
-PKG_BUILD_DEPENDS:=rust/host 
+PKG_BUILD_DEPENDS:=rust/host
 
 RUST_PKG_FEATURES:=rustls-tls atomic64 native-tls native-tls-vendored
 
