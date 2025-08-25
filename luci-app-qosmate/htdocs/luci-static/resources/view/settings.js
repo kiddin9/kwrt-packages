@@ -184,7 +184,9 @@ return view.extend({
     render: function() {
         var m, s_info, s_status, o;
 
-        m = new form.Map('qosmate', _(''), _(''));
+        m = new form.Map('qosmate', _(''), 
+            _('For detailed setup instructions and advanced configuration options, please check the ') + 
+            '<a href="https://github.com/hudra0/qosmate/blob/main/README.md" target="_blank" style="color: #1976d2; text-decoration: none;">README</a>.');
 
         s_info = m.section(form.NamedSection, 'global', 'global', _('Version & Updates'));
         s_info.anonymous = true;
@@ -753,7 +755,7 @@ return view.extend({
                 case 'cake':
                     return _('CAKE - Common Applications Kept Enhanced. Configure CAKE-specific parameters in the CAKE tab.');
                 case 'hybrid':
-                    return _('Hybrid - Combines HFSC for realtime traffic with CAKE for default traffic and fq_codel for bulk traffic. Configure realtime settings in HFSC tab and default traffic settings in CAKE tab.');
+                    return _('Hybrid - HFSC as shaper, Game Qdisc for realtime traffic, CAKE for default traffic and fq_codel for bulk traffic. Configure realtime class settings in HFSC tab and default class settings in CAKE tab.');
                 case 'htb':
                     return _('HTB - Hierarchical Token Bucket. Simple 3-tier priority system with pre-configured settings - no additional qdisc configuration required.');
                 default:

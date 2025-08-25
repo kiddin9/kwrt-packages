@@ -42,7 +42,9 @@ return view.extend({
         m = new form.Map('qosmate', _('QoSmate Advanced Settings'), _('Configure advanced settings for QoSmate.'));
 
         // Link Layer Settings
-        s = m.section(form.NamedSection, 'advanced', 'advanced', _('Link Layer Settings'));
+        s = m.section(form.NamedSection, 'advanced', 'advanced', _('Link Layer Settings'), 
+            _('Configure link layer adaptation settings. For detailed information about different link types and overhead calculations, please check the ') + 
+            '<a href="https://openwrt.org/docs/guide-user/network/traffic-shaping/sqm-details" target="_blank" style="color: #1976d2; text-decoration: none;">OpenWrt SQM Documentation</a>.');
         s.anonymous = true;
         
         o = s.option(form.ListValue, 'COMMON_LINK_PRESETS', _('Link Type'), 
