@@ -5,8 +5,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-internet-detector
-PKG_VERSION:=1.6.2
-PKG_RELEASE:=20
+PKG_VERSION:=1.6.3
+PKG_RELEASE:=21
 LUCI_TITLE:=LuCI support for internet-detector
 LUCI_DEPENDS:=+internet-detector
 LUCI_PKGARCH:=all
