@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trojan-plus
 PKG_VERSION:=10.0.3
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/peter-tank/trojan-plus.git
@@ -60,7 +60,7 @@ define Package/trojan-plus
 	DEPENDS:= \
 		+libpthread +libstdcpp +libopenssl \
 		+boost +boost-program_options \
-		$(if $(filter y,$(BOOST_SYSTEM)),,+boost-system)
+		$(if $(filter y,$(NEED_BOOST_SYSTEM)),,+boost-system)
 endef
 
 define Package/trojan-plus/install

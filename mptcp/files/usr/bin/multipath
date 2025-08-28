@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Update the MP-TCP flags without the pached iproute2
+# Update the MPTCP flags with or without the pached iproute2
 #
 # Author: Mario Krueger <openwrt at xedp3x.de>
 #	  Ycarus (Yannick Chabanois) for OpenMPTCProuter <contact@openmptcprouter.com>
@@ -31,11 +31,13 @@ case $1 in
         echo "show fullmesh info: -f"
         echo "show kernel config: -k"
         echo "show MPTCP info: -m"
+        if [ -f /proc/sys/net/mptcp/enabled ]; then
+		echo "verify MPTCP interface: -v device"
+        fi
         echo
         echo "Flag on the device, to enable/disable MPTCP for this interface. The backup-flag"
         echo "will allow a subflow to be established across this interface, but only be used"
-        echo "as backup. Handover-flag indicates that his interface is not used at all (even "
-        echo "no subflow being established), as long as there are other interfaces available."
+        echo "as backup."
         echo
         exit 0 ;;
    "-c")
@@ -84,6 +86,28 @@ case $1 in
 	    nstat -z | grep -i mptcp
 	fi
         exit 0 ;;
+   "-v")
+	if [ -f /proc/sys/net/mptcp/enabled ]; then
+		DEVICE="$2"
+		endpoint="$(ip mptcp endpoint show)"
+		if [ -f /usr/bin/jsonfilter ]; then
+			IP=$(ip -j a show $DEVICE scope global | jsonfilter -e '@[0].addr_info[*].local')
+		elif [ -f /usr/bin/jq ]; then
+			IP=$(ip -j a show $DEVICE scope global  | jq -r '.[0].addr_info[].local')
+		else
+			echo "jsonfilter or jq are required"
+			exit 1
+		fi
+		[ -n "$IP" ] && [ -n "$endpoint" ] && ID=$(echo "${endpoint}" show | grep "$IP " | awk '{print $3}')
+	fi
+	if [ -n "$ID" ]; then
+		echo "OK"
+		exit 0
+	else
+		echo "NOK"
+		exit 1
+	fi
+	;;
    "")
         for ifpath in /sys/class/net/*; do
                 $0 ${ifpath##*/}

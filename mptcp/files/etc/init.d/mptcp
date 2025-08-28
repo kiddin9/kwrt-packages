@@ -625,15 +625,16 @@ start_service() {
 		config_foreach add_route route
 		config_foreach add_route6 route6
 		[ -z "$intf" ] && set_multipath
-	fi
-	# If no master is defined, one interface is defined as master
-	if [ "$master" = "" ] && [ "$intf" = "" ]; then
-		intfmaster="$mptcpmintf"
-		[ "$intfmaster" != "" ] && {
-			logger -t "MPTCP" "No master multipath defined, setting it to $intfmaster"
-			uci -q set network.${intfmaster}.multipath="master"
-			uci -q set openmptcprouter.${intfmaster}.multipath="master"
-		}
+	
+		# If no master is defined, one interface is defined as master
+		if [ "$master" = "" ] && [ -z "$intf" ]; then
+			intfmaster="$mptcpmintf"
+			[ "$intfmaster" != "" ] && [ "$(uci -q show network | grep \"multipath='master'\")" ] && {
+				logger -t "MPTCP" "No master multipath defined, setting it to $intfmaster"
+				uci -q set network.${intfmaster}.multipath="master"
+				uci -q set openmptcprouter.${intfmaster}.multipath="master"
+			}
+		fi
 	fi
 	[ -n "$(uci -q changes network)" ] && uci -q commit network
 	[ -n "$(uci -q changes openmptcprouter)" ] && uci -q commit openmptcprouter
