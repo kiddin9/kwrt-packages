@@ -220,11 +220,18 @@ return view.extend({
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.ListValue, 'mieru_multiplexing', _('Multiplexing'));
+		so.default = 'MULTIPLEXING_LOW';
 		so.value('MULTIPLEXING_OFF');
 		so.value('MULTIPLEXING_LOW');
 		so.value('MULTIPLEXING_MIDDLE');
 		so.value('MULTIPLEXING_HIGH');
-		so.default = 'MULTIPLEXING_LOW';
+		so.depends('type', 'mieru');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.ListValue, 'mieru_handshake_mode', _('Handshake mode'));
+		so.default = 'HANDSHAKE_STANDARD';
+		so.value('HANDSHAKE_STANDARD');
+		so.value('HANDSHAKE_NO_WAIT');
 		so.depends('type', 'mieru');
 		so.modalonly = true;
 
@@ -268,6 +275,7 @@ return view.extend({
 
 		so = ss.taboption('field_general', form.ListValue, 'tuic_udp_relay_mode', _('UDP relay mode'),
 			_('UDP packet relay mode.'));
+		so.default = 'native';
 		so.value('native', _('Native'));
 		so.value('quic', _('QUIC'));
 		so.depends({type: 'tuic', tuic_udp_over_stream: '0'});
@@ -409,6 +417,10 @@ return view.extend({
 		so.value('packetaddr', _('packet addr (v2ray-core v5+)'));
 		so.value('xudp', _('Xudp (Xray-core)'));
 		so.depends({type: /^(vmess|vless)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'vless_encryption', _('encryption'));
+		so.depends('type', 'vless');
 		so.modalonly = true;
 
 		/* WireGuard fields */
