@@ -11,7 +11,7 @@ PKG_ARCH_quickstart:=$(ARCH)
 
 PKG_NAME:=quickstart
 PKG_VERSION:=0.11.3
-PKG_RELEASE:=23
+PKG_RELEASE:=24
 PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/linkease/istore-packages/releases/download/prebuilt/
 PKG_HASH:=skip
@@ -69,6 +69,8 @@ define Package/$(PKG_NAME)/install
 	$(LN) /usr/sbin/quickstart $(1)/usr/sbin/startdhns
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_BIN) ./files/startdhns.hotplug $(1)/etc/hotplug.d/iface/21-startdhns
+	$(INSTALL_DIR) $(1)/usr/share/quickstart
+	$(INSTALL_DATA) ./files/manuf $(1)/usr/share/quickstart/manuf
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
