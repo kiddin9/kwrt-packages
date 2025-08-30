@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trojan
 PKG_VERSION:=1.16.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/trojan-gfw/trojan/tar.gz/v$(PKG_VERSION)?
@@ -23,6 +23,7 @@ PKG_MAINTAINER:=GreaterFire
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
+include ./boost-version.mk
 
 TARGET_CXXFLAGS += -Wall -Wextra
 TARGET_CXXFLAGS += $(FPIC)
@@ -57,7 +58,8 @@ define Package/trojan
   URL:=https://github.com/trojan-gfw/trojan
   DEPENDS:= \
     +libpthread +libstdcpp +libopenssl \
-    +boost +boost-system +boost-program_options +boost-date_time
+    +boost +boost-program_options +boost-date_time \
+    $(if $(filter y,$(NEED_BOOST_SYSTEM)),,+boost-system)
 endef
 
 define Package/trojan/install
