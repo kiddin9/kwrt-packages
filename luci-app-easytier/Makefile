@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_VERSION:=2.4.3
-PKG_RELEASE:=46
+PKG_RELEASE:=47
 
 LUCI_TITLE:=LuCI support for EasyTier
 LUCI_DEPENDS:=+kmod-tun +easytier +luci-compat
