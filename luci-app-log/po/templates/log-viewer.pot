@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-msgid "Alert"
+msgid "<code>!pattern</code> - entries that do not match the pattern."
 msgstr ""
 
 msgid "All"
@@ -13,16 +13,13 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-msgid "Apply message filter as regular expression"
-msgstr ""
-
-msgid "Apply timestamp filter as regular expression"
+msgid "Apply pattern as regular expression"
 msgstr ""
 
 msgid "Auto refresh"
 msgstr ""
 
-msgid "Convert timestamps to a human readable date"
+msgid "Convert timestamps to a human readable date."
 msgstr ""
 
 msgid "Date"
@@ -44,9 +41,6 @@ msgid "Facility"
 msgstr ""
 
 msgid "Facilities"
-msgstr ""
-
-msgid "Filter is regexp"
 msgstr ""
 
 msgid "Filter settings"

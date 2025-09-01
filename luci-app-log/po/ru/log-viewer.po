@@ -11,8 +11,8 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.0.6\n"
 
-msgid "Alert"
-msgstr ""
+msgid "<code>!pattern</code> - entries that do not match the pattern."
+msgstr "<code>!шаблон</code> - записи не совпадающие с шаблоном."
 
 msgid "All"
 msgstr "Все"
@@ -23,17 +23,14 @@ msgstr "Все записи"
 msgid "Apply"
 msgstr "Применить"
 
-msgid "Apply message filter as regular expression"
-msgstr "Применять фильтр сообщений как регулярное выражение"
-
-msgid "Apply timestamp filter as regular expression"
-msgstr "Применять фильтр даты как регулярное выражение"
+msgid "Apply pattern as regular expression"
+msgstr "Применять фильтр как регулярное выражение"
 
 msgid "Auto refresh"
 msgstr "Автообновление"
 
-msgid "Convert timestamps to a human readable date"
-msgstr "Конвертировать временные метки в удобочитаемую дату"
+msgid "Convert timestamps to a human readable date."
+msgstr "Конвертировать временные метки в удобочитаемую дату."
 
 msgid "Date"
 msgstr "Дата"
@@ -55,9 +52,6 @@ msgstr "Категория"
 
 msgid "Facilities"
 msgstr "Категории"
-
-msgid "Filter is regexp"
-msgstr "Фильтр - рег.выражение"
 
 msgid "Filter settings"
 msgstr "Настройки фильтра"
