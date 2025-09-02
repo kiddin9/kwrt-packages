@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lcdsimple
 PKG_VERSION:=1.0.3
-PKG_RELEASE:=12
+PKG_RELEASE:=13
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -21,10 +21,9 @@ define Package/$(PKG_NAME)/description
 	Simple monitor screen
 endef
 
-MAKE_FLAGS += \
-	FPIC="$(FPIC)" \
-	CFLAGS="$(TARGET_CFLAGS) -I./ -I$(STAGING_DIR)/usr/include/freetype2" \
-	LDFLAGS="$(TARGET_LDFLAGS) -lfreetype" \
+TARGET_CFLAGS += -I./ -I"$(STAGING_DIR)/usr/include/freetype2"
+TARGET_LDFLAGS += -lfreetype -ldrm
+MAKE_FLAGS += FPIC="$(FPIC)"
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/sbin $(1)/usr/share/lcdsimple/assets $(1)/etc/config $(1)/etc/init.d $(1)/etc/uci-defaults
