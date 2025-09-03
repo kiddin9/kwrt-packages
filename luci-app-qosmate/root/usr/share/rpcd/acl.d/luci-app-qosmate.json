@@ -4,7 +4,7 @@
         "read": {
             "ubus": {
                 "luci.qosmate": [ "getConntrackDSCP" ],
-                "luci.qosmate_stats": [ "getStats", "getHistoricalStats", "getRrdData" ],
+                "luci.qosmate_stats": [ "getStats", "getHistoricalStats", "getRrdData", "getRuleCounters" ],
                 "luci": [ "getInitList", "setInitAction", "getInitActionStatus", "exec" ]
             },
             "uci": [ "qosmate" ],

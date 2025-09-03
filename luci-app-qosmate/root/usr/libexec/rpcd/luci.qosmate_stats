@@ -84,8 +84,10 @@ get_stats() {
         priority_queue_egress=$(uci -q get qosmate.cake.PRIORITY_QUEUE_EGRESS || echo "diffserv4")
 
         # Extract the actual cake qdisc stats for UI compatibility
-        local cake_egress=$(echo "$cake_egress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
-        local cake_ingress=$(echo "$cake_ingress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local cake_egress
+        cake_egress=$(echo "$cake_egress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local cake_ingress
+        cake_ingress=$(echo "$cake_ingress_stats" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
 
         # Create final JSON output using jq to ensure proper escaping
         result=$(jq -n \
@@ -151,8 +153,10 @@ get_stats() {
         gameqdisc=$(uci -q get qosmate.hfsc.gameqdisc || echo "pfifo")
 
         # Extract the main HFSC qdisc objects for UI compatibility
-        local hfsc_egress=$(echo "$hfsc_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
-        local hfsc_ingress=$(echo "$hfsc_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local hfsc_egress
+        hfsc_egress=$(echo "$hfsc_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local hfsc_ingress
+        hfsc_ingress=$(echo "$hfsc_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
 
         # For hybrid mode, also extract CAKE statistics from the 1:13 classes
         local hybrid_cake_egress="{}"
@@ -224,8 +228,10 @@ get_stats() {
         debug_log "Ingress leaf qdiscs: $ingress_leaf_qdiscs"
         ingress_leaf_qdiscs=$(echo "$ingress_leaf_qdiscs" | jq -c '[.[] | select(.kind != "htb" and .parent != null)]' 2>/dev/null || echo "[]")
         
-        local htb_egress=$(echo "$htb_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
-        local htb_ingress=$(echo "$htb_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local htb_egress
+        htb_egress=$(echo "$htb_egress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
+        local htb_ingress
+        htb_ingress=$(echo "$htb_ingress_qdisc" | jq -c '.[0] // {}' 2>/dev/null || echo "{}")
         
         result=$(jq -n \
             --arg rq "$root_qdisc" \
@@ -282,24 +288,48 @@ get_rrd_data() {
     fi
 }
 
+# Function to get nftables rule counters for active rules
+get_rule_counters() {
+    local nft_output rules_json
+    nft_output=$(nft -j list table inet dscptag 2>/dev/null || echo '{"nftables":[]}')
+    
+    # Parse and aggregate rule counters by name (combine IPv4/IPv6)
+    rules_json=$(echo "$nft_output" | jq -c '
+        [.nftables[] | 
+         select(.rule != null and .rule.table == "dscptag") |
+         select(.rule.comment != null) |
+         select(.rule.comment | startswith("ipv4_") or startswith("ipv6_")) |
+         select(.rule.expr[]?.counter != null) |
+         .rule |
+         {
+             rule_name: (if .comment | startswith("ipv4_") then .comment[5:] elif .comment | startswith("ipv6_") then .comment[5:] else .comment end),
+             total_packets: (.expr[] | select(.counter != null) | .counter.packets // 0),
+             total_bytes: (.expr[] | select(.counter != null) | .counter.bytes // 0),
+             ipv4_packets: (if .comment | startswith("ipv4_") then (.expr[] | select(.counter != null) | .counter.packets // 0) else 0 end),
+             ipv6_packets: (if .comment | startswith("ipv6_") then (.expr[] | select(.counter != null) | .counter.packets // 0) else 0 end)
+         }] |
+        group_by(.rule_name) |
+        map({
+            rule_name: .[0].rule_name,
+            total_packets: (map(.total_packets) | add),
+            total_bytes: (map(.total_bytes) | add),
+            ipv4_packets: (map(.ipv4_packets) | add // 0),
+            ipv6_packets: (map(.ipv6_packets) | add // 0)
+        })
+    ' 2>/dev/null || echo "[]")
+    
+    jq -n --argjson rules "$rules_json" '{rule_counters: $rules}' 2>/dev/null || echo '{"rule_counters":[]}'
+}
+
 # Function to handle the call command
 handle_call() {
-    # Process input JSON
-    local input_json
-    input_json=$(cat)
-    debug_log "Input JSON: $input_json"
+    local method="$1"
     
-    # Extract method directly from the JSON
-    local method
-    method=$(echo "$input_json" | jsonfilter -e '@.method')
-    debug_log "Extracted method: $method"
+    # Read and discard input JSON (unused for current methods)
+    cat > /dev/null
     
-    # Handle empty method case
-    if [ -z "$method" ]; then
-        # Default to getStats if no method is specified
-        method="getStats"
-        debug_log "Using default method: $method"
-    fi
+    # Default to getStats if no method specified  
+    [ -z "$method" ] && method="getStats"
     
     # Process based on method
     case "$method" in
@@ -312,8 +342,10 @@ handle_call() {
         getRrdData)
             get_rrd_data
             ;;
+        getRuleCounters)
+            get_rule_counters
+            ;;
         *)
-            debug_log "Unknown method: $method"
             echo '{"error": "Method not found"}'
             ;;
     esac
@@ -323,10 +355,10 @@ handle_call() {
 case "$1" in
     list)
         # List available methods
-        echo '{"getStats": {}, "getHistoricalStats": {}, "getRrdData": {}}'
+        echo '{"getStats": {}, "getHistoricalStats": {}, "getRrdData": {}, "getRuleCounters": {}}'
         ;;
     call)
-        handle_call
+        handle_call "$2"
         ;;
     *)
         echo '{"error": "Invalid call"}'
