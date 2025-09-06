@@ -17,6 +17,7 @@
 		"write": {
 			"file": {
 				"/tmp/watchdog/*": [ "write" ]
+				"/usr/share/watchdog/api/*": [ "write" ]
 			},
 			"uci": [ "watchdog" ]
 		}
