@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qiyougamebooster
 PKG_VERSION:=1.2.0
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_LICENSE:=Proprietary
 PKG_MAINTAINER:=qiyouacc, Internet1235
@@ -16,7 +16,7 @@ define Package/$(PKG_NAME)
   SECTION:=net
   CATEGORY:=Network
   TITLE:=QiYou Game Booster
-  DEPENDS:=@(aarch64||arm||mips||mipsel||i386||x86_64) +kmod-tun +curl
+  DEPENDS:=@(aarch64||arm||mips||mipsel||i386||x86_64) +curl +ip-full +kmod-tun
   URL:=https://www.qiyou.cn
 endef
 
