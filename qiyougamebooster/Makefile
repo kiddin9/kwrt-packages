@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qiyougamebooster
 PKG_VERSION:=1.2.0
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_LICENSE:=Proprietary
 PKG_MAINTAINER:=qiyouacc, Internet1235
