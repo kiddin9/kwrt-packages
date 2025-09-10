@@ -337,10 +337,10 @@ jobs:
         net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
-        net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
-        net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder \
+        net/tinyportmapper net/tinyfecvpn net/nexttrace net/rustdesk-server net/tuic-server \
+        net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder \
         net/ps3netsrv net/brook net/q net/speedtest-cli \
-        net/vsftpd net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
+        net/vsftpd net/smartdns net/miniupnpd net/p910nd \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
         utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp utils/rhash utils/boltbrowser \
