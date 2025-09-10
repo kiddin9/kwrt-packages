@@ -189,7 +189,6 @@ jobs:
         git_clone https://github.com/yichya/luci-app-xray yichya && mv -f yichya/status ./luci-app-xray-status;mv -f yichya/core ./luci-app-xray;rm -rf yichya
         git_clone https://github.com/rafmilecki/luci-app-xjay
         # git_clone https://github.com/kiddin9/openwrt-thunder && mvdir openwrt-thunder
-        git_clone https://github.com/Internet1235/qy-openwrt && mvdir qy-openwrt
         ) &
         (
         git_clone https://github.com/honwen/luci-app-aliddns
@@ -354,7 +353,7 @@ jobs:
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
         multimedia/UnblockNeteaseMusic multimedia/aliyundrive-webdav net/gowebdav net/kismet net/mstpd \
         net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
-        net/uugamebooster net/pgyvpn net/ooniprobe net/polipo net/rosy-file-server \
+        net/uugamebooster net/pgyvpn net/ooniprobe net/polipo net/rosy-file-server net/qiyougamebooster \
         net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater net/verysync \
         net/vpnbypass net/vpn-policy-routing utils/qfirehose
         git_sparse_clone master "https://github.com/lunatickochiya/Matrix-Action-Openwrt" package/kochiya/brlaser package/kochiya/luci-app-banmac-ipt package/kochiya/luci-app-banmac-nft package/kochiya/luci-app-nvr package/kochiya/luci-app-openvpn-server package/kochiya/luci-app-openvpn-server-client
