@@ -333,17 +333,17 @@ jobs:
         git_clone https://github.com/tty228/luci-app-wechatpush
         ) &
         (
-        git_sparse_clone openwrt-24.10 "https://github.com/immortalwrt/packages" net/n2n net/dae \
+        git_sparse_clone master "https://github.com/immortalwrt/packages" net/n2n net/dae \
         net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
         net/tinyportmapper net/tinyfecvpn net/nexttrace net/pcap-dnsproxy net/rustdesk-server net/tuic-server \
         net/dns-forwarder net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder \
-        net/ps3netsrv net/brook net/q net/speedtest-cli net/tcping-simple \
+        net/ps3netsrv net/brook net/q net/speedtest-cli \
         net/vsftpd net/smartdns net/miniupnpd net/p910nd net/ddns-scripts \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 \
         libs/libdouble-conversion libs/qt6base libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
-        utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp utils/rhash \
+        utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp utils/rhash utils/boltbrowser \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench utils/pcat-mgr utils/fan2go \
         utils/coremark utils/watchcat utils/cgroupfs-mount multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice admin/gotop \
@@ -430,7 +430,7 @@ jobs:
              -H "Authorization: Bearer ${{ secrets.TOKEN_KIDDIN9 }}" \
              -X POST -d '{ "query": "query {repository(owner: \"'"$1"'\", name: \"'"$2"'\"){latestRelease{tagName tagCommit{oid}}refs(refPrefix:\"refs/tags/\",last:1,orderBy:{field:TAG_COMMIT_DATE,direction:ASC}){edges{node{name target{oid}}}}defaultBranchRef{target{...on Commit {oid}}}}}"}' https://api.github.com/graphql)
         }
-        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|filebrowser|glorytun|wxbase|3proxy|ucode|homebox|sub-web|tcptraceroute|systemtap|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|rustdesk-server|shadowsocksr-libev|tuic-server|joker|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
+        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|glorytun|wxbase|3proxy|ucode|homebox|sub-web|tcptraceroute|systemtap|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|rustdesk-server|shadowsocksr-libev|tuic-server|joker|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
           repo="$(grep ^PKG_SOURCE_URL $pkg | grep github | cut -f 4-5 -d '/' | sed -e 's/.git//' | grep -E '[0-9a-zA-Z_-]+$')" || true
           if [ "$repo" ]; then
             owner="$(echo $repo | cut -f 1 -d '/')"
