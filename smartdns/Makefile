@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smartdns
 PKG_VERSION:=46.1
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/pymumu/smartdns/tar.gz/Release$(PKG_VERSION)?
@@ -28,6 +28,7 @@ define Package/smartdns
   SECTION:=net
   CATEGORY:=Network
   TITLE:=smartdns server
+  SUBMENU:=IP Addresses and Names
   DEPENDS:=+libpthread +libopenssl
   URL:=https://www.github.com/pymumu/smartdns/
 endef
