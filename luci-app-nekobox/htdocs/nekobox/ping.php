@@ -49,6 +49,20 @@ function deleteNekoTmpDirectory($dir) {
     return rmdir($dir);
 }
 ?>
+
+<?php
+$singbox_autostart = exec("uci -q get neko.cfg.singbox_autostart") ?: '0';
+
+if (isset($_POST['save_autostart'])) {
+    $autostart = isset($_POST['autostart']) ? '1' : '0';
+    shell_exec("uci set neko.cfg.singbox_autostart='$autostart'");
+    shell_exec("uci commit neko");
+    writeToLog("Autostart setting changed to: $autostart");
+    echo "<div class='log-message alert alert-danger'><span data-translate='settingSaved'></span></div>";
+    $singbox_autostart = $autostart;
+}
+?>
+
 <style>
 .modal {
         opacity: 0;
@@ -548,6 +562,39 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<div class="modal fade" id="autostartModal" tabindex="-1" aria-labelledby="autostartModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <form method="post" class="no-loader">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="autostartModalLabel" data-translate="singboxAutostartTitle">
+            Sing-box Auto Start
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="autostart" id="autostart"
+                   <?php echo ($singbox_autostart === '1') ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="autostart">
+              <strong data-translate="enableAutostart">Enable Auto Start</strong>
+            </label>
+          </div>
+          <div class="mt-3">
+            <small class="text-muted" data-translate="autostartTip">
+              When checked, Sing-box will start automatically on router reboot (if Mihomo is not running)
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="cancel">Cancel</button>
+          <button type="submit" name="save_autostart" class="btn btn-primary" data-translate="saveButton">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="modal fade" id="portModal" tabindex="-1" aria-labelledby="portModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <form id="portForm" method="POST" action="./save_ports.php" class="modal-content">
@@ -960,6 +1007,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button class="ctrl-btn" id="updatePlaylistBtn" onclick="updatePlaylist()" 
                 data-tooltip="update_playlist">
             <i class="fa fa-sync-alt"></i>
+        </button>
+        <button class="ctrl-btn" id="goFirstBtn">
+          <i class="fas fa-circle-left"></i>
         </button>
         <button id="toggleFloatingLyricsBtn" class="ctrl-btn toggleFloatingLyricsBtn" data-tooltip="toggle_floating_lyrics">
             <i class="bi bi-display floatingIcon"></i>
@@ -3671,6 +3721,16 @@ document.addEventListener('keydown', function (event) {
             speakMessage(translations['clear_confirm'] || 'Are you sure you want to clear the configuration?');
             break;
     }
+});
+
+document.getElementById('goFirstBtn')?.addEventListener('click', function() {
+    if (currentTrackIndex !== 0) {
+        currentTrackIndex = 0;
+        loadTrack(songs[0]);
+    }
+    const message = translations['back_to_first'] || 'Returned to the first song in the playlist';
+    showLogMessage(message);
+    speakMessage(message);
 });
 </script>
 
