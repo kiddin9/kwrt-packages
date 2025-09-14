@@ -253,6 +253,15 @@ return view.extend({
 		o = s.option(form.Flag, 'enabled', _('Enable'));
 		o.default = o.enabled;
 		o.editable = true;
+		o.validate = function(section_id, value) {
+			return hm.validateCustomListIDs.call(this, [
+				['input', this.option],
+				['select', 'type'],
+				['select', 'behavior'],
+				['select', 'format'],
+				['textarea', '_editer']
+			], ...arguments);
+		}
 
 		o = s.option(form.ListValue, 'type', _('Type'));
 		o.value('file', _('Local'));
