@@ -199,7 +199,7 @@ jobs:
         git clone https://github.com/Ausaci/luci-app-nat6-helper -b main-dev
         ) &
         (
-        git_clone https://github.com/koshev-msk/modemfeed && mv -n modemfeed/*/!(telephony)/* ./ && rm -rf modemfeed 3proxy
+        git_clone https://github.com/koshev-msk/modemfeed && mv -n modemfeed/*/!(telephony)/* ./; rm -rf modemfeed 3proxy
         # git_clone https://github.com/zzsj0928/luci-app-pushbot
         git_clone https://github.com/shanglanxin/luci-app-homebridge
         git_clone https://github.com/ykxVK8yL5L/luci-app-synology synology && mv -n synology/luci-app-synology ./ && rm -rf synology
