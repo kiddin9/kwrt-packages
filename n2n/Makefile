@@ -1,142 +1,82 @@
+# SPDX-License-Identifer: GPL-3.0-only
 #
-# Copyright (C) 2021 - ntop.org and contributors
-#
+# Copyright (C) 2020 - ntop.org and contributors
+# Copyright (C) 2021-2022 ImmortalWrt.org
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=n2n
 PKG_VERSION:=3.0
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
-PKG_SOURCE_PROTO:=git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/ntop/n2n/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=skip
 
-# These are defaults for compiling without any environmental overrides
-# (eg, the github action calculates the correct overrides for each build)
-PKG_SOURCE_URL:=https://github.com/ntop/n2n
-PKG_SOURCE_VERSION:=66f557af97b9c2ad42537516101fd04df2639ef0
-PKG_MIRROR_HASH:=skip
-
-# Apply overrides from the build environment
-ifdef N2N_PKG_SOURCE_URL
-    PKG_SOURCE_URL:=$(N2N_PKG_SOURCE_URL)
-endif
-ifdef N2N_PKG_SOURCE_VERSION
-    PKG_SOURCE_VERSION:=66f557af97b9c2ad42537516101fd04df2639ef0
-endif
-ifdef N2N_PKG_VERSION
-    PKG_VERSION:=3.0
-endif
-
+PKG_LICENSE:=GPL-3.0
+PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Emanuele Faranda <faranda@ntop.org>
-PKG_LICENSE:=GPL3
-
-# autogen fix
-PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
-define Package/$(PKG_NAME)/default
+define Package/n2n/template
   SECTION:=net
   CATEGORY:=Network
+  SUBMENU:=VPN
   TITLE:=N2N Peer-to-peer VPN
   URL:=http://www.ntop.org/n2n
-  SUBMENU:=VPN
-  DEPENDS+=+libcap
+  DEPENDS:=+libopenssl +libpthread +libzstd
 endef
 
-define Package/n2n-edge
-  $(call Package/n2n/Default)
-  TITLE+= client (edge node)
-  DEPENDS+=+kmod-tun
+define Package/n2n
+  $(call Package/n2n/template)
+  DEPENDS+=+libcap +kmod-tun +resolveip
 endef
 
-define Package/n2n-supernode
-  $(call Package/n2n/Default)
-  TITLE+= server (supernode)
+define Package/n2n/description
+  This package contains client node and supernode for the N2N infrastructure.
 endef
 
-define Package/$(PKG_NAME)-tools
-  $(call Package/n2n/Default)
-  TITLE+= tools
+define Package/n2n/conffiles
+/etc/config/n2n
 endef
 
-define Package/$(PKG_NAME)-tests
-  $(call Package/n2n/Default)
-  TITLE+= benchmark
+define Package/n2n-utils
+  $(call Package/n2n/template)
+  DEPENDS+=+n2n +libpcap
 endef
 
-define Package/$(PKG_NAME)-edge/description
-The client node for the N2N infrastructure
+define Package/n2n-utils/description
+  This package contains extend utilities for the N2N infrastructure.
 endef
 
-define Package/$(PKG_NAME)-supernode/description
-The supernode for the N2N infrastructure
-endef
+CMAKE_OPTIONS+= \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DN2N_OPTION_USE_PTHREAD=ON \
+	-DN2N_OPTION_USE_OPENSSL=ON \
+	-DN2N_OPTION_USE_PCAPLIB=ON \
+	-DN2N_OPTION_USE_ZSTD=ON
 
-define Package/$(PKG_NAME)-tools/description
-Peer-to-peer N2N VPN, keygen, keyfile, sertificate creation tools
-endef
-
-define Package/$(PKG_NAME)-tests/description
-Peer-to-peer N2N VPN  benchmarks
-endef
-
-
-define Build/Configure
-	( cd $(PKG_BUILD_DIR); \
-	./autogen.sh; \
-	./configure )
-endef
-
-define Package/n2n-edge/conffiles
-/etc/n2n/edge.conf
-endef
-
-define Package/n2n-edge/install
+define Package/n2n/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/edge $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/edge $(1)/usr/bin/n2n-edge
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/supernode $(1)/usr/bin/n2n-supernode
+
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/n2n.config $(1)/etc/config/n2n
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/packages/openwrt/etc/init.d/edge $(1)/etc/init.d/edge
-	$(INSTALL_DIR) $(1)/etc/n2n
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/packages/etc/n2n/edge.conf.sample $(1)/etc/n2n/edge.conf
+	$(INSTALL_BIN) ./files/n2n.init $(1)/etc/init.d/n2n
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/n2n-migrate-conf.sh $(1)/etc/uci-defaults/50-n2n-migrate-conf
 endef
 
-define Package/n2n-supernode/conffiles
-/etc/n2n/supernode.conf
-endef
-
-define Package/n2n-supernode/install
+define Package/n2n-utils/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/supernode $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/packages/openwrt/etc/init.d/supernode $(1)/etc/init.d/supernode
-	$(INSTALL_DIR) $(1)/etc/n2n
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/packages/etc/n2n/supernode.conf.sample $(1)/etc/n2n/supernode.conf
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/n2n-benchmark $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/n2n-decode $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/n2n-keygen $(1)/usr/bin/
 endef
 
-define Package/$(PKG_NAME)-tools/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/n2n-benchmark \
-		$(PKG_BUILD_DIR)/tools/n2n-decode \
-		$(PKG_BUILD_DIR)/tools/n2n-keygen \
-		$(PKG_BUILD_DIR)/tools/n2n-portfwd \
-		$(PKG_BUILD_DIR)/tools/n2n-route \
-		$(1)/usr/bin/
-endef
-
-define Package/$(PKG_NAME)-tests/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/tests-auth \
-		$(PKG_BUILD_DIR)/tools/tests-compress \
-		$(PKG_BUILD_DIR)/tools/tests-elliptic \
-		$(PKG_BUILD_DIR)/tools/tests-hashing \
-		$(PKG_BUILD_DIR)/tools/tests-transform \
-		$(PKG_BUILD_DIR)/tools/tests-wire \
-		$(1)/usr/bin/
-endef
-
-$(eval $(call BuildPackage,$(PKG_NAME)-supernode))
-$(eval $(call BuildPackage,$(PKG_NAME)-edge))
-$(eval $(call BuildPackage,$(PKG_NAME)-tools))
-$(eval $(call BuildPackage,$(PKG_NAME)-tests))
+$(eval $(call BuildPackage,n2n))
+$(eval $(call BuildPackage,n2n-utils))
