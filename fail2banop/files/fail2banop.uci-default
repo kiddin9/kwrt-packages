@@ -1,0 +1,26 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-fail2banop.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-fail2banop.json << EEOF
+{
+    "config": "fail2banop",
+    "init": "fail2banop"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@fail2banop[-1]
+	add ucitrack fail2banop
+	set ucitrack.@fail2banop[-1].init=fail2banop
+	commit ucitrack
+EOF
+
+# Check if fail2ban chain exists in nftables, reload firewall if not
+if ! nft -t list chain inet fw4 input 2>/dev/null | grep -qF 'ip saddr @fail2banop4 drop'; then
+	/etc/init.d/firewall reload
+fi
+
+/etc/init.d/fail2banop enable
+
+exit 0
+
