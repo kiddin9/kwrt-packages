@@ -6,7 +6,7 @@
 'require tools.widgets as widgets';
 
 /*
- * Copyright (C) 2024 Ycarus (Yannick Chabanois) <contact@openmptcprouter.com> for OpenMPTCProuter
+ * Copyright (C) 2024-2025 Ycarus (Yannick Chabanois) <contact@openmptcprouter.com> for OpenMPTCProuter
  * This is free software, licensed under the GNU General Public License v3.
  * See /LICENSE for more information
  */
@@ -57,23 +57,23 @@ return L.view.extend({
 		o.value("netlink", _("Netlink"));
 	}
 
-	o = s.option(form.ListValue, "mptcp_scheduler", _("Multipath TCP scheduler"), _('BPF schedulers (not available on all platforms):') + '<br />' +
+	var scheduler = s.option(form.ListValue, "mptcp_scheduler", _("Multipath TCP scheduler"), _('BPF schedulers (not available on all platforms):') + '<br />' +
 		_('bpf_burst => same as the default scheduler') + '<br />' +
 		_('bpf_red => sends all packets redundantly on all available subflows') + '<br />' +
 		_('bpf_first => always picks the first subflow to send data')  + '<br />' +
 		_('bpf_rr => always picks the next available subflow to send data (round-robin)')
 
 	);
-	o.value("default", _("default"));
+	scheduler.value("default", _("default"));
 	if (parseFloat(boardinfo.kernel.substring(0,4)) < 6) {
-		o.value("roundrobin", "round-robin");
-		o.value("redundant", "redundant");
-		o.value("blest", "BLEST");
-		o.value("ecf", "ECF");
+		scheduler.value("roundrobin", "round-robin");
+		scheduler.value("redundant", "redundant");
+		scheduler.value("blest", "BLEST");
+		scheduler.value("ecf", "ECF");
 	}
 
 	if (parseFloat(boardinfo.kernel.substring(0,3)) > 6) {
-	    o.load = function(section_id) {
+	    scheduler.load = function(section_id) {
 		    return L.resolveDefault(fs.list('/usr/share/bpf/scheduler'), []).then(L.bind(function(entries) {
 			    for (var i = 0; i < entries.length; i++)
 				    if (entries[i].type == 'file' && entries[i].name.match(/\.o$/))
@@ -236,6 +236,11 @@ return L.view.extend({
 	//o.value("handover", _("handover"));
 	o.default = "off";
 
+	o = s.option(form.Value, "multipath_weight", _("Weight"), _("Only for *weight schedulers/path managers (if any available)"));
+	o.datatype = "uinteger";
+	o.rmempty = false;
+	o.default = 100;
+	//o.depends("mptcp_scheduler","mptcp_bpf_weight.o");
 	return m.render();
     }
 });
