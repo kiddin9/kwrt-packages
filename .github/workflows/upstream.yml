@@ -94,7 +94,6 @@ jobs:
         git_clone https://github.com/kiddin9/luci-app-wizard
         git_clone https://github.com/kiddin9/luci-app-adguardhome
         git_clone https://github.com/kiddin9/luci-app-cloudreve
-        git_clone https://github.com/kiddin9/openwrt-clouddrive2 && mvdir openwrt-clouddrive2
         # git_clone https://github.com/kiddin9/nginx-ui-openwrt && mvdir nginx-ui-openwrt
         ) &
         (
@@ -352,7 +351,7 @@ jobs:
         (
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
         multimedia/UnblockNeteaseMusic multimedia/aliyundrive-webdav net/gowebdav net/kismet net/mstpd \
-        net/qBittorrent-static net/phtunnel net/headscale net/baidupcs-go net/daemonlogger net/geth net/gnurl \
+        net/qBittorrent-static net/phtunnel net/headscale net/clouddrive2 net/baidupcs-go net/daemonlogger net/geth net/gnurl \
         net/uugamebooster net/pgyvpn net/ooniprobe net/polipo net/rosy-file-server net/qiyougamebooster \
         net/sqm-scripts-extra net/tor-fw-helper net/vncrepeater net/verysync \
         net/vpnbypass net/vpn-policy-routing utils/qfirehose
