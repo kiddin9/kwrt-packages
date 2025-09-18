@@ -682,9 +682,7 @@ local hysteria2_type = get_core("hysteria2_type", {{has_hysteria2,"hysteria2"},{
 
 	function unbracketIP(server) {
 		if (!server) return '';
-		return (server.startsWith('[') && server.endsWith(']'))
-			? server.slice(1, -1)
-			: server;
+		return server.replace(/^\[/, '').replace(/\]$/, '');
 	}
 
 	function fromUrl(btn, urlname, sid) {
