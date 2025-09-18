@@ -413,7 +413,7 @@ elseif cmd_line and cmd_line:match("^duplicate/[^/]+$") then
 			for k, v in pairs(create_body.HostConfig.PortBindings) do
 				for x, y in ipairs(v) do
 					local host_ip = ""
-					if v[1].HostIp and y.HostIp ~= "" then
+					if y.HostIp and y.HostIp ~= "" then
 						host_ip = y.HostIp .. ":"
 					end
 					local host_port = y.HostPort
