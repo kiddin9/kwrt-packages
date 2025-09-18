@@ -412,7 +412,14 @@ elseif cmd_line and cmd_line:match("^duplicate/[^/]+$") then
 			default_config.publish = {}
 			for k, v in pairs(create_body.HostConfig.PortBindings) do
 				for x, y in ipairs(v) do
-					table.insert( default_config.publish, y.HostPort..":"..k:match("^(%d+)/.+").."/"..k:match("^%d+/(.+)") )
+				 local host_ip = ""
+				 if v[1].HostIp and y.HostIp ~= "" then
+					 host_ip = y.HostIp .. ":"
+				 end
+				 local host_port = y.HostPort
+				 local container_port = k:match("^(%d+)/.+")
+				 local protocol = k:match("^%d+/(.+)")
+				 table.insert(default_config.publish, host_ip .. host_port .. ":" .. container_port .. "/" .. protocol)
 				end
 			end
 		end
