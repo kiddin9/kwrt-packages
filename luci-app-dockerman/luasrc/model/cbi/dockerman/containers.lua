@@ -76,25 +76,25 @@ function get_containers()
 			for _,v2 in ipairs(v.Ports) do
 				-- display ipv4 only
 				if ip.new(v2.IP or "0.0.0.0"):is4() then
-				 local port_string = ""
+					local port_string = ""
 
-				 -- Add clickable link for TCP ports
-				 if v2.PublicPort and v2.Type == "tcp" then
-					 local url = (v2.IP and v2.IP ~= "" and v2.IP ~= "0.0.0.0" and v2.IP ~= "::") 
-						 and ("'http://" .. (v2.IP:find(":") and ("[" .. v2.IP .. "]") or v2.IP) .. ":" .. v2.PublicPort .. "'")
-						 or ("(window.location.origin.match(/^(.+):\\\\d+$/) && window.location.origin.match(/^(.+):\\\\d+$/)[1] || window.location.origin) + ':" .. v2.PublicPort .. "'")
-					 port_string = '<a href="javascript:void(0);" onclick="window.open(' .. url .. ', \'_blank\');">'
-				 end
+					-- Add clickable link for TCP ports
+					if v2.PublicPort and v2.Type == "tcp" then
+						local url = (v2.IP and v2.IP ~= "" and v2.IP ~= "0.0.0.0" and v2.IP ~= "::") 
+							and ("'http://" .. (v2.IP:find(":") and ("[" .. v2.IP .. "]") or v2.IP) .. ":" .. v2.PublicPort .. "'")
+							or ("(window.location.origin.match(/^(.+):\\\\d+$/) && window.location.origin.match(/^(.+):\\\\d+$/)[1] || window.location.origin) + ':" .. v2.PublicPort .. "'")
+						port_string = '<a href="javascript:void(0);" onclick="window.open(' .. url .. ', \'_blank\');">'
+					end
 
-				 -- Build display string: IP:PublicPort:PrivatePort/Type
-				 port_string = port_string .. (v2.IP and v2.IP ~= "" 
-					  and v2.IP ~= "0.0.0.0" and v2.IP ~= "::" and (v2.IP .. ":") or "*:")
-					 .. (v2.PublicPort and (v2.PublicPort .. ":") or "")
-					 .. (v2.PrivatePort and (v2.PrivatePort .. "/") or "")
-					 .. (v2.Type or "")
-					 .. (v2.PublicPort and v2.Type == "tcp" and "</a>" or "")
+					-- Build display string: IP:PublicPort:PrivatePort/Type
+					port_string = port_string .. (v2.IP and v2.IP ~= "" 
+					 	and v2.IP ~= "0.0.0.0" and v2.IP ~= "::" and (v2.IP .. ":") or "*:")
+						.. (v2.PublicPort and (v2.PublicPort .. ":") or "")
+						.. (v2.PrivatePort and (v2.PrivatePort .. "/") or "")
+						.. (v2.Type or "")
+						.. (v2.PublicPort and v2.Type == "tcp" and "</a>" or "")
 
-				 data[index]["_ports"] = (data[index]["_ports"] and (data[index]["_ports"] .. ", ") or "") .. port_string
+					data[index]["_ports"] = (data[index]["_ports"] and (data[index]["_ports"] .. ", ") or "") .. port_string
 				end
 			end
 		end
