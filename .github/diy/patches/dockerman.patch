@@ -59,7 +59,7 @@
  				for x, y in ipairs(v) do
 -					table.insert( default_config.publish, y.HostPort..":"..k:match("^(%d+)/.+").."/"..k:match("^%d+/(.+)") )
 +					local host_ip = ""
-+					if v[1].HostIp and y.HostIp ~= "" then
++					if y.HostIp and y.HostIp ~= "" then
 +						host_ip = y.HostIp .. ":"
 +					end
 +					local host_port = y.HostPort
