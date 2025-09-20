@@ -59,14 +59,21 @@
 
 <head>
 <style>
+.fill, 
+.fill .container {
+    height: auto;
+    min-height: 50px;
+    overflow: visible;
+}
+
 .navbar-container {
     align-items: center;
     display: flex;
-    height: 60px;
     justify-content: space-between;
-    padding-left: 250px;
-    padding-right: 5px;
-    width: 100%;
+    width: calc(100% - 15rem);
+    margin-left: 15rem; 
+    padding: 10px 5px;
+    transition: all 0.3s ease;
 }
 
 .navbar-left,
@@ -78,7 +85,10 @@
 
 @media (max-width: 768px) {
     .navbar-container {
+        width: 100%;
+        margin-left: 0;
         padding-left: 5px;
+        margin-top: -2px; 
     }
     .navbar-left,
     .navbar-right {
@@ -285,6 +295,23 @@
 @media (max-width: 768px) {
     #networkIcon {
         display: none;
+    }
+}
+
+.main-left .sidenav-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1380px) {
+    #ipip {
+        display: inline-block;
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
     }
 }
 </style>
@@ -2247,6 +2274,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function moveNavbar() {
+    const navbar = document.querySelector('.navbar-container');
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth < 768) {
+        navbar.style.marginLeft = '0';
+        navbar.style.width = '100%';
+    } else if (screenWidth <= 1633) {
+        navbar.style.marginLeft = 'calc(15rem - 32px)';
+        navbar.style.width = '';
+    } else if (screenWidth > 1700) {
+        navbar.style.marginLeft = '15rem';
+        navbar.style.width = ''; 
+    } else {
+        navbar.style.marginLeft = '15rem';
+        navbar.style.width = '';
+    }
+}
+
+window.addEventListener('load', moveNavbar);
+window.addEventListener('resize', moveNavbar);
 </script>
 
 <script>

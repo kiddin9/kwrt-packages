@@ -5,7 +5,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-passwall2
-PKG_VERSION:=25.9.4
+PKG_VERSION:=25.9.20
 PKG_RELEASE:=1
 
 PKG_CONFIG_DEPENDS:= \
@@ -97,7 +97,7 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Hysteria
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_NaiveProxy
 	bool "Include NaiveProxy"
-	depends on !(arc||(arm&&TARGET_gemini)||armeb||mips||mips64||powerpc)
+	depends on !(arc||armeb||loongarch64||mips||mips64||powerpc||TARGET_gemini)
 	select PACKAGE_naiveproxy
 	default n
 
@@ -112,12 +112,12 @@ config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Libev_Server
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Client
 	bool "Include Shadowsocks Rust Client"
-	depends on aarch64||arm||i386||mips||mipsel||x86_64
-	default y if aarch64
+	depends on !i386
+	default y if aarch64||x86_64
 
 config PACKAGE_$(PKG_NAME)_INCLUDE_Shadowsocks_Rust_Server
 	bool "Include Shadowsocks Rust Server"
-	depends on aarch64||arm||i386||mips||mipsel||x86_64
+	depends on !i386
 	select PACKAGE_shadowsocks-rust-ssserver
 	default n
 
@@ -156,7 +156,6 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/passwall2
 /etc/config/passwall2_server
 /usr/share/passwall2/domains_excluded
-/www/luci-static/resources/qrcode.min.js
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
