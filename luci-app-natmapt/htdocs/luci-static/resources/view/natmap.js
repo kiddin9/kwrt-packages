@@ -395,16 +395,16 @@ return view.extend({
 		o.rmempty = false;
 		o.textvalue = function(section_id) {
 			let cval = this.cfgvalue(section_id) || this.default;
-			let mode = L.bind(function() {
+			let mode = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				let i = this.keylist.indexOf(cval);
 				return [this.vallist[i], cval];
-			}, s.getOption('forward_mode'))
-			let loopback = L.bind(function() {
+			}.call(s.getOption('forward_mode'));
+			let loopback = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? ' L' : '';
-			}, s.getOption('natloopback'))
-			return (cval == this.enabled) ? mode()[0] + (mode()[1] === 'dnat' ? loopback() : '') : _('No');
+			}.call(s.getOption('natloopback'));
+			return (cval == this.enabled) ? mode[0] + (mode[1] === 'dnat' ? loopback : '') : _('No');
 		};
 
 		o = s.taboption('forward', form.ListValue, 'forward_mode', _('Forward method'), _('The DNAT method not support under IPv6'));
@@ -416,13 +416,13 @@ return view.extend({
 		o.depends('forward', '1');
 		o.modalonly = true;
 		o.validate = function(section_id, value) {
-			let family = L.bind(function() {
+			let family = function() {
 				let E = document.getElementById('widget.' + this.cbid(section_id).match(/.+\./) + 'family');
 				let i = E ? E.selectedIndex : null;
 				return E ? E.options[i].value : null;
-			}, s.getOption('family'))
+			}.call(s.getOption('family'));
 
-			if (value == 'dnat' && family() == 'ipv6')
+			if (value == 'dnat' && family == 'ipv6')
 				return _('The DNAT method not support under IPv6');
 
 			return true;
@@ -460,11 +460,11 @@ return view.extend({
 		o.textvalue = function(section_id) {
 			let cval = this.cfgvalue(section_id);
 			let i = this.keylist.indexOf(cval);
-			let enforward = L.bind(function() {
+			let enforward = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
-			}, s.getOption('forward'))
-			return enforward() ? this.vallist[i] : _('No');
+			}.call(s.getOption('forward'));
+			return enforward ? this.vallist[i] : _('No');
 		};
 
 		o = s.taboption('forward', form.Value, 'forward_port', _('Forward target port'), _('Set 0 will follow Public port'));
@@ -474,20 +474,20 @@ return view.extend({
 		o.depends('forward', '1');
 		o.textvalue = function(section_id) {
 			let cval = this.cfgvalue(section_id) || this.default;
-			let enforward = L.bind(function() {
+			let enforward = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
-			}, s.getOption('forward'))
-			let refresh = L.bind(function() {
+			}.call(s.getOption('forward'));
+			let refresh = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
-			}, s.getOption('refresh'))
-			let cltname = L.bind(function() {
+			}.call(s.getOption('refresh'));
+			let cltname = function() {
 				let cval = this.cfgvalue(section_id) || this.default;
 				let i = this.keylist.indexOf(cval);
 				return this.vallist[i];
-			}, s.getOption('clt_script'))
-			return enforward() ? ((cval == '0' && refresh()) ? cltname() : cval) : _('No');
+			}.call(s.getOption('clt_script'));
+			return enforward ? ((cval == '0' && refresh) ? cltname : cval) : _('No');
 		};
 
 		o = s.taboption('forward', form.Flag, 'refresh', _('Refresh client listen port'));
