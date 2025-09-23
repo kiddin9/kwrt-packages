@@ -40,7 +40,9 @@ start_service() {
   fi
 	
 	if [ ! -f $cache/kspeeder.yml ]; then
-		mkdir $cache
+		parent_dir=$(dirname "$cache")
+		[ -d "$parent_dir" ] || mkdir "$parent_dir"
+		[ -d "$cache" ] || mkdir "$cache"
 		write_mirrors_config $cache/kspeeder.yml
 	fi
 
