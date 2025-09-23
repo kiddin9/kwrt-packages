@@ -271,9 +271,9 @@
         "restartSingbox" => "Singbox neu starten",
         "selectConfig" => "Konfigurationsdatei auswählen",
         "pleaseSelectConfig" => "Bitte Konfigurationsdatei auswählen",
-        "mihomoRunning" => "Mihomo läuft",
+        "mihomoRunning" => "Mihomo {index} läuft",
         "mihomoNotRunning" => "Mihomo läuft nicht",
-        "singboxRunning" => "Singbox läuft",
+        "singboxRunning" => "Singbox {index} läuft",
         "singboxNotRunning" => "Singbox läuft nicht",
         'log' => 'Protokoll',
         'nekoBoxLog' => 'Nekobox-Protokoll',
@@ -1050,6 +1050,8 @@
         'clearJsonTooltip' => 'JSON-Datei löschen',   
         'traffic_monitor_title' => 'OpenWrt Echtzeit-Verkehrsmonitor',
         'subscriptionClearedSuccess' => 'Abonnementinformationen erfolgreich gelöscht',
+        'upToDate' => 'Aktuell',
+        'updateAvailable' => 'Update verfügbar',
         'save_file_error' => 'Fehler beim Speichern der Datei: {message}'
     ],
     'fr' => [
@@ -1317,9 +1319,9 @@
         "restartSingbox" => "Redémarrer Singbox",
         "selectConfig" => "Sélectionner un fichier de configuration",
         "pleaseSelectConfig" => "Veuillez sélectionner un fichier de configuration",
-        "mihomoRunning" => "Mihomo fonctionne",
+        "mihomoRunning" => "Mihomo {index} fonctionne",
         "mihomoNotRunning" => "Mihomo ne fonctionne pas",
-        "singboxRunning" => "Singbox fonctionne",
+        "singboxRunning" => "Singbox {index} fonctionne",
         "singboxNotRunning" => "Singbox ne fonctionne pas",
         'log' => 'Journal',
         'nekoBoxLog' => 'Journal NekoBox',
@@ -2106,6 +2108,8 @@
         
         'traffic_monitor_title' => 'Moniteur de trafic OpenWrt en temps réel',
         'subscriptionClearedSuccess' => "Informations d'abonnement effacées avec succès",
+        'upToDate' => 'À jour',
+        'updateAvailable' => 'Mise à jour disponible',
         'save_file_error' => 'Erreur de sauvegarde : {message}'
     ],
     'zh' => [
@@ -2239,9 +2243,9 @@
         "restartSingbox" => "重启 Sing-box",
         "selectConfig" => "请选择配置文件",
         "pleaseSelectConfig" => "请选择配置文件",
-        "mihomoRunning" => "Mihomo 正在运行",
+        "mihomoRunning" => "Mihomo {index} 运行中",
         "mihomoNotRunning" => "Mihomo 未运行",
-        "singboxRunning" => "Sing-box 正在运行",
+        "singboxRunning" => "Sing-box {index} 运行中",
         "singboxNotRunning" => "Sing-box 未运行",
         'log' => '日志',
         'nekoBoxLog' => 'Nekobox 日志',
@@ -3050,6 +3054,8 @@
         'clearJsonTooltip' => '清空 JSON 文件',
         'traffic_monitor_title' => 'OpenWrt 实时流量监控',
         'subscriptionClearedSuccess' => '订阅信息已清空成功',
+        'upToDate' => '已最新',
+        'updateAvailable' => '有更新',
         'save_file_error' => '保存文件出错：{message}'
     ],
     'en' => [
@@ -3421,9 +3427,9 @@
         "restartSingbox" => "Restart Sing-box",
         "selectConfig" => "Please select a configuration file",
         "pleaseSelectConfig" => "Please select a configuration file",
-        "mihomoRunning" => "Mihomo Running",
+        "mihomoRunning" => "Mihomo {index} Running",
         "mihomoNotRunning" => "Mihomo Not Running",
-        "singboxRunning" => "Sing-box Running",
+        "singboxRunning" => "Sing-box {index} Running",
         "singboxNotRunning" => "Sing-box Not Running",
         'systemInfo' => 'System Info',
         'systemMemory' => 'System Memory',
@@ -4181,6 +4187,8 @@
         'clearJsonTooltip' => 'Clear JSON file',       
         'traffic_monitor_title' => 'OpenWrt Real-time Traffic Monitor',
         'subscriptionClearedSuccess' => 'Subscription information cleared successfully',
+        'upToDate' => 'Up-to-date',
+        'updateAvailable' => 'Update Available',
         'save_file_error' => 'Save error: {message}'
     ],
     'hk' => [
@@ -4511,9 +4519,9 @@
         "restartSingbox" => "重啟 Sing-box",
         "selectConfig" => "請選擇配置文件",
         "pleaseSelectConfig" => "請選擇配置文件",
-        "mihomoRunning" => "Mihomo 正在運行",
+        "mihomoRunning" => "Mihomo {index} 運行中",
         "mihomoNotRunning" => "Mihomo 未運行",
-        "singboxRunning" => "Sing-box 正在運行",
+        "singboxRunning" => "Sing-box {index} 運行中",
         "singboxNotRunning" => "Sing-box 未運行",
         'log' => '日志',
         'nekoBoxLog' => 'Nekobox 日志',
@@ -5213,6 +5221,8 @@
         
         'traffic_monitor_title' => 'OpenWrt 即時流量監控',
         'subscriptionClearedSuccess' => '訂閱信息已清空成功',
+        'upToDate' => '已最新',
+        'updateAvailable' => '有更新',
         'save_file_error' => '儲存檔案時發生錯誤：{message}'
     ],
     'ko' => [
@@ -5580,9 +5590,9 @@
         "restartSingbox" => "Sing-box 재시작",
         "selectConfig" => "구성 파일을 선택하세요",
         "pleaseSelectConfig" => "구성 파일을 선택하세요",
-        "mihomoRunning" => "Mihomo가 실행 중입니다.",
+        "mihomoRunning" => "Mihomo {index} 가 실행 중입니다.",
         "mihomoNotRunning" => "Mihomo가 실행되지 않습니다.",
-        "singboxRunning" => "Sing-box가 실행 중입니다.",
+        "singboxRunning" => "Sing-box {index} 가 실행 중입니다.",
         "singboxNotRunning" => "Sing-box가 실행되지 않습니다.",
         'log' => '로그',
         'nekoBoxLog' => 'Nekobox 로그',
@@ -6283,6 +6293,8 @@
         
         'traffic_monitor_title' => 'OpenWrt 실시간 트래픽 모니터',
         'subscriptionClearedSuccess' => '구독 정보가 성공적으로 삭제되었습니다',
+        'upToDate' => '최신',
+        'updateAvailable' => '업데이트 가능',
         'save_file_error' => '파일 저장 오류: {message}'
     ],
     'ja' => [
@@ -6636,9 +6648,9 @@
         "restartSingbox" => "Sing-boxを再起動",
         "selectConfig" => "設定ファイルを選択してください",
         "pleaseSelectConfig" => "設定ファイルを選択してください",
-        "mihomoRunning" => "Mihomoは実行中",
+        "mihomoRunning" => "Mihomo {index} は実行中",
         "mihomoNotRunning" => "Mihomoは実行されていません",
-        "singboxRunning" => "Sing-boxは実行中",
+        "singboxRunning" => "Sing-box {index} は実行中",
         "singboxNotRunning" => "Sing-boxは実行されていません",
         'log' => 'ログ',
         'nekoBoxLog' => 'Nekoboxログ',
@@ -7340,6 +7352,8 @@
         
         'traffic_monitor_title' => 'OpenWrt リアルタイムトラフィック監視',
         'subscriptionClearedSuccess' => 'サブスクリプション情報が正常にクリアされました',
+        'upToDate' => '最新',
+        'updateAvailable' => '更新あり',
         'save_file_error' => 'ファイルの保存中にエラーが発生しました：{message}'
    ],
     'ru' => [
@@ -7715,9 +7729,9 @@
         "restartSingbox" => "Перезапустить Sing-box",
         "selectConfig" => "Выберите конфигурационный файл",
         "pleaseSelectConfig" => "Пожалуйста, выберите конфигурационный файл",
-        "mihomoRunning" => "Mihomo работает",
+        "mihomoRunning" => "Mihomo {index} работает",
         "mihomoNotRunning" => "Mihomo не работает",
-        "singboxRunning" => "Sing-box работает",
+        "singboxRunning" => "Sing-box {index} работает",
         "singboxNotRunning" => "Sing-box не работает",
         'log' => 'Журнал',
         'nekoBoxLog' => 'Журнал NekoBox',
@@ -8420,6 +8434,8 @@
         
         'traffic_monitor_title' => 'Монитор трафика OpenWrt в реальном времени',
         'subscriptionClearedSuccess' => 'Информация о подписках успешно очищена',
+        'upToDate' => 'Актуально',
+        'updateAvailable' => 'Доступно обновление',
         'save_file_error' => 'Ошибка сохранения файла: {message}'
     ],
     'ar' => [
@@ -8769,9 +8785,9 @@
         "restartSingbox" => "إعادة تشغيل Singbox",
         "selectConfig" => "يرجى اختيار ملف التكوين",
         "pleaseSelectConfig" => "يرجى اختيار ملف التكوين",
-        "mihomoRunning" => "Mihomo قيد التشغيل",
+        "mihomoRunning" => "Mihomo {index} قيد التشغيل",
         "mihomoNotRunning" => "Mihomo غير قيد التشغيل",
-        "singboxRunning" => "Singbox قيد التشغيل",
+        "singboxRunning" => "Singbox {index} قيد التشغيل",
         "singboxNotRunning" => "Singbox غير قيد التشغيل",
         'log' => 'السجل',
         'nekoBoxLog' => 'سجل Nekobox',
@@ -9473,6 +9489,8 @@
         
         'traffic_monitor_title' => 'مراقب حركة المرور OpenWrt في الوقت الفعلي',
         'subscriptionClearedSuccess' => 'تم مسح معلومات الاشتراك بنجاح',
+        'upToDate' => 'محدث',
+        'updateAvailable' => 'تحديث متاح',
         'save_file_error' => 'خطأ في حفظ الملف: {message}'
     ],
     'es' => [
@@ -9863,9 +9881,9 @@
         "restartSingbox" => "Reiniciar Sing-box",
         "selectConfig" => "Selecciona el archivo de configuración",
         "pleaseSelectConfig" => "Por favor, selecciona un archivo de configuración",
-        "mihomoRunning" => "Mihomo está funcionando",
+        "mihomoRunning" => "Mihomo {index} está funcionando",
         "mihomoNotRunning" => "Mihomo no está funcionando",
-        "singboxRunning" => "Sing-box está funcionando",
+        "singboxRunning" => "Sing-box {index} está funcionando",
         "singboxNotRunning" => "Sing-box no está funcionando",
         'log' => 'Registro',
         'nekoBoxLog' => 'Registro de Nekobox',
@@ -10567,6 +10585,8 @@
         
         'traffic_monitor_title' => 'Monitor de tráfico OpenWrt en tiempo real',
         'subscriptionClearedSuccess' => 'Información de suscripción borrada con éxito',
+        'upToDate' => 'Actualizado',
+        'updateAvailable' => 'Actualización disponible',
         'save_file_error' => 'Error al guardar: {message}'
     ],
     'vi' => [
@@ -10954,9 +10974,9 @@
         "restartSingbox" => "Khởi động lại Sing-box",
         "selectConfig" => "Vui lòng chọn tệp cấu hình",
         "pleaseSelectConfig" => "Vui lòng chọn tệp cấu hình",
-        "mihomoRunning" => "Mihomo đang chạy",
+        "mihomoRunning" => "Mihomo {index} đang chạy",
         "mihomoNotRunning" => "Mihomo chưa chạy",
-        "singboxRunning" => "Sing-box đang chạy",
+        "singboxRunning" => "Sing-box {index} đang chạy",
         "singboxNotRunning" => "Sing-box chưa chạy",
         'log' => 'Nhật ký',
         'nekoBoxLog' => 'Nhật ký Nekobox',
@@ -11657,6 +11677,8 @@
         
         'traffic_monitor_title' => 'Giám sát lưu lượng OpenWrt thời gian thực',
         'subscriptionClearedSuccess' => 'Thông tin đăng ký đã được xóa thành công',
+        'upToDate' => 'Đã mới nhất',
+        'updateAvailable' => 'Có bản cập nhật',
         'save_file_error' => 'Lỗi khi lưu: {message}'
     ]
 ];

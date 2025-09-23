@@ -147,7 +147,7 @@ $razordVersion = getRazordVersion();
       <div class="card">
         <div class="card-body text-center">
           <h5 class="card-title" data-translate="ui_panel_title">Ui Panel</h5>
-          <p class="card-text"><?php echo htmlspecialchars($uiVersion); ?></p>
+          <p id="uiVersion" class="card-text"><?php echo htmlspecialchars($uiVersion); ?></p>
           <div class="d-flex justify-content-center gap-2 mt-3">
             <button class="btn btn-pink" id="checkUiButton">
               <i class="bi bi-search"></i> <span data-translate="detect_button">Detect</span>
@@ -181,7 +181,7 @@ $razordVersion = getRazordVersion();
       <div class="card">
         <div class="card-body text-center">
           <h5 class="card-title" data-translate="mihomo_core_version_title">Mihomo Core Version</h5>
-          <p class="card-text"><?php echo htmlspecialchars($mihomoVersion); ?></p>
+          <p id="mihomoVersion" class="card-text"><?php echo htmlspecialchars($mihomoVersion); ?></p>
           <div class="d-flex justify-content-center gap-2 mt-3">
             <button class="btn btn-pink" id="checkMihomoButton">
               <i class="bi bi-search"></i> <span data-translate="detect_button">Detect</span>
@@ -565,7 +565,80 @@ $razordVersion = getRazordVersion();
         </div>
     </div>
 </div>
+<style>
+.version-indicator {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+}
 
+.version-indicator.success {
+    background-color: #28a745;
+    animation: pulse-success 2s infinite;
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+}
+
+.version-indicator.warning {
+    background-color: #ffc107;
+    animation: pulse-warning 2s infinite;
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
+}
+
+.version-indicator.danger {
+    background-color: #dc3545;
+    animation: pulse-error 2s infinite;
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+}
+
+.version-indicator::after {
+    content: attr(data-text);
+    position: absolute;
+    bottom: -28px;
+    right: 100%;
+    margin-right: 6px;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 99999;
+}
+
+.version-indicator:hover::after {
+    opacity: 1;
+}
+
+@keyframes pulse-success {
+    0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+}
+
+@keyframes pulse-warning {
+    0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 8px rgba(255, 193, 7, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+@keyframes pulse-error {
+    0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.card-body {
+    position: relative;
+}
+</style>
 <script>
 let selectedSingboxVersion = 'v1.11.0-alpha.10';  
 let selectedMihomoVersion = 'stable';  
@@ -807,6 +880,112 @@ document.addEventListener('DOMContentLoaded', function() {
         showPanelSelector();  
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const addIndicator = (el, text, status = 'warning') => {
+        if (!el) return;
+        const old = el.querySelector('.version-indicator');
+        if (old) old.remove();
+
+        const dot = document.createElement('span');
+        dot.className = `version-indicator ${status}`;
+        dot.setAttribute('data-text', text);
+
+        el.appendChild(dot);
+    };
+
+    const compareVersions = (current, latest) => {
+        if (!current || !latest) return false;
+        const clean = v => v.replace(/^v/, '').trim();
+        return clean(current) === clean(latest);
+    };
+
+    const singBoxEl = document.getElementById('singBoxCorever');
+    const singBoxCurrent = "<?php echo htmlspecialchars($singBoxVersion); ?>";
+    let singBoxUrl = '';
+    if (singBoxCurrent && /^v/.test(singBoxCurrent) && /-.+/.test(singBoxCurrent)) singBoxUrl = 'update_singbox_core.php';
+    else if (singBoxCurrent && /-.+/.test(singBoxCurrent)) singBoxUrl = 'update_singbox_preview.php';
+    else if (singBoxCurrent && !/[a-zA-Z]/.test(singBoxCurrent)) singBoxUrl = 'update_singbox_stable.php';
+
+    if (singBoxUrl && singBoxEl) {
+        fetch(singBoxUrl + '?check_version=true')
+            .then(res => res.text())
+            .then(text => {
+                const match = text.trim().match(/Latest version:\s*([^\s]+)/);
+                if (match && match[1]) {
+                    const latest = match[1];
+                    const isUpToDate = compareVersions(singBoxCurrent, latest);
+                    const statusText = isUpToDate
+                        ? "<?php echo $translations['upToDate'] ?? 'Up-to-date'; ?>"
+                        : "<?php echo $translations['updateAvailable'] ?? 'Update Available'; ?>: " + latest;
+                    addIndicator(singBoxEl, statusText, isUpToDate ? 'success' : 'warning');
+                }
+            })
+            .catch(() => {});
+    }
+
+    const mihomoEl = document.getElementById('mihomoVersion');
+    const mihomoCurrent = "<?php echo htmlspecialchars($mihomoVersion); ?>";
+    const mihomoType = "<?php echo htmlspecialchars($mihomoType); ?>";
+    let mihomoUrl = '';
+    if (mihomoType === 'Stable') mihomoUrl = 'update_mihomo_stable.php';
+    else if (mihomoType === 'Preview') mihomoUrl = 'update_mihomo_preview.php';
+
+    if (mihomoUrl && mihomoEl) {
+        fetch(mihomoUrl + '?check_version=true')
+            .then(res => res.text())
+            .then(text => {
+                const match = text.trim().match(/Latest version:\s*([^\s]+)/);
+                if (match && match[1]) {
+                    const latest = match[1];
+                    const isUpToDate = compareVersions(mihomoCurrent, latest);
+                    const statusText = isUpToDate
+                        ? "<?php echo $translations['upToDate'] ?? 'Up-to-date'; ?>"
+                        : "<?php echo $translations['updateAvailable'] ?? 'Update Available'; ?>: " + latest;
+                    addIndicator(mihomoEl, statusText, isUpToDate ? 'success' : 'warning');
+                }
+            })
+            .catch(() => {});
+    }
+
+    const zashboardEl = document.getElementById('uiVersion');
+    const zashboardCurrent = "<?php echo htmlspecialchars($uiVersion); ?>";
+    if (zashboardEl && zashboardCurrent) {
+        fetch('update_zashboard.php?check_version=true')
+            .then(res => res.text())
+            .then(text => {
+                const match = text.trim().match(/Latest version:\s*([^\s]+)/);
+                if (match && match[1]) {
+                    const latest = match[1];
+                    const isUpToDate = compareVersions(zashboardCurrent, latest);
+                    const statusText = isUpToDate
+                        ? "<?php echo $translations['upToDate'] ?? 'Up-to-date'; ?>"
+                        : "<?php echo $translations['updateAvailable'] ?? 'Update Available'; ?>: " + latest;
+                    addIndicator(zashboardEl, statusText, isUpToDate ? 'success' : 'warning');
+                }
+            })
+            .catch(() => {});
+    }
+
+    const cliverEl = document.getElementById('cliver');
+    const cliverCurrent = "<?php echo htmlspecialchars(trim($cliverVersion)); ?>";
+    if (cliverEl && cliverCurrent) {
+        fetch('update_script.php?check_version=true')
+            .then(res => res.text())
+            .then(text => {
+                const match = text.trim().match(/Latest version:\s*([^\s]+)/);
+                if (match && match[1]) {
+                    const latest = match[1];
+                    const isUpToDate = compareVersions(cliverCurrent, latest);
+                    const statusText = isUpToDate
+                        ? "<?php echo $translations['upToDate'] ?? 'Up-to-date'; ?>"
+                        : "<?php echo $translations['updateAvailable'] ?? 'Update Available'; ?>: " + latest;
+                    addIndicator(cliverEl, statusText, isUpToDate ? 'success' : 'warning');
+                }
+            })
+            .catch(() => {});
+    }
+});
 </script>
 
 <script>
@@ -896,6 +1075,7 @@ function checkVersion(outputId, updateFiles, currentVersions) {
         versionModal.show();
     });
 }
+
 document.getElementById('checkSingboxButton').addEventListener('click', function () {
     const singBoxVersion = "<?php echo htmlspecialchars(trim($singBoxVersion)); ?>";
     const singBoxType = "<?php echo htmlspecialchars($singBoxType); ?>";

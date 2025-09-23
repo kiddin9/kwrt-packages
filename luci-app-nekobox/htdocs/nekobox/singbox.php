@@ -149,6 +149,208 @@ EOL;
 }
 ?>
 
+<?php
+$dataFilePath = '/etc/neko/proxy_provider/subscription_data.txt';
+$lastUpdateTime = null;
+$singBoxConfigDir = '/etc/neko/config/';
+
+$validUrls = [];
+if (file_exists($dataFilePath)) {
+    $lines = file($dataFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line)) continue;
+        $parts = explode('|', $line);
+        foreach ($parts as $part) {
+            $part = trim($part);
+            if (!empty($part) && preg_match('/^https?:\/\//i', $part)) {
+                $validUrls[] = $part;
+            }
+        }
+    }
+}
+
+$libDir = __DIR__ . '/lib';
+$cacheFile = $libDir . '/sub_info.json';
+if (empty($validUrls) && file_exists($cacheFile)) {
+    unlink($cacheFile);
+}
+
+function formatBytes($bytes, $precision = 2) {
+    if ($bytes === INF || $bytes === "∞") return "∞";
+    if ($bytes <= 0) return "0 B";
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $pow = floor(log($bytes, 1024));
+    $pow = min($pow, count($units) - 1);
+    $bytes /= pow(1024, $pow);
+    return round($bytes, $precision) . ' ' . $units[$pow];
+}
+
+function getSubInfo($subUrl, $userAgent = "Clash") {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $subUrl);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code !== 200 || !$response) {
+        return [
+            "http_code"=>$http_code,
+            "sub_info"=>"Request Failed",
+            "used"=>0,
+            "total"=>0,
+            "percent"=>0,
+            "day_left"=>0,
+            "expire"=>"null",
+            "get_time"=>time(),
+            "url"=>$subUrl
+        ];
+    }
+
+    if (!preg_match("/subscription-userinfo: (.*)/i", $response, $matches)) {
+        return [
+            "http_code"=>$http_code,
+            "sub_info"=>"No Sub Info Found",
+            "used"=>0,
+            "total"=>0,
+            "percent"=>0,
+            "day_left"=>0,
+            "expire"=>"null",
+            "get_time"=>time(),
+            "url"=>$subUrl
+        ];
+    }
+
+    $info = $matches[1];
+    preg_match("/upload=(\d+)/",$info,$m);   $upload   = isset($m[1]) ? (int)$m[1] : 0;
+    preg_match("/download=(\d+)/",$info,$m); $download = isset($m[1]) ? (int)$m[1] : 0;
+    preg_match("/total=(\d+)/",$info,$m);    $total    = isset($m[1]) ? (int)$m[1] : 0;
+    preg_match("/expire=(\d+)/",$info,$m);   $expire   = isset($m[1]) ? (int)$m[1] : 0;
+
+    $used = $upload + $download;
+    $percent = ($total > 0) ? ($used / $total) * 100 : 100;
+
+    $expireDate = "null";
+    $day_left = "null";
+    if ($expire > 0) {
+        $expireDate = date("Y-m-d H:i:s",$expire);
+        $day_left   = $expire > time() ? ceil(($expire-time())/(3600*24)) : 0;
+    } elseif ($expire === 0) {
+        $expireDate = "Long-term";
+        $day_left   = "∞";
+    }
+
+    return [
+        "http_code"=>$http_code,
+        "sub_info"=>"Successful",
+        "upload"=>$upload,
+        "download"=>$download,
+        "used"=>$used,
+        "total"=>$total > 0 ? $total : "∞",
+        "percent"=>round($percent,1),
+        "day_left"=>$day_left,
+        "expire"=>$expireDate,
+        "get_time"=>time(),
+        "url"=>$subUrl
+    ];
+}
+
+function saveAllSubInfos($results) {
+    $libDir = __DIR__ . '/lib';
+    if (!is_dir($libDir)) mkdir($libDir, 0755, true);
+    $filePath = $libDir . '/sub_info.json';
+    file_put_contents($filePath, json_encode($results, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    return $filePath;
+}
+
+function loadAllSubInfosFromFile(&$lastUpdateTime = null) {
+    $libDir = __DIR__ . '/lib';
+    $filePath = $libDir . '/sub_info.json';
+    $results = [];
+    if (file_exists($filePath)) {
+        $results = json_decode(file_get_contents($filePath), true);
+        if ($results) {
+            $times = array_column($results, 'get_time');
+            if (!empty($times)) $lastUpdateTime = max($times);
+        }
+    }
+    return $results;
+}
+
+function clearSubFile() {
+    $libDir = __DIR__ . '/lib';
+    $filePath = $libDir . '/sub_info.json';
+    if (file_exists($filePath)) unlink($filePath);
+}
+
+function countSingBoxNodes($filePath) {
+    $validProtocols = '/^(ss|shadowsocks|vmess|vless|trojan|hysteria2|socks5|http)$/i';
+    $nodeCount = 0;
+
+    if (!file_exists($filePath)) return 0;
+    $content = file_get_contents($filePath);
+    $json = json_decode($content, true);
+
+    if (json_last_error() === JSON_ERROR_NONE && isset($json['outbounds']) && is_array($json['outbounds'])) {
+        foreach ($json['outbounds'] as $outbound) {
+            if (!empty($outbound['type']) && preg_match($validProtocols, $outbound['type'])) {
+                $nodeCount++;
+            }
+        }
+    }
+
+    return $nodeCount;
+}
+
+function fetchAllSubInfos($urls, $singBoxConfigFile) {
+    $results = [];
+    foreach ($urls as $url) {
+        if (empty(trim($url))) continue;
+        $userAgents = ["Clash","clash","ClashVerge","Stash","NekoBox","Quantumult%20X","Surge","Shadowrocket","V2rayU","Sub-Store","Mozilla/5.0"];
+        $subInfo = null;
+        foreach ($userAgents as $ua) {
+            $subInfo = getSubInfo($url,$ua);
+            if ($subInfo['sub_info']==="Successful") break;
+        }
+        $results[$url] = $subInfo;
+    }
+
+    $results['_singbox_node_count'] = countSingBoxNodes($singBoxConfigFile);
+
+    saveAllSubInfos($results);
+    return $results;
+}
+
+if ($_SERVER['REQUEST_METHOD']=='POST') {
+    if (isset($_POST['clearSubscriptions'])) {
+        clearSubFile();
+        header("Location: ".$_SERVER['PHP_SELF']);
+        exit;
+    }
+
+    if (isset($_POST['generateConfig'])) {
+        $subscribeUrls = preg_split('/[\r\n,|]+/', trim($_POST['subscribeUrl'] ?? ''));
+        $subscribeUrls = array_filter($subscribeUrls);
+
+        $customFileName = basename(trim($_POST['customFileName'] ?? ''));
+        if (empty($customFileName)) $customFileName = 'sing-box';
+        if (substr($customFileName,-5) !== '.json') $customFileName .= '.json';
+        $configFilePath = $singBoxConfigDir.$customFileName;
+
+        $allSubInfos = fetchAllSubInfos($subscribeUrls, $configFilePath);
+        $lastUpdateTime = time();
+    }
+} else {
+    $allSubInfos = loadAllSubInfosFromFile($lastUpdateTime);
+}
+?>
+
 <meta charset="utf-8">
 <title>singbox - Nekobox</title>
 <link rel="icon" href="./assets/img/nekobox.png">
@@ -314,6 +516,57 @@ EOL;
         </form>
     </div>
 </div>
+<?php if (!empty($allSubInfos)): ?>
+<div class="container-sm py-1">
+    <div class="card">
+        <div class="card-body p-2 position-relative">
+            <h5 class="py-1 ps-3">
+                <i class="bi bi-bar-chart"></i>
+                <span data-translate="subscriptionInfo"></span>
+                <?php if (!empty($allSubInfos['_singbox_node_count'])): ?>
+                    <span style="float:right; font-weight:bold; color:var(--accent-color); margin-right:10px;">
+                        <span data-translate="nodesLabel">Nodes</span>: <?= (int)$allSubInfos['_singbox_node_count'] ?>
+                    </span>
+                <?php endif; ?>
+            </h5>
+            <div class="rounded-3 p-2 border mx-3">
+                <?php foreach ($allSubInfos as $url => $subInfo): ?>
+                    <?php if ($url === '_singbox_node_count') continue; ?>
+                    <?php
+                        $total   = formatBytes($subInfo['total'] ?? 0);
+                        $used    = formatBytes($subInfo['used'] ?? 0);
+                        $percent = $subInfo['percent'] ?? 0;
+                        $dayLeft = $subInfo['day_left'] ?? '∞';
+                        $expire  = $subInfo['expire'] ?? 'expire';
+
+                        $remainingLabel = $translations['resetDaysLeftLabel'] ?? 'Remaining';
+                        $daysUnit       = $translations['daysUnit'] ?? 'days';
+                        $expireLabel    = $translations['expireDateLabel'] ?? 'Expires';
+                    ?>
+                    <div class="mb-1">
+                        <?= htmlspecialchars($url) ?>:
+                        <?php if ($subInfo['sub_info'] === "Successful"): ?>
+                            <span class="text-success">
+                                <?= "{$used} / {$total} ({$percent}%) • {$remainingLabel} {$dayLeft} {$daysUnit} • {$expireLabel}: {$expire}" ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="text-danger">
+                                <?= htmlspecialchars($translations['subscriptionFetchFailed'] ?? 'Failed to obtain') ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+
+                <?php if (!empty($lastUpdateTime)): ?>
+                    <div class="mt-2 text-end" style="font-size: 0.9em; color: var(--accent-color);">
+                        <?= ($translations['lastModified'] ?? 'Last Updated') ?>: <?= date('Y-m-d H:i:s', $lastUpdateTime) ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <?php
 function displayLogData($dataFilePath, $translations) {
     if (isset($_POST['clearData'])) {

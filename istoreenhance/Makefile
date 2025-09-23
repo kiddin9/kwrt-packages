@@ -11,8 +11,8 @@ PKG_ARCH_ISTOREENHANCE:=$(ARCH)
 
 PKG_NAME:=istoreenhance
 # use PKG_SOURCE_DATE instead of PKG_VERSION for compitable
-PKG_SOURCE_DATE:=0.3.3
-PKG_RELEASE:=23
+PKG_SOURCE_DATE:=0.3.7
+PKG_RELEASE:=24
 ARCH_HEXCODE:=
 ifeq ($(ARCH),x86_64)
 ARCH_HEXCODE=8664
@@ -42,7 +42,7 @@ define Package/$(PKG_NAME)
 	TITLE:=iStoreEnhance - Fix some net issues for istore
 	DEPENDS:=@(arm||x86_64||aarch64)
 	PKGARCH:=all
-	URL:=https://www.istoreos.com/
+	URL:=https://www.kspeeder.com/
 endef
 
 define Package/$(PKG_NAME)/description
