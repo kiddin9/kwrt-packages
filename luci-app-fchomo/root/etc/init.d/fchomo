@@ -135,7 +135,7 @@ start_service() {
 		else
 			# Set ENV variables for Client
 			export SAFE_PATHS="$RUN_DIR$(
-				yq 'with(.tls; .[] |= sub("(/[^/]+$)", ""))
+				yq 'with(.tls; .["certificate", "private-key"] |= sub("(/[^/]+$)", ""))
 					| [.external-ui, .tls.certificate, .tls.private-key] | unique
 					| .[] | sub("(^)", ":")' \
 				"$RUN_DIR/mihomo-c.yaml" | tr -d '\n'
