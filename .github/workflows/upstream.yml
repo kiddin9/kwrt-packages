@@ -110,6 +110,7 @@ jobs:
         (
         git_clone https://github.com/xiaorouji/openwrt-passwall && mvdir openwrt-passwall
         git_clone https://github.com/xiaorouji/openwrt-passwall-packages && mvdir openwrt-passwall-packages
+        git_clone https://github.com/sbwml/luci-app-mosdns openwrt-mos && mv -n openwrt-mos/{*mosdns,v2dat} ./; rm -rf openwrt-mos
         git clone https://github.com/fw876/helloworld && mvdir helloworld
         git_clone https://github.com/Lienol/openwrt-package liep
         git_clone https://github.com/rufengsuixing/luci-app-autoipsetadder
@@ -144,8 +145,6 @@ jobs:
         git_clone https://github.com/peter-tank/luci-app-autorepeater
         git_clone https://github.com/brvphoenix/luci-app-wrtbwmon wrtbwmon1 && mvdir wrtbwmon1
         git_clone https://github.com/brvphoenix/wrtbwmon wrtbwmon2 && mvdir wrtbwmon2
-        #git_clone https://github.com/QiuSimons/openwrt-mos && mv -n openwrt-mos/{*mosdns,v2ray-geodata} ./ ; rm -rf openwrt-mos
-        git_clone https://github.com/sbwml/luci-app-mosdns openwrt-mos && mv -n openwrt-mos/{*mosdns,v2dat} ./; rm -rf openwrt-mos
         git_clone https://github.com/muink/openwrt-fastfetch
         ) &
         (
