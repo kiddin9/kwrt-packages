@@ -1,0 +1,22 @@
+#!/usr/bin/ucode
+
+'use strict';
+
+import { readfile } from 'fs';
+
+const methods = {
+	get_congestions: {
+		call: function() {
+			const allowed_congestion = '/proc/sys/net/ipv4/tcp_allowed_congestion_control';
+			const available_congestion = '/proc/sys/net/ipv4/tcp_available_congestion_control';
+
+			const content = trim(readfile(allowed_congestion));
+			if (content)
+				return { algorithm: split(content, ' ') };
+			else
+				return { algorithm: [] };
+		}
+	}
+};
+
+return { 'luci.natmap': methods };

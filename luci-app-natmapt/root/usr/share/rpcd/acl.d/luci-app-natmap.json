@@ -12,7 +12,8 @@
 				"/usr/libexec/natmap/natcheck.sh": [ "exec" ]
 			},
 			"ubus": {
-				"service": [ "list" ]
+				"service": [ "list" ],
+				"luci.natmap": [ "*" ]
 			},
 			"uci": ["natmap"]
 		},
