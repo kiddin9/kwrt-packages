@@ -167,7 +167,7 @@ amule() {
 }
 
 start_service() {
-	killall -9 amuleweb >/dev/null 2>&1
+	killall  amuleweb >/dev/null 2>&1
 	config_load 'amule'
 	config_foreach amule 'amule'
 }

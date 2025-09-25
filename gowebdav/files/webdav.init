@@ -17,6 +17,6 @@ start() {
 }
 
 stop() {
-	killall -9 pgrep "${WEBDAV}" >/dev/null 2>&1
+	killall  pgrep "${WEBDAV}" >/dev/null 2>&1
 }
 
