@@ -25,7 +25,7 @@ start() {
 }
 
 stop() {
-		start-stop-daemon -K -q -p "$PID_FILE"
+		kill -9 `pidof filebrowser | sed "s/$$//g"` 2>/dev/null
 		rm -f "$PID_FILE"
 		echo "filebrowser stopped"
 }
