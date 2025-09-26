@@ -12,5 +12,5 @@ start() {
 }
 
 stop() {
-  killall  cpulimit
+  killall -9 cpulimit
 }

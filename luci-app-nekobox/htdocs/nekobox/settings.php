@@ -636,6 +636,21 @@ $razordVersion = getRazordVersion();
 .card-body {
     position: relative;
 }
+
+@media (max-width: 768px) {
+    .navbar-toggler {
+        margin-left: auto;
+        margin-right: 15px;
+    }
+    
+    .navbar-brand {
+        margin-left: 15px !important;
+    }
+    
+    .navbar .d-flex.align-items-center {
+        margin-left: 15px !important;
+    }
+}
 </style>
 <script>
 let selectedSingboxVersion = 'v1.11.0-alpha.10';  
@@ -913,10 +928,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const preRelease = parts[1] || '';
                 let preReleaseNum = preRelease.includes('alpha') ? 1 :
                                     preRelease.includes('beta') ? 2 :
-                                    preRelease.includes('rc') ? 3 :
-                                    preRelease.includes('preview') ? 4 : 
+                                    /^r\d+$/i.test(preRelease) ? 3 :
+                                    preRelease.includes('rc') ? 4 :
+                                    preRelease.includes('preview') ? 5 : 
                                     /^[a-f0-9]{7,}$/.test(preRelease) ? 0 :
-                                    /^r\d+$/i.test(preRelease) ? 5 : // r1, r2, r3...
                                     Infinity;
                 return { main: mainVersion, preRelease, preReleaseNum };
             };
@@ -937,6 +952,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (curParsed.preReleaseNum < latParsed.preReleaseNum) return -1;
 
             if (/^r\d+$/i.test(curParsed.preRelease) && /^r\d+$/i.test(latParsed.preRelease)) {
+                const curNum = parseInt(curParsed.preRelease.replace(/\D+/g, ''), 10) || 0;
+                const latNum = parseInt(latParsed.preRelease.replace(/\D+/g, ''), 10) || 0;
+                if (curNum > latNum) return 1;
+                if (curNum < latNum) return -1;
+            }
+
+            if (/^rc\d+$/i.test(curParsed.preRelease) && /^rc\d+$/i.test(latParsed.preRelease)) {
                 const curNum = parseInt(curParsed.preRelease.replace(/\D+/g, ''), 10) || 0;
                 const latNum = parseInt(latParsed.preRelease.replace(/\D+/g, ''), 10) || 0;
                 if (curNum > latNum) return 1;

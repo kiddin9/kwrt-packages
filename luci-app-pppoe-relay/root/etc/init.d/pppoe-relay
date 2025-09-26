@@ -25,5 +25,5 @@ start() {
 }
 
 stop() {
-	killall  pppoe-relay
+	killall -9 pppoe-relay
 }

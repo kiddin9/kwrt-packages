@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-turboacc
-PKG_RELEASE:=19
+PKG_RELEASE:=20
 PKG_FLAGS:=nonshared
 
 PKG_LICENSE:=GPL-3.0-only

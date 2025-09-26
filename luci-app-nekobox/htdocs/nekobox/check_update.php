@@ -1,62 +1,48 @@
 <?php
-function getCurrentVersion() {
-    $packageName = 'luci-app-nekobox';
-    $command = "opkg list-installed | grep $packageName";
-    $output = shell_exec($command . ' 2>&1');
+$repo_owner = "Thaolga";
+$repo_name = "openwrt-nekobox";
+$package_name = "luci-app-nekobox";
+$json_file = __DIR__ . "/version_debug.json";
 
-    if ($output === null || empty($output)) {
-        return "Error";
+function getCurrentVersion($package_name) {
+    $output = shell_exec("opkg list-installed | grep " . escapeshellarg($package_name) . " 2>&1");
+    if (!$output) return "Error";
+    foreach (explode("\n", $output) as $line) {
+        if (preg_match('/' . preg_quote($package_name, '/') . '\s*-\s*([^\s]+)/', $line, $m)) {
+            return $m[1];
+        }
     }
-
-    $parts = explode(' - ', $output);
-    if (count($parts) >= 2) {
-        return cleanVersion($parts[1]);
-    }
-
     return "Error";
 }
 
-function getLatestVersion() {
-    $url = "https://github.com/Thaolga/openwrt-nekobox/releases";
-    $html = shell_exec("curl -m 10 -s $url");
-
-    if ($html === null || empty($html)) {
-        return "Error";
+function getLatestVersionFromAssets($repo_owner, $repo_name, $package_name) {
+    $api_url = "https://api.github.com/repos/$repo_owner/$repo_name/releases/latest";
+    $json = shell_exec("curl -H 'User-Agent: PHP' -s " . escapeshellarg($api_url) . " 2>/dev/null");
+    if (!$json) return "Error";
+    $data = json_decode($json, true);
+    if (!isset($data['assets'])) return "Error";
+    foreach ($data['assets'] as $asset) {
+        $name = $asset['name'] ?? '';
+        if (strpos($name, $package_name) !== false) {
+            if (preg_match('/' . preg_quote($package_name, '/') . '[_-]v?(\d+\.\d+\.\d+(?:-(?:r|rc)\d+)?)/i', $name, $m)) {
+                return $m[1];
+            }
+        }
     }
-
-    preg_match('/\/releases\/tag\/([\d\.]+)/', $html, $matches);
-    if (isset($matches[1])) {
-        return cleanVersion($matches[1]);
-    }
-
     return "Error";
 }
 
-function cleanVersion($version) {
-    $version = explode('-', $version)[0];
-    return preg_replace('/[^0-9\.]/', '', $version);
-}
+$current = getCurrentVersion($package_name);
+$latest  = getLatestVersionFromAssets($repo_owner, $repo_name, $package_name);
 
-$currentVersion = getCurrentVersion();
-$latestVersion = getLatestVersion();
+$result = [
+    'currentVersion' => $current,
+    'latestVersion'  => $latest,
+    'timestamp'      => time()
+];
 
-if ($currentVersion === "Error" || $latestVersion === "Error") {
-    $response = [
-        'currentVersion' => $currentVersion,
-        'latestVersion' => $latestVersion,
-        'hasUpdate' => false,
-        'error' => 'Failed to fetch version information'
-    ];
-} else {
-    $hasUpdate = (version_compare($currentVersion, $latestVersion, '<')) ? true : false;
+file_put_contents($json_file, json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-    $response = [
-        'currentVersion' => $currentVersion,
-        'latestVersion' => $latestVersion,
-        'hasUpdate' => $hasUpdate
-    ];
-}
-
-header('Content-Type: application/json');
-echo json_encode($response);
+header("Content-Type: application/json");
+echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 ?>
