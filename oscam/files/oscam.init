@@ -8,5 +8,5 @@ start() {
 }
 
 stop() {
-	kill `pidof oscam | sed "s/$$//"`
+	kill `pidof oscam | sed "s/$$//g"`
 }
