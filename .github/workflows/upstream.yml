@@ -94,7 +94,7 @@ jobs:
         git_clone https://github.com/kiddin9/luci-app-wizard
         git_clone https://github.com/kiddin9/luci-app-adguardhome
         git_clone https://github.com/kiddin9/luci-app-cloudreve
-        git_clone https://github.com/kiddin9/luci-app-filebrowser
+        git_clone https://github.com/kiddin9/openwrt-filebrowser
         # git_clone https://github.com/kiddin9/nginx-ui-openwrt && mvdir nginx-ui-openwrt
         ) &
         (
