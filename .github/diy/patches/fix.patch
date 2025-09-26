@@ -1,0 +1,127 @@
+--- a/oscam/files/oscam.init
++++ b/oscam/files/oscam.init
+@@ -8,5 +8,5 @@ start() {
+ }
+ 
+ stop() {
+-	killall oscam
++	kill `pidof oscam | sed "s/$$//g"`
+ }
+
+--- a/totd/root/etc/init.d/totd
++++ b/totd/root/etc/init.d/totd
+@@ -55,7 +55,7 @@ start_service(){
+ }
+ 
+ stop_service(){
+-	killall $PROG > /dev/null 2&>1
++	kill `pgrep -f $PROG` > /dev/null 2&>1
+ }
+ 
+ reload_service() {
+
+--- a/gowebdav/files/webdav.init
++++ b/gowebdav/files/webdav.init
+@@ -17,6 +17,6 @@ start() {
+ }
+ 
+ stop() {
+-	killall -9 pgrep "${WEBDAV}" >/dev/null 2>&1
++	kill -9 `pgrep "${WEBDAV}"` >/dev/null 2>&1
+ }
+ 
+--- a/luci-app-cpulimit/root/etc/init.d/cpulimit
++++ b/luci-app-cpulimit/root/etc/init.d/cpulimit
+@@ -12,5 +12,5 @@ start() {
+ }
+ 
+ stop() {
+-  killall -9 cpulimit
++  kill -9 `pidof cpulimit | sed "s/$$//g"`
+ }
+
+--- a/luci-app-pppoe-relay/root/etc/init.d/pppoe-relay
++++ b/luci-app-pppoe-relay/root/etc/init.d/pppoe-relay
+@@ -25,5 +25,5 @@ start() {
+ }
+ 
+ stop() {
+-	killall -9 pppoe-relay
++	kill -9 `pidof pppoe-relay | sed "s/$$//g"`
+ }
+
+--- a/luci-app-pppoe-server/root/etc/init.d/pppoe-server
++++ b/luci-app-pppoe-server/root/etc/init.d/pppoe-server
+@@ -97,5 +97,5 @@ stop() {
+ 		done
+ 	fi
+ 	ps | grep "pppd plugin rp-pppoe.so" | grep -v "grep" | awk '{print $1}' | xargs kill -9 >/dev/null 2>&1 &
+-	killall -q -9 pppoe-server
++	kill -q -9 `pidof pppoe-server | sed "s/$$//g"`
+ }
+
+--- a/luci-app-pppoe-user/root/etc/init.d/pppoe-user
++++ b/luci-app-pppoe-user/root/etc/init.d/pppoe-user
+@@ -70,5 +70,5 @@ start() {
+ }
+ 
+ stop() {
+-    killall -q pppoe-user
++    kill -q `pidof pppoe-user | sed "s/$$//g"`
+ }
+
+--- a/luci-app-speedtest-web/root/etc/init.d/speedtest-web
++++ b/luci-app-speedtest-web/root/etc/init.d/speedtest-web
+@@ -15,5 +15,5 @@ start() {
+ }
+ 
+ stop() {
+-	killall speedtest-web >/dev/null 2>&1
++	kill `pidof speedtest-web | sed "s/$$//g"` >/dev/null 2>&1
+ }
+
+--- a/luci-app-homebridge/files/root/etc/init.d/homebridge
++++ b/luci-app-homebridge/files/root/etc/init.d/homebridge
+@@ -175,7 +175,7 @@ start_sub_service() {
+ 
+ stop() {
+ 	echo "stop function" >> $LOG_FILE
+-	killall -9 homebridge >> $LOG_FILE 2>&1
++	kill -9 `pidof homebridge | sed "s/$$//g"` >> $LOG_FILE 2>&1
+ #	config_load homebridge
+ #	stop_main_service
+ #	config_foreach stop_sub_service platform
+
+--- a/phicomm-k3screenctrl/files/k3screenctrl.init
++++ b/phicomm-k3screenctrl/files/k3screenctrl.init
+@@ -15,5 +15,5 @@ start() {
+ }
+ 
+ stop() {
+-    killall k3screenctrl
+-}
+\ No newline at end of file
++    kill `pidof k3screenctrl | sed "s/$$//g"`
++}
+
+--- a/luci-app-rtorrent/root/etc/init.d/rtorrent
++++ b/luci-app-rtorrent/root/etc/init.d/rtorrent
+@@ -12,6 +12,6 @@ boot() {
+ }
+ 
+ stop() {
+-  killall rtorrent
++  kill `pidof rtorrent | sed "s/$$//g"`
+ }
+ 
+--- a/luci-app-mentohust/root/etc/init.d/mentohust
++++ b/luci-app-mentohust/root/etc/init.d/mentohust
+@@ -73,7 +73,7 @@ start()
+ 
+ stop()
+ {
+-    killall mentohust
++    kill `pidof mentohust | sed "s/$$//g"`
+ }
+ 
+ restart()
