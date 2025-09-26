@@ -453,7 +453,7 @@ stop() {
 	/usr/share/xclient/iptables.sh -f
 	$PS -w | grep -v "grep" | grep monitor | awk '{print $1}' | xargs kill -9 >/dev/null 2>&1 &
 	$PS -w | grep -v "grep" | grep "$TMP_PATH" | awk '{print $1}' | xargs kill -9 >/dev/null 2>&1 &
-	killall -q -9 xray-plugin
+	killall -q -3 xray-plugin
 	rm -f /var/lock/monitor.lock
 	if [ -f "/tmp/dnsmasq.d/dnsmasq-xclient.conf" ]; then
 		rm -rf /tmp/dnsmasq.d/dnsmasq-xclient.conf $TMP_DNSMASQ_PATH $TMP_PATH/*-xclient-*.json

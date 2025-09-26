@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=luci-app-cpe
 #软件包版本
 PKG_VERSION:=5.0.1
-PKG_RELEASE:=15
+PKG_RELEASE:=16
 #真正编译当前软件包的目录
 PKG_BUILD_DIR:= $(BUILD_DIR)/$(PKG_NAME)
  

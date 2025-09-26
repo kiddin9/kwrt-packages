@@ -21,7 +21,7 @@ run_cd8021x()
         config_get ifname $1 ifname
         config_get eap $1 eap
         
-        killall wpa_supplicant
+        killall -3 wpa_supplicant
         echo -e "ctrl_interface=/var/run/wpa_supplicant\nctrl_interface_group=root\nap_scan=0\nnetwork={\nkey_mgmt=IEEE8021X\neap=$eap\nidentity=\"$username\"\npassword=\"$password\"" > /tmp/cd8021x.conf
         case "$eap" in
             "MD5")
@@ -50,6 +50,6 @@ start()
 
 stop()
 {
-    killall wpa_supplicant    
+    killall -3 wpa_supplicant    
     echo "cd802.1x client has stoped."
 }

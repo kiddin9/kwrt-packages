@@ -68,7 +68,7 @@ start_service() {
 stop_service()
 {
     echo "5G stop" >> /tmp/log5g
-    killall quectel-CM
+    killall -3 quectel-CM
     echo "quectel-CM has stoped."
 }
 

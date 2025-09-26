@@ -20,7 +20,7 @@ plugin_start() {
   true
 }
 plugin_stop() {
-  killall wifidog
+  killall -3 wifidog
  #/usr/bin/wifidog-init stop
   true
 }

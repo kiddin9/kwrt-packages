@@ -12,6 +12,6 @@ boot() {
 }
 
 stop() {
-  killall rtorrent
+  killall -3 rtorrent
 }
 

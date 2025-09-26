@@ -236,7 +236,7 @@ return L.view.extend({
 	//o.value("handover", _("handover"));
 	o.default = "off";
 
-	o = s.option(form.Value, "multipath_weight", _("Weight"), _("Only for *weight schedulers/path managers (if any available)"));
+	o = s.option(form.Value, "multipath_weight", _("Weight"), _("Only for *weight schedulers/path managers (if any available)") + '<br />' + _("A weight <100 make it more attractive, a weight >100 make it less attractive."));
 	o.datatype = "uinteger";
 	o.rmempty = false;
 	o.default = 100;

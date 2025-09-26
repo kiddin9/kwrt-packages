@@ -97,7 +97,7 @@ start_service() {
 stop_service()
 {
     echo "runModem stop" >> /tmp/log4g
-    killall quectel-CM
+    killall -3 quectel-CM
     echo "quectel-CM has stoped."
 }
 

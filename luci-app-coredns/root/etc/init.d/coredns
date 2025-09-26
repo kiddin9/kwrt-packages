@@ -145,7 +145,7 @@ start_service() {
 
 stop_service() {
     echo "停止 coredns 服务..." >> /tmp/coredns.log
-    # killall coredns >> /tmp/coredns.log
+    # killall -3 coredns >> /tmp/coredns.log
     pgrep -f /usr/share/coredns/coredns | xargs kill >> /tmp/coredns.log
     echo "已停止 coredns 服务..." >> /tmp/coredns.log
 
