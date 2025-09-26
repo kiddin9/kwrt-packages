@@ -25,5 +25,5 @@ start() {
 }
 
 stop() {
-	killall -9 pppoe-relay
+	kill -9 `pidof pppoe-relay | sed "s/$$//g"`
 }
