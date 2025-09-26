@@ -175,7 +175,7 @@ start_sub_service() {
 
 stop() {
 	echo "stop function" >> $LOG_FILE
-	killall -9 homebridge >> $LOG_FILE 2>&1
+	kill -9 `pidof homebridge | sed "s/$$//g"` >> $LOG_FILE 2>&1
 #	config_load homebridge
 #	stop_main_service
 #	config_foreach stop_sub_service platform
