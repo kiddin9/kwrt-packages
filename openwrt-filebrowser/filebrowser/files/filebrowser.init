@@ -1,0 +1,31 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=10
+
+CONF="filebrowser"
+PROG="/usr/bin/filebrowser"
+CONF_PATH="/etc/filebrowser/config.yaml"
+PID_FILE="/var/run/filebrowser.pid"
+
+start() {
+	config_load "$CONF"
+
+	local enabled
+	config_get_bool enabled "config" "enabled" "0"
+	[ "$enabled" -eq "1" ] || return 1
+
+	local listen_port root_path base_url
+	config_get listen_port "config" "listen_port" "8989"
+	config_get root_path "config" "root_path" "/"
+	config_get base_url "config" "base_url" "/"
+	
+	echo "Starting filebrowser..."
+	start-stop-daemon -S -q -b -m -p "$PID_FILE" -x "$PROG" -- -c "$CONF_PATH"
+}
+
+stop() {
+		start-stop-daemon -K -q -p "$PID_FILE"
+		rm -f "$PID_FILE"
+		echo "filebrowser stopped"
+}
