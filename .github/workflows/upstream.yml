@@ -94,7 +94,7 @@ jobs:
         git_clone https://github.com/kiddin9/luci-app-wizard
         git_clone https://github.com/kiddin9/luci-app-adguardhome
         git_clone https://github.com/kiddin9/luci-app-cloudreve
-        git_clone https://github.com/kiddin9/openwrt-filebrowser
+        git_clone https://github.com/kiddin9/openwrt-filebrowser && mvdir /openwrt-filebrowser
         # git_clone https://github.com/kiddin9/nginx-ui-openwrt && mvdir nginx-ui-openwrt
         ) &
         (
@@ -391,7 +391,7 @@ jobs:
       run: |
         shopt -s extglob
         set +e
-        mv -n applications/!(luci-app-noddos|luci-app-openvpn-server|luci-app-chrony|luci-app-kodexplorer|luci-app-cshark|luci-app-dnscrypt-proxy|luci-app-https-dns-proxy|luci-app-ssr-mudb-server|luci-app-ledtrig-*|luci-app-antiblock) ./ ; rm -Rf applications
+        mv -n applications/!(luci-app-noddos|luci-app-filebrowser-go|luci-app-openvpn-server|luci-app-chrony|luci-app-kodexplorer|luci-app-cshark|luci-app-dnscrypt-proxy|luci-app-https-dns-proxy|luci-app-ssr-mudb-server|luci-app-ledtrig-*|luci-app-antiblock) ./ ; rm -Rf applications
         mv -n lean/!(r8101|r8125|r8126|r8168) ./ ; rm -Rf lean
         mv -n liep/!(luci-app-filebrowser) ./ ; rm -Rf liep
         mv -n openwrt-app-actions/applications/* ./;rm -rf openwrt-app-actions
