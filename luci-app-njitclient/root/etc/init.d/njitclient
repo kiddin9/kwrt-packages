@@ -35,8 +35,8 @@ start()
 
 stop()
 {
-	killall -3 njit-client
-	killall -3 udhcpc
+	killall njit-client
+	killall udhcpc
 	
 	echo "NJIT Client has stoped."
 }

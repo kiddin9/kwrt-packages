@@ -759,7 +759,7 @@ stop_service()
 	#删除记录文件
 	rm -rf ${MODEM_RUN_CONFIG}
 	#停止qmi、mbim拨号
-	killall -3 quectel-CM >/dev/null 2>&1
+	killall quectel-CM >/dev/null 2>&1
 	#停止gobinet、ecm、rndis、ncm拨号
 	local modem_number=$(uci -q get modem.@global[0].modem_number)
 	for i in $(seq 0 $((modem_number-1))); do
