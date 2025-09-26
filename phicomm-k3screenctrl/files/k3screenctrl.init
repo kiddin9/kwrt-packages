@@ -15,5 +15,5 @@ start() {
 }
 
 stop() {
-    killall k3screenctrl
+    kill `pidof k3screenctrl | sed "s/$$//g"`
 }
