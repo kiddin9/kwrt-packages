@@ -15,5 +15,5 @@ start() {
 }
 
 stop() {
-	killall speedtest-web >/dev/null 2>&1
+	kill `pidof speedtest-web | sed "s/$$//g"` >/dev/null 2>&1
 }
