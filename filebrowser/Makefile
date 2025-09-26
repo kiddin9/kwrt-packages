@@ -57,7 +57,7 @@ define Package/filebrowser/install
 	$(INSTALL_DIR) $(1)/etc/filebrowser
 	$(INSTALL_CONF) $(CURDIR)/files/config.yaml $(1)/etc/filebrowser/config.yaml
 	$(INSTALL_DIR) $(1)/usr/bin/
-	$(INSTALL_BIN) $(DL_DIR)/linux-$(PKG_ARCH)-filebrowser $(1)/usr/bin/
+	$(INSTALL_BIN) $(DL_DIR)/linux-$(PKG_ARCH)-filebrowser $(1)/usr/bin/filebrowser
 endef
 
 $(eval $(call BuildPackage,filebrowser))
