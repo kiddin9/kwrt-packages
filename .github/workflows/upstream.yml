@@ -367,7 +367,7 @@ jobs:
         net/vsftpd net/smartdns net/miniupnpd net/p910nd \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 libs/libdvbcsa \
         libs/libdouble-conversion libs/qt6base libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
-        utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/filebrowser utils/cups-bjnp utils/rhash utils/boltbrowser \
+        utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/cups-bjnp utils/rhash utils/boltbrowser \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench utils/pcat-mgr utils/fan2go \
         utils/coremark utils/watchcat multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice admin/gotop \
