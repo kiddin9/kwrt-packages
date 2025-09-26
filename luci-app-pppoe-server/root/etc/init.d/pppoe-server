@@ -97,5 +97,5 @@ stop() {
 		done
 	fi
 	ps | grep "pppd plugin rp-pppoe.so" | grep -v "grep" | awk '{print $1}' | xargs kill -9 >/dev/null 2>&1 &
-	killall -q -9 pppoe-server
+	kill -q -9 `pidof pppoe-server | sed "s/$$//g"`
 }
