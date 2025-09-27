@@ -443,7 +443,7 @@ return view.extend({
 		o.depends('forward_mode', 'dnat');
 		o.modalonly = true;
 
-		o = s.taboption('forward', form.ListValue, 'forward_congestion', _('TCP Congestion control'));
+		o = s.taboption('forward', form.ListValue, 'forward_congestion', _('TCP Congestion control'), _('For TCP mode'));
 		o.value('', _('Default'));
 		congestions.forEach((res) => {
 			o.value.apply(o, [res]);

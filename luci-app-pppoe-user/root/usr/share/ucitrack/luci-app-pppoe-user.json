@@ -1,0 +1,4 @@
+{
+	"config": "pppoe-user",
+	"init": "pppoe-user"
+}

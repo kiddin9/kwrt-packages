@@ -8,7 +8,7 @@ LUCI_DEPENDS:=+wifidog
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-wifidog
 PKG_VERSION:=2.0
-PKG_RELEASE:=12
+PKG_RELEASE:=13
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

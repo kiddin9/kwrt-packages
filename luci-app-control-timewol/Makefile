@@ -9,7 +9,7 @@ LUCI_TITLE:=LuCI support for Timewol
 LUCI_DEPENDS:=+etherwake
 LUCI_PKGARCH:=all
 PKG_VERSION:=1.1
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

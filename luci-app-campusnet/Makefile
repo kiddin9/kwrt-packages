@@ -9,7 +9,7 @@ LUCI_TITLE:=LuCI app for UJN China-Unicom certification
 LUCI_PKGARCH:=all
 LUCI_DEPENDS:=+python3 +python3-requests +curl
 PKG_VERSION:=20240319
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 PKG_DATE:=20240319
 
 PKG_MAINTAINER:=nicholas9698 <nicholas9698@outlook.com>

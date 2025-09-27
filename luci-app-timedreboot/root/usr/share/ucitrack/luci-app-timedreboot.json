@@ -1,0 +1,4 @@
+{
+	"config": "timedreboot",
+	"init": "timedreboot"
+}

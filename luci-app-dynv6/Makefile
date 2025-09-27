@@ -9,7 +9,7 @@ LUCI_TITLE:=dynv6 ddns script
 LUCI_DEPENDS:= +luci-compat
 
 PKG_VERSION:=1.0.0
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 PKG_MAINTAINER:=luochongjun <luochongjun@gl-inet.com>
 
 define Package/luci-app-dynv6/postinst

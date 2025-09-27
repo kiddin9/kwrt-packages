@@ -10,7 +10,7 @@ LUCI_DEPENDS:=+pppwn-cpp
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-pppwn
 PKG_VERSION:=1
-PKG_RELEASE:=13
+PKG_RELEASE:=14
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
