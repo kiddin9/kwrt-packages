@@ -1,6 +1,5 @@
 #!/bin/bash
-# [CTCGFW]Project-OpenWrt
-# Use it under GPLv3, please.
+# SPDX-License-Identifier: GPL-2.0-only
 # --------------------------------------------------------
 # Script for creating ACL file for each LuCI APP
 
@@ -52,7 +51,7 @@ function create_acl_file(){
 }
 
 function auto_create_acl(){
-	luci_app_list="$(find ./ -maxdepth 2 | grep -Eo ".*luci-app-[a-zA-Z0-9_-]+" | sort -s)"
+	luci_app_list="$(find ./ -maxdepth 1 | grep -Eo "luci-app-[a-zA-Z0-9_-]+" | sort -s)"
 
 	[ "$(echo -e "${luci_app_list}" | wc -l)" -gt "0" ] && for i in ${luci_app_list}
 	do

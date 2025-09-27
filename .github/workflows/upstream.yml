@@ -479,6 +479,7 @@ jobs:
         chmod +x github/diy/*.sh
         bash .github/diy/create_acl_for_luci.sh -a >/dev/null 2>&1 || true
         bash .github/diy/convert_translation.sh -a >/dev/null 2>&1 || true
+        bash .github/diy/create_ucitrack_for_luci.sh -a >/dev/null 2>&1 || true
         bash .github/diy/generate_ucitrack.sh -a >/dev/null 2>&1 || true
         chmod -R +x luci-*/root/etc/init.d/ luci-*/root/bin/ luci-*/root/sbin/ luci-*/root/usr/libexec/ luci-*/root/usr/bin/ luci-*/root/usr/sbin/
         find . -path "./luci-*/root/usr/share/*" -name "*.sh" -type f -exec chmod +x {} \;
