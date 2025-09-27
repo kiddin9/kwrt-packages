@@ -147,7 +147,8 @@ jobs:
         git_clone https://github.com/brvphoenix/luci-app-wrtbwmon wrtbwmon1 && mvdir wrtbwmon1
         git_clone https://github.com/brvphoenix/wrtbwmon wrtbwmon2 && mvdir wrtbwmon2
         git_clone https://github.com/muink/openwrt-fastfetch
-        git_clone https://github.com/timsaya/luci-app-bandix bandix && mv -f bandix/luci-app-bandix ./;rm -rf bandix
+        git_clone https://github.com/timsaya/luci-app-bandix bandix1 && mv -f bandix1/luci-app-bandix ./;rm -rf bandix1
+        git_clone https://github.com/timsaya/openwrt-bandix bandix2 && mv -f bandix2/openwrt-bandix ./;rm -rf bandix2
         ) &
         (
         git_clone https://github.com/everburstSun/tencentcloud-openwrt-plugin-ddns && mv -n tencentcloud-openwrt-plugin-ddns/tencentcloud_ddns ./luci-app-tencentddns; rm -rf tencentcloud-openwrt-plugin-ddns
