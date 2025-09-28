@@ -13,21 +13,39 @@ reload_service() {
 }
 
 start_service() {
-	local enabled
-	local interface
+	local iface
 	local port
+	local data_dir
+	local traffic_enabled
+	local traffic_retention_seconds
+	local connections_enabled
 	
 	config_load 'bandix'
-	config_get_bool enabled 'general' 'enabled'
+	config_get iface 'general' 'iface'
 	config_get port 'general' 'port'
-	config_get interface 'general' 'interface'
-	config_get retention_seconds 'general' 'retention_seconds'
 	config_get data_dir 'general' 'data_dir'
+	config_get_bool traffic_enabled 'traffic' 'enabled'
+	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
+	config_get_bool connections_enabled 'connections' 'enabled'
 	
-	[ "$enabled" -eq 1 ] || return 1
+	# 构建基础命令行参数
+	local args="--iface $iface --port $port --data-dir $data_dir"
+	
+	# 添加流量监控相关参数
+	if [ "$traffic_enabled" -eq 1 ]; then
+		args="$args --enable-traffic"
+	fi
+	if [ -n "$traffic_retention_seconds" ]; then
+		args="$args --traffic-retention-seconds $traffic_retention_seconds"
+	fi
+	
+	# 添加连接统计监控参数
+	if [ "$connections_enabled" -eq 1 ]; then
+		args="$args --enable-connection"
+	fi
 	
 	procd_open_instance bandix
-	procd_set_param command $PROG --iface $interface --port $port --retention-seconds $retention_seconds --data-dir $data_dir
+	procd_set_param command $PROG $args
 	procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-5}
 	procd_set_param stderr 1
 	procd_set_param stdout 1
