@@ -31,6 +31,7 @@ Supported devices:
 - Quectel RM502Q-GL
 - Quectel RM505Q-AE
 - Quectel RM520N-GL
+- Quectel RM551E-GL
 - Sierra Wireless EM7455/MC7455/DW5811e
 - SIMCOM SIM8200EA-M2
 - Telit LM940
