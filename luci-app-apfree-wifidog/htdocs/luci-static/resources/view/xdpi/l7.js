@@ -200,24 +200,24 @@ return view.extend({
 			
 			data.data.forEach(function(item) {
 				// Get domain name or protocol description from lookup table or fallback to original data
-				var domainOrProto = 'unknown';
+				var domainOrL7Proto = 'unknown';
 				var lookupInfo = sidLookupTable[item.sid];
 				
 				if (lookupInfo) {
 					// Use lookup table information (preferred)
-					domainOrProto = lookupInfo.name;
+					domainOrL7Proto = lookupInfo.name;
 				} else if (item.sid_type === 'Domain' && item.domain && item.domain !== 'unknown') {
 					// Fallback to domain field if available and not "unknown"
-					domainOrProto = item.domain;
+					domainOrL7Proto = item.domain;
 				} else if (item.sid_type === 'L7' && item.l7_proto_desc && item.l7_proto_desc !== 'unknown') {
-					// Fallback to protocol description if available and not "unknown"
-					domainOrProto = item.l7_proto_desc;
+					// Fallback to L7 protocol description if available and not "unknown"
+					domainOrL7Proto = item.l7_proto_desc;
 				}
 				
 				// outgoing is upload (rx), incoming is download (tx)
 				rows.push([
 					item.sid,
-					domainOrProto,
+					domainOrL7Proto,
 					// Download (incoming) data
 					[ item.incoming.rate, '%1024.2mbps'.format(item.incoming.rate) ],
 					[ item.incoming.total_bytes, '%1024.2mB'.format(item.incoming.total_bytes) ],
@@ -228,16 +228,16 @@ return view.extend({
 					[ item.outgoing.total_packets, '%1000.2mP'.format(item.outgoing.total_packets) ]
 				]);
 
-				// txData is for download pie chart (incoming)
+				// txData is for download pie chart (incoming) - shows domain/protocol distribution
 				txData.push({
 					value: item.incoming.rate,
-					label: domainOrProto // Just use domain/protocol as label, Chart.js will add the value itself
+					label: domainOrL7Proto // Use domain/protocol name as label for chart display
 				});
 
-				// rxData is for upload pie chart (outgoing)
+				// rxData is for upload pie chart (outgoing) - shows domain/protocol distribution
 				rxData.push({
 					value: item.outgoing.rate,
-					label: domainOrProto // Just use domain/protocol as label, Chart.js will add the value itself
+					label: domainOrL7Proto // Use domain/protocol name as label for chart display
 				});
 
 				// Update totals
@@ -313,9 +313,8 @@ return view.extend({
 					
 					rows.push([
 						item.id,
-						item.protocol,
-						item.sid,
-						'-' // Empty domain field for protocol entries
+						item.protocol, // Show protocol name in the combined column
+						item.sid
 					]);
 				});
 			}
@@ -331,9 +330,8 @@ return view.extend({
 					
 					rows.push([
 						item.id,
-						'-', // Empty protocol field for domain entries
-						item.sid,
-						item.domain
+						item.domain, // Show domain name in the combined column
+						item.sid
 					]);
 				});
 			}
@@ -444,7 +442,7 @@ return view.extend({
 					E('table', { 'class': 'table', 'id': 'sid-data' }, [
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left' }, [ _('SID') ]),
-							E('th', { 'class': 'th left' }, [ _('Domain') ]),
+							E('th', { 'class': 'th left' }, [ _('Domain&L7Protocol') ]),
 							E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
 							E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
@@ -464,12 +462,11 @@ return view.extend({
 					E('table', { 'class': 'table', 'id': 'l7proto-data' }, [
 						E('tr', { 'class': 'tr table-titles' }, [
 							E('th', { 'class': 'th left' }, [ _('ID') ]),
-							E('th', { 'class': 'th left' }, [ _('Protocol') ]),
-							E('th', { 'class': 'th right' }, [ _('SID') ]),
-							E('th', { 'class': 'th left' }, [ _('Domain') ])
+							E('th', { 'class': 'th left' }, [ _('Domain&L7Protocol') ]),
+							E('th', { 'class': 'th right' }, [ _('SID') ])
 						]),
 						E('tr', { 'class': 'tr placeholder' }, [
-							E('td', { 'class': 'td', 'colspan': '4' }, [
+							E('td', { 'class': 'td', 'colspan': '3' }, [
 								E('em', { 'class': 'spinning' }, [ _('Collecting data...') ])
 							])
 						])

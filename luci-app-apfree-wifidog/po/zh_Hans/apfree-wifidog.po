@@ -1,4 +1,33 @@
-# apfree-wifidog msgid "Log Level"
+# Translations for LuCI
+# Copyright (C) 2022 Jo-Philipp Wich <jo@mein.io>
+# This file is distributed under the Apache License, Version 2.0.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: apfree-wifidog 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-16 00:00+0000\n"
+"PO-Revision-Date: 2025-03-16 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "apfree-wifidog"
+msgstr "门户认证"
+
+msgid "ApFree-WiFiDog"
+msgstr "门户认证"
+
+msgid "apfree-wifidog offers a stable and secure captive portal solution."
+msgstr "apfree-wifidog 提供了一个稳定安全的门户认证解决方案"
+
+msgid "Enable apfree-wifidog service."
+msgstr "启用apfree-wifidog门户认证服务"
+
+msgid "Log Level"
 msgstr "日志级别"
 
 msgid "The log level of the apfree-wifidog."
@@ -43,6 +72,9 @@ msgstr "启用网关的认证功能"
 msgid "Gateway Name"
 msgstr "网关名称"
 
+msgid "The name of the gateway."
+msgstr "开启认证的网关所属网络区域"
+
 msgid "Gateway Channel"
 msgstr "网关通道"
 
@@ -55,17 +87,110 @@ msgstr "网关IPv4子网"
 msgid "The ipv4 subnet of the gateway."
 msgstr "网关的IPv4子网"
 
+msgid "Gateway ID"
+msgstr "网关 ID"
+
+msgid "The ID of the gateway."
+msgstr "网关的ID（一般为设备的MAC地址）"
+
+msgid "Channel Path"
+msgstr "用户渠道"
+
+msgid "The channel path of the gateway."
+msgstr "网关的用户渠道"
+
+msgid "Auth Server Hostname"
+msgstr "认证服务器主机名"
+
+msgid "The domain or IP address of the authentication server."
+msgstr "认证服务器的域名或 IP 地址"
+
+msgid "Auth Server Port"
+msgstr "认证服务器端口"
+
+msgid "The port of the authentication server."
+msgstr "认证服务器的端口"
+
+msgid "Auth Server URI path"
+msgstr "认证服务器URI路径"
+
+msgid "The URI path of the authentication server."
+msgstr "认证服务器的URI路径"
+
+msgid "Trusted Domains"
+msgstr "信任的域名"
+
+msgid "The trusted domains of the gateway"
+msgstr "网关的信任域名"
+
+msgid "The trusted domains of the gateway, for example: \"www.baidu.com,www.qq.com,...\"."
+msgstr "域名白名单（多域名用逗号分隔），例如：\"www.baidu.com,www.qq.com,...\""
+
+msgid "Trusted MACs"
+msgstr "信任的MAC地址"
+
+msgid "The trusted MAC addresses of the gateway"
+msgstr "网关的 MAC 地址白名单"
+
+msgid "The trusted MAC addresses of the gateway, for example: \"00:11:22:33:44:55,66:77:88:99:00:11,...\"."
+msgstr "MAC 地址白名单（多 MAC 地址用逗号分隔），例如：\"00:11:22:33:44:55,66:77:88:99:00:11,...\""
+
+msgid "running..."
+msgstr "运行中"
+
+msgid "not running..."
+msgstr "未运行"
+
+msgid "Value"
+msgstr "值"
+
+msgid "Internet Connectivity"
+msgstr "互联网连接"
+
+msgid "Auth server reachable"
+msgstr "认证服务器可达"
+
+msgid "Authentication servers"
+msgstr "认证服务器"
+
 msgid "Enable Wildcard Domain"
 msgstr "启用通配符域名"
 
 msgid "Enable wildcard domain support."
 msgstr "启用通配符域名支持"
 
+msgid "Trusted Wildcard Domains"
+msgstr "信任的通配符域名"
+
+msgid "The trusted wildcard domains of the gateway."
+msgstr "网关的信任通配符域名"
+
+msgid "App White List"
+msgstr "应用白名单"
+
+msgid "The app white list of the gateway."
+msgstr "网关的应用白名单"
+
+msgid "MAC White List"
+msgstr "MAC白名单"
+
+msgid "The MAC white list of the gateway."
+msgstr "网关的MAC白名单"
+
+msgid "Wildcard White List"
+msgstr "通配符白名单"
+
+msgid "The wildcard domain white list of the gateway."
+msgstr "网关的通配符域名白名单"
+
 msgid "Check Interval"
 msgstr "检查间隔"
 
 msgid "The interval of the check(s)."
 msgstr "检查的时间间隔（秒）"
+
+msgid "Check Timeout"
+msgstr "检查超时"
 
 msgid "Client Timeout"
 msgstr "客户端超时"
@@ -91,6 +216,12 @@ msgstr "JS过滤"
 msgid "Enable JS redirect."
 msgstr "启用JS重定向"
 
+msgid "Enable WebSocket"
+msgstr "启用 Websocket"
+
+msgid "Enable websocket support."
+msgstr "启用 Websocket 支持, 用于实现认证服务器端放行功能"
+
 msgid "Enable Anti NAT"
 msgstr "启用防NAT"
 
@@ -102,6 +233,9 @@ msgstr "TTL值"
 
 msgid "The TTL value of the gateway support."
 msgstr "网关支持的TTL值"
+
+msgid "Bypass Auth"
+msgstr "旁认证"
 
 msgid "Anti NAT Permit MAC"
 msgstr "防NAT允许的MAC"
@@ -126,42 +260,6 @@ msgstr "全局QoS下行"
 
 msgid "The global QoS down value(Mbps)."
 msgstr "全局QoS下行速度（Mbps）"
-
-msgid "Trusted Wildcard Domains"
-msgstr "信任的通配符域名"
-
-msgid "The trusted wildcard domains of the gateway"
-msgstr "网关的信任通配符域名"
-
-msgid "Trusted Domains"
-msgstr "信任的域名"
-
-msgid "The trusted domains of the gateway"
-msgstr "网关的信任域名"
-
-msgid "Trusted MACs"
-msgstr "信任的MAC地址"
-
-msgid "The trusted wildcard domains of the gateway."
-msgstr "网关的信任通配符域名"
-
-msgid "App White List"
-msgstr "应用白名单"
-
-msgid "The app white list of the gateway."
-msgstr "网关的应用白名单"
-
-msgid "MAC White List"
-msgstr "MAC白名单"
-
-msgid "The MAC white list of the gateway."
-msgstr "网关的MAC白名单"
-
-msgid "Wildcard White List"
-msgstr "通配符白名单"
-
-msgid "The wildcard domain white list of the gateway."
-msgstr "网关的通配符域名白名单"
 
 msgid "WebSocket Hostname"
 msgstr "WebSocket主机名"
@@ -204,12 +302,6 @@ msgstr "设备ID"
 
 msgid "The ID of the device."
 msgstr "设备的ID"
-
-msgid "Auth Server URI path"
-msgstr "认证服务器URI路径"
-
-msgid "The URI path of the authentication server."
-msgstr "认证服务器的URI路径"
 
 msgid "Local Portal"
 msgstr "本地门户"
@@ -300,584 +392,6 @@ msgstr " 使用，请先从 "
 
 msgid " first."
 msgstr " 中移除。"
-
-msgid "Authentication Location Settings"
-msgstr "认证位置设置"
-
-msgid "AP Device ID"
-msgstr "AP设备编号"
-
-msgid "The unique identifier of the AP device. Must be 21 characters: 9-character vendor code + 12-character MAC address (uppercase)."
-msgstr "AP设备的唯一标识符。必须是21个字符：9个字符的厂商代码 + 12个字符的MAC地址（大写）。"
-
-msgid "AP Device ID must be exactly 21 characters long"
-msgstr "AP设备编号必须恰好为21个字符"
-
-msgid "AP Device ID must contain only uppercase letters and digits"
-msgstr "AP设备编号只能包含大写字母和数字"
-
-msgid "Last 12 characters must be a valid MAC address in uppercase hexadecimal format (e.g., 00E04C3B7D2F)"
-msgstr "最后12个字符必须是有效的大写十六进制MAC地址格式（例如：00E04C3B7D2F）"
-
-msgid "AP MAC Address"
-msgstr "AP MAC地址"
-
-msgid "The MAC address of the AP device. Must be 17 characters in format XX-XX-XX-XX-XX-XX (uppercase, separated by hyphens)."
-msgstr "AP设备的MAC地址。必须是17个字符，格式为XX-XX-XX-XX-XX-XX（大写，用连字符分隔）。"
-
-msgid "MAC address must be exactly 17 characters long"
-msgstr "MAC地址必须恰好为17个字符"
-
-msgid "MAC address must be in format XX-XX-XX-XX-XX-XX (uppercase hexadecimal separated by hyphens)"
-msgstr "MAC地址必须是格式XX-XX-XX-XX-XX-XX（大写十六进制，用连字符分隔）"
-
-msgid "MAC address should match the MAC address part (last 12 characters) in AP Device ID"
-msgstr "MAC地址应与AP设备编号中的MAC地址部分（最后12个字符）匹配"
-
-msgid "Mobile AP Longitude"
-msgstr "移动AP经度"
-
-msgid "The longitude coordinate using format: ±XXX.XXXXXX (3 integer digits + 6 decimal digits). Positive for East, negative for West."
-msgstr "经度坐标使用格式：±XXX.XXXXXX（3个整数位 + 6个小数位）。东经为正，西经为负。"
-
-msgid "Longitude must be a valid number"
-msgstr "经度必须是有效数字"
-
-msgid "Longitude must be between -180.000000 and 180.000000"
-msgstr "经度必须在-180.000000到180.000000之间"
-
-msgid "Longitude must be in format ±XXX.XXXXXX (3 integer digits + 6 decimal digits, e.g., 123.230000 or -133.000000). Suggested format: "
-msgstr "经度必须是格式±XXX.XXXXXX（3个整数位 + 6个小数位，例如：123.230000或-133.000000）。建议格式："
-
-msgid "Mobile AP Latitude"
-msgstr "移动AP纬度"
-
-msgid "The latitude coordinate using format: ±XXX.XXXXXX (3 integer digits + 6 decimal digits). Positive for North, negative for South."
-msgstr "纬度坐标使用格式：±XXX.XXXXXX（3个整数位 + 6个小数位）。北纬为正，南纬为负。"
-
-msgid "Latitude must be a valid number"
-msgstr "纬度必须是有效数字"
-
-msgid "Latitude must be between -90.000000 and 90.000000"
-msgstr "纬度必须在-90.000000到90.000000之间"
-
-msgid "Latitude must be in format ±XXX.XXXXXX (3 integer digits + 6 decimal digits, e.g., 39.900000 or -33.000000). Suggested format: "
-msgstr "纬度必须是格式±XXX.XXXXXX（3个整数位 + 6个小数位，例如：39.900000或-33.000000）。建议格式："
-
-msgid "RPC failed, trying direct method..."
-msgstr "RPC调用失败，尝试直接方法..."
-
-msgid "✓ Location coordinates obtained (direct): "
-msgstr "✓ 地理坐标获取成功（直接方法）："
-
-msgid "✗ Failed to get location via direct method"
-msgstr "✗ 直接方法获取地理位置失败"
-
-msgid "✗ Error parsing location data"
-msgstr "✗ 解析地理位置数据出错"
-
-msgid "✗ Network error in direct method"
-msgstr "✗ 直接方法网络错误"
-
-msgid "✗ All location methods failed"
-msgstr "✗ 所有地理位置获取方法都失败了"
-
-msgid "RPC failed, trying direct method..."
-msgstr "RPC调用失败，尝试直接方法..."
-
-msgid "✓ Location coordinates obtained (direct): "
-msgstr "✓ 地理坐标获取成功（直接方法）："
-
-msgid "✗ Failed to get location via direct method"
-msgstr "✗ 直接方法获取地理位置失败"
-
-msgid "✗ Error parsing location data"
-msgstr "✗ 解析地理位置数据出错"
-
-msgid "✗ Network error in direct method"
-msgstr "✗ 直接方法网络错误"
-
-msgid "✗ All location methods failed"
-msgstr "✗ 所有地理位置获取方法都失败了"
-
-msgid "✓ WAN MAC address obtained (fallback): "
-msgstr "✓ WAN口MAC地址获取成功（备用方法）："
-
-msgid "RPC failed, trying fallback..."
-msgstr "RPC调用失败，尝试备用方法..."
-
-msgid "Auto Fill All Fields"
-msgstr "一键自动填写"
-
-msgid "Automatically fill AP MAC address, Device ID, Longitude, and Latitude"
-msgstr "自动填写AP MAC地址、设备编号、经度和纬度"
-
-msgid "Getting device information and location data, please wait..."
-msgstr "正在获取设备信息和地理位置数据，请稍候..."
-
-msgid "Getting WAN MAC address..."
-msgstr "正在获取WAN口MAC地址..."
-
-msgid "Generating Device ID..."
-msgstr "正在生成设备编号..."
-
-msgid "Getting location coordinates..."
-msgstr "正在获取地理坐标..."
-
-msgid "✓ WAN MAC address obtained: "
-msgstr "✓ WAN口MAC地址获取成功："
-
-msgid "✓ Device ID generated: "
-msgstr "✓ 设备编号生成成功："
-
-msgid "✗ Failed to get WAN MAC address"
-msgstr "✗ 获取WAN口MAC地址失败"
-
-msgid "✗ Cannot generate Device ID without MAC address"
-msgstr "✗ 无法在没有MAC地址的情况下生成设备编号"
-
-msgid "✗ Error getting WAN MAC address: "
-msgstr "✗ 获取WAN口MAC地址时出错："
-
-msgid "✗ Cannot generate Device ID due to MAC error"
-msgstr "✗ 由于MAC地址错误无法生成设备编号"
-
-msgid "✓ Location coordinates obtained: "
-msgstr "✓ 地理坐标获取成功："
-
-msgid "✗ Failed to get location: "
-msgstr "✗ 获取地理位置失败："
-
-msgid "✗ Error getting location coordinates: "
-msgstr "✗ 获取地理坐标时出错："
-
-msgid "MAC Address: "
-msgstr "MAC地址："
-
-msgid "Device ID: "
-msgstr "设备编号："
-
-msgid "Longitude: "
-msgstr "经度："
-
-msgid "Latitude: "
-msgstr "纬度："
-
-msgid "Auto fill completed successfully! All fields have been filled."
-msgstr "自动填写完成！所有字段已成功填写。"
-
-msgid "Auto fill partially completed."
-msgstr "自动填写部分完成。"
-
-msgid "fields filled successfully."
-msgstr "个字段填写成功。"
-
-msgid "Auto fill failed. No fields could be filled. Please check your network connection and try again."
-msgstr "自动填写失败。无法填写任何字段。请检查网络连接并重试。"
-
-msgid "Auto Fill"
-msgstr "自动填写"
-
-msgid "Location ID"
-msgstr "上网服务场所编码"
-
-msgid "The unique identifier of the internet service location."
-msgstr "上网服务场所的唯一标识符。"
-
-msgid "Generating Location ID..."
-msgstr "正在生成上网服务场所编码..."
-
-msgid "✓ Location ID generated: "
-msgstr "✓ 上网服务场所编码生成成功："
-
-msgid "Location ID: "
-msgstr "上网服务场所编码："
-
-msgid "Location ID is required"
-msgstr "上网服务场所编码为必填项"
-
-msgid "Location ID must be exactly 14 digits long"
-msgstr "上网服务场所编码必须恰好为14位数字"
-
-msgid "Location ID must contain only digits (0-9)"
-msgstr "上网服务场所编码只能包含数字(0-9)"
-
-msgid "First 6 digits must be valid administrative division code (GB/T 2260)"
-msgstr "前6位必须是有效的行政区划代码(GB/T 2260)"
-
-msgid "Service type code (7-9 digits) must be \"100\" for commercial internet service locations, \"2XX\" for non-commercial locations, or \"3XX\" for WiFi wireless collection terminals"
-msgstr "服务类型代码(第7-9位)必须是\"100\"(经营性场所)、\"2XX\"(非经营性场所)或\"3XX\"(WiFi无线采集前端)"
-
-msgid "Last 5 digits must be sequence number (00000-99999)"
-msgstr "最后5位必须是序列号(00000-99999)"
-
-msgid "Automatically fill AP MAC address, Device ID, Location ID, Longitude, and Latitude"
-msgstr "自动填写AP MAC地址、设备编号、上网服务场所编码、经度和纬度"
-
-# apfree-wifidog package 
-msgid "apfree-wifidog"
-msgstr "门户认证"nslations for LuCI
-# Copyright (C) 2022 Jo-Philipp Wich <jo@mein.io>
-# This file is distributed under the Apache License, Version 2.0.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: apfree-wifidog 1.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-16 00:00+0000\n"
-"PO-Revision-Date: 2025-03-16 00:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: Chinese (Simplified)\n"
-"Language: zh_Hans\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
-#: apfree-wifidog package 
-msgid "apfree-wifidog"
-msgstr "门户认证"
-
-msgid "ApFree-WiFiDog"
-msgstr "门户认证"
-
-msgid "apfree-wifidog offers a stable and secure captive portal solution."
-msgstr "apfree-wifidog 提供了一个稳定安全的门户认证解决方案"
-
-msgid "Enable apfree-wifidog service."
-msgstr "启用apfree-wifidog门户认证服务"
-
-msgid "Gateway ID"
-msgstr "网关 ID"
-
-msgid "The ID of the gateway."
-msgstr "网关的ID（一般为设备的MAC地址）"
-
-msgid "Channel Path"
-msgstr "用户渠道"
-
-msgid "The channel path of the gateway."
-msgstr "网关的用户渠道"
-
-msgid "Auth Server Hostname"
-msgstr "认证服务器主机名"
-
-msgid "The domain or IP address of the authentication server."
-msgstr "认证服务器的域名或 IP 地址"
-
-msgid "Auth Server Port"
-msgstr "认证服务器端口"
-
-msgid "The port of the authentication server."
-msgstr "认证服务器的端口"
-
-msgid "Auth Server URI path"
-msgstr "认证服务器 URI 路径"
-
-msgid "The URI path of the authentication server."
-msgstr "认证服务器的 URI 路径"
-
-msgid "Trusted Domains"
-msgstr "域名白名单"
-
-msgid "The trusted domains of the gateway, for example: \"www.baidu.com,www.qq.com,...\"."
-msgstr "域名白名单（多域名用逗号分隔），例如：\"www.baidu.com,www.qq.com,...\""
-
-msgid "Trusted MACs"
-msgstr "MAC 地址白名单"
-
-msgid "The trusted MAC addresses of the gateway, for example: \"00:11:22:33:44:55,66:77:88:99:00:11,...\"."
-msgstr "MAC 地址白名单（多 MAC 地址用逗号分隔），例如：\"00:11:22:33:44:55,66:77:88:99:00:11,...\""
-
-msgid "running..."
-msgstr "运行中"
-
-msgid "not running..."
-msgstr "未运行"
-
-msgid "The trusted domains of the gateway"
-msgstr "网关的域名白名单"
-
-msgid "The trusted MAC addresses of the gateway"
-msgstr "网关的 MAC 地址白名单"
-
-msgid "Value"
-msgstr "值"
-
-msgid "Internet Connectivity"
-msgstr "互联网连接"
-
-msgid "Auth server reachable"
-msgstr "认证服务器可达"
-
-msgid "Authentication servers"
-msgstr "认证服务器"
-
-msgid "App White List"
-msgstr "域名组白名单"
-
-msgid "The app white list of the gateway."
-msgstr "网关的域名组白名单, 由下面的组资源对象定义"
-
-msgid "MAC White List"
-msgstr "MAC 地址组白名单"
-
-msgid "The MAC white list of the gateway."
-msgstr "网关的 MAC 地址组白名单, 由下面的组资源对象定义"
-
-msgid "Group Define"
-msgstr "组资源定义"
-
-msgid "Group Type"
-msgstr "组类型"
-
-msgid "The type of the group."
-msgstr "组的类型"
-
-msgid "Group Description"
-msgstr "组资源描述"
-
-msgid "Domain Group"
-msgstr "域名组"
-
-msgid "MAC Group"
-msgstr "MAC 地址组"
-
-msgid "The MAC address of the group."
-msgstr "组的 MAC 地址"
-
-msgid "Group Description"
-msgstr "组资源描述"
-
-msgid "The description of the group."
-msgstr "组的描述"
-
-msgid "Domain Name"
-msgstr "域名"
-
-msgid "The domain name of the group."
-msgstr "组的域名"
-
-msgid "The log level of the apfree-wifidog."
-msgstr "apfree-wifidog 的日志级别"
-
-msgid "Rule Settings"
-msgstr "规则设置"
-
-msgid "Check Interval"
-msgstr "检查间隔"
-
-msgid "The interval of the check(s)."
-msgstr "检查的间隔，单位为秒"
-
-msgid "Check Timeout"
-msgstr "检查超时"
-
-msgid "The timeout of the client."
-msgstr "客户端的超时次数，超过未响应将被下线"
-
-msgid "Wired Passed"
-msgstr "有线免认证"
-
-msgid "Wired users do not need to authenticate to access the internet."
-msgstr "有线用户无需认证即可访问互联网"
-
-msgid "Apple CNA"
-msgstr "苹果 CNA"
-
-msgid "Enable Apple Captive Network Assistant."
-msgstr "启用苹果CNA机制（不建议启用）"
-
-msgid "JS Filter"
-msgstr "JS 过滤"
-
-msgid "Enable JS redirect."
-msgstr "通过启用 JS 重定向的机制降低服务器端的压力"
-
-msgid "Enable WebSocket"
-msgstr "启用 Websocket"
-
-msgid "Enable websocket support."
-msgstr "启用 Websocket 支持, 用于实现认证服务器端放行功能"
-
-msgid "Client Timeout"
-msgstr "客户端超时"
-
-msgid "Enable Wildcard Domain"
-msgstr "启用通配符域名"
-
-msgid "Enable wildcard domain support."
-msgstr "支持通配符域名白名单，例如：.baidu.com，前面要加点"
-
-msgid "Trusted Wildcard Domains"
-msgstr "通配符域名白名单"
-
-msgid "The trusted wildcard domains of the gateway."
-msgstr "网关的通配符域名白名单"
-
-msgid "Wildcard White List"
-msgstr "通配符域名组白名单"
-
-msgid "The wildcard domain white list of the gateway."
-msgstr "网关的通配符域名组白名单, 由下面的组资源对象定义"
-
-msgid "Wildcard Domain Group"
-msgstr "通配符域名组"
-
-msgid "Wildcard Domain"
-msgstr "通配符域名"
-
-msgid "The wildcard domain of the group."
-msgstr "组的通配符域名"
-
-msgid "Basic Settings"
-msgstr "基本设置"
-
-msgid "Device ID"
-msgstr "设备 ID"
-
-msgid "The ID of the device."
-msgstr "设备的 ID，每个设备都必须有一个唯一的 ID"
-
-msgid "Gateway Channel"
-msgstr "网关渠道"
-
-msgid "The channel of the gateway."
-msgstr "网关的渠道"
-
-msgid "Gateway Name"
-msgstr "网关名称"
-
-msgid "The name of the gateway."
-msgstr "开启认证的网关所属网络区域"
-
-msgid "Gateway Settings"
-msgstr "网关设置"
-
-msgid "Log Level"
-msgstr "日志级别"
-
-msgid "No Auth Server"
-msgstr "无认证服务器"
-
-msgid "Do not use authentication server."
-msgstr "不使用认证服务器"
-
-msgid "The offline page of the authentication server."
-msgstr "认证服务器离线用户展示页面"
-
-msgid "Upload offline Page"
-msgstr "上传离线页面"
-
-msgid "Offline Page Full Path"
-msgstr "离线页面完整路径"
-
-msgid "The full path of the uploaded offline page."
-msgstr "上传的离线页面的完整路径"
-
-msgid "Local Portal"
-msgstr "本地门户"
-
-msgid "The local portal url."
-msgstr "本地门户跳转URL"
-
-msgid "WebSocket Hostname"
-msgstr "Websocket 主机名"
-
-msgid "The hostname of the websocket, if the field is left empty, automatically use the same hostname as the auth server."
-msgstr "Websocket 的主机名，如果留空则自动使用与认证服务器相同的主机名"
-
-msgid "WebSocket Port"
-msgstr "Websocket 端口"
-
-msgid "The port of the websocket, if the field is left empty, automatically use the same port as the auth server."
-msgstr "Websocket 的端口，如果留空则自动使用与认证服务器相同的端口"
-
-msgid "WebSocket URI path"
-msgstr "Websocket URI 路径"
-
-msgid "The URI path of the websocket."
-msgstr "Websocket 的 URI 路径"
-
-msgid "Auth Server Mode"
-msgstr "认证服务器模式"
-
-msgid "The mode of the authentication server."
-msgstr "认证服务器是云认证还是本地认证"
-
-msgid "Cloud Auth"
-msgstr "云认证"
-
-msgid "Local Auth"
-msgstr "本地认证"
-
-msgid "Persistent Connection Mode"
-msgstr "持久连接模式"
-
-msgid "The persistent connection mode of the device to auth server."
-msgstr "设备到认证服务器的持久连接模式"
-
-msgid "WebSocket Connection Mode"
-msgstr "Websocket 连接模式"
-
-msgid "WebSocket Secure Connection Mode"
-msgstr "Websocket 安全连接模式"
-
-msgid "MQTT Connection Mode"
-msgstr "MQTT 连接模式"
-
-msgid "MQTT Hostname"
-msgstr "MQTT 主机名"
-
-msgid "The hostname of the mqtt."
-msgstr "mqtt 的主机名"
-
-msgid "MQTT Port"
-msgstr "MQTT 端口"
-
-msgid "The port of the mqtt."
-msgstr "mqtt 的端口"
-
-msgid "MQTT Username"
-msgstr "MQTT 用户名"
-
-msgid "The username of the mqtt."
-msgstr "mqtt 的用户名"
-
-msgid "MQTT Password"
-msgstr "MQTT 密码"
-
-msgid "The password of the mqtt."
-msgstr "mqtt 的密码"
-
-msgid "The external interface of the device, if bypass mode, do not choose."
-msgstr "设备的外部接口，如果是旁路模式，不要选择"
-
-msgid "External Interface"
-msgstr "外部接口"
-
-msgid "Enable Anti NAT devices."
-msgstr "启用防止二级 NAT 设备"
-
-msgid "Enable Anti NAT"
-msgstr "启用防 NAT"
-
-msgid "The TTL value of the gateway support."
-msgstr "网关支持放行的 TTL 值"
-
-msgid "Bypass Auth"
-msgstr "旁认证"
-
-msgid "Anti NAT Permit MAC"
-msgstr "NAT 白名单"
-
-msgid "The MAC address of the Anti NAT permit."
-msgstr "NAT 白名单设备的 MAC 地址"
-
-msgid "Gateway Subnetv4"
-msgstr "网关 IPv4 子网"
-
-msgid "The ipv4 subnet of the gateway."
-msgstr "网关的 IPv4 子网"
 
 #~ msgid "Down. (Bytes / Pkts.)"
 #~ msgstr "下载（字节 / 数据包）"
@@ -1014,33 +528,6 @@ msgstr "请输入有效的 MAC 地址"
 msgid "Updated successfully!"
 msgstr "更新成功！"
 
-msgid "Enable Global QoS"
-msgstr "启用全局 QoS"
-
-msgid "Global QoS Up"
-msgstr "全局单主机上传速度"
-
-msgid "Global QoS Down"
-msgstr "全局单主机下载速度"
-
-msgid "Enable Global QoS."
-msgstr "启用全局 QoS 控制"
-
-msgid "The global QoS up value(Mbps)."
-msgstr "认证设备上传值（Mbps）"
-
-msgid "The global QoS down value(Mbps)."
-msgstr "认证设备下载值（Mbps）"
-
-msgid "QoS Settings"
-msgstr "QoS 设置"
-
-msgid "Auth Enabled"
-msgstr "认证启用"
-
-msgid "Enable the authentication of the gateway."
-msgstr "启用网关认证功能"
-
 msgid "L7 SID Data"
 msgstr "L7 应用数据"
 
@@ -1083,9 +570,6 @@ msgstr "字节"
 msgid "Collecting data..."
 msgstr "正在收集数据..."
 
-msgid "No data recorded yet."
-msgstr "暂无数据记录"
-
 msgid "different SIDs"
 msgstr "个不同的应用"
 
@@ -1107,87 +591,27 @@ msgstr "流控"
 msgid "L7 application"
 msgstr "L7应用"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:1
 msgid "L7 Data Monitor"
 msgstr "L7 数据监控"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:2
-msgid "L7 SID Data"
-msgstr "L7 应用数据"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:3
-msgid "L7 Protocol Data"
-msgstr "L7 协议数据"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:4
 msgid "Upload Speed / SID"
 msgstr "上传速率 / 应用"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:5
 msgid "Download Speed / SID"
 msgstr "下载速率 / 应用"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:6
-msgid "different SIDs"
-msgstr "个不同的应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:7
 msgid "download speed"
 msgstr "下载速率"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:8
 msgid "upload speed"
 msgstr "上传速率"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:9
-msgid "SID"
-msgstr "应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:10
-msgid "Domain"
-msgstr "域名"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:11
-msgid "Download (Bytes)"
-msgstr "下载 (字节)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:12
-msgid "Download (Packets)"
-msgstr "下载 (数据包)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:13
 msgid "Download Speed (Bit/s)"
 msgstr "下载速率 (比特/秒)"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:14
-msgid "Upload (Bytes)"
-msgstr "上传 (字节)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:15
-msgid "Upload (Packets)"
-msgstr "上传 (数据包)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:16
 msgid "Upload Speed (Bit/s)"
 msgstr "上传速率 (比特/秒)"
 
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:17
-msgid "ID"
-msgstr "ID"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:18
-msgid "No data recorded yet."
-msgstr "暂无数据记录"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:19
-msgid "Collecting data..."
-msgstr "正在收集数据..."
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:20
-msgid "no traffic"
-msgstr "无流量"
-
-# SID metrics translations
 msgid "<big id=\"sid-total\">0</big> different SIDs"
 msgstr "应用计数：<big id=\"sid-total\">0</big>"
 
@@ -1197,48 +621,11 @@ msgstr "总下载速度：<big id=\"sid-tx-rate\">0</big>"
 msgid "<big id=\"sid-rx-rate\">0</big> upload speed"
 msgstr "总上传速度：<big id=\"sid-rx-rate\">0</big>"
 
-msgid "<big id=\"layer7-speed-most-rx\">0</big> cause the most download"
-msgstr "下载量最大的协议：<big id=\"layer7-speed-most-rx\">0</big>"
-
-msgid "Speed Distribution"
-msgstr "速率分布"
-
-msgid "Download Speed / Host"
-msgstr "下载速率 / 主机"
-
-msgid "Upload Speed / Host"
-msgid "Upload Speed / Host"
-msgstr "上传速率 / 主机"
-
-msgid "Download Speed (Bit/s)"
-msgstr "下载速率 (Bit/s)"
-
-msgid "Download (Bytes)"
-msgstr "下载 (字节)"
-
-msgid "Download (Packets)"
-msgstr "下载 (数据包)"
-
-msgid "Upload Speed (Bit/s)"
-msgstr "上传速率 (Bit/s)"
-
-msgid "Upload (Bytes)"
-msgstr "上传 (字节)"
-
-msgid "Upload (Packets)"
-msgstr "上传 (数据包)"
-
 msgid "Actions"
 msgstr "操作"
 
 msgid "Edit"
 msgstr "编辑"
-
-msgid "No data recorded yet."
-msgstr "暂无数据记录"
-
-msgid "Collecting data..."
-msgstr "正在收集数据..."
 
 msgid "Add"
 msgstr "添加"
@@ -1246,209 +633,8 @@ msgstr "添加"
 msgid "Refreshing"
 msgstr "刷新"
 
-msgid "Data format error"
-msgstr "数据格式错误"
-
-msgid "Updated successfully!"
-msgstr "更新成功！"
-
 msgid "Error: "
 msgstr "错误："
-
-msgid "Please enter a valid IPv4 address"
-msgstr "请输入有效的 IPv4 地址"
-
-msgid "Please enter a valid IPv6 address"
-msgstr "请输入有效的 IPv6 地址"
-
-msgid "Please enter a valid MAC address"
-msgstr "请输入有效的 MAC 地址"
-
-msgid "Enable Global QoS"
-msgstr "启用全局 QoS"
-
-msgid "Global QoS Up"
-msgstr "全局单主机上传速度"
-
-msgid "Global QoS Down"
-msgstr "全局单主机下载速度"
-
-msgid "Enable Global QoS."
-msgstr "启用全局 QoS 控制"
-
-msgid "The global QoS up value(Mbps)."
-msgstr "认证设备上传值（Mbps）"
-
-msgid "The global QoS down value(Mbps)."
-msgstr "认证设备下载值（Mbps）"
-
-msgid "QoS Settings"
-msgstr "QoS 设置"
-
-msgid "Auth Enabled"
-msgstr "认证启用"
-
-msgid "Enable the authentication of the gateway."
-msgstr "启用网关认证功能"
-
-msgid "L7 SID Data"
-msgstr "L7 应用数据"
-
-msgid "L7 Protocol Data"
-msgstr "L7 协议数据"
-
-msgid "Download / SID"
-msgstr "下载 / SID"
-
-msgid "Upload / SID"
-msgstr "上传 / SID"
-
-msgid "Download / Protocol"
-msgstr "下载 / 协议"
-
-msgid "Upload / Protocol"
-msgstr "上传 / 协议"
-
-msgid "SID"
-msgstr "应用"
-
-msgid "Name"
-msgstr "名称"
-
-msgid "Incoming"
-msgstr "接收"
-
-msgid "Outgoing"
-msgstr "发送"
-
-msgid "ID"
-msgstr "ID"
-
-msgid "Description"
-msgstr "描述"
-
-msgid "Bytes"
-msgstr "字节"
-
-msgid "Collecting data..."
-msgstr "正在收集数据..."
-
-msgid "No data recorded yet."
-msgstr "暂无数据记录"
-
-msgid "different SIDs"
-msgstr "个不同的应用"
-
-msgid "total download"
-msgstr "总下载"
-
-msgid "total upload"
-msgstr "总上传"
-
-msgid "different protocols"
-msgstr "个不同的协议"
-
-msgid "no traffic"
-msgstr "无流量"
-
-msgid "QoS"
-msgstr "流控"
-
-msgid "L7 application"
-msgstr "L7应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:1
-msgid "L7 Data Monitor"
-msgstr "L7 数据监控"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:2
-msgid "L7 SID Data"
-msgstr "L7 应用数据"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:3
-msgid "L7 Protocol Data"
-msgstr "L7 协议数据"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:4
-msgid "Upload Speed / SID"
-msgstr "上传速率 / 应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:5
-msgid "Download Speed / SID"
-msgstr "下载速率 / 应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:6
-msgid "different SIDs"
-msgstr "个不同的应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:7
-msgid "download speed"
-msgstr "下载速率"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:8
-msgid "upload speed"
-msgstr "上传速率"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:9
-msgid "SID"
-msgstr "应用"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:10
-msgid "Domain"
-msgstr "域名"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:11
-msgid "Download (Bytes)"
-msgstr "下载 (字节)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:12
-msgid "Download (Packets)"
-msgstr "下载 (数据包)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:13
-msgid "Download Speed (Bit/s)"
-msgstr "下载速率 (比特/秒)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:14
-msgid "Upload (Bytes)"
-msgstr "上传 (字节)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:15
-msgid "Upload (Packets)"
-msgstr "上传 (数据包)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:16
-msgid "Upload Speed (Bit/s)"
-msgstr "上传速率 (比特/秒)"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:17
-msgid "ID"
-msgstr "ID"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:18
-msgid "No data recorded yet."
-msgstr "暂无数据记录"
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:19
-msgid "Collecting data..."
-msgstr "正在收集数据..."
-
-#: applications/luci-app-apfree-wifidog/htdocs/luci-static/resources/view/xdpi/l7.js:20
-msgid "no traffic"
-msgstr "无流量"
-
-# SID metrics translations
-msgid "<big id=\"sid-total\">0</big> different SIDs"
-msgstr "应用计数：<big id=\"sid-total\">0</big>"
-
-msgid "<big id=\"sid-rx-rate\">0</big> download speed"
-msgstr "总下载速度：<big id=\"sid-rx-rate\">0</big>"
-
-msgid "<big id=\"sid-tx-rate\">0</big> upload speed"
-msgstr "总上传速度：<big id=\"sid-tx-rate\">0</big>"
-
-msgid "<big id=\"layer7-speed-most-rx\">0</big> cause the most download"
-msgstr "下载量最大的协议：<big id=\"layer7-speed-most-rx\">0</big>"
 
 msgid "Delete Host"
 msgstr "删除主机"
@@ -1461,9 +647,6 @@ msgstr "开启上网记录功能"
 
 msgid "Enable logging of internet access events and user activities."
 msgstr "启用互联网访问事件和用户活动的日志记录功能。"
-
-msgid "apfree-wifidog Status"
-msgstr "apfree-wifidog状态"
 
 msgid "Client Status"
 msgstr "客户端状态"
@@ -1492,9 +675,6 @@ msgstr "已连接客户端"
 msgid "IP Address"
 msgstr "IP地址"
 
-msgid "MAC Address"
-msgstr "MAC地址"
-
 msgid "Status"
 msgstr "状态"
 
@@ -1503,9 +683,6 @@ msgstr "在线时间"
 
 msgid "Connection Type"
 msgstr "连接类型"
-
-msgid "Gateway ID"
-msgstr "网关ID"
 
 msgid "Online"
 msgstr "在线"
@@ -1521,9 +698,6 @@ msgstr "无线"
 
 msgid "Auth Server Online"
 msgstr "认证服务器在线"
-
-msgid "Authentication Servers"
-msgstr "认证服务器"
 
 msgid "Failed to get wifidogx status"
 msgstr "获取wifidogx状态失败"
@@ -1542,9 +716,6 @@ msgstr "云认证"
 
 msgid "Local Auth"
 msgstr "本地认证"
-
-msgid "Bypass Auth"
-msgstr "旁路认证"
 
 msgid "Unknown"
 msgstr "未知"
@@ -1569,3 +740,27 @@ msgstr "选择用于云认证的认证服务器"
 
 msgid "Please create an authentication server first"
 msgstr "请先创建认证服务器"
+
+msgid "Domain&L7Protocol"
+msgstr "域名&L7协议"
+
+msgid "Protocol"
+msgstr "协议"
+
+msgid "Domain"
+msgstr "域名"
+
+msgid "Download Total"
+msgstr "下载总量"
+
+msgid "Upload Total"
+msgstr "上传总量"
+
+msgid "Download Speed"
+msgstr "下载速度"
+
+msgid "Upload Speed"
+msgstr "上传速度"
+
+msgid "Showing top %d by %s"
+msgstr "按%s显示前%d项"

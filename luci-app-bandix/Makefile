@@ -10,8 +10,8 @@ LUCI_DEPENDS:=+luci-base +luci-lib-jsonc +curl +bandix
 
 PKG_MAINTAINER:=timsaya
 
-PKG_VERSION:=0.5.0
-PKG_RELEASE:=3
+PKG_VERSION:=0.5.1
+PKG_RELEASE:=4
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

@@ -18,6 +18,7 @@ start_service() {
 	local data_dir
 	local traffic_enabled
 	local traffic_retention_seconds
+	local traffic_flush_interval_seconds
 	local connections_enabled
 	
 	config_load 'bandix'
@@ -26,6 +27,7 @@ start_service() {
 	config_get data_dir 'general' 'data_dir'
 	config_get_bool traffic_enabled 'traffic' 'enabled'
 	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
+	config_get traffic_flush_interval_seconds 'traffic' 'traffic_flush_interval_seconds'
 	config_get_bool connections_enabled 'connections' 'enabled'
 	
 	# 构建基础命令行参数
@@ -37,6 +39,9 @@ start_service() {
 	fi
 	if [ -n "$traffic_retention_seconds" ]; then
 		args="$args --traffic-retention-seconds $traffic_retention_seconds"
+	fi
+	if [ -n "$traffic_flush_interval_seconds" ]; then
+		args="$args --traffic-flush-interval-seconds $traffic_flush_interval_seconds"
 	fi
 	
 	# 添加连接统计监控参数
