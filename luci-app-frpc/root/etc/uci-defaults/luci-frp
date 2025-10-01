@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-frp.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-frp.json << EEOF
+{
+    "config": "frp",
+    "init": "frp"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@frp[-1]
+	add ucitrack frp
+	set ucitrack.@frp[-1].init=frp
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
