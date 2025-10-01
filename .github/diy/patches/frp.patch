@@ -19,7 +19,7 @@
 
 --- a/luci-app-frpc/Makefile
 +++ b/luci-app-frpc/Makefile
-@@ -4,7 +4,7
+@@ -4,7 +4,7 @@
  PKG_RELEASE:=1
  
  LUCI_TITLE:=LuCI support for Frpc
@@ -31,7 +31,7 @@
 
 --- a/luci-app-frps/Makefile
 +++ b/luci-app-frps/Makefile
-@@ -4,7 +4,7
+@@ -4,7 +4,7 @@
  PKG_RELEASE:=1
  
  LUCI_TITLE:=LuCI support for Frps
