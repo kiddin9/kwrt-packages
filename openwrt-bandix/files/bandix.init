@@ -29,6 +29,8 @@ start_service() {
 	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
 	config_get traffic_flush_interval_seconds 'traffic' 'traffic_flush_interval_seconds'
 	config_get_bool connections_enabled 'connections' 'enabled'
+
+	[ "$connections_enabled" != 1 ] && [ "$traffic_enabled" != 1 ] && return 1
 	
 	# 构建基础命令行参数
 	local args="--iface $iface --port $port --data-dir $data_dir"
