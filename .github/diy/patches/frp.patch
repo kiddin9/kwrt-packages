@@ -1,5 +1,5 @@
---- a/net/frp/Makefile
-+++ b/net/frp/Makefile
+--- a/frp/Makefile
++++ b/frp/Makefile
 @@ -28,15 +28,6 @@ define Package/frp/install
  	$(INSTALL_DIR) $(1)/etc/frp/$(2).d/
  	$(INSTALL_DATA) $(PKG_BUILD_DIR)/conf/legacy/$(2)_legacy_full.ini $(1)/etc/frp/$(2).d/
