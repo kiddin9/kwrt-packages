@@ -65,6 +65,7 @@ config global_rules
 	option geosite_update '1'
 	option geoip_update '1'
 	option enable_geoview '1'
+	option geo2rule '1'
 	option week_update '7'
 	option time_update '4'
 	list gfwlist_url 'https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt'
