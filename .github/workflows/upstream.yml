@@ -331,7 +331,7 @@ jobs:
         git_clone https://github.com/calfeche13/luci-app-public-ip-monitor
         git_clone https://github.com/vison-v/luci-app-nginx-proxy
         git_clone https://github.com/tty228/luci-app-wechatpush
-        git_clone https://github.com/superzjg/luci-app-frpc_frps && mv luci-app-frpc_frps/luci-app-(frpc|frps) ./;rm -rf luci-app-frpc_frps
+        git_clone https://github.com/superzjg/luci-app-frpc_frps && mv luci-app-frpc_frps/luci-app-{frpc,frps} ./;rm -rf luci-app-frpc_frps
         ) &
         (
         git_sparse_clone master "https://github.com/coolsnowwolf/packages" multimedia/UnblockNeteaseMusic-Go \
