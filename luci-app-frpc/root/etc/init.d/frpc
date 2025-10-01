@@ -1,0 +1,392 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright 2019 Xingwang Liao <kuoruan@gmail.com>
+# Licensed to the public under the MIT License.
+#
+
+START=99
+USE_PROCD=1
+
+NAME="frpc"
+CONFIG_FOLDER="/var/etc/$NAME"
+
+_log() {
+	local level="$1" ; shift
+	local msg="$@"
+	logger -p "daemon.$level" -t "$NAME" "$msg"
+
+	echo "[$level] $msg" >&2
+}
+
+_info() {
+	_log "info" $@
+}
+
+_err() {
+	_log "err" $@
+}
+# 因Uci的option名不能带 . 号，故用 __ 替代；在调用此函数时，frp参数名称，分3类
+# 1.Toml字符串类，直接使用，并加双引号输出
+# 2.Toml布尔和整数，使用时，名称请附加 ..INT 后缀，在此处理后，并原样输出
+# 3.Toml数组，使用时请附加 ..ARR 后缀，网页端可 不加引号使用逗号或空格分隔 的简写方式，处理后，再加方括号输出
+# 4.Uci值存在单独的 * 号时（如参数allowUsers），可能导致for取值异常，要处理
+append_options() {
+	local file="$1" ; shift
+	local o v f
+	for o in "$@" ; do
+		f=""
+		if [ -n "$(echo $o | grep "..INT")" ];then
+			f=1
+			o=${o//..INT/}
+		fi
+		if [ -n "$(echo $o | grep "..ARR")" ];then
+			f=2
+			o=${o//..ARR/}
+		fi
+		eval v=\$${o//./__}
+		if [ -n "$v" ] ; then
+			[ "$f" == "" ] && echo "$o = \"$v\"" >>"$file"
+			[ "$f" == "1" ] && echo "$o = $v" >>"$file"
+			if [ "$f" == "2" ];then
+				local T M
+				M=""
+				# 逗号替换为空格
+				v=${v//,/ }
+				# 查找单个的 * ，替换为 "*" 。
+				if [ -n "$(echo "$v" | grep "^\* \| \* \| \*$")" ];then
+					v="${v//\*/\"*\"}"
+				fi
+				[ "$v" == "*" ] && v=\"*\"
+				for T in $v ; do
+					# 忽略单个的 ' 或 " 符。
+					if [ "${T:0:1}" == "\"" -o "${T:0:1}" == "'" ] && [ "${#T}" == "1" ];then
+						continue
+					fi
+					# 除首尾同是 " 或同是 ' 外，删除所有 ' 或 " ，并补全首尾的 " 。
+ #				   if [ "${T:0:1}" == "\"" -a "${T: -1}" == "\"" ] || [ "${T:0:1}" == "'" -a "${T: -1}" == "'" ];then
+					if [ "${T:0:1}" == "\"" -a "$(echo -n "$T" | tail -c 1)" == "\"" ] || [ "${T:0:1}" == "'" -a "$(echo -n "$T" | tail -c 1)" == "'" ];then
+						true
+					else
+						T=${T//\'/}
+						T=\"${T//\"/}\"
+					fi
+					# 用逗号+空格组合
+					[ -n "$M" ] && M="$M, "
+					M=$M$T
+				done
+				echo "$o = [$M]" >>"$file"
+			fi
+		fi
+	done
+}
+
+append_setting() {
+	local file="$1" ; shift
+	local s="$1"
+	if [ -n "$s" ] ; then
+		echo "$s" >>"$file"
+	fi
+}
+
+frpc_scetion_validate() {
+	uci_validate_section "$NAME" "frpc" "$1" \
+		'enabled:bool:0' \
+		'client_file:file:/usr/bin/frpc' \
+		'server:uci("frpc", "@server")' \
+		'run_user:string' \
+		'enable_logging:bool:0' \
+		'std_redirect:bool:0' \
+		'log__to:string' \
+		'log__level:or("trace", "debug", "info", "warn", "error")' \
+		'log__maxDays:uinteger' \
+		'log__disablePrintColor:or("true", "false")' \
+		'loginFailExit:or("true", "false")' \
+		'transport__poolCount:uinteger' \
+		'user:string' \
+		'transport__protocol:string' \
+		'transport__quic__keepalivePeriod:integer' \
+		'transport__quic__maxIdleTimeout:integer' \
+		'transport__quic__maxIncomingStreams:uinteger' \
+		'transport__proxyURL:string' \
+		'transport__tls__enable:or("true", "false")' \
+		'transport__tls__disableCustomTLSFirstByte:or("true", "false")' \
+		'transport__tls__certFile:file' \
+		'transport__tls__keyFile:file' \
+		'transport__tls__trustedCaFile:file' \
+		'transport__tls__serverName:string' \
+		'dnsServer:host' \
+		'natHoleStunServer:string' \
+		'transport__heartbeatInterval:integer' \
+		'transport__heartbeatTimeout:integer' \
+		'com_extra_options:list(string)' \
+		'webServer__addr:host' \
+		'webServer__port:port' \
+		'webServer__user:string' \
+		'webServer__password:string'
+}
+
+server_section_validate() {
+	uci_validate_section "$NAME" "server" "$1" \
+		'alias:string' \
+		'serverAddr:string' \
+		'serverPort:port' \
+		'auth__method:or("token", "oidc")' \
+		'auth__token:string' \
+		'transport__tcpMux:or("true", "false")' \
+		'transport__tcpMuxKeepaliveInterval:uinteger'
+}
+
+rule_section_validate() {
+	uci_validate_section "$NAME" "rule" "$1" \
+		'enabled:bool:0' \
+		'name:string' \
+		'type:string' \
+		'PlUgIn_type:string' \
+		'unixPath:file' \
+		'username:string' \
+		'password:string' \
+		'localPath:string' \
+		'stripPrefix:string' \
+		'PlUgIn_httpUser:string' \
+		'PlUgIn_httpPassword:string' \
+		'localAddr:string' \
+		'crtPath:file' \
+		'keyPath:file' \
+		'PlUgIn_hostHeaderRewrite:string' \
+		'secretKey:string' \
+		'multiplexer:string' \
+		'visitor:bool:0' \
+		'localIP:host' \
+		'localPort:string' \
+		'remotePort:string' \
+		'serverName:string' \
+		'serverUser:string' \
+		'bindAddr:host' \
+		'bindPort:integer' \
+		'allowUsers:string' \
+		'keepTunnelOpen:or("true", "false")' \
+		'maxRetriesAnHour:integer' \
+		'minRetryInterval:integer' \
+		'httpUser:string' \
+		'httpPassword:string' \
+		'subdomain:string' \
+		'customDomains:string' \
+		'locations:string' \
+		'hostHeaderRewrite:string' \
+		'transport__bandwidthLimit:string' \
+		'transport__bandwidthLimitMode:string' \
+		'transport__useEncryption:or("true", "false")' \
+		'transport__useCompression:or("true", "false")' \
+		'transport__proxyProtocolVersion:or("v1", "v2")' \
+		'loadBalancer__group:string' \
+		'loadBalancer__groupKey:string' \
+		'healthCheck__type:or("tcp", "http")' \
+		'healthCheck__path:string' \
+		'healthCheck__timeoutSeconds:uinteger' \
+		'healthCheck__maxFailed:uinteger' \
+		'healthCheck__intervalSeconds:uinteger' \
+		'extra_options:list(string)' \
+		'extra_options_plugin:list(string)'
+}
+
+client_file_validate() {
+	local file="$1"
+
+	test -f "$file" || return 1
+	test -x "$file" || chmod 755 "$file"
+
+	eval "$file" -h | grep -q "$NAME"
+	return $?
+}
+
+add_rule_extra_option() {
+	append_setting "$2" "$1"
+}
+
+add_frpc_rule() {
+	local section="$1"
+	local file="$2"
+
+	if ! rule_section_validate "$section" ; then
+		_err "Rule section validate failed: \"$section\""
+		return 1
+	fi
+
+	if [ "x$enabled" != "x1" ] ; then
+		return 0
+	fi
+
+	if [ -z "$name" ] ; then
+		_err "Rule's name is required: \"$section\""
+		return 1
+	fi
+
+	echo "" >>"$file"
+	if [ "$visitor" == "1" ];then
+		echo "[[visitors]]" >>"$file"
+		
+		append_options "$file" \
+			"name" "type" "serverUser" "serverName" "secretKey" "bindAddr" "bindPort..INT" "keepTunnelOpen..INT" \
+			"maxRetriesAnHour..INT" "minRetryInterval..INT" "transport.useEncryption..INT" "transport.useCompression..INT"
+			
+		config_list_foreach "$section" "extra_options" add_rule_extra_option "$file"
+	else
+		echo "[[proxies]]" >>"$file"
+
+		append_options "$file" \
+			"name" "type" "secretKey" "multiplexer" "localIP" "localPort..INT" "remotePort..INT" "allowUsers..ARR" \
+			"transport.bandwidthLimit" "transport.bandwidthLimitMode" "transport.useEncryption..INT" "transport.useCompression..INT" \
+			"httpUser" "httpPassword" "subdomain" "customDomains..ARR" "locations..ARR" "hostHeaderRewrite" \
+			"transport.proxyProtocolVersion" "loadBalancer.group" "loadBalancer.groupKey" "healthCheck.type" "healthCheck.path" \
+			"healthCheck.timeoutSeconds..INT" "healthCheck.maxFailed..INT" "healthCheck.intervalSeconds..INT"
+
+		config_list_foreach "$section" "extra_options" add_rule_extra_option "$file"
+	
+		if [ -n "$PlUgIn_type" ];then
+			echo "[proxies.plugin]" >>"$file"
+
+			append_options "$file" \
+				"PlUgIn_type" "unixPath" "username" "password" "localPath" \
+				"stripPrefix" "PlUgIn_httpUser" "PlUgIn_httpPassword" "localAddr" \
+				"crtPath" "keyPath" "PlUgIn_hostHeaderRewrite"
+
+			config_list_foreach "$section" "extra_options_plugin" add_rule_extra_option "$file"
+		fi
+	fi
+	# 将插件参数中PlUgIn_前缀删除（因rule有同名参数已在uci中区分）
+	sed -i 's/^PlUgIn_//g' "$file"
+}
+
+create_config_file() {
+	local config_file="$1"
+	local tmp_file="$(mktemp /tmp/frpc-XXXXXX)"
+
+	echo "# 文件生成时间：$(date +%Y-%m-%d_%H:%M:%S)" > "$tmp_file"
+
+	append_options "$tmp_file" \
+		"user" "serverAddr" "serverPort..INT" "natHoleStunServer" "dnsServer" "loginFailExit..INT" "auth.method" "auth.token"
+
+	if [ "x$enable_logging" = "x1" ] ; then
+		
+		append_options "$tmp_file" \
+			"log.to" "log.level" "log.maxDays..INT" "log.disablePrintColor..INT"
+	fi
+
+	append_options "$tmp_file" \
+		"transport.poolCount..INT" "transport.tcpMux..INT" "transport.tcpMuxKeepaliveInterval..INT" "transport.protocol" \
+		"transport.quic.keepalivePeriod..INT" "transport.quic.maxIdleTimeout..INT" "transport.quic.maxIncomingStreams..INT" \
+		"transport.proxyURL" "transport.tls.enable..INT" "transport.tls.disableCustomTLSFirstByte..INT" \
+		"transport.tls.certFile" "transport.tls.keyFile" "transport.tls.trustedCaFile" "transport.tls.serverName" \
+		"transport.heartbeatInterval..INT" "transport.heartbeatTimeout..INT"  \
+		"webServer.addr" "webServer.port..INT" "webServer.user" "webServer.password"
+
+	config_list_foreach "$section" "com_extra_options" add_rule_extra_option "$tmp_file"
+	
+	config_foreach add_frpc_rule "rule" "$tmp_file"
+
+#	sed '/^$/d' "$tmp_file" >"$config_file" #注释以保留空行
+	cp -f "$tmp_file" "$config_file"
+
+	if [ "$?" = "0" ] ; then
+		rm -f "$tmp_file"
+	fi
+}
+logfile_prepare() {
+	if [ "x$enable_logging" != "x1" ];then
+		rm -f /tmp/frpc_log_link.txt
+		rm -f /tmp/frpc_std_redirect.log
+		echo "未配置日志输出保存" > /tmp/frpc_log_link.txt
+		return 1
+	fi
+	
+	if [ "${std_redirect}" == "1" ];then
+		if [ -z "${log__to}" -o "${log__to}" == "console" ];then
+			log__to=/tmp/frpc_std_redirect.log
+			true >"${log__to}"
+		else
+			mkdir -p "$(dirname "${log__to}")"
+			touch "${log__to}"
+			if [ "$?" != "0" ];then
+				log__to=/tmp/frpc_std_redirect.log
+				echo "【$(date +%Y-%m-%d_%H:%M:%S)】--->警告：配置的日志文件路径似乎无效/只读！" > "${log__to}"
+			fi
+		fi
+	fi
+	
+	if [ -n "${log__to}" -a "${log__to}" != "console" ];then
+		mkdir -p "$(dirname "${log__to}")"
+		touch "${log__to}"
+	fi
+	
+	if [ -n "$run_user" ]; then
+		chmod 644 "$log__to"
+		chown "$run_user" "$log__to"
+	fi
+	# 创建log文件读取链接，用于luci查看日志
+	ln -sf "${log__to}" /tmp/frpc_log_link.txt
+}
+start_instance() {
+	local section="$1"
+
+	if ! frpc_scetion_validate "$section" ; then
+		_err "Config validate failed."
+		return 1
+	fi
+
+	if [ "x$enabled" != "x1" ] ; then
+		_info "Instance \"$section\" disabled."
+		return 1
+	fi
+
+	if [ -z "$client_file" ] || ( ! client_file_validate "$client_file" ) ; then
+		_err "Client file not valid."
+		return 1
+	fi
+	
+	if [ -z "$server" ] || [ "$server" = "nil" ] ; then
+		_err "No server selected for instance: \"$section\"."
+		return 1
+	elif ! server_section_validate "$server" ; then
+		_err "Server config validate failed: \"$server\""
+		return 1
+	fi
+
+	test -d "$CONFIG_FOLDER" || mkdir -p "$CONFIG_FOLDER"
+
+	local config_file="$CONFIG_FOLDER/frpc.$section.toml"
+
+	create_config_file "$config_file"
+
+	if [ ! -f "$config_file" ] ; then
+		_err "Could not create config file: \"$config_file\""
+		return 1
+	fi
+	
+	logfile_prepare
+
+	procd_open_instance "$NAME.$section"
+	if [ "${std_redirect}" == "1" ];then
+		procd_set_param command "/bin/sh"
+		procd_append_param command -c "exec $client_file -c $config_file >>\"${log__to}\" 2>&1"
+	else
+		procd_set_param command "$client_file"
+		procd_append_param command -c "$config_file"
+	fi
+	procd_set_param respawn
+	procd_set_param file "$config_file"
+
+	if [ -n "$run_user" ] ; then
+		procd_set_param user "$run_user"
+	fi
+
+	procd_close_instance
+}
+
+service_triggers() {
+	procd_add_reload_trigger "$NAME"
+}
+
+start_service() {
+	config_load "$NAME"
+	config_foreach start_instance "frpc"
+}
