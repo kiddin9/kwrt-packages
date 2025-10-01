@@ -16,27 +16,3 @@
  endef
  
  define Package/frp/template
-
---- a/luci-app-frpc/Makefile
-+++ b/luci-app-frpc/Makefile
-@@ -4,7 +4,7 @@
- PKG_RELEASE:=1
- 
- LUCI_TITLE:=LuCI support for Frpc
--LUCI_DEPENDS:=+libc
-+LUCI_DEPENDS:=+libc +frpc
- LUCI_PKGARCH:=all
- 
- include $(TOPDIR)/feeds/luci/luci.mk
-
---- a/luci-app-frps/Makefile
-+++ b/luci-app-frps/Makefile
-@@ -4,7 +4,7 @@
- PKG_RELEASE:=1
- 
- LUCI_TITLE:=LuCI support for Frps
--LUCI_DEPENDS:=+libc
-+LUCI_DEPENDS:=+libc +frps
- LUCI_PKGARCH:=all
- 
- include $(TOPDIR)/feeds/luci/luci.mk
