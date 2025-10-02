@@ -37,15 +37,6 @@
  					}), ' ',
  					E('label', { 'for': 'overwrite-cb' }), ' ',
  					_('Allow overwriting conflicting package files')
-@@ -970,7 +971,7 @@ function handleRemove(ev)
- 		desc || '',
- 		E('div', { 'style': 'display:flex; justify-content:space-between; flex-wrap:wrap' }, [
- 			E('label', { 'class': 'cbi-checkbox', 'style': 'float:left' }, [
--				E('input', { 'id': 'autoremove-cb', 'type': 'checkbox', 'checked': 'checked', 'name': 'autoremove', 'disabled': isReadonlyView || L.hasSystemFeature('apk') }), ' ',
-+				E('input', { 'id': 'autoremove-cb', 'type': 'checkbox', 'checked': 'checked', 'name': 'autoremove' || L.hasSystemFeature('apk') }), ' ',
- 				E('label', { 'for': 'autoremove-cb' }), ' ',
- 				_('Automatically remove unused dependencies')
- 			]),
 @@ -1029,6 +1030,8 @@ function handlePkg(ev)
  			if (res.pkmcmd)
  				dlg.appendChild(E('pre', [ res.pkmcmd ]));
