@@ -764,3 +764,21 @@ msgstr "上传速度"
 
 msgid "Showing top %d by %s"
 msgstr "按%s显示前%d项"
+
+msgid "Download Traffic / SID"
+msgstr "下载流量 / 应用"
+
+msgid "Upload Traffic / SID"
+msgstr "上传流量 / 应用"
+
+msgid "Show entries: "
+msgstr "显示条目： "
+
+msgid "Pause"
+msgstr "暂停"
+
+msgid "Resume"
+msgstr "恢复"
+
+msgid "Last updated: %s"
+msgstr "上次更新：%s"

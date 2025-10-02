@@ -7,6 +7,7 @@
 'require rpc';
 'require fs';
 'require form';
+'require network';
 'require tools.widgets as widgets';
 
 return view.extend({
@@ -101,6 +102,16 @@ return view.extend({
 	},
 
 	/*
+	* Figure out what the wan interface on the device is.
+	* Determine if the physical device exist, or if we should use an alias.
+	*/
+	callGetWanInterface: function(m, ev) {
+		return network.getDevice('wan').then(dev => dev.getName())
+			.catch(err => network.getNetwork('wan').then(net => '@' + net.getName()))
+			.catch(err => null);
+	},
+
+	/*
 	* Check whether or not the service is supported.
 	* If the script doesn't find any JSON, assume a 'service on demand' install.
 	* If a JSON is found, check if the IP type is supported.
@@ -181,8 +192,6 @@ return view.extend({
 
 	poll_status: function(map, data) {
 		var status = data[1] || [], service = data[0] || [], rows = map.querySelectorAll('.cbi-section-table-row[data-sid]'),
-			section_id, cfg_detail_ip, cfg_update, cfg_status, host, ip, last_update,
-			next_update, service_status, reload, cfg_enabled, stop,
 			ddns_enabled = map.querySelector('[data-name="_enabled"]').querySelector('.cbi-value-field'),
 			ddns_toggle = map.querySelector('[data-name="_toggle"]').querySelector('button'),
 			services_list = map.querySelector('[data-name="_services_list"]').querySelector('.cbi-value-field');
@@ -201,36 +210,26 @@ return view.extend({
 		});
 
 		for (var i = 0; i < rows.length; i++) {
-			section_id = rows[i].getAttribute('data-sid');
-			cfg_detail_ip = rows[i].querySelector('[data-name="_cfg_detail_ip"]');
-			cfg_update = rows[i].querySelector('[data-name="_cfg_update"]');
-			cfg_status = rows[i].querySelector('[data-name="_cfg_status"]');
-			reload = rows[i].querySelector('.cbi-section-actions .reload');
-			stop = rows[i].querySelector('.cbi-section-actions .stop');
-			cfg_enabled = uci.get('ddns', section_id, 'enabled');
+			const section_id = rows[i].getAttribute('data-sid');
+			const cfg_detail_ip = rows[i].querySelector('[data-name="_cfg_detail_ip"]');
+			const cfg_update = rows[i].querySelector('[data-name="_cfg_update"]');
+			const cfg_status = rows[i].querySelector('[data-name="_cfg_status"]');
+			const reload = rows[i].querySelector('.cbi-section-actions .reload');
+			const stop = rows[i].querySelector('.cbi-section-actions .stop');
+			const cfg_enabled = uci.get('ddns', section_id, 'enabled');
 
 			reload.disabled = (status['_enabled'] == 0 || cfg_enabled == 0);
+			stop.disabled = (!service[section_id].pid);
 
-			host = uci.get('ddns', section_id, 'lookup_host') || _('Configuration Error');
-			ip =  _('No Data');
-			last_update = _('Never');
-			next_update = _('Unknown');
-			service_status = '<b>' + _('Not Running') + '</b>';
-
-			if (service[section_id]) {
-				stop.disabled = (!service[section_id].pid);
-				if (service[section_id].ip)
-					ip = service[section_id].ip;
-				if (service[section_id].last_update)
-					last_update = service[section_id].last_update;
-				if (service[section_id].next_update)
-					next_update = this.NextUpdateStrings[service[section_id].next_update] || service[section_id].next_update;
-				if (service[section_id].pid)
-					service_status = '<b>' + _('Running') + '</b> : ' + service[section_id].pid;
-			}
+			const host = uci.get('ddns', section_id, 'lookup_host') || _('Configuration Error');
+			const ip = service[section_id]?.ip || _('No Data');
+			const last_update = service[section_id]?.last_update || _('Never');
+			const next_update = this.NextUpdateStrings[service[section_id]?.next_update] || service[section_id]?.next_update || _('Unknown');
+			const next_check = service[section_id]?.next_check || _('Unknown');
+			const service_status = service[section_id]?.pid ? '<b>' + _('Running') + '</b> : ' + service[section_id]?.pid : '<b>' + _('Not Running') + '</b>';
 
 			cfg_detail_ip.innerHTML = host + '<br />' + ip;
-			cfg_update.innerHTML = last_update + '<br />' + next_update;
+			cfg_update.innerHTML = last_update + '<br />' + next_check + '<br />' + next_update ;
 			cfg_status.innerHTML = service_status;
 		}
 
@@ -243,7 +242,8 @@ return view.extend({
 			this.callDDnsGetStatus(),
 			this.callDDnsGetEnv(),
 			this.callGenServiceList(),
-			uci.load('ddns')
+			uci.load('ddns'),
+			this.callGetWanInterface()
 		]);
 	},
 
@@ -252,6 +252,7 @@ return view.extend({
 		var status = data[1] || [];
 		var env = data[2] || [];
 		var logdir = uci.get('ddns', 'global', 'ddns_logdir') || "/var/log/ddns";
+		var wan_interface = data[5];
 
 		var _this = this;
 
@@ -585,6 +586,7 @@ return view.extend({
 			return _this.handleGetServiceData(service).then(L.bind(function (service_data) {
 				s.service_available = true;
 				s.service_supported = true;
+				s.url = null;
 
 				if (service != '-') {
 					if (!service_data)
@@ -593,6 +595,11 @@ return view.extend({
 						service_data = JSON.parse(service_data);
 						if (ipv6 == "1" && !service_data.ipv6)
 							s.service_supported = false;
+						else if (ipv6 == "1") {
+							s.url = service_data.ipv6.url;
+						} else {
+							s.url = service_data.ipv4.url;
+						}
 					}
 				}
 
@@ -671,6 +678,14 @@ return view.extend({
 					o.cfgvalue = function () {
 						return _("Service doesn't support this IP type")
 					};
+				}
+
+				if (Boolean(s.url)) {
+					o = s.taboption('basic', form.DummyValue, '_url', _("Update URL"));
+					o.rawhtml = true;
+					o.default = '<div style="font-family: monospace;">'
+						+ s.url.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+						+ '</div>';
 				}
 
 				var service_switch = s.taboption('basic', form.Button, '_switch_proto');
@@ -849,7 +864,7 @@ return view.extend({
 					o.modalonly = true;
 					o.depends("ip_source", "interface")
 					o.multiple = false;
-					o.default = 'wan';
+					o.default = wan_interface;
 
 					o = s.taboption('advanced', form.Value, 'ip_script',
 						_("Script"),
@@ -1117,10 +1132,8 @@ return view.extend({
 		o.rawhtml   = true;
 		o.modalonly = false;
 		o.textvalue = function(section_id) {
-			var host = uci.get('ddns', section_id, 'lookup_host') || _('Configuration Error'),
-				ip = _('No Data');
-			if (resolved[section_id] && resolved[section_id].ip)
-				ip = resolved[section_id].ip;
+			const host = uci.get('ddns', section_id, 'lookup_host') || _('Configuration Error');
+			const ip = resolved[section_id]?.ip || _('No Data');
 
 			return host + '<br />' + ip;
 		};
@@ -1130,19 +1143,14 @@ return view.extend({
 		o.editable = true;
 		o.modalonly = false;
 
-		o = s.option(form.DummyValue, '_cfg_update', _('Last Update') + "<br />" + _('Next Update'));
+		o = s.option(form.DummyValue, '_cfg_update', _('Last Update') + " |<br />" + _('Next Verify') + " |<br />" + _('Next Update'));
 		o.rawhtml   = true;
 		o.modalonly = false;
 		o.textvalue = function(section_id) {
-			var last_update = _('Never'), next_update = _('Unknown');
-			if (resolved[section_id]) {
-				if (resolved[section_id].last_update)
-					last_update = resolved[section_id].last_update;
-				if (resolved[section_id].next_update)
-					next_update = _this.NextUpdateStrings[resolved[section_id].next_update] || resolved[section_id].next_update;
-			}
-
-			return  last_update + '<br />' + next_update;
+			const last_update = resolved[section_id]?.last_update || _('Never');
+			const next_check = resolved[section_id]?.next_check || _('Unknown');
+			const next_update = _this.NextUpdateStrings[resolved[section_id]?.next_update] || resolved[section_id]?.next_update || _('Unknown');
+			return  last_update + '<br />' + next_check + '<br />' + next_update;
 		};
 
 		return m.render().then(L.bind(function(m, nodes) {

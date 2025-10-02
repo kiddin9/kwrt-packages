@@ -2,12 +2,11 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=a wired IEEE 802.1x client for Luci
 LUCI_DESCRIPTION:=This package contains LuCI configuration pages for wired IEEE 802.1x authentication.
-LUCI_DEPENDS:=+wpad
-LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+luci-compat +wpad
 
 PKG_NAME:=luci-app-cd8021x
 PKG_VERSION:=1.2.2
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE

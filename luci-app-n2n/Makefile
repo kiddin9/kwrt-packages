@@ -7,12 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=n2n VPN Configuration module
-LUCI_DEPENDS:=+n2n
-LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+luci-compat +n2n
 
 PKG_NAME:=luci-app-n2n
 PKG_VERSION:=3.0.0
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

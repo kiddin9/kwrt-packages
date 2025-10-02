@@ -845,8 +845,9 @@ msgstr "大小"
 msgid ""
 "Specifies where the Docker daemon will listen for client connections "
 "(default: unix:///var/run/docker.sock)"
-msgstr "指定 Docker 守护程序将在何处侦听客户端连接（默认： unix:///var/run/docker."
-"sock）"
+msgstr ""
+"指定 Docker 守护程序将在何处侦听客户端连接（默认： unix:///var/run/"
+"docker.sock）"
 
 #: applications/luci-app-dockerman/luasrc/model/cbi/dockerman/container.lua:211
 #: applications/luci-app-dockerman/luasrc/model/cbi/dockerman/containers.lua:234

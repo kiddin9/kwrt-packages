@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "PO-Revision-Date: 2025-08-10 18:02+0000\n"
-"Last-Translator: SnIPeRSnIPeR "
-"<snipersniper@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: SnIPeRSnIPeR <snipersniper@users.noreply.hosted.weblate.org>"
+"\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/openwrt/"
 "luciapplicationssmartdns/ru/>\n"
 "Language: ru\n"
@@ -137,8 +137,7 @@ msgstr "Группа DNS-серверов"
 #: applications/luci-app-smartdns/htdocs/luci-static/resources/view/smartdns/smartdns.js:813
 #: applications/luci-app-smartdns/htdocs/luci-static/resources/view/smartdns/smartdns.js:967
 msgid "DNS Server group belongs to, such as office, home."
-msgstr ""
-"Группа, к которой относится DNS-сервер (например, офис, домашняя сеть)."
+msgstr "Группа, к которой относится DNS-сервер (например, офис, домашняя сеть)."
 
 #: applications/luci-app-smartdns/htdocs/luci-static/resources/view/smartdns/smartdns.js:651
 msgid "DNS Server ip"

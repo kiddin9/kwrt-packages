@@ -4,12 +4,11 @@ include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI Support for k3screenctrl
 LUCI_DESCRIPTION:=LuCI Support for k3screenctrl.
-LUCI_DEPENDS:=+phicomm-k3screenctrl
-LUCI_PKGARCH:=all
+LUCI_DEPENDS:=+luci-compat +phicomm-k3screenctrl
 
 PKG_NAME:=luci-app-k3screenctrl
 PKG_VERSION:=1.1.0
-PKG_RELEASE:=11
+PKG_RELEASE:=12
 
 PKG_LICENSE:=GPLv3
 PKG_LICENSE_FILES:=LICENSE
