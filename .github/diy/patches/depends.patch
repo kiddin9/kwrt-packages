@@ -70,15 +70,15 @@
 
 --- a/luci-app-rclone/Makefile
 +++ b/luci-app-rclone/Makefile
-@@ -9,7 +9,7 @@ PKG_VERSION:=1.4.1-3
- PKG_RELEASE:=
+@@ -9,7 +9,7 @@ PKG_VERSION:=1.4.1
+ PKG_RELEASE:=4
  
  LUCI_TITLE:=LuCI support for Rclone
--LUCI_DEPENDS:=+rclone-config \
-+LUCI_DEPENDS:=+rclone-config +fuse-overlayfs +fuse3-utils \
+-LUCI_DEPENDS:=+luci-compat +rclone-config \
++LUCI_DEPENDS:=+luci-compat +rclone-config +fuse-overlayfs +fuse3-utils \
                +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-webui:rclone-webui-react \
                +PACKAGE_$(PKG_NAME)_INCLUDE_rclone-ng:rclone-ng
- LUCI_PKGARCH:=all
+ 
 
 --- a/k3screenctrl/Makefile
 +++ b/k3screenctrl/Makefile
