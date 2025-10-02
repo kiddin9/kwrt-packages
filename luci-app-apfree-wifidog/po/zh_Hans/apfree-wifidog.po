@@ -409,10 +409,10 @@ msgid "Speed Distribution"
 msgstr "速率分布"
 
 msgid "Download Speed (Bit/s)"
-msgstr "下载速率 (Bit/s)"
+msgstr "下载速率 (比特/秒)"
 
 msgid "Upload Speed (Bit/s)"
-msgstr "上传速率 (Bit/s)"
+msgstr "上传速率 (比特/秒)"
 
 msgid "Upload Speed / Host"
 msgstr "上传速率 / 主机"
@@ -600,18 +600,6 @@ msgstr "上传速率 / 应用"
 msgid "Download Speed / SID"
 msgstr "下载速率 / 应用"
 
-msgid "download speed"
-msgstr "下载速率"
-
-msgid "upload speed"
-msgstr "上传速率"
-
-msgid "Download Speed (Bit/s)"
-msgstr "下载速率 (比特/秒)"
-
-msgid "Upload Speed (Bit/s)"
-msgstr "上传速率 (比特/秒)"
-
 msgid "<big id=\"sid-total\">0</big> different SIDs"
 msgstr "应用计数：<big id=\"sid-total\">0</big>"
 
@@ -782,3 +770,18 @@ msgstr "恢复"
 
 msgid "Last updated: %s"
 msgstr "上次更新：%s"
+
+msgid "Error loading SID data: %s"
+msgstr "加载 SID 数据错误：%s"
+
+msgid "Error loading L7 protocol data: %s"
+msgstr "加载 L7 协议数据错误：%s"
+
+msgid "Last updated: never"
+msgstr "上次更新：从未"
+
+msgid "Real-time Download Speed"
+msgstr "实时下载速度"
+
+msgid "Real-time Upload Speed"
+msgstr "实时上传速度"

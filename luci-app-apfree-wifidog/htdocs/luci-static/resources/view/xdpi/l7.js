@@ -7,6 +7,9 @@
 'require dom';
 
 var chartRegistry = {};
+var downloadLineChart, uploadLineChart;
+var downloadLineData = { categories: [], series: [] };
+var uploadLineData = { categories: [], series: [] };
 var currentSortInfo = {
 	table: null,
 	column: null,
@@ -17,6 +20,14 @@ var isPaused = false;
 var lastUpdated = null;
 var pollActive = false;
 var lastSIDData = null;
+
+// Pre-fill with 60 empty points for a smooth start
+for (var i = 0; i < 60; i++) {
+	downloadLineData.categories.push('');
+	downloadLineData.series.push(0);
+	uploadLineData.categories.push('');
+	uploadLineData.series.push(0);
+}
 
 return view.extend({
 	load: function() {
@@ -82,6 +93,28 @@ return view.extend({
 		}
 
 		return normalized;
+	},
+
+	updateLineCharts: function(download, upload) {
+		var now = new Date().toLocaleTimeString();
+
+		downloadLineData.categories.push(now);
+		downloadLineData.categories.shift();
+		downloadLineData.series.push(download);
+		downloadLineData.series.shift();
+
+		uploadLineData.categories.push(now);
+		uploadLineData.categories.shift();
+		uploadLineData.series.push(upload);
+		uploadLineData.series.shift();
+
+		if (downloadLineChart) {
+			downloadLineChart.setOption({ series: [{ data: downloadLineData.series }], xAxis: { data: downloadLineData.categories } });
+		}
+
+		if (uploadLineChart) {
+			uploadLineChart.setOption({ series: [{ data: uploadLineData.series }], xAxis: { data: uploadLineData.categories } });
+		}
 	},
 
 	pie: function(id, data, valueFormatter) {
@@ -232,6 +265,8 @@ return view.extend({
 			});
 		}
 
+		this.updateLineCharts(tx_rate_total, rx_rate_total);
+
 		var table = document.getElementById('sid-data');
 		cbi_update_table('#sid-data', rows, E('em', _('No data recorded yet.')));
 
@@ -343,6 +378,36 @@ return view.extend({
 		}, 5);
 	},
 
+	initializeUI: function() {
+		if (window.echarts) {
+			var dlChartEl = document.getElementById('download-speed-line-chart');
+			var ulChartEl = document.getElementById('upload-speed-line-chart');
+			if (!dlChartEl || !ulChartEl) return;
+
+			downloadLineChart = echarts.init(dlChartEl);
+			downloadLineChart.setOption({
+				tooltip: { trigger: 'axis' },
+				grid: { left: '3%', right: '4%', bottom: '10%', top: '30px', containLabel: true },
+				xAxis: { type: 'category', boundaryGap: false, data: downloadLineData.categories },
+				yAxis: { type: 'value', axisLabel: { formatter: function(val) { return '%1024.2mbps'.format(val); } } },
+				series: [ { name: _('Download Speed'), type: 'line', smooth: true, data: downloadLineData.series, areaStyle: {}, color: '#3771c8' } ]
+			});
+
+			uploadLineChart = echarts.init(ulChartEl);
+			uploadLineChart.setOption({
+				tooltip: { trigger: 'axis' },
+				grid: { left: '3%', right: '4%', bottom: '10%', top: '30px', containLabel: true },
+				xAxis: { type: 'category', boundaryGap: false, data: uploadLineData.categories },
+				yAxis: { type: 'value', axisLabel: { formatter: function(val) { return '%1024.2mbps'.format(val); } } },
+				series: [ { name: _('Upload Speed'), type: 'line', smooth: true, data: uploadLineData.series, areaStyle: {}, color: '#4CAF50' } ]
+			});
+
+			this.pollL7Data();
+		} else {
+			setTimeout(this.initializeUI.bind(this), 50);
+		}
+	},
+
 	render: function() {
 		var self = this;
 
@@ -350,11 +415,21 @@ return view.extend({
 			E('div', { 'class': 'cbi-section', 'data-tab': 'sid', 'data-tab-title': _('L7 SID Data') }, [
 				E('div', { 'class': 'dashboard-container' }, [
 					E('div', { 'class': 'kpi-row' }, [
-						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-total-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Active Clients')) ]),
+						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-total-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('L7 Protocol Data')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-tx-rate-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Download Speed')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-rx-rate-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Upload Speed')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-tx-volume-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Download Total')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-rx-volume-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Upload Total')) ])
+					]),
+					E('div', { 'class': 'line-chart-row' }, [
+						E('div', { 'class': 'chart-card' }, [
+							E('h4', [_('Real-time Download Speed')]),
+							E('div', { id: 'download-speed-line-chart', style: 'width: 100%; height: 250px;' })
+						]),
+						E('div', { 'class': 'chart-card' }, [
+							E('h4', [_('Real-time Upload Speed')]),
+							E('div', { id: 'upload-speed-line-chart', style: 'width: 100%; height: 250px;' })
+						])
 					]),
 					E('div', { 'class': 'chart-grid' }, [
 						E('div', { 'class': 'chart-card' }, [
@@ -366,11 +441,11 @@ return view.extend({
 							E('canvas', { id: 'sid-rx-rate-pie', height: '250' })
 						]),
 						E('div', { 'class': 'chart-card' }, [
-							E('h4', [_('Download Traffic / SID')]),
+							E('h4', [_('Download Total')]),
 							E('canvas', { id: 'sid-tx-volume-pie', height: '250' })
 						]),
 						E('div', { 'class': 'chart-card' }, [
-							E('h4', [_('Upload Traffic / SID')]),
+							E('h4', [_('Upload Total')]),
 							E('canvas', { id: 'sid-rx-volume-pie', height: '250' })
 						])
 					])
@@ -441,12 +516,11 @@ return view.extend({
 		var node = E([], [
 			E('link', { 'rel': 'stylesheet', 'href': L.resource('view/wifidogx.css') }),
 			E('style', { type: 'text/css' },
-			'.th-sort-asc::after { content: " ▲"; display: inline-block; margin-left: 5px; font-size: 14px; } '+
-			'.th-sort-desc::after { content: " ▼"; display: inline-block; margin-left: 5px; font-size: 14px; } '+
-			'.table .th { cursor: pointer; position: relative; } '+
-			'.table .th:hover { background-color: #f0f0f0; } '+
+			'.th-sort-asc::after { content: " ▲"; } .th-sort-desc::after { content: " ▼"; } '+
+			'.table .th { cursor: pointer; } .table .th:hover { background-color: #f0f0f0; } '+
 			'#l7-error-message { color: red; background-color: #ffefef; border: 1px solid red; padding: 10px; margin-bottom: 10px; display: none; } '+
 			'.dashboard-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; } '+
+			'.line-chart-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; } '+
 			'.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; } '+
 			'.kpi-card { background-color: #f9f9f9; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #e0e0e0; } '+
 			'.kpi-card big { display: block; font-size: 1.8em; font-weight: bold; color: #3771c8; } '+
@@ -454,7 +528,6 @@ return view.extend({
 			'.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } '+
 			'.chart-card { background-color: #ffffff; border-radius: 8px; padding: 20px; border: 1px solid #e0e0e0; } '+
 			'.chart-card h4 { margin-top: 0; margin-bottom: 15px; text-align: center; font-size: 1.1em; } '+
-			'.chart-card canvas { max-width: 100%; height: auto !important; } '+
 			'.l7-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background-color: #f2f2f2; border-radius: 4px; } ' +
 			'.l7-controls-left, .l7-controls-right { display: flex; align-items: center; gap: 15px; } '
 			),
@@ -468,7 +541,7 @@ return view.extend({
 
 		ui.tabs.initTabGroup(tabContainer.childNodes);
 
-		setTimeout(this.pollL7Data.bind(this), 0);
+		setTimeout(this.initializeUI.bind(this), 0);
 
 		return node;
 	},
