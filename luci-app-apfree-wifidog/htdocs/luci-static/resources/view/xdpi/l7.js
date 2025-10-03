@@ -8,8 +8,15 @@
 
 var chartRegistry = {};
 var downloadLineChart, uploadLineChart;
-var downloadLineData = { categories: [], series: [] };
-var uploadLineData = { categories: [], series: [] };
+
+// Data structures for stacked line charts
+var lineCategories = [];
+var downloadSeriesData = {};
+var uploadSeriesData = {};
+
+// Color palette for chart series
+var colorPalette = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+
 var currentSortInfo = {
 	table: null,
 	column: null,
@@ -20,14 +27,21 @@ var isPaused = false;
 var lastUpdated = null;
 var pollActive = false;
 var lastSIDData = null;
+var resizeListenerAdded = false;
+var resizeTimer = null;
 
 // Pre-fill with 60 empty points for a smooth start
 for (var i = 0; i < 60; i++) {
-	downloadLineData.categories.push('');
-	downloadLineData.series.push(0);
-	uploadLineData.categories.push('');
-	uploadLineData.series.push(0);
+	lineCategories.push('');
 }
+
+// Helper to convert hex to rgba
+function hexToRgba(hex, opacity) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? 
+		'rgba(' + parseInt(result[1], 16) + ', ' + parseInt(result[2], 16) + ', ' + parseInt(result[3], 16) + ', ' + opacity + ')' :
+		null;
+};
 
 return view.extend({
 	load: function() {
@@ -77,43 +91,68 @@ return view.extend({
 		});
 	},
 
-	normalizeDat: function(data) {
-		var total = data.reduce(function(n, d) { return n + d.value; }, 0);
-		var normalized = data.slice();
-
-		if (normalized.length >= 1) {
-			var fakeValue = total * 0.001;
-			normalized.push({
-				value: fakeValue,
-				name: '',
-				itemStyle: { color: 'transparent' },
-				label: { show: false },
-				tooltip: { show: false }
-			});
-		}
-
-		return normalized;
-	},
-
-	updateLineCharts: function(download, upload) {
+	updateStackedLineCharts: function(perServiceDownload, perServiceUpload) {
 		var now = new Date().toLocaleTimeString();
-
-		downloadLineData.categories.push(now);
-		downloadLineData.categories.shift();
-		downloadLineData.series.push(download);
-		downloadLineData.series.shift();
-
-		uploadLineData.categories.push(now);
-		uploadLineData.categories.shift();
-		uploadLineData.series.push(upload);
-		uploadLineData.series.shift();
+		lineCategories.push(now);
+		lineCategories.shift();
+	
+		var processChartData = function(seriesData, perServiceData) {
+			var allServices = Object.keys(seriesData);
+			Object.keys(perServiceData).forEach(function(service) {
+				if (allServices.indexOf(service) === -1) {
+					allServices.push(service);
+				}
+			});
+	
+			allServices.forEach(function(service) {
+				if (!seriesData[service]) {
+					seriesData[service] = Array(59).fill(0);
+				}
+				var rate = perServiceData[service] || 0;
+				seriesData[service].push(rate);
+				seriesData[service].shift();
+			});
+	
+			return Object.keys(seriesData).map(function(service, index) {
+				var color = colorPalette[index % colorPalette.length];
+				return {
+					name: service,
+					type: 'line',
+					stack: 'Total',
+					smooth: true,
+					lineStyle: { width: 1, color: color },
+					showSymbol: false,
+					itemStyle: { color: color },
+					areaStyle: {
+						color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+							{ offset: 0, color: hexToRgba(color, 0.5) },
+							{ offset: 1, color: hexToRgba(color, 0) }
+						])
+					},
+					data: seriesData[service]
+				};
+			});
+		};
+	
+		var downloadChartSeries = processChartData(downloadSeriesData, perServiceDownload);
+		var uploadChartSeries = processChartData(uploadSeriesData, perServiceUpload);
+	
+		var legendData = downloadChartSeries.map(function(s) { return s.name; });
 
 		if (downloadLineChart) {
-			downloadLineChart.setOption({ series: [{ data: downloadLineData.series }], xAxis: { data: downloadLineData.categories } });
+			downloadLineChart.setOption({
+				legend: { data: legendData, type: 'scroll', top: 0, left: 'center' },
+				series: downloadChartSeries,
+				xAxis: { data: lineCategories }
+			});
 		}
-
+	
 		if (uploadLineChart) {
-			uploadLineChart.setOption({ series: [{ data: uploadLineData.series }], xAxis: { data: uploadLineData.categories } });
+			uploadLineChart.setOption({
+				legend: { data: legendData, type: 'scroll', top: 0, left: 'center' },
+				series: uploadChartSeries,
+				xAxis: { data: lineCategories }
+			});
 		}
 	},
 
@@ -133,26 +172,33 @@ return view.extend({
 			}
 		});
 
-		var formatter = valueFormatter || function(params) {
-			return params.name + ': ' + params.value + ' (' + params.percent + '%)';
-		};
-
 		var option = {
 			tooltip: {
 				trigger: 'item',
-				formatter: formatter
+				formatter: function(params) {
+					if (valueFormatter) {
+						// 将 ECharts params 对象转换为自定义格式
+						return valueFormatter({
+							name: params.name,
+							value: params.value,
+							percent: params.percent.toFixed(2)
+						});
+					}
+					return params.name + ': ' + params.value + ' (' + params.percent.toFixed(2) + '%)';
+				}
 			},
 			series: [{
 				type: 'pie',
 				radius: ['25%', '80%'],
 				avoidLabelOverlap: false,
-				itemStyle: { borderRadius: 5, borderColor: '#fff', borderWidth: 2 },
+				padAngle: 10,
+				itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
 				label: { show: false, position: 'center' },
 				emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
 				labelLine: { show: false },
-				data: this.normalizeDat(data.map(function(d) {
+				data: data.map(function(d) {
 					return { value: d.value, name: d.label || d.name, itemStyle: { color: d.color } };
-				}))
+				})
 			}]
 		};
 
@@ -199,12 +245,24 @@ return view.extend({
 		rows.forEach(function(row) { tbody.appendChild(row); });
 	},
 
+	formatMbps: function(bits) {
+		if (typeof bits !== 'number') return '0.00 Mbps';
+		return (bits / 1024 / 1024).toFixed(2) + ' Mbps';
+	},
+
+	formatMB: function(bytes) {
+		if (typeof bytes !== 'number') return '0.00 MB';
+		return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+	},
+
 	renderSIDData: function(data) {
 		var rows = [];
 		var txRateData = [], rxRateData = [];
 		var txVolumeData = [], rxVolumeData = [];
 		var tx_rate_total = 0, rx_rate_total = 0;
 		var tx_bytes_total = 0, rx_bytes_total = 0;
+		var perServiceTxRate = {};
+		var perServiceRxRate = {};
 		var self = this;
 		var allItems = [];
 		
@@ -240,21 +298,46 @@ return view.extend({
 					domainOrL7Proto = item.l7_proto_desc;
 				}
 				
+				// 判断连接是否活跃
+				var isActive = item.incoming.rate > 0 || item.outgoing.rate > 0;
+				var activityIcon = isActive ? '🟢' : '⚪';
+				
 				rows.push([
-					item.sid,
-					domainOrL7Proto,
-					[ item.incoming.rate, '%1024.2mbps'.format(item.incoming.rate) ],
-					[ item.incoming.total_bytes, '%1024.2mB'.format(item.incoming.total_bytes) ],
-					[ item.incoming.total_packets, '%1000.2mP'.format(item.incoming.total_packets) ],
-					[ item.outgoing.rate, '%1024.2mbps'.format(item.outgoing.rate) ],
-					[ item.outgoing.total_bytes, '%1024.2mB'.format(item.outgoing.total_bytes) ],
-					[ item.outgoing.total_packets, '%1000.2mP'.format(item.outgoing.total_packets) ]
+					E('span', { 'class': 'sid-cell' }, [
+						E('span', { 'class': 'activity-indicator', 'title': isActive ? _('Active') : _('Inactive') }, activityIcon),
+						E('span', {}, ' ' + item.sid)
+					]),
+					E('span', { 'class': 'protocol-cell' }, [
+						E('span', { 'class': 'protocol-icon' }, '🌐'),
+						E('span', {}, ' ' + domainOrL7Proto)
+					]),
+					[ item.incoming.rate, E('span', { 'class': 'speed-cell download' }, [
+						E('span', { 'class': 'data-value' }, '%1024.2mbps'.format(item.incoming.rate))
+					])],
+					[ item.incoming.total_bytes, E('span', { 'class': 'volume-cell download' }, [
+						E('span', { 'class': 'data-value' }, '%1024.2mB'.format(item.incoming.total_bytes))
+					])],
+					[ item.incoming.total_packets, E('span', { 'class': 'packet-cell download' }, [
+						E('span', { 'class': 'data-value' }, '%1000.2mP'.format(item.incoming.total_packets))
+					])],
+					[ item.outgoing.rate, E('span', { 'class': 'speed-cell upload' }, [
+						E('span', { 'class': 'data-value' }, '%1024.2mbps'.format(item.outgoing.rate))
+					])],
+					[ item.outgoing.total_bytes, E('span', { 'class': 'volume-cell upload' }, [
+						E('span', { 'class': 'data-value' }, '%1024.2mB'.format(item.outgoing.total_bytes))
+					])],
+					[ item.outgoing.total_packets, E('span', { 'class': 'packet-cell upload' }, [
+						E('span', { 'class': 'data-value' }, '%1000.2mP'.format(item.outgoing.total_packets))
+					])]
 				]);
 
 				txRateData.push({ value: item.incoming.rate, label: domainOrL7Proto });
 				rxRateData.push({ value: item.outgoing.rate, label: domainOrL7Proto });
 				txVolumeData.push({ value: item.incoming.total_bytes, label: domainOrL7Proto });
 				rxVolumeData.push({ value: item.outgoing.total_bytes, label: domainOrL7Proto });
+
+				perServiceTxRate[domainOrL7Proto] = (perServiceTxRate[domainOrL7Proto] || 0) + item.incoming.rate;
+				perServiceRxRate[domainOrL7Proto] = (perServiceRxRate[domainOrL7Proto] || 0) + item.outgoing.rate;
 			});
 
 			allItems.forEach(function(item) {
@@ -265,7 +348,7 @@ return view.extend({
 			});
 		}
 
-		this.updateLineCharts(tx_rate_total, rx_rate_total);
+		this.updateStackedLineCharts(perServiceTxRate, perServiceRxRate);
 
 		var table = document.getElementById('sid-data');
 		cbi_update_table('#sid-data', rows, E('em', _('No data recorded yet.')));
@@ -289,10 +372,10 @@ return view.extend({
 			});
 		});
 
-		this.pie('sid-tx-rate-pie', txRateData, function(p) { return p.name + ': ' + '%1024.2mbps'.format(p.value) + ' (' + p.percent + '%)'; });
-		this.pie('sid-rx-rate-pie', rxRateData, function(p) { return p.name + ': ' + '%1024.2mbps'.format(p.value) + ' (' + p.percent + '%)'; });
-		this.pie('sid-tx-volume-pie', txVolumeData, function(p) { return p.name + ': ' + '%1024.2mB'.format(p.value) + ' (' + p.percent + '%)'; });
-		this.pie('sid-rx-volume-pie', rxVolumeData, function(p) { return p.name + ': ' + '%1024.2mB'.format(p.value) + ' (' + p.percent + '%)'; });
+		this.pie('sid-tx-rate-pie', txRateData, function(p) { return p.name + ': ' + self.formatMbps(p.value) + ' (' + p.percent + '%)'; });
+		this.pie('sid-rx-rate-pie', rxRateData, function(p) { return p.name + ': ' + self.formatMbps(p.value) + ' (' + p.percent + '%)'; });
+		this.pie('sid-tx-volume-pie', txVolumeData, function(p) { return p.name + ': ' + self.formatMB(p.value) + ' (' + p.percent + '%)'; });
+		this.pie('sid-rx-volume-pie', rxVolumeData, function(p) { return p.name + ': ' + self.formatMB(p.value) + ' (' + p.percent + '%)'; });
 
 		var sidTotalEl = document.getElementById('sid-total-val');
 		if(sidTotalEl) sidTotalEl.textContent = allItems.length;
@@ -326,14 +409,28 @@ return view.extend({
 			if (Array.isArray(data.data.protocols)) {
 				data.data.protocols.forEach(function(item) {
 					sidLookupTable[item.sid] = { type: 'protocol', name: item.protocol };
-					rows.push([ item.id, item.protocol, item.sid ]);
+					rows.push([
+						E('span', { 'class': 'id-cell' }, item.id),
+						E('span', { 'class': 'protocol-cell' }, [
+							E('span', { 'class': 'protocol-icon l7' }, '🔌'),
+							E('span', {}, ' ' + item.protocol)
+						]),
+						E('span', { 'class': 'sid-cell' }, item.sid)
+					]);
 				});
 			}
 			
 			if (Array.isArray(data.data.domains)) {
 				data.data.domains.forEach(function(item) {
 					sidLookupTable[item.sid] = { type: 'domain', name: item.domain };
-					rows.push([ item.id, item.domain, item.sid ]);
+					rows.push([
+						E('span', { 'class': 'id-cell' }, item.id),
+						E('span', { 'class': 'protocol-cell' }, [
+							E('span', { 'class': 'protocol-icon domain' }, '🌍'),
+							E('span', {}, ' ' + item.domain)
+						]),
+						E('span', { 'class': 'sid-cell' }, item.sid)
+					]);
 				});
 			}
 		}
@@ -384,36 +481,135 @@ return view.extend({
 			var ulChartEl = document.getElementById('upload-speed-line-chart');
 			if (!dlChartEl || !ulChartEl) return;
 
-			downloadLineChart = echarts.init(dlChartEl);
-			downloadLineChart.setOption({
-				tooltip: { trigger: 'axis' },
-				grid: { left: '3%', right: '4%', bottom: '10%', top: '30px', containLabel: true },
-				xAxis: { type: 'category', boundaryGap: false, data: downloadLineData.categories },
+			var baseChartOption = {
+				tooltip: {
+					trigger: 'axis',
+					formatter: function (params) {
+						if (!params || params.length === 0) {
+							return null;
+						}
+						var tooltipContent = params[0].axisValueLabel + '<br/>';
+						params.sort(function(a, b) { return b.value - a.value; });
+						params.forEach(function(item) {
+							if (item.value > 0) {
+								tooltipContent += item.marker + ' ' + item.seriesName + ': ' + '%1024.2mbps'.format(item.value) + '<br/>';
+							}
+						});
+						return tooltipContent;
+					}
+				},
+				grid: { left: '3%', right: '4%', bottom: '10%', top: '50px', containLabel: true },
+				xAxis: { type: 'category', boundaryGap: false, data: lineCategories },
 				yAxis: { type: 'value', axisLabel: { formatter: function(val) { return '%1024.2mbps'.format(val); } } },
-				series: [ { name: _('Download Speed'), type: 'line', smooth: true, data: downloadLineData.series, areaStyle: {}, color: '#3771c8' } ]
-			});
+				series: []
+			};
 
-			uploadLineChart = echarts.init(ulChartEl);
-			uploadLineChart.setOption({
-				tooltip: { trigger: 'axis' },
-				grid: { left: '3%', right: '4%', bottom: '10%', top: '30px', containLabel: true },
-				xAxis: { type: 'category', boundaryGap: false, data: uploadLineData.categories },
-				yAxis: { type: 'value', axisLabel: { formatter: function(val) { return '%1024.2mbps'.format(val); } } },
-				series: [ { name: _('Upload Speed'), type: 'line', smooth: true, data: uploadLineData.series, areaStyle: {}, color: '#4CAF50' } ]
-			});
 
-			this.pollL7Data();
-		} else {
-			setTimeout(this.initializeUI.bind(this), 50);
+		downloadLineChart = echarts.init(dlChartEl);
+		downloadLineChart.setOption(baseChartOption);
+
+		uploadLineChart = echarts.init(ulChartEl);
+		uploadLineChart.setOption(baseChartOption);
+
+		// 添加窗口大小变化监听器，使图表能够响应式调整
+		if (!resizeListenerAdded) {
+			var resizeTimer = null;
+			var resizeHandler = function() {
+				// 使用防抖，避免频繁触发 resize
+				if (resizeTimer) {
+					clearTimeout(resizeTimer);
+				}
+				resizeTimer = setTimeout(function() {
+					// 调整折线图大小
+					if (downloadLineChart) {
+						downloadLineChart.resize();
+					}
+					if (uploadLineChart) {
+						uploadLineChart.resize();
+					}
+					// 调整饼图大小
+					Object.keys(chartRegistry).forEach(function(chartId) {
+						if (chartRegistry[chartId]) {
+							chartRegistry[chartId].resize();
+						}
+					});
+				}, 200);
+			};
+			
+			window.addEventListener('resize', resizeHandler);
+			resizeListenerAdded = true;
 		}
-	},
 
-	render: function() {
+		this.pollL7Data();
+	} else {
+		setTimeout(this.initializeUI.bind(this), 50);
+	}
+},	render: function() {
 		var self = this;
+
+		var controls = E('div', { 'class': 'l7-controls' }, [
+			E('div', { 'class': 'l7-controls-left' }, [
+				E('div', { 'class': 'control-group' }, [
+					E('span', { 'class': 'control-icon' }, '📊'),
+					E('label', { 'for': 'sid-size-select', 'class': 'control-label' }, _('Show entries:')),
+					E('select', {
+						'id': 'sid-size-select',
+						'class': 'cbi-input-select',
+						'change': ui.createHandlerFn(this, function() {
+							if (lastSIDData) {
+								self.renderSIDData(lastSIDData);
+							}
+						})
+					}, [
+						E('option', { 'value': '10' }, '10'),
+						E('option', { 'value': '15' }, '15'),
+						E('option', { 'value': '20' }, '20'),
+						E('option', { 'value': '25' }, '25'),
+						E('option', { 'value': '50' }, '50')
+					])
+				])
+			]),
+			E('div', { 'class': 'l7-controls-right' }, [
+				E('div', { 'class': 'control-group' }, [
+					E('span', { 'class': 'control-icon' }, '🕐'),
+					E('span', { 'id': 'last-updated', 'class': 'last-updated-text' }, _('Last updated: never'))
+				]),
+				E('button', {
+					'class': 'cbi-button cbi-button-action',
+					'id': 'pause-resume-btn',
+					'click': function(ev) {
+						isPaused = !isPaused;
+						var btn = ev.target;
+						if (isPaused) {
+							btn.innerHTML = '<span class="btn-icon">▶️</span> ' + _('Resume');
+							btn.classList.remove('cbi-button-action');
+							btn.classList.add('cbi-button-positive');
+						} else {
+							btn.innerHTML = '<span class="btn-icon">⏸️</span> ' + _('Pause');
+							btn.classList.remove('cbi-button-positive');
+							btn.classList.add('cbi-button-action');
+						}
+					}
+				}, [
+					E('span', { 'class': 'btn-icon' }, '⏸️'),
+					E('span', {}, ' ' + _('Pause'))
+				])
+			])
+		]);
 
 		var tabContainer = E('div', {}, [
 			E('div', { 'class': 'cbi-section', 'data-tab': 'sid', 'data-tab-title': _('L7 SID Data') }, [
 				E('div', { 'class': 'dashboard-container' }, [
+					E('div', { 'class': 'line-chart-row' }, [
+						E('div', { 'class': 'chart-card' }, [
+							E('h4', [_('Real-time Download Speed')]),
+							E('div', { id: 'download-speed-line-chart', style: 'width: 100%; height: 350px;' })
+						]),
+						E('div', { 'class': 'chart-card' }, [
+							E('h4', [_('Real-time Upload Speed')]),
+							E('div', { id: 'upload-speed-line-chart', style: 'width: 100%; height: 350px;' })
+						])
+					]),
 					E('div', { 'class': 'kpi-row' }, [
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-total-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('L7 Protocol Data')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-tx-rate-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Download Speed')) ]),
@@ -421,59 +617,50 @@ return view.extend({
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-tx-volume-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Download Total')) ]),
 						E('div', { 'class': 'kpi-card' }, [ E('big', { id: 'sid-rx-volume-val' }, '0'), E('span', { 'class': 'kpi-card-label' }, _('Upload Total')) ])
 					]),
-					E('div', { 'class': 'line-chart-row' }, [
-						E('div', { 'class': 'chart-card' }, [
-							E('h4', [_('Real-time Download Speed')]),
-							E('div', { id: 'download-speed-line-chart', style: 'width: 100%; height: 250px;' })
-						]),
-						E('div', { 'class': 'chart-card' }, [
-							E('h4', [_('Real-time Upload Speed')]),
-							E('div', { id: 'upload-speed-line-chart', style: 'width: 100%; height: 250px;' })
-						])
-					]),
 					E('div', { 'class': 'chart-grid' }, [
 						E('div', { 'class': 'chart-card' }, [
 							E('h4', [_('Download Speed / SID')]),
-							E('canvas', { id: 'sid-tx-rate-pie', height: '250' })
+							E('div', { id: 'sid-tx-rate-pie', style: 'width: 100%; height: 300px;' })
 						]),
 						E('div', { 'class': 'chart-card' }, [
 							E('h4', [_('Upload Speed / SID')]),
-							E('canvas', { id: 'sid-rx-rate-pie', height: '250' })
+							E('div', { id: 'sid-rx-rate-pie', style: 'width: 100%; height: 300px;' })
 						]),
 						E('div', { 'class': 'chart-card' }, [
 							E('h4', [_('Download Total')]),
-							E('canvas', { id: 'sid-tx-volume-pie', height: '250' })
+							E('div', { id: 'sid-tx-volume-pie', style: 'width: 100%; height: 300px;' })
 						]),
 						E('div', { 'class': 'chart-card' }, [
 							E('h4', [_('Upload Total')]),
-							E('canvas', { id: 'sid-rx-volume-pie', height: '250' })
+							E('div', { id: 'sid-rx-volume-pie', style: 'width: 100%; height: 300px;' })
 						])
 					])
 				]),
 				E('table', { 'class': 'table', 'id': 'sid-data' }, [
 					E('tr', { 'class': 'tr table-titles' }, [
-						E('th', { 'class': 'th left' }, [ _('SID') ]),
-						E('th', { 'class': 'th left' }, [ _('Domain&L7Protocol') ]),
-						E('th', { 'class': 'th right' }, [ _('Download Speed (Bit/s)') ]),
-						E('th', { 'class': 'th right' }, [ _('Download (Bytes)') ]),
-						E('th', { 'class': 'th right' }, [ _('Download (Packets)') ]),
-						E('th', { 'class': 'th right' }, [ _('Upload Speed (Bit/s)') ]),
-						E('th', { 'class': 'th right' }, [ _('Upload (Bytes)') ]),
-						E('th', { 'class': 'th right' }, [ _('Upload (Packets)') ])
+						E('th', { 'class': 'th left' }, [ E('span', { 'class': 'th-icon' }, '🆔'), ' ', _('SID') ]),
+						E('th', { 'class': 'th left' }, [ E('span', { 'class': 'th-icon' }, '🌐'), ' ', _('Domain&L7Protocol') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '⬇️'), ' ', _('Download Speed (Bit/s)') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '📦'), ' ', _('Download (Bytes)') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '📨'), ' ', _('Download (Packets)') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '⬆️'), ' ', _('Upload Speed (Bit/s)') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '📦'), ' ', _('Upload (Bytes)') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '📨'), ' ', _('Upload (Packets)') ])
 					]),
 					E('tr', { 'class': 'tr placeholder' }, [
 						E('td', { 'class': 'td', 'colspan': '8' }, [
 							E('em', { 'class': 'spinning' }, [ _('Collecting data...') ])
 						])
 					])
-				])
+				]),
+				controls
 			]),
 			E('div', { 'class': 'cbi-section', 'data-tab': 'l7proto', 'data-tab-title': _('L7 Protocol Data') }, [
 				E('table', { 'class': 'table', 'id': 'l7proto-data' }, [
 					E('tr', { 'class': 'tr table-titles' }, [
-						E('th', { 'class': 'th left' }, [ _('ID') ]),
-						E('th', { 'class': 'th left' }, [ _('Domain&L7Protocol') ]),
-						E('th', { 'class': 'th right' }, [ _('SID') ])
+						E('th', { 'class': 'th left' }, [ E('span', { 'class': 'th-icon' }, '#️⃣'), ' ', _('ID') ]),
+						E('th', { 'class': 'th left' }, [ E('span', { 'class': 'th-icon' }, '🌐'), ' ', _('Domain&L7Protocol') ]),
+						E('th', { 'class': 'th right' }, [ E('span', { 'class': 'th-icon' }, '🔑'), ' ', _('SID') ])
 					]),
 					E('tr', { 'class': 'tr placeholder' }, [
 						E('td', { 'class': 'td', 'colspan': '3' }, [
@@ -484,59 +671,15 @@ return view.extend({
 			])
 		]);
 
-		var controls = E('div', { 'class': 'l7-controls' }, [
-			E('div', { 'class': 'l7-controls-left' }, [
-				E('label', { 'for': 'sid-size-select' }, _('Show entries: ')),
-				E('select', {
-					'id': 'sid-size-select',
-					'change': ui.createHandlerFn(this, function() {
-						if (lastSIDData) {
-							self.renderSIDData(lastSIDData);
-						}
-					})
-				}, [
-					E('option', { 'value': '10' }, '10'),
-					E('option', { 'value': '15' }, '15'),
-					E('option', { 'value': '20' }, '20'),
-					E('option', { 'value': '25' }, '25')
-				])
-			]),
-			E('div', { 'class': 'l7-controls-right' }, [
-				E('span', { 'id': 'last-updated' }, _('Last updated: never')),
-				E('button', {
-					'class': 'cbi-button cbi-button-apply',
-					'click': function(ev) {
-						isPaused = !isPaused;
-						ev.target.textContent = isPaused ? _('Resume') : _('Pause');
-					}
-				}, _('Pause'))
-			])
-		]);
-
 		var node = E([], [
-			E('link', { 'rel': 'stylesheet', 'href': L.resource('view/wifidogx.css') }),
-			E('style', { type: 'text/css' },
-			'.th-sort-asc::after { content: " ▲"; } .th-sort-desc::after { content: " ▼"; } '+
-			'.table .th { cursor: pointer; } .table .th:hover { background-color: #f0f0f0; } '+
-			'#l7-error-message { color: red; background-color: #ffefef; border: 1px solid red; padding: 10px; margin-bottom: 10px; display: none; } '+
-			'.dashboard-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; } '+
-			'.line-chart-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; } '+
-			'.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; } '+
-			'.kpi-card { background-color: #f9f9f9; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #e0e0e0; } '+
-			'.kpi-card big { display: block; font-size: 1.8em; font-weight: bold; color: #3771c8; } '+
-			'.kpi-card-label { font-size: 0.9em; color: #666; } '+
-			'.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } '+
-			'.chart-card { background-color: #ffffff; border-radius: 8px; padding: 20px; border: 1px solid #e0e0e0; } '+
-			'.chart-card h4 { margin-top: 0; margin-bottom: 15px; text-align: center; font-size: 1.1em; } '+
-			'.l7-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background-color: #f2f2f2; border-radius: 4px; } ' +
-			'.l7-controls-left, .l7-controls-right { display: flex; align-items: center; gap: 15px; } '
-			),
-			E('script', { 'type': 'text/javascript', 'src': L.resource('echarts.simple.min.js') }),
+		    E('link', { 'rel': 'stylesheet', 'href': L.resource('view/wifidogx.css') }),
+		    E('script', { 'type': 'text/javascript', 'src': L.resource('echarts.min.js') }),
 
-			E('h2', [ _('L7 Data Monitor') ]),
-			E('div', { 'id': 'l7-error-message' }),
-			tabContainer,
-			controls
+		    E('div', { 'class': 'l7-view-container' }, [
+		        E('h2', [ _('L7 Data Monitor') ]),
+		        E('div', { 'id': 'l7-error-message' }),
+		        tabContainer
+		    ])
 		]);
 
 		ui.tabs.initTabGroup(tabContainer.childNodes);
