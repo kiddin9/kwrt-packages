@@ -1578,7 +1578,7 @@ input,
 	line-height: 1.5rem;
 	padding: .5rem .75rem;
 	margin: .25rem .1rem;
-	color: var(--text-primary) !important;
+	color: var(--text-primary);
 	background-color: var(--card-bg);
 	border: 1px solid #dee2e6;
 	border-radius: .25rem;
@@ -2207,7 +2207,23 @@ div > div[style*="display:grid"] {
 }
 
 .cbi-button-edit:hover {
-	background-color: #e8590c !important;
+	background-color: #138da1 !important;
+}
+
+.cbi-value-description > span:first-of-type {
+        display: inline-block;
+        width: 150px;
+        min-width: 150px;
+        text-align: left;
+        vertical-align: middle;
+}
+
+div > label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-right: 15px;
+        vertical-align: middle;
 }
 
 .cbi-button-remove {
@@ -2222,6 +2238,14 @@ div > div[style*="display:grid"] {
 
 .cbi-button-remove:hover {
 	background-color: #c82333 !important;
+}
+
+.btn.cbi-button.cbi-button-add[onclick*="copy_node"] {
+	transition: background-color 0.2s ease;
+}
+
+.btn.cbi-button.cbi-button-add[onclick*="copy_node"]:hover {
+	background-color: #4a5cd4 !important;
 }
 
 .close-btn {
@@ -3415,7 +3439,7 @@ h2 {
 	border-radius: .375rem;
 	background: var(--bg-container);
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
-	font-weight: bold
+	font-weight: 700;
 }
 
 h3 {
@@ -3426,6 +3450,7 @@ h3 {
 	margin-bottom: 0;
 	padding: 0.3rem 0.5rem;
 	color: var(--text-color);
+	font-weight: 700;
 }
 
 h4 {
@@ -3532,7 +3557,8 @@ fieldset>fieldset,
 .cbi-button-save,
 .cbi-button-reset,
 .cbi-button-add {
-      font-family: inherit !important;
+        font-family: inherit !important;
+	font-weight: 700 !important;
 }
 
 div#moreEntriesBar>button.cbi-button.btn {
@@ -4001,7 +4027,7 @@ td>table>tbody>tr>td,
 	font-weight: normal;
 	color: #fff !important;
 	background-color: #5e72e4;
-	background-color: var(--primary)
+	background-color: var(--primary);
 }
 
 .cbi-page-actions .cbi-button-apply,
@@ -4507,8 +4533,7 @@ body:not(.Interfaces) .cbi-rowstyle-2:first-child {
 	justify-content: center;
 	line-height: 1.5rem;
 	padding: .5rem .76rem;
-	margin: .25rem .1rem .25rem 0;
-	margin: .25rem 0.25rem .25rem 0.5rem;
+        margin: .25rem 0.1rem .25rem 0.1rem;
 	color: #fff;
 	border-radius: .25rem;
 	outline: 0;
@@ -5711,7 +5736,7 @@ input[type="checkbox"] {
 	padding: 0;
 	cursor: pointer;
 	transition: all .2s;
-	margin: 1rem 0 0 0
+	margin: 1rem 8px 0 0
 }
 
 input[type="checkbox"]:checked {
