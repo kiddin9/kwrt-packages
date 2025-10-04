@@ -18,7 +18,7 @@
 +        if (!-f $request_filename) {
 +            return 404;
 +        }
-+        fastcgi_pass fastcgi_pass   unix:/var/run/php8-fpm.sock;
++        fastcgi_pass unix:/var/run/php8-fpm.sock;
 +        fastcgi_index index.php;
 +        include fastcgi_params;
 +        fastcgi_param SCRIPT_FILENAME $request_filename;
