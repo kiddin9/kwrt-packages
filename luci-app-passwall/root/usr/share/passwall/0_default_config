@@ -68,6 +68,8 @@ config global_rules
 	option geo2rule '1'
 	option week_update '7'
 	option time_update '4'
+	option geoip_url 'https://fastly.jsdelivr.net/gh/Loyalsoldier/geoip@release/geoip.dat'
+	option geosite_url 'https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat'
 	list gfwlist_url 'https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt'
 	list chnroute_url 'https://ispip.clang.cn/all_cn.txt'
 	list chnroute_url 'https://fastly.jsdelivr.net/gh/gaoyifan/china-operator-ip@ip-lists/china.txt'
