@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 PKG_MAINTAINER:=Thaolga <https://github.com/Thaolga/luci-app-nekobox>
 PKG_NAME:=luci-app-nekobox
 PKG_VERSION:=2.0.9
-PKG_RELEASE:=232
+PKG_RELEASE:=233
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -16,7 +16,7 @@ define Package/$(PKG_NAME)
 	SUBMENU:=3. Applications
 	TITLE:=LuCI support for mihomo & sing-box
 	PKGARCH:=all
-	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fastcgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
+	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fpm +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
 endef
 
 define Package/$(PKG_NAME)/description
