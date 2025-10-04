@@ -5,7 +5,7 @@
  	TITLE:=LuCI support for mihomo & sing-box
  	PKGARCH:=all
 -	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
-+	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fastcgi +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
++	DEPENDS:=+kmod-tun +bash +curl +jq +php8 +php8-cgi +php8-fpm +php8-mod-curl +php8-mod-intl +zoneinfo-asia 
  endef
  
  define Package/$(PKG_NAME)/description
@@ -38,7 +38,7 @@
 +        if (!-f $request_filename) {
 +            return 404;
 +        }
-+        fastcgi_pass 127.0.0.1:1026;
++        fastcgi_pass unix:/var/run/php8-fpm.sock;
 +        fastcgi_index index.php;
 +        include fastcgi_params;
 +        fastcgi_param SCRIPT_FILENAME $request_filename;
@@ -72,7 +72,7 @@
 +        if (!-f $request_filename) {
 +            return 404;
 +        }
-+        fastcgi_pass 127.0.0.1:1026;
++        fastcgi_pass unix:/var/run/php8-fpm.sock;
 +        fastcgi_index index.php;
 +        include fastcgi_params;
 +        fastcgi_param SCRIPT_FILENAME $request_filename;
