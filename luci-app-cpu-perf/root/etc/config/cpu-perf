@@ -2,6 +2,10 @@
 config main 'config'
 	option enabled '1'
 
+config kernel 'eas'
+
+config module 'pcie_aspm'
+
 config governor 'ondemand'
 
 config governor 'conservative'

@@ -2,8 +2,37 @@
 'require baseclass';
 'require rpc';
 
+document.head.append(E('style', {'type': 'text/css'},
+`
+.cpu-perf-area {
+	margin-bottom: 1em;
+}
+.cpu-perf-label {
+	display: inline-block;
+	word-wrap: break-word;
+	padding: 4px 8px;
+	width: 8em;
+}
+.cpu-perf-label-title {
+	display: block;
+	word-wrap: break-word;
+	width: 100%;
+	font-weight: bold;
+}
+.cpu-perf-label-value {
+	display: block;
+	word-wrap: break-word;
+	width: 100%;
+}
+.cpu-perf-empty-area {
+	width: 100%;
+	text-align: center;
+}
+
+`))
+
 return baseclass.extend({
-	title      : _('CPU Performance'),
+	title      : _('CPU Frequency'),
 
 	callCpuPerf: rpc.declare({
 		object: 'luci.cpu-perf',
@@ -16,9 +45,9 @@ return baseclass.extend({
 			return '-';
 		};
 		return (freq >= 1e6) ?
-			(freq / 1e6) + ' ' + _('GHz')
+			Number((freq / 1e6).toFixed(3)) + ' ' + _('GHz')
 		:
-			(freq / 1e3) + ' ' + _('MHz');
+			Number((freq / 1e3).toFixed(3)) + ' ' + _('MHz');
 	},
 
 	load() {
@@ -26,56 +55,41 @@ return baseclass.extend({
 	},
 
 	render(data) {
-		if(!data) return;
+		if(!data) {
+			return;
+		};
 
-		let cpuTableTitles = [
-			_('CPU'),
-			_('Current frequency'),
-			_('Minimum frequency'),
-			_('Maximum frequency'),
-			_('Scaling governor'),
-		];
+		let cpuFreqArea = E('div', { 'class': 'cpu-perf-area' });
 
-		let cpuTable = E('table', { 'class': 'table' },
-			E('tr', { 'class': 'tr table-titles' }, [
-				E('th', { 'class': 'th left' }, cpuTableTitles[0]),
-				E('th', { 'class': 'th left' }, cpuTableTitles[1]),
-				E('th', { 'class': 'th left' }, cpuTableTitles[2]),
-				E('th', { 'class': 'th left' }, cpuTableTitles[3]),
-				E('th', { 'class': 'th left' }, cpuTableTitles[4]),
-			])
-		);
-
-		if(data.cpus) {
+		if(data.cpus && data.freqPolicies) {
 			for(let i of Object.values(data.cpus)) {
-				cpuTable.append(
-					E('tr', { 'class': 'tr' }, [
-						E('td', { 'class': 'td left', 'data-title': cpuTableTitles[0] }, _('CPU') + ' ' + i.number),
-						E('td', { 'class': 'td left', 'data-title': cpuTableTitles[1] },
-							(i.sCurFreq) ? this.freqFormat(i.sCurFreq) : this.freqFormat(i.curFreq)
-						),
-						E('td', { 'class': 'td left', 'data-title': cpuTableTitles[2] },
-							(i.sMinFreq) ? this.freqFormat(i.sMinFreq) : this.freqFormat(i.minFreq)
-						),
-						E('td', { 'class': 'td left', 'data-title': cpuTableTitles[3] },
-							(i.sMaxFreq) ? this.freqFormat(i.sMaxFreq) : this.freqFormat(i.maxFreq)
-						),
-						E('td', { 'class': 'td left', 'data-title': cpuTableTitles[4] }, i.governor || '-'),
-					])
-				);
+				let policy = data.freqPolicies[String(i.policy)];
+				if(policy) {
+					cpuFreqArea.append(
+						E('div', { 'class': 'cpu-perf-label' }, [
+							E('span', { 'class': 'cpu-perf-label-title' },
+								_('CPU') + ' ' + i.number + ':'
+							),
+							E('span', { 'class': 'cpu-perf-label-value' },
+								(policy.sCurFreq) ?
+									this.freqFormat(policy.sCurFreq)
+								:
+									this.freqFormat(policy.curFreq)
+							),
+						])
+					);
+				};
 			};
 		};
 
-		if(cpuTable.childNodes.length === 1){
-			cpuTable.append(
-				E('tr', { 'class': 'tr placeholder' },
-					E('td', { 'class': 'td' },
-						E('em', {}, _('No performance data...'))
-					)
+		if(cpuFreqArea.childNodes.length == 0){
+			cpuFreqArea.append(
+				E('div', { 'class': 'cpu-perf-empty-area' },
+					E('em', {}, _('No CPU frequency data available...'))
 				)
 			);
 		};
 
-		return cpuTable;
+		return cpuFreqArea;
 	},
 });

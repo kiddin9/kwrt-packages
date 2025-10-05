@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_MAINTAINER:=Nick Peng <pymumu@gmail.com>
 PKG_VERSION:=1.2025.47.2
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 LUCI_TITLE:=LuCI for smartdns
 LUCI_DESCRIPTION:=Provides Luci for smartdns
@@ -19,6 +19,7 @@ PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_luci-app-smartdns_INCLUDE_WebUI
 define Package/luci-app-smartdns/config
   config PACKAGE_luci-app-smartdns_INCLUDE_WebUI
     bool "Include WebUI support"
+    default y
 endef
 
 include $(TOPDIR)/feeds/luci/luci.mk

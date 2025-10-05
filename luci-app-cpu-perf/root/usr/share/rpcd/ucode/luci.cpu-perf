@@ -1,11 +1,14 @@
 
 'use strict';
 
-import { lsdir, readfile, stat } from 'fs';
+import { basename, lsdir, readfile, readlink, stat } from 'fs';
 
-const sysCpuDir          = '/sys/devices/system/cpu';
-const sysOndemandDir     = sysCpuDir + '/cpufreq/ondemand';
-const sysConservativeDir = sysCpuDir + '/cpufreq/conservative';
+const sysCpuDir             = '/sys/devices/system/cpu';
+const sysFreqPolicyDir      = sysCpuDir + '/cpufreq';
+const sysOndemandDir        = sysFreqPolicyDir + '/ondemand';
+const sysConservativeDir    = sysFreqPolicyDir + '/conservative';
+const sysPcieAspmPolicyFile = '/sys/module/pcie_aspm/parameters/policy';
+const sysEasFile            = '/proc/sys/kernel/sched_energy_aware';
 
 function readFile(path) {
 	let r = readfile(path);
@@ -17,6 +20,7 @@ function parseMultiValue(s, number) {
 		return null;
 	}
 	let t = [];
+	s     = replace(s, /[\]\[]/g, '');
 	for(let i in split(s, /[[:space:]]+/)) {
 		push(t, number ? int(i) : i);
 	}
@@ -27,13 +31,33 @@ const methods = {
 	getCpuPerf: {
 		call: function() {
 			let cpuPerf      = {};
+			let eas          = {};
+			let pcieAspm     = {};
 			let ondemand     = {};
 			let conservative = {};
+			let freqPolicies = {};
 			let cpus         = {};
+			if(stat(sysEasFile)?.type == 'file') {
+				let schedEnergyAware = readFile(sysEasFile);
+				if(schedEnergyAware) {
+					eas['schedEnergyAware'] = int(schedEnergyAware);
+				}
+				cpuPerf['eas'] = eas;
+			}
+			if(stat(sysPcieAspmPolicyFile)?.type == 'file') {
+				let availPolicies = readFile(sysPcieAspmPolicyFile);
+				if(availPolicies) {
+					pcieAspm['availPolicies'] = parseMultiValue(availPolicies);
+				}
+				let currentPolicy         = match(availPolicies, /\[[a-z]+\]/);
+				pcieAspm['currentPolicy'] = type(currentPolicy) == 'array' ? trim(currentPolicy[0], '[]') : '';
+				cpuPerf['pcieAspm']       = pcieAspm;
+			}
 			if(stat(sysOndemandDir)?.type == 'directory') {
 				let upThreshold   = readFile(sysOndemandDir + '/up_threshold');
 				let ignNiceLoad   = readFile(sysOndemandDir + '/ignore_nice_load');
 				let smpDownFactor = readFile(sysOndemandDir + '/sampling_down_factor');
+				let powersaveBias = readFile(sysOndemandDir + '/powersave_bias');
 				if(upThreshold) {
 					ondemand['upThreshold'] = int(upThreshold);
 				}
@@ -42,6 +66,9 @@ const methods = {
 				}
 				if(smpDownFactor) {
 					ondemand['smpDownFactor'] = int(smpDownFactor);
+				}
+				if(powersaveBias) {
+					ondemand['powersaveBias'] = int(powersaveBias);
 				}
 				cpuPerf['ondemand'] = ondemand;
 			}
@@ -60,26 +87,26 @@ const methods = {
 				}
 				cpuPerf['conservative'] = conservative;
 			}
-			if(stat(sysCpuDir)?.type == 'directory') {
-				for(let item in lsdir(sysCpuDir)) {
-					if(match(item, /^cpu[0-9]+$/)) {
-						let deviceDirPath = sprintf('%s/%s/cpufreq', sysCpuDir, item);
-						if(stat(deviceDirPath)?.type == 'directory') {
+			if(stat(sysFreqPolicyDir)?.type == 'directory') {
+				for(let item in lsdir(sysFreqPolicyDir)) {
+					if(match(item, /^policy[0-9]+$/)) {
+						let policyDirPath = sprintf('%s/%s', sysFreqPolicyDir, item);
+						if(stat(policyDirPath)?.type == 'directory') {
 							let m       = match(item, /[0-9]+/);
 							let dNumber = m && m[0];
 							if(dNumber) {
-								let sCurFreq    = readFile(deviceDirPath + '/scaling_cur_freq');
-								let curFreq     = readFile(deviceDirPath + '/cpuinfo_cur_freq');
-								let sMinFreq    = readFile(deviceDirPath + '/scaling_min_freq');
-								let minFreq     = readFile(deviceDirPath + '/cpuinfo_min_freq');
-								let sMaxFreq    = readFile(deviceDirPath + '/scaling_max_freq');
-								let maxFreq     = readFile(deviceDirPath + '/cpuinfo_max_freq');
-								let governor    = readFile(deviceDirPath + '/scaling_governor');
-								let sAvailFreqs = readFile(deviceDirPath + '/scaling_available_frequencies');
+								let sCurFreq    = readFile(policyDirPath + '/scaling_cur_freq');
+								let curFreq     = readFile(policyDirPath + '/cpuinfo_cur_freq');
+								let sMinFreq    = readFile(policyDirPath + '/scaling_min_freq');
+								let minFreq     = readFile(policyDirPath + '/cpuinfo_min_freq');
+								let sMaxFreq    = readFile(policyDirPath + '/scaling_max_freq');
+								let maxFreq     = readFile(policyDirPath + '/cpuinfo_max_freq');
+								let governor    = readFile(policyDirPath + '/scaling_governor');
+								let sAvailFreqs = readFile(policyDirPath + '/scaling_available_frequencies');
 								if(sAvailFreqs) {
 									sAvailFreqs = parseMultiValue(sAvailFreqs, true);
 								}
-								let sAvailGovernors = readFile(deviceDirPath + '/scaling_available_governors');
+								let sAvailGovernors = readFile(policyDirPath + '/scaling_available_governors');
 								if(sAvailGovernors) {
 									sAvailGovernors = parseMultiValue(sAvailGovernors);
 								}
@@ -111,7 +138,35 @@ const methods = {
 								if(sAvailGovernors) {
 									d['sAvailGovernors'] = sAvailGovernors;
 								}
-								cpus[dNumber] = d;
+								d['cpu']              = [];
+								freqPolicies[dNumber] = d;
+							}
+						}
+					}
+				}
+				cpuPerf['freqPolicies'] = freqPolicies;
+			}
+			if(stat(sysCpuDir)?.type == 'directory') {
+				for(let item in lsdir(sysCpuDir)) {
+					if(match(item, /^cpu[0-9]+$/)) {
+						let deviceDirPath = sprintf('%s/%s/cpufreq', sysCpuDir, item);
+						if(stat(deviceDirPath)?.type == 'directory') {
+							let m       = match(item, /[0-9]+/);
+							let dNumber = m && m[0];
+							if(dNumber) {
+								let cpuFreqPath = readlink(deviceDirPath);
+								if(cpuFreqPath) {
+									let policy = basename(cpuFreqPath);
+									let m      = match(policy, /[0-9]+/);
+									policy     = m && m[0];
+									if(policy) {
+										push(freqPolicies[policy].cpu, int(dNumber));
+										cpus[dNumber] = {
+											number: int(dNumber),
+											policy: int(policy),
+										};
+									}
+								}
 							}
 						}
 					}

@@ -12,11 +12,17 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "Language: ru\n"
 
+msgid "Active-State Power Management (ASPM) policy for PCIe links, which saves power by putting unused PCIe links into a low-power state."
+msgstr "Политика управления питанием в активном состоянии (ASPM) для каналов PCIe, которая экономит электроэнергию, переводя неиспользуемые каналы PCIe в состояние пониженного энергопотребления."
+
 msgid "An error has occurred"
 msgstr "Произошла ошибка"
 
 msgid "CPU"
 msgstr "ЦПУ"
+
+msgid "CPU Frequency"
+msgstr "Частота ЦПУ"
 
 msgid "CPU Performance"
 msgstr "Производительность ЦПУ"
@@ -33,9 +39,6 @@ msgstr "Команда не выполнена"
 msgid "Conservative governor"
 msgstr "Регулятор conservative"
 
-msgid "Conservative tunables"
-msgstr "Настройки conservative"
-
 msgid "Current frequency"
 msgstr "Текущая частота"
 
@@ -47,6 +50,9 @@ msgstr "Включить"
 
 msgid "Enabled"
 msgstr "Включено"
+
+msgid "Enable/disable Energy Aware Scheduling (EAS)."
+msgstr "Включить/отключить Energy Aware Scheduling (EAS)."
 
 msgid "Failed to get %s init status: %s"
 msgstr "Не удалось получить статус инициализации %s: %s"
@@ -93,20 +99,26 @@ msgstr "Минимальная частота, на которой может р
 msgid "Minimum scaling frequency"
 msgstr "Минимальное масштабирование частоты"
 
+msgid "No CPU frequency data available..."
+msgstr "Нет данных о данных о частоте процессора..."
+
 msgid "No performance data..."
 msgstr "Нет данных о производительности..."
 
 msgid "Ondemand governor"
 msgstr "Регулятор ondemand"
 
-msgid "Ondemand tunables"
-msgstr "Настройки ondemand"
-
 msgid "Performance managment"
 msgstr "Управление производительностью"
 
 msgid "Performance scaling not available for this CPU..."
 msgstr "Масштабирование производительности недоступно для этого процессора..."
+
+msgid "Policy"
+msgstr "Политика"
+
+msgid "Reduction factor to apply to the original frequency target of the governor."
+msgstr "Коэффициент снижения, применяемый к исходной целевой частоте регулятора."
 
 msgid "Run at startup"
 msgstr "Запуск при старте системы"
