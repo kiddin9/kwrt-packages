@@ -7,7 +7,7 @@
 -    uci set uhttpd.main.index_page='index.php'
 -    uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
 -    uci commit uhttpd
-+    if [ -n "$(command -v nginx)" ];then
++    if [ -n "$(pgrep nginx)" ];then
 +cat << 'EOF' > /etc/nginx/conf.d/nekoclash.locations
 +location /nekoclash {
 +    alias /www/nekoclash;
@@ -26,7 +26,7 @@
 +}
 +EOF
 +        /etc/init.d/nginx restart
-+    elif [ -n "$(command -v lighttpd)" ];then
++    elif [ -n "$(pgrep lighttpd)" ];then
 +cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 +cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 +EOF
