@@ -9,7 +9,7 @@ tmp_dir="/tmp"
 echo "[ `date +%T` ] - Checking Files..."
 
 files_check() {
-    if [ -n "$(pgrep nginx)" ];then
+    if [ -n "$(command -v nginx)" ];then
 cat << 'EOF' > /etc/nginx/conf.d/nekoclash.locations
 location /nekoclash {
     alias /www/nekoclash;
@@ -27,7 +27,7 @@ location /nekoclash {
 }
 EOF
         /etc/init.d/nginx restart
-    elif [ -n "$(pgrep lighttpd)" ];then
+    elif [ -n "$(command -v lighttpd)" ];then
 cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 EOF
