@@ -1,6 +1,6 @@
 --- a/luci-app-neko/root/etc/uci-defaults/99_neko
 +++ b/luci-app-neko/root/etc/uci-defaults/99_neko
-@@ -9,11 +9,31 @@ tmp_dir="/tmp"
+@@ -9,11 +9,36 @@ tmp_dir="/tmp"
  echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
@@ -26,6 +26,11 @@
 +}
 +EOF
 +        /etc/init.d/nginx restart
++    elif [ -n "$(command -v lighttpd)" ];then
++cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
++cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
++EOF
++        /etc/init.d/lighttpd restart
 +    else
 +        uci set uhttpd.main.index_page='index.php'
 +        uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
