@@ -24,7 +24,7 @@
 
 --- a/luci-app-nekobox/root/etc/uci-defaults/99_neko
 +++ b/luci-app-nekobox/root/etc/uci-defaults/99_neko
-@@ -9,11 +9,31 @@ tmp_dir="/tmp"
+@@ -9,11 +9,37 @@ tmp_dir="/tmp"
  echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
@@ -46,6 +46,12 @@
 +}
 +EOF
 +        /etc/init.d/nginx restart
++    elif
++    if [ -n "$(command -v lighttpd)" ];then
++cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
++cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
++EOF
++        /etc/init.d/lighttpd restart
 +    else
      uci set uhttpd.main.index_page='index.php'
      uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
@@ -59,7 +65,7 @@
 
 --- a/luci-theme-spectra/root/etc/uci-defaults/30_luci-theme-spectra
 +++ b/luci-theme-spectra/root/etc/uci-defaults/30_luci-theme-spectra
-@@ -8,6 +8,28 @@ commit luci
+@@ -8,6 +8,34 @@ commit luci
  EOF
  
      rm -rf /tmp/luci-*
@@ -81,6 +87,12 @@
 +EOF
 +            /etc/init.d/nginx restart
 +        fi
++    elif
++    if [ -n "$(command -v lighttpd)" ];then
++cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
++cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
++EOF
++        /etc/init.d/lighttpd restart
 +    else
 +        uci set uhttpd.main.index_page='index.php'
 +        uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'
