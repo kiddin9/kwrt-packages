@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TYPE:=col
-LUCI_BASENAME:=nginx
+LUCI_BASENAME:=lighttpd
 
 LUCI_TITLE:=LuCI interface with Lighttpd as Webserver
 LUCI_DESCRIPTION:=Standard OpenWrt set including full admin with ppp support and the default Bootstrap theme
