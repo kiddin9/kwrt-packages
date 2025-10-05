@@ -12,7 +12,7 @@ LUCI_BASENAME:=lighttpd
 LUCI_TITLE:=LuCI interface with Lighttpd as Webserver
 LUCI_DESCRIPTION:=Standard OpenWrt set including full admin with ppp support and the default Bootstrap theme
 LUCI_DEPENDS:= \
-	+lighttpd +lighttpd-mod-alias +lighttpd-mod-cgi +luci-mod-admin-full +luci-theme-bootstrap \
+	+lighttpd +lighttpd-mod-cgi +luci-mod-admin-full +luci-theme-bootstrap \
 	+luci-app-firewall +luci-app-package-manager +luci-proto-ppp +IPV6:luci-proto-ipv6 \
 	+rpcd-mod-rrdns
 
