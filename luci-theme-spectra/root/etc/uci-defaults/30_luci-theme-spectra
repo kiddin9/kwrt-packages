@@ -28,6 +28,11 @@ location /luci-static/spectra/ {
 EOF
             /etc/init.d/nginx restart
         fi
+    elif [ -n "$(command -v lighttpd)" ];then
+cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
+cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
+EOF
+        /etc/init.d/lighttpd restart
     else
         uci set uhttpd.main.index_page='index.php'
         uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi'

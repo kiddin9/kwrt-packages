@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ -x /etc/init.d/uhttpd ]; then
+        /etc/init.d/uhttpd disable
+        if [ -n "$(pgrep uhttpd)" ]; then
+                /etc/init.d/uhttpd stop
+        fi
+fi
+
+if [ -x /etc/init.d/nginx ]; then
+        /etc/init.d/nginx disable
+        if [ -n "$(pgrep nginx)" ]; then
+                /etc/init.d/nginx stop
+        fi
+fi
+
+/etc/init.d/lighttpd enable
+if [ -n "$(pgrep lighttpd)" ]; then
+        /etc/init.d/lighttpd restart
+else
+        /etc/init.d/lighttpd start
+fi
+
+
+exit 0
