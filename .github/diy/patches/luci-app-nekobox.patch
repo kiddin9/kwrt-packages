@@ -28,7 +28,7 @@
  echo "[ `date +%T` ] - Checking Files..."
  
  files_check() {
-+    if [ -n "$(pgrep nginx)" ];then
++    if [ -n "$(command -v nginx)" ];then
 +cat << 'EOF' > /etc/nginx/conf.d/nekobox.locations
 +location /nekobox {
 +    alias /www/nekobox;
@@ -46,7 +46,7 @@
 +}
 +EOF
 +        /etc/init.d/nginx restart
-+    elif [ -n "$(pgrep lighttpd)" ];then
++    elif [ -n "$(command -v lighttpd)" ];then
 +cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 +cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 +EOF
@@ -69,7 +69,7 @@
  
      rm -rf /tmp/luci-*
 -    /etc/init.d/uhttpd restart
-+    if [ -n "$(pgrep nginx)" ];then
++    if [ -n "$(command -v nginx)" ];then
 +        if [ ! -f /etc/nginx/conf.d/spectra.locations ]; then
 +cat << 'EOF' > /etc/nginx/conf.d/spectra.locations
 +location /luci-static/spectra/ {
@@ -86,7 +86,7 @@
 +EOF
 +            /etc/init.d/nginx restart
 +        fi
-+    elif [ -n "$(pgrep lighttpd)" ];then
++    elif [ -n "$(command -v lighttpd)" ];then
 +cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 +cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 +EOF
