@@ -11,7 +11,7 @@ commit luci
 EOF
 
     rm -rf /tmp/luci-*
-    if [ -n "$(command -v nginx)" ];then
+    if [ -n "$(pgrep nginx)" ];then
         if [ ! -f /etc/nginx/conf.d/spectra.locations ]; then
 cat << 'EOF' > /etc/nginx/conf.d/spectra.locations
 location /luci-static/spectra/ {
@@ -28,7 +28,7 @@ location /luci-static/spectra/ {
 EOF
             /etc/init.d/nginx restart
         fi
-    elif [ -n "$(command -v lighttpd)" ];then
+    elif [ -n "$(pgrep lighttpd)" ];then
 cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 EOF

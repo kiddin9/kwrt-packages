@@ -9,7 +9,7 @@ tmp_dir="/tmp"
 echo "[ `date +%T` ] - Checking Files..."
 
 files_check() {
-    if [ -n "$(command -v nginx)" ];then
+    if [ -n "$(pgrep nginx)" ];then
 cat << 'EOF' > /etc/nginx/conf.d/nekobox.locations
 location /nekobox {
     alias /www/nekobox;
@@ -27,7 +27,7 @@ location /nekobox {
 }
 EOF
         /etc/init.d/nginx restart
-    elif [ -n "$(command -v lighttpd)" ];then
+    elif [ -n "$(pgrep lighttpd)" ];then
 cat << 'EOF' > /etc/lighttpd/conf.d/81-php.conf
 cgi.assign += ( ".php" => "/usr/bin/php-cgi" )
 EOF
