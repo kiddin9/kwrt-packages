@@ -191,16 +191,6 @@ fi
 	version=1
 fi
 
-if [ -n "$(command -v nginx)" ]; then
-if [ -z "`uci -q get nginx.default_server`" ]; then
-	uci -q set nginx.default_server=server
-	uci -q set nginx.default_server.server_name='kwrt'
-	uci -q add_list nginx.default_server.listen='80 default_server'
-	uci -q add_list nginx.default_server.listen='[::]:80 default_server'
-	uci -q add_list nginx.default_server.include='conf.d/*.locations'
-	uci -q set nginx.default_server.access_log='off; # logd openwrt'
-	uci commit nginx
-fi
 if [ -z "`uci -q get dhcp.default_server`" ]; then
 	uci -q set dhcp.default_server=domain
 	uci -q set dhcp.default_server.name='kwrt'
@@ -208,6 +198,8 @@ if [ -z "`uci -q get dhcp.default_server`" ]; then
 	uci -q set dhcp.default_server.comments='后台地址'
 	uci commit dhcp
 fi
+
+if [ -n "$(command -v nginx)" ]; then
 grep -q "uwsgi_read_timeout" /etc/nginx/conf.d/luci.locations 2>/dev/null || {
 	sed -i "s/include uwsgi_params;/include uwsgi_params;\n\t\tuwsgi_read_timeout 300s;/" /etc/nginx/conf.d/luci.locations
 	sed -i '/ubus_parallel_req/a\        ubus_script_timeout 600;' /etc/nginx/conf.d/luci.locations
