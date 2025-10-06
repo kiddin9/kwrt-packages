@@ -372,7 +372,7 @@ jobs:
         utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/cups-bjnp utils/rhash utils/boltbrowser \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench utils/pcat-mgr utils/fan2go \
         utils/coremark utils/watchcat multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
-        sound/spotifyd devel/go-rice admin/gotop \
+        sound/spotifyd devel/go-rice devel/rust-bindgen admin/gotop \
         lang/lua-periphery lang/lua-neturl lang/lua-maxminddb lang/node-pnpm devel/gn
         git_clone https://github.com/koshev-msk/modemfeed && mv -n modemfeed/*/!(telephony)/* ./; rm -rf modemfeed
         git_sparse_clone openwrt-24.10 "https://github.com/coolsnowwolf/luci" applications themes/luci-theme-design libs/luci-lib-fs
