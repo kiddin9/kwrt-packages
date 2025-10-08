@@ -89,7 +89,7 @@ return widget.view.extend({
 			return t;
 		};
 		let date = new Date((this.localtime - this.uptime + Number(t)) * 1000);
-		return '%s %s %d %02d:%02d:%02d %d'.format(
+		return '%s %s %2d %02d:%02d:%02d %d'.format(
 			this.days[ date.getUTCDay() ],
 			this.months[ date.getUTCMonth() + 1 ],
 			date.getUTCDate(),
