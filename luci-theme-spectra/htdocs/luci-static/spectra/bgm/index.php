@@ -1811,7 +1811,6 @@ body:hover,
         </div>
     </div>
 <?php endforeach; ?>
-
 <html lang="<?php echo $currentLang; ?>">
 <div class="modal fade" id="langModal" tabindex="-1" aria-labelledby="langModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-lg">
@@ -4009,7 +4008,7 @@ body {
     position: fixed;
     top: 2%;
     right: 4.5%;
-    background: var(--bg-body);
+    background: var(--bg-container);
     padding: 15px 10px;
     border-radius: 20px;
     backdrop-filter: var(--glass-blur);
@@ -4028,6 +4027,8 @@ body {
     resize: none;
     overflow: auto;
     user-select: none;
+    border: 1px solid var(--bg-container);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--bg-container), black 30%);
 }
 
 #floatingLyrics.visible {
@@ -9391,6 +9392,37 @@ const langData = <?php echo json_encode($langData); ?>;
 const currentLang = "<?php echo $currentLang; ?>";
 let translations = langData[currentLang] || langData['en'];
 
+function startLanguageMonitoring() {
+    let currentLanguage = localStorage.getItem('language') || currentLang;   
+    setInterval(() => {
+        fetch('/luci-static/spectra/bgm/save_language.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=get_language'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.language) {
+                const newLanguage = data.language;
+                if (newLanguage !== currentLanguage) {
+                    currentLanguage = newLanguage;
+                    updateLanguage(newLanguage);
+                    updateFlagIcon(newLanguage);
+                    document.getElementById("langSelect").value = newLanguage;
+                    localStorage.setItem('language', newLanguage);
+                    
+                    console.log('Language updated to:', newLanguage);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error checking language:', error);
+        });
+    }, 2000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch('/luci-static/spectra/bgm/save_language.php', {
         method: 'POST',
@@ -9406,11 +9438,14 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFlagIcon(userLang);  
         document.getElementById("langSelect").value = userLang; 
         localStorage.setItem('language', userLang);
+        startLanguageMonitoring();
     })
     .catch(error => {
         updateLanguage(currentLang); 
         updateFlagIcon(currentLang);  
         document.getElementById("langSelect").value = currentLang; 
+        localStorage.setItem('language', currentLang);
+        startLanguageMonitoring();
     });
 });
 
@@ -9481,18 +9516,51 @@ function updateLanguage(lang) {
 }
 
 function speakMessage(message) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', './language.txt', true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const lang = xhr.responseText.trim();
-            const utterance = new SpeechSynthesisUtterance(message);
-            utterance.lang = lang;
-            speechSynthesis.speak(utterance);
-        }
-    };
-    xhr.send();
+  const langToVoiceMap = {
+    zh: getChineseVoicePreference(),
+    hk: getChineseVoicePreference(),
+    en: 'en-US',
+    ko: 'ko-KR',
+    ja: 'ja-JP',
+    vi: 'vi-VN',
+    th: 'th-TH',
+    ru: 'ru-RU',
+    ar: 'ar-SA',
+    es: 'es-ES',
+    de: 'de-DE',
+    fr: 'fr-FR',
+    bn: 'bn-BD'
+  };
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', './language.txt', true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const lang = xhr.responseText.trim();
+      const voiceLang = langToVoiceMap[lang] || 'zh-HK';
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = voiceLang;
+      speechSynthesis.speak(utterance);
+    }
+  };
+  xhr.send();
 }
+
+function getChineseVoicePreference() {
+  return localStorage.getItem('chineseVoiceLang') || 'zh-HK';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const radios = document.querySelectorAll('input[name="chineseVoice"]');
+  const saved = getChineseVoicePreference();
+  radios.forEach(radio => {
+    if (radio.value === saved) radio.checked = true;
+    radio.addEventListener('change', function() {
+      localStorage.setItem('chineseVoiceLang', this.value);
+      speakMessage(`中文语音已切换为 ${this.value}`);
+    });
+  });
+});
 
 function updateFlagIcon(lang) {
     const flagImg = document.getElementById('flagIcon');
