@@ -13,6 +13,24 @@ var callInitAction = rpc.declare({
     expect: { result: false }
 });
 
+// SFO warning for dynamic rule parameters
+function addSfoWarning(description, paramName) {
+    var dynamicParams = [
+        'UDP_RATE_LIMIT_ENABLED',
+        'TCP_UPGRADE_ENABLED', 
+        'TCP_DOWNPRIO_INITIAL_ENABLED',
+        'TCP_DOWNPRIO_SUSTAINED_ENABLED'
+    ];
+    
+    if (dynamicParams.includes(paramName)) {
+        var sfoEnabled = uci.get('firewall', '@defaults[0]', 'flow_offloading') === '1';
+        if (sfoEnabled) {
+            return description + ' ⚠ May not work with Software Flow Offloading enabled';
+        }
+    }
+    return description;
+}
+
 return view.extend({
     handleSaveApply: function(ev) {
         return this.handleSave(ev)
@@ -37,9 +55,13 @@ return view.extend({
     },
     
     render: function() {
-        var m, s, o;
+        return Promise.all([
+            uci.load('qosmate'),
+            uci.load('firewall')
+        ]).then(() => {
+            var m, s, o;
 
-        m = new form.Map('qosmate', _('QoSmate Advanced Settings'), _('Configure advanced settings for QoSmate.'));
+            m = new form.Map('qosmate', _('QoSmate Advanced Settings'), _('Configure advanced settings for QoSmate.'));
 
         // Link Layer Settings
         s = m.section(form.NamedSection, 'advanced', 'advanced', _('Link Layer Settings'), 
@@ -130,18 +152,18 @@ return view.extend({
         createOption('BWMAXRATIO', _('Bandwidth Max Ratio'), _('Max download/upload ratio to prevent upstream congestion'), _('Default: 20'), 'uinteger');
         createOption('ACKRATE', _('ACK Rate'), _('Sets rate limit for TCP ACKs, helps prevent ACK flooding / set to 0 to disable ACK rate limit'), _('Default: 5% of UPRATE'), 'uinteger');
 
-        o = s.option(form.Flag, 'UDP_RATE_LIMIT_ENABLED', _('Enable UDP Rate Limit'), _('Downgrades UDP traffic exceeding 450 pps to lower priority'));
+        o = s.option(form.Flag, 'UDP_RATE_LIMIT_ENABLED', _('Enable UDP Rate Limit'), _(addSfoWarning('Downgrades UDP traffic exceeding 450 pps to lower priority', 'UDP_RATE_LIMIT_ENABLED')));
         o.rmempty = false;
 
-        o = s.option(form.Flag, 'TCP_UPGRADE_ENABLED', _('Boost Low-Volume TCP Traffic'), _('Upgrade DSCP to AF42 for TCP connections with less than 150 packets per second. This can improve responsiveness for interactive TCP services like SSH, web browsing, and instant messaging.'));
-        o.rmempty = false;
-        o.default = '1';
-
-        o = s.option(form.Flag, 'TCP_DOWNPRIO_INITIAL_ENABLED', _('Enable Initial TCP Down-Prioritization'), _('Downgrades the first ~500ms of TCP traffic (except CS1) to CS0 to prevent initial bursts'));
+        o = s.option(form.Flag, 'TCP_UPGRADE_ENABLED', _('Boost Low-Volume TCP Traffic'), _(addSfoWarning('Upgrade DSCP to AF42 for TCP connections with less than 150 packets per second. This can improve responsiveness for interactive TCP services like SSH, web browsing, and instant messaging.', 'TCP_UPGRADE_ENABLED')));
         o.rmempty = false;
         o.default = '1';
 
-        o = s.option(form.Flag, 'TCP_DOWNPRIO_SUSTAINED_ENABLED', _('Enable Sustained TCP Down-Prioritization'), _('Downgrades TCP flows exceeding ~10 seconds worth of data transfer to CS1 (Bulk). Helps prevent large downloads from starving other traffic.'));
+        o = s.option(form.Flag, 'TCP_DOWNPRIO_INITIAL_ENABLED', _('Enable Initial TCP Down-Prioritization'), _(addSfoWarning('Downgrades the first ~500ms of TCP traffic (except CS1) to CS0 to prevent initial bursts', 'TCP_DOWNPRIO_INITIAL_ENABLED')));
+        o.rmempty = false;
+        o.default = '1';
+
+        o = s.option(form.Flag, 'TCP_DOWNPRIO_SUSTAINED_ENABLED', _('Enable Sustained TCP Down-Prioritization'), _(addSfoWarning('Downgrades TCP flows exceeding ~10 seconds worth of data transfer to CS1 (Bulk). Helps prevent large downloads from starving other traffic.', 'TCP_DOWNPRIO_SUSTAINED_ENABLED')));
         o.rmempty = false;
         o.default = '1';
 
@@ -305,6 +327,7 @@ return view.extend({
             });
         };
 
-        return m.render();
+            return m.render();
+        });
     }
 });

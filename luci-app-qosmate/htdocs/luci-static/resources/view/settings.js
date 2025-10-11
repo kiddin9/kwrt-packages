@@ -44,6 +44,11 @@ var versionInfo = {
     frontend: { current: 'Unknown', latest: 'Unknown', channel: 'Unknown' }
 };
 
+// Check if Software Flow Offloading is enabled  
+function isSfoEnabled() {
+    return uci.get('firewall', '@defaults[0]', 'flow_offloading') === '1';
+}
+
 function fetchVersionInfo() {
     return fs.exec_direct('/etc/init.d/qosmate', ['check_version'])
         .then(function(output) {
@@ -139,6 +144,7 @@ return view.extend({
     load: function() {
         return Promise.all([
             uci.load('qosmate'),
+            uci.load('firewall'),
             this.fetchHealthCheck(),
             fetchVersionInfo()
         ]).catch(error => {
@@ -794,6 +800,24 @@ return view.extend({
             if (downrate && uprate) {
                 downrate.map.checkDepends();
                 uprate.map.checkDepends();
+            }
+        };
+
+        // Software Flow Offloading Warning
+        o = s_basic.option(form.DummyValue, '_sfo_warning', _('Software Flow Offloading Status'));
+        o.rawhtml = true;
+        o.render = function(section_id) {
+            if (isSfoEnabled()) {
+                return E('div', { 'class': 'cbi-value' }, [
+                    E('label', { 'class': 'cbi-value-title' }, E('span', { 'style': 'color: orange; font-weight: bold;' }, '⚠')),
+                    E('div', { 'class': 'cbi-value-field', 'style': 'color: orange;' }, [
+                        E('strong', {}, _('Software Flow Offloading active - some limitations apply')),
+                        E('br'),
+                        _('✓ Static rules work ✗ Dynamic rules may not work')
+                    ])
+                ]);
+            } else {
+                return E('div');
             }
         };
 
