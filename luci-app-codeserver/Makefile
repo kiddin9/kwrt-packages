@@ -2,8 +2,8 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_VERSION:=1.0.1-20240822
-PKG_RELEASE:=5
+PKG_VERSION:=1.0.2-20251011
+PKG_RELEASE:=6
 
 LUCI_TITLE:=LuCI support for CodeServer
 LUCI_PKGARCH:=all
