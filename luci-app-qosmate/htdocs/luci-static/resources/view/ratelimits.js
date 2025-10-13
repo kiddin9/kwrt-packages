@@ -126,15 +126,15 @@ return view.extend({
             o.editable = true;
 
             // Limits tab
-            o = s.taboption('limits', form.Value, 'download_limit', _('Download Limit (Mbit/s)'));
+            o = s.taboption('limits', form.Value, 'download_limit', _('Download Limit (Kbit/s)'));
             o.datatype = 'uinteger';
-            o.placeholder = _('10');
-            o.default = '10';
+            o.placeholder = _('10000');
+            o.default = '10000';
             o.validate = function(section_id, value) {
                 if (!value) return true;
                 var intVal = parseInt(value);
-                if (intVal < 0 || intVal > 100000) {
-                    return _('Must be between 0 and 100000 Mbit/s');
+                if (intVal < 0 || intVal > 100000000) {
+                    return _('Must be between 0 and 100000000 Kbit/s');
                 }
                 return true;
             };
@@ -145,15 +145,15 @@ return view.extend({
                 return E('div', {}, [widget, descr]);
             };
 
-            o = s.taboption('limits', form.Value, 'upload_limit', _('Upload Limit (Mbit/s)'));
+            o = s.taboption('limits', form.Value, 'upload_limit', _('Upload Limit (Kbit/s)'));
             o.datatype = 'uinteger';
-            o.placeholder = _('10');
-            o.default = '10';
+            o.placeholder = _('10000');
+            o.default = '10000';
             o.validate = function(section_id, value) {
                 if (!value) return true;
                 var intVal = parseInt(value);
-                if (intVal < 0 || intVal > 100000) {
-                    return _('Must be between 0 and 100000 Mbit/s');
+                if (intVal < 0 || intVal > 100000000) {
+                    return _('Must be between 0 and 100000000 Kbit/s');
                 }
                 return true;
             };
