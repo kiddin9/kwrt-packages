@@ -58,6 +58,14 @@
             "path": "qosmate/ipsets"
         }
     },
+    "admin/network/qosmate/ratelimits": {
+        "title": "Rate Limits",
+        "order": 55,
+        "action": {
+            "type": "view",
+            "path": "qosmate/ratelimits"
+        }
+    },
     "admin/network/qosmate/custom_rules": {
         "title": "Custom Rules",
         "order": 60,
