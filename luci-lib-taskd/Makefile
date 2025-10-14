@@ -11,8 +11,8 @@ LUCI_DEPENDS:=+luci-lib-xterm +taskd
 LUCI_EXTRA_DEPENDS:=taskd (>=1.0.3)
 LUCI_PKGARCH:=all
 
-PKG_VERSION:=1.0.23
-PKG_RELEASE:=5
+PKG_VERSION:=1.0.24
+PKG_RELEASE:=6
 PKG_MAINTAINER:=jjm2473 <jjm2473@gmail.com>
 
 include $(TOPDIR)/feeds/luci/luci.mk
