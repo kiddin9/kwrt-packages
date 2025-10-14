@@ -579,9 +579,25 @@ function isDarkMode() {
     // 如果是 argon 主题，检查 argon 配置
     if (mediaUrlBase && mediaUrlBase.toLowerCase().includes('argon')) {
         var argonMode = uci.get('argon', '@global[0]', 'mode');
-        if (argonMode && argonMode.toLowerCase().includes('dark')) {
-            return true;
+        if (argonMode) {
+            if (argonMode.toLowerCase() === 'dark') {
+                return true;
+            } else if (argonMode.toLowerCase() === 'light') {
+                return false;
+            }
+            // 如果是 'normal' 或 'auto'，使用浏览器检测系统颜色偏好
+            if (argonMode.toLowerCase() === 'normal' || argonMode.toLowerCase() === 'auto') {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return true;
+                }
+                return false;
+            }
         }
+    }
+    
+    // 默认情况下也使用浏览器检测系统颜色偏好
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return true;
     }
     
     return false;
@@ -1355,7 +1371,18 @@ return view.extend({
             // 主要内容卡片
             E('div', { 'class': 'bandix-card' }, [
                 E('div', { 'id': 'traffic-status' }, [
-                    E('div', { 'class': 'loading' }, getTranslation('正在加载数据...', language))
+                    E('table', { 'class': 'bandix-table' }, [
+                        E('thead', {}, [
+                            E('tr', {}, [
+                                E('th', {}, getTranslation('设备信息', language)),
+                                E('th', {}, getTranslation('LAN 流量', language)),
+                                E('th', {}, getTranslation('WAN 流量', language)),
+                                E('th', {}, getTranslation('限速设置', language)),
+                                E('th', {}, getTranslation('操作', language))
+                            ])
+                        ]),
+                        E('tbody', {})
+                    ])
                 ])
             ])
         ]);
@@ -2427,8 +2454,8 @@ function formatRetentionSeconds(seconds, language) {
 
 
 
-        // 轮询获取数据
-        poll.add(function () {
+        // 定义更新设备数据的函数
+        function updateDeviceData() {
             return callStatus().then(function (result) {
                 var trafficDiv = document.getElementById('traffic-status');
                 var deviceCountDiv = document.getElementById('device-count');
@@ -2692,7 +2719,13 @@ function formatRetentionSeconds(seconds, language) {
                     updateDeviceOptions(latestDevices);
                 } catch (e) {}
             });
-        }, 1);
+        }
+
+        // 轮询获取数据
+        poll.add(updateDeviceData, 1);
+
+        // 立即执行一次，不等待轮询
+        updateDeviceData();
 
         return view;
     }

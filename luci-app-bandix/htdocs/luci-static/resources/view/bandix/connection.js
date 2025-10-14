@@ -261,6 +261,7 @@ function getSystemLanguage() {
 
 // 检查是否为暗黑模式
 function isDarkMode() {
+    // 首先检查用户设置的主题
     var userTheme = uci.get('bandix', 'general', 'theme');
     if (userTheme) {
         if (userTheme === 'dark') {
@@ -268,18 +269,37 @@ function isDarkMode() {
         } else if (userTheme === 'light') {
             return false;
         }
+        // 如果是 'auto'，继续检查系统主题
     }
 
+    // 获取 LuCI 主题设置
     var mediaUrlBase = uci.get('luci', 'main', 'mediaurlbase');
     if (mediaUrlBase && mediaUrlBase.toLowerCase().includes('dark')) {
         return true;
     }
 
+    // 如果是 argon 主题，检查 argon 配置
     if (mediaUrlBase && mediaUrlBase.toLowerCase().includes('argon')) {
         var argonMode = uci.get('argon', '@global[0]', 'mode');
-        if (argonMode && argonMode.toLowerCase().includes('dark')) {
-            return true;
+        if (argonMode) {
+            if (argonMode.toLowerCase() === 'dark') {
+                return true;
+            } else if (argonMode.toLowerCase() === 'light') {
+                return false;
+            }
+            // 如果是 'normal' 或 'auto'，使用浏览器检测系统颜色偏好
+            if (argonMode.toLowerCase() === 'normal' || argonMode.toLowerCase() === 'auto') {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return true;
+                }
+                return false;
+            }
         }
+    }
+
+    // 默认情况下也使用浏览器检测系统颜色偏好
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return true;
     }
 
     return false;
@@ -720,8 +740,18 @@ return view.extend({
         var deviceCard = E('div', { 'class': 'bandix-card' }, [
             E('div', { 'class': 'bandix-card-body' }, [
                 E('div', { 'id': 'device-table-container' }, [
-                    E('div', { 'class': 'loading-state' },
-                        getTranslation('正在加载数据...', language))
+                    E('table', { 'class': 'bandix-table' }, [
+                        E('thead', {}, [
+                            E('tr', {}, [
+                                E('th', {}, getTranslation('设备', language)),
+                                E('th', {}, 'TCP'),
+                                E('th', {}, 'UDP'),
+                                E('th', {}, getTranslation('TCP 状态详情', language)),
+                                E('th', {}, getTranslation('总连接数', language))
+                            ])
+                        ]),
+                        E('tbody', {})
+                    ])
                 ])
             ])
         ]);
@@ -806,8 +836,8 @@ return view.extend({
             container.appendChild(E('div', { 'class': 'error-state' }, message));
         }
 
-        // 轮询获取数据
-        poll.add(function () {
+        // 定义更新连接数据的函数
+        function updateConnectionData() {
             return callGetConnection().then(function (result) {
                 if (result && result.status === 'success' && result.data) {
                     updateGlobalStats(result.data.global_stats);
@@ -819,7 +849,13 @@ return view.extend({
                 console.error('Failed to load connection data:', error);
                 showError(getTranslation('无法获取数据', language));
             });
-        }, 1);
+        }
+
+        // 轮询获取数据
+        poll.add(updateConnectionData, 1);
+
+        // 立即执行一次，不等待轮询
+        updateConnectionData();
 
         return container;
     }
