@@ -1,5 +1,8 @@
 # openwrt-caddy
+
 openwrt-caddy
+使用最新的caddy仓库 版本号是随意取的与官方发行版不同
+
 适配此https://github.com/lmq8267/luci-app-caddy
 测试在arm7构架下,openwrt-main官方源码环境运行,关于upx依赖自行解决
 ![001](https://github.com/fuqiang03/openwrt-caddy/assets/26851715/e37f578c-0310-4afd-a669-d857876a732a)
