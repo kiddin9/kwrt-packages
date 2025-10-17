@@ -221,7 +221,7 @@ return view.extend({
 				if(this.perfData.ondemand) {
 					ondemandTable = E('table', { 'class': 'table' }, [
 						E('tr', { 'class': 'tr' }, [
-							E('td', { 'class': 'td left', 'style':'min-width:33%' }, "up_threshold"),
+							E('td', { 'class': 'td left', 'style':'width:33%' }, "up_threshold"),
 							E('td', { 'id': 'OdUpThreshold', 'class': 'td left' },
 								this.perfData.ondemand.upThreshold || '-'),
 						]),
@@ -247,7 +247,7 @@ return view.extend({
 				if(this.perfData.conservative) {
 					conservativeTable = E('table', { 'class': 'table' }, [
 						E('tr', { 'class': 'tr' }, [
-							E('td', { 'class': 'td left', 'style':'min-width:33%' }, "freq_step"),
+							E('td', { 'class': 'td left', 'style':'width:33%' }, "freq_step"),
 							E('td', { 'id': 'CoFreqStep', 'class': 'td left' },
 								(this.perfData.conservative.freqStep !== undefined) ?
 									this.perfData.conservative.freqStep : '-'),
@@ -267,7 +267,7 @@ return view.extend({
 				if(this.perfData.pcieAspm) {
 					pcieAspmTable = E('table', { 'class': 'table' },
 						E('tr', { 'class': 'tr' }, [
-							E('td', { 'class': 'td left', 'style':'min-width:33%' }, "policy"),
+							E('td', { 'class': 'td left', 'style':'width:33%' }, "policy"),
 							E('td', { 'id': 'PaCurrentPolicy', 'class': 'td left' },
 								this.perfData.pcieAspm.currentPolicy || '-'),
 						])
@@ -276,7 +276,7 @@ return view.extend({
 				if(this.perfData.eas) {
 					easTable = E('table', { 'class': 'table' },
 						E('tr', { 'class': 'tr' }, [
-							E('td', { 'class': 'td left', 'style':'min-width:33%' }, "sched_energy_aware"),
+							E('td', { 'class': 'td left', 'style':'width:33%' }, "sched_energy_aware"),
 							E('td', { 'id': 'EasSchedEnergyAware', 'class': 'td left' },
 								(this.perfData.eas.schedEnergyAware !== undefined) ?
 									this.perfData.eas.schedEnergyAware : '-'),

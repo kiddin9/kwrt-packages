@@ -1,39 +1,23 @@
 # luci-app-disks-info
-Information about connected disk devices (partitions, filesystems, SMART) for LuCI (OpenWrt webUI).
+Status of connected disk devices (partitions, filesystems, SMART) for LuCI (OpenWrt webUI).
 
-OpenWrt >= 19.07.
+OpenWrt >= 21.02.
 
-Dependences: fdisk, smartmontools, smartmontools-drivedb.
+**Dependences:** fdisk, smartmontools, smartmontools-drivedb.
 
 ## Installation notes
 
-**OpenWrt >= 21.02:**
-
     opkg update
-    wget --no-check-certificate -O /tmp/luci-app-disks-info_0.4.2-r3_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-disks-info_0.4.2-r3_all.ipk
-    opkg install /tmp/luci-app-disks-info_0.4.2-r3_all.ipk
-    rm /tmp/luci-app-disks-info_0.4.2-r3_all.ipk
-    /etc/init.d/rpcd restart
+    wget --no-check-certificate -O /tmp/luci-app-disks-info_0.5.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-disks-info_0.5.0-r1_all.ipk
+    opkg install /tmp/luci-app-disks-info_0.5.0-r1_all.ipk
+    rm /tmp/luci-app-disks-info_0.5.0-r1_all.ipk
+    service rpcd restart
 
 i18n-ru:
 
-    wget --no-check-certificate -O /tmp/luci-i18n-disks-info-ru_0.4.2-r3_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-i18n-disks-info-ru_0.4.2-r3_all.ipk
-    opkg install /tmp/luci-i18n-disks-info-ru_0.4.2-r3_all.ipk
-    rm /tmp/luci-i18n-disks-info-ru_0.4.2-r3_all.ipk
-
-**OpenWrt 19.07:**
-
-    opkg update
-    wget --no-check-certificate -O /tmp/luci-app-disks-info_0.3-7_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/19.07/luci-app-disks-info_0.3-7_all.ipk
-    opkg install /tmp/luci-app-disks-info_0.3-7_all.ipk
-    rm /tmp/luci-app-disks-info_0.3-7_all.ipk
-    /etc/init.d/rpcd restart
-
-i18n-ru:
-
-    wget --no-check-certificate -O /tmp/luci-i18n-disks-info-ru_0.3-7_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/19.07/luci-i18n-disks-info-ru_0.3-7_all.ipk
-    opkg install /tmp/luci-i18n-disks-info-ru_0.3-7_all.ipk
-    rm /tmp/luci-i18n-disks-info-ru_0.3-7_all.ipk
+    wget --no-check-certificate -O /tmp/luci-i18n-disks-info-ru_0.5.0-r1_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-i18n-disks-info-ru_0.5.0-r1_all.ipk
+    opkg install /tmp/luci-i18n-disks-info-ru_0.5.0-r1_all.ipk
+    rm /tmp/luci-i18n-disks-info-ru_0.5.0-r1_all.ipk
 
 ## Screenshots:
 

@@ -104,7 +104,7 @@ return view.extend({
 				if(ifaceMac) {
 					ifaceTable.append(
 						E('tr', { 'class': 'tr' }, [
-							E('td', { 'class': 'td left', 'style': 'min-width:33%' },
+							E('td', { 'class': 'td left', 'style': 'width:33%' },
 								_('MAC Address') + ':'),
 							E('td', { 'class': 'td left' }, ifaceMac),
 						]),
@@ -113,7 +113,7 @@ return view.extend({
 
 				ifaceTable.append(
 					E('tr', { 'class': 'tr' }, [
-						E('td', { 'class': 'td left', 'style': 'min-width:33%' },
+						E('td', { 'class': 'td left', 'style': 'width:33%' },
 							_('State') + ':'),
 						E('td', { 'class': 'td left' },
 							E('span', {
@@ -130,9 +130,9 @@ return view.extend({
 
 				let statTable = E('table', { 'class': 'table' }, [
 					E('tr', { 'class': 'tr table-titles' }, [
-						E('th', { 'class': 'th left', 'style': 'min-width:33%' },
+						E('th', { 'class': 'th left', 'style': 'width:33%' },
 							_('Parameter')),
-						E('th', { 'class': 'th left', 'style': 'min-width:33%' },
+						E('th', { 'class': 'th left', 'style': 'width:33%' },
 							_('Receive')),
 						E('th', { 'class': 'th left' }, _('Transmit')),
 					]),

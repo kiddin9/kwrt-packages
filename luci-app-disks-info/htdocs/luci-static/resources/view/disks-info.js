@@ -8,16 +8,18 @@ document.head.append(E('style', {'type': 'text/css'},
 :root {
 	--app-disks-info-dark-font-color: #2e2e2e;
 	--app-disks-info-light-font-color: #fff;
-	--app-disks-info-ok-color: #2ea256;
 	--app-disks-info-warn-color: #fff7e2;
-	--app-disks-info-err-color: #ff4e54;
+	--app-disks-info-err-color: #fcc3bf;
+	--app-disks-info-ok-color-label: #2ea256;
+	--app-disks-info-err-color-label: #ff4e54;
 }
 :root[data-darkmode="true"] {
 	--app-disks-info-dark-font-color: #fff;
 	--app-disks-info-light-font-color: #fff;
-	--app-disks-info-ok-color: #2ea256;
 	--app-disks-info-warn-color: #8d7000;
 	--app-disks-info-err-color: #a93734;
+	--app-disks-info-ok-color-label: #007627;
+	--app-disks-info-err-color-label: #a93734;
 }
 .disks-info-label-status {
 	display: inline;
@@ -30,8 +32,12 @@ document.head.append(E('style', {'type': 'text/css'},
 	font-weight: bold;
 	line-height: 1.6em;
 }
-.disks-info-ok {
-	background-color: var(--app-disks-info-ok-color) !important;
+.disks-info-ok-label {
+	background-color: var(--app-disks-info-ok-color-label) !important;
+	color: var(--app-disks-info-light-font-color) !important;
+}
+.disks-info-err-label {
+	background-color: var(--app-disks-info-err-color-label) !important;
 	color: var(--app-disks-info-light-font-color) !important;
 }
 .disks-info-warn {
@@ -46,17 +52,19 @@ document.head.append(E('style', {'type': 'text/css'},
 }
 .disks-info-err {
 	background-color: var(--app-disks-info-err-color) !important;
-	color: var(--app-disks-info-light-font-color) !important;
+	color: var(--app-disks-info-dark-font-color) !important;
 }
 .disks-info-err .td {
-	color: var(--app-disks-info-light-font-color) !important;
+	color: var(--app-disks-info-dark-font-color) !important;
 }
 .disks-info-err td {
-	color: var(--app-disks-info-light-font-color) !important;
+	color: var(--app-disks-info-dark-font-color) !important;
 }
 `));
 
 return view.extend({
+	viewName           : 'disks-info',
+
 	fsSpaceWarning     : 90,
 
 	ssdEnduranceWarning: 95,
@@ -67,13 +75,45 @@ return view.extend({
 
 	deviceRegExp       : new RegExp('^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$'),
 
+	availDeviceTypes   : [
+		{ name: 'auto', title: _('auto') },
+		{ name: 'sat', title: _('SAT (SCSI to ATA Translation)') },
+	],
+
+	deviceType         : {},
+
+	restoreSettingsFromLocalStorage() {
+		let deviceType = localStorage.getItem(`luci-app-${this.viewName}-deviceType`);
+		if(deviceType) {
+			let items = deviceType.split(';');
+			if(items.length > 0) {
+				for(let i of items) {
+					let [k, v] = i.split('=');
+					if(k && v) {
+						this.deviceType[k] = v;
+					};
+				};
+			};
+		};
+	},
+
+	saveSettingsToLocalStorage() {
+		let items = [];
+		for(let [k, v] of Object.entries(this.deviceType)) {
+			items.push(`${k}=${v}`);
+		};
+		localStorage.setItem(
+			`luci-app-${this.viewName}-deviceType`, items.join(';'));
+	},
+
 	getDeviceData(device) {
+		let deviceType = this.deviceType[device] || this.availDeviceTypes[0].name;
 		return Promise.all([
 			device,
 			L.resolveDefault(fs.exec('/usr/sbin/fdisk', [ '-l', device ]), null),
 			L.resolveDefault(fs.exec_direct(
 				'/usr/sbin/smartctl',
-				[ '-iAHl', 'scttemp', '-l', 'error', '-l', 'devstat', '--json=c', device ],
+				[ '-d', deviceType, '-iAHl', 'scttemp', '-l', 'error', '-l', 'devstat', '--json=c', device ],
 				'json'), null),
 		]);
 	},
@@ -104,7 +144,7 @@ return view.extend({
 		for(let [k, v] of diskInfo) {
 			diskInfoTable.append(
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left', 'style':'min-width:33%' }, _(k) + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _(k) + ':'),
 					E('td', { 'class': 'td left' }, v.trim()),
 				])
 			);
@@ -192,7 +232,6 @@ return view.extend({
 			if(partitionsTable.children.length <= 1) {
 				partitionsTable.append(partitionsTablePlaceholder);
 			} else {
-
 				for(let partition of partitions.slice(1)) {
 					let tr = E('tr', { 'class': 'tr' });
 					await fs.exec('/bin/df', [ '-Th', partition[0] ]).then(stat => {
@@ -246,10 +285,15 @@ return view.extend({
 
 	createSmartTable(smartObject) {
 		let smartStatusLabel = (smartObject.smart_status.passed) ?
-			E('span', { 'class': 'disks-info-label-status disks-info-ok' }, _('passed')) :
-			E('span', { 'class': 'disks-info-label-status disks-info-err' }, _('failed'));
+			E('span', { 'class': 'disks-info-label-status disks-info-ok-label' },
+				_('passed'))
+			:
+			E('span', { 'class': 'disks-info-label-status disks-info-err-label' },
+				_('failed'));
 
-		let smartStatus = E('h5', { 'style': 'width:100% !important; text-align:center !important' }, [
+		let smartStatus = E('h5', {
+			'style': 'width:100% !important; text-align:center !important',
+		}, [
 			_('SMART overall-health self-assessment test result:'),
 			smartStatusLabel,
 		]);
@@ -321,9 +365,12 @@ return view.extend({
 		for(let errObj of table) {
 			errorLogTable.append(
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, errObj.error_number),
-					E('td', { 'class': 'td left' }, errObj.lifetime_hours),
-					E('td', { 'class': 'td left' }, errObj.error_description),
+					E('td', { 'class': 'td left', 'data-title': _('Error number') },
+						errObj.error_number),
+					E('td', { 'class': 'td left', 'data-title': _('Lifetime hours') },
+						errObj.lifetime_hours),
+					E('td', { 'class': 'td left', 'data-title': _('Description') },
+						errObj.error_description),
 				])
 			);
 		};
@@ -344,37 +391,37 @@ return view.extend({
 						'tr disks-info-err' : (smartObject.temperature.current >= this.diskTempWarning) ?
 							'tr disks-info-warn' : 'tr',
 				}, [
-					E('td', { 'class': 'td left', 'style':'min-width:33%' }, _('Current') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Current') + ':'),
 					E('td', { 'class': 'td left' }, ('current' in smartObject.temperature) ?
 						smartObject.temperature.current  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Lifetime min') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Lifetime min') + ':'),
 					E('td', { 'class': 'td left' }, ('lifetime_min' in smartObject.temperature) ?
 						smartObject.temperature.lifetime_min  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Lifetime max') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Lifetime max') + ':'),
 					E('td', { 'class': 'td left' }, ('lifetime_max' in smartObject.temperature) ?
 						smartObject.temperature.lifetime_max  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Recommended min') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Recommended min') + ':'),
 					E('td', { 'class': 'td left' }, ('op_limit_min' in smartObject.temperature) ?
 						smartObject.temperature.op_limit_min  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Recommended max') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Recommended max') + ':'),
 					E('td', { 'class': 'td left' }, ('op_limit_max' in smartObject.temperature) ?
 						smartObject.temperature.op_limit_max  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Limit min') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Limit min') + ':'),
 					E('td', { 'class': 'td left' }, ('limit_min' in smartObject.temperature) ?
 						smartObject.temperature.limit_min  + ' °C' : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Limit max') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Limit max') + ':'),
 					E('td', { 'class': 'td left' }, ('limit_max' in smartObject.temperature) ?
 						smartObject.temperature.limit_max  + ' °C' : null),
 				]),
@@ -408,11 +455,11 @@ return view.extend({
 		};
 		dataUnits.reverse();
 
-		/* GRAPH */
+		// GRAPH
 
 		let svgWidth         = 900;
 		let svgHeight        = 300;
-		let tempValueMul     = (tempDiff >= 60) ? 3 : Math.round(svgHeight / (tempDiff + 20));	// 1°C = "tempValueMul"px
+		let tempValueMul     = (tempDiff >= 60) ? 3 : Math.round(svgHeight / (tempDiff + 20));
 		let tempMinimalValue = (tempMin > 10) ? tempMin - 10 : 0;
 		let tempAxisStep     = (tempDiff >= 60) ? 6 : (tempDiff >= 30) ? 4 : 2;
 		let timeAxisStep     = svgWidth / dataSize;
@@ -517,7 +564,7 @@ return view.extend({
 			text.appendChild(document.createTextNode(`Interval:${intervalMin}m Tmin:${tempMin}°C Tmax:${tempMax}°C`));
 		svg.appendChild(text);
 
-		/* TABLE */
+		// TABLE
 
 		dataUnits = dataUnits.filter((e, i, a) => {
 			return e[1] != ((a[i - 1] !== undefined) && a[i - 1][1]);
@@ -525,8 +572,8 @@ return view.extend({
 
 		let sctTempTable = E('table', { 'class': 'table' },
 			E('tr', { 'class': 'tr table-titles' }, [
-				E('th', { 'class': 'th left', 'style':'min-width:33%' }, _('Index')),
-				E('th', { 'class': 'th left', 'style':'min-width:33%' }, _('Estimated time')),
+				E('th', { 'class': 'th left', 'style': 'width:33%' }, _('Index')),
+				E('th', { 'class': 'th left', 'style': 'width:33%' }, _('Estimated time')),
 				E('th', { 'class': 'th left' }, _('Temperature') + ' °C'),
 			])
 		);
@@ -624,12 +671,15 @@ return view.extend({
 		);
 		for(let page of statObject.pages) {
 			if(!page || !Array.isArray(page.table) || page.table.length === 0) continue;
-			let pageTableTitle = E('h5', { 'style': 'width:100% !important; text-align:left !important' }, _(page.name));
+			let pageTableTitle = E('h5',
+				{ 'style': 'width:100% !important; text-align:left !important' },
+				_(page.name)
+			);
 			let pageTable = E('table', { 'class': 'table' });
 			for(let entry of page.table) {
 				pageTable.append(
 					E('tr', { 'class': 'tr' }, [
-						E('td', { 'class': 'td left', 'style':'min-width:33%' }, _(entry.name) + ':'),
+						E('td', { 'class': 'td left', 'style': 'width:50%' }, _(entry.name) + ':'),
 						(page.number === 7 && entry.offset === 8) ?
 							E('td', {
 									'class': (entry.value >= this.ssdEnduranceWarning) ?
@@ -659,67 +709,67 @@ return view.extend({
 			E('h3', {}, _('Device') + ':'),
 			E('table', { 'class': 'table' }, [
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left', 'style':'min-width:33%' }, _('Model Family') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Model Family') + ':'),
 					E('td', { 'class': 'td left' }, smartObject.model_family),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Device Model') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Device Model') + ':'),
 					E('td', { 'class': 'td left' }, smartObject.model_name),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Serial Number') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Serial Number') + ':'),
 					E('td', { 'class': 'td left' }, smartObject.serial_number),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('LU WWN Device Id') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('LU WWN Device Id') + ':'),
 					E('td', { 'class': 'td left' }, ('wwn' in smartObject) ?
 						Object.values(smartObject.wwn).map(
 							e => e.toString(16)).join(' ') : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Firmware Version') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Firmware Version') + ':'),
 					E('td', { 'class': 'td left' }, smartObject.firmware_version),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('User Capacity') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('User Capacity') + ':'),
 					E('td', { 'class': 'td left' }, ('user_capacity' in smartObject) ?
 						`${smartObject.user_capacity.bytes} ${_('bytes')} [${(smartObject.user_capacity.bytes / 1e9).toFixed()} ${_('Gb')}] (${smartObject.user_capacity.blocks} ${_('blocks')})`
 						: null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, `${_('Sector Size')} (${_('logical/physical')}):`),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, `${_('Sector Size')} (${_('logical/physical')}):`),
 					E('td', { 'class': 'td left' }, ('logical_block_size' in smartObject) ?
 						`${smartObject.logical_block_size} ${_('bytes')} / ${smartObject.physical_block_size} ${_('bytes')}`
 						: null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Rotation Rate') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Rotation Rate') + ':'),
 					E('td', { 'class': 'td left' }, (smartObject.rotation_rate === 0) ?
 						_('Solid State Device') : smartObject.rotation_rate),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Form Factor') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Form Factor') + ':'),
 					E('td', { 'class': 'td left' }, ('form_factor' in smartObject) ?
 						smartObject.form_factor.name : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Device is') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Device is') + ':'),
 					E('td', { 'class': 'td left' }, smartObject.in_smartctl_database ?
 						_('In smartctl database [for details use: -P show]') :
 						_('Not in smartctl database [for details use: -P showall]')),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('ATA Version is') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('ATA Version is') + ':'),
 					E('td', { 'class': 'td left' }, ('ata_version' in smartObject) ?
 						smartObject.ata_version.string : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('SATA Version is') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('SATA Version is') + ':'),
 					E('td', { 'class': 'td left' }, ('sata_version' in smartObject) ?
 						smartObject.sata_version.string : null),
 				]),
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left' }, _('Local Time is') + ':'),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Local Time is') + ':'),
 					E('td', { 'class': 'td left' }, ('local_time' in smartObject) ?
 						smartObject.local_time.asctime : null),
 				]),
@@ -728,6 +778,7 @@ return view.extend({
 	},
 
 	load() {
+		this.restoreSettingsFromLocalStorage();
 		return fs.list('/dev').then(stat => {
 			let devices = [];
 			stat.forEach(e => {
@@ -788,6 +839,32 @@ return view.extend({
 					});
 					tabsContainer.append(deviceTab);
 
+					let deviceNormalized = deviceName.replace(/\//g, '-');
+					let deviceTypeSelect = E('select',
+						{
+							'id'    : 'device_type' + deviceNormalized,
+							'change': (ev) => {
+								this.deviceType[deviceName] = ev.target.value || this.availDeviceTypes[0].name;
+								this.saveSettingsToLocalStorage();
+								window.location.reload();
+							},
+						}
+					);
+					for(let i of this.availDeviceTypes) {
+						deviceTypeSelect.append(E('option', { 'value': i.name }, i.title));
+					};
+					deviceTypeSelect.value = this.deviceType[deviceName] || this.availDeviceTypes[0].name;
+
+					deviceTab.append(
+						E('div', { 'class': 'cbi-value' }, [
+							E('label', { 'class': 'cbi-value-title', 'for': 'device_type' + deviceNormalized },
+								_('Device type')),
+							E('div', { 'class': 'cbi-value-field' },
+								deviceTypeSelect
+							),
+						]),
+					);
+
 					if(fdisk) {
 						await this.createDiskTable(fdisk).then(elem => deviceTab.append(elem));
 					};
@@ -839,7 +916,7 @@ return view.extend({
 		return E([
 			E('h2', { 'class': 'fade-in' }, _('Disk Devices')),
 			E('div', { 'class': 'cbi-section-descr fade-in' },
-				_("Information about the connected disk devices.")),
+				_("Status of connected disk devices.")),
 			devicesNode,
 		]);
 	},

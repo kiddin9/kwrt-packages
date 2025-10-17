@@ -28,13 +28,16 @@ msgstr ""
 msgid "Device"
 msgstr ""
 
-msgid "Device is"
-msgstr ""
-
 msgid "Device Model"
 msgstr ""
 
+msgid "Device is"
+msgstr ""
+
 msgid "Device statistics"
+msgstr ""
+
+msgid "Device type"
 msgstr ""
 
 msgid "Disk model"
@@ -89,9 +92,6 @@ msgid "In smartctl database [for details use: -P show]"
 msgstr ""
 
 msgid "Index"
-msgstr ""
-
-msgid "Information about the connected disk devices."
 msgstr ""
 
 msgid "LU WWN Device Id"
@@ -202,6 +202,9 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
+msgid "Status of connected disk devices."
+msgstr ""
+
 msgid "Temperature"
 msgstr ""
 
@@ -239,6 +242,9 @@ msgid "WORST"
 msgstr ""
 
 msgid "Write to device memory"
+msgstr ""
+
+msgid "auto"
 msgstr ""
 
 msgid "blocks"

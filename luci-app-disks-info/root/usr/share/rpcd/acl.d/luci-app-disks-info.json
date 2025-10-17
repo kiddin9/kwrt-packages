@@ -7,7 +7,7 @@
 				"/dev": [ "list" ],
 				"/bin/df -Th /dev/*": [ "exec" ],
 				"/usr/sbin/fdisk -l /dev/*": [ "exec" ],
-				"/usr/sbin/smartctl -iAHl scttemp -l error -l devstat --json=c /dev/*": [ "exec" ],
+				"/usr/sbin/smartctl -d* -iAHl scttemp -l error -l devstat --json=c /dev/*": [ "exec" ],
 				"/usr/sbin/smartctl -l scttempint,[0-9,p]* /dev/*": [ "exec" ]
 			}
 		}

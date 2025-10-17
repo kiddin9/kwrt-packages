@@ -38,14 +38,17 @@ msgstr "Описание"
 msgid "Device"
 msgstr "Устройство"
 
-msgid "Device is"
-msgstr "Устройство"
-
 msgid "Device Model"
 msgstr "Модель устройства"
 
+msgid "Device is"
+msgstr "Устройство"
+
 msgid "Device statistics"
 msgstr "Статистика устройства"
+
+msgid "Device type"
+msgstr "Тип устройства"
 
 msgid "Disk model"
 msgstr "Модель диска"
@@ -100,9 +103,6 @@ msgstr "Находится в базе smartctl [подробно: -P show]"
 
 msgid "Index"
 msgstr "Индекс"
-
-msgid "Information about the connected disk devices."
-msgstr "Информация о подключенных дисковых устройствах."
 
 msgid "LU WWN Device Id"
 msgstr ""
@@ -212,6 +212,9 @@ msgstr "Статистика SSD"
 msgid "Start"
 msgstr "Начало"
 
+msgid "Status of connected disk devices."
+msgstr "Состояние подключенных дисковых устройств."
+
 msgid "Temperature"
 msgstr "Температура"
 
@@ -250,6 +253,9 @@ msgstr ""
 
 msgid "Write to device memory"
 msgstr "Записать в память устройства"
+
+msgid "auto"
+msgstr "авто"
 
 msgid "blocks"
 msgstr "блоков"

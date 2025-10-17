@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-cpu-perf
 PKG_VERSION:=0.6.0
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 LUCI_TITLE:=CPU performance information and management for LuCI
 LUCI_DEPENDS:=+ucode +ucode-mod-fs
 LUCI_PKGARCH:=all
