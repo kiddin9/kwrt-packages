@@ -1,0 +1,338 @@
+--- a/package/feeds/luci/luci-base/root/usr/share/rpcd/ucode/luci
++++ b/package/feeds/luci/luci-base/root/usr/share/rpcd/ucode/luci
+@@ -192,6 +192,7 @@ const methods = {
+ 
+ 	getFeatures: {
+ 		call: function() {
++			let kernel_version = popen('echo -n `uname -r`').read('all');
+ 			let result = {
+ 				firewall:   access('/sbin/fw3') == true,
+ 				firewall4:  access('/sbin/fw4') == true,
+@@ -199,6 +200,7 @@ const methods = {
+ 				bonding:    access('/sys/module/bonding'),
+ 				mii_tool:   access('/usr/sbin/mii-tool'),
+ 				offloading: access('/sys/module/xt_FLOWOFFLOAD/refcnt') == true || access('/sys/module/nft_flow_offload/refcnt') == true,
++				fullcone:   access(`/lib/modules/${kernel_version}/xt_FULLCONENAT.ko`) == true || access(`/lib/modules/${kernel_version}/nft_fullcone.ko`) == true,
+ 				br2684ctl:  access('/usr/sbin/br2684ctl') == true,
+ 				swconfig:   access('/sbin/swconfig') == true,
+ 				odhcpd:     access('/usr/sbin/odhcpd') == true,
+@@ -538,6 +540,99 @@ const methods = {
+ 		call: function() {
+ 			return { result: process_list() };
+ 		}
++	},
++
++	getCPUBench: {
++		call: function() {
++			return { cpubench: readfile('/etc/bench.log') || '' };
++		}
++	},
++
++	getCPUInfo: {
++		call: function() {
++			if (!access('/sbin/cpuinfo'))
++				return {};
++
++			const fd = popen('/sbin/cpuinfo');
++			if (fd) {
++				let cpuinfo = fd.read('all');
++				fd.close();
++
++				return { cpuinfo: cpuinfo };
++			} else {
++				return { cpuinfo: error() };
++			}
++		}
++	},
++
++	getCPUUsage: {
++		call: function() {
++			const fd = popen('top -n1 | awk \'/^CPU/ {printf("%d%", 100 - $8)}\'');
++			if (fd) {
++				let cpuusage = fd.read('all');
++				fd.close();
++
++				return { cpuusage: cpuusage };
++			} else {
++				return { cpuusage: error() };
++			}
++		}
++	},
++
++	getETHInfo: {
++		call: function() {
++			if (!access('/sbin/ethinfo'))
++				return {};
++
++			const fd = popen('/sbin/ethinfo');
++			if (fd) {
++				let ethinfo = fd.read('all');
++				if (!ethinfo)
++					ethinfo = '{}';
++				ethinfo = json(ethinfo);
++				fd.close();
++
++				return { ethinfo: ethinfo };
++			} else {
++				return { ethinfo: error() };
++			}
++		}
++	},
++
++	getTempInfo: {
++		call: function() {
++			if (!access('/sbin/tempinfo'))
++				return {};
++
++			const fd = popen('/sbin/tempinfo');
++			if (fd) {
++				let tempinfo = fd.read('all');
++				fd.close();
++
++				return { tempinfo: tempinfo };
++			} else {
++				return { tempinfo: error() };
++			}
++		}
++	},
++
++	getOnlineUsers: {
++		call: function() {
++			const fd = open('/proc/net/arp', 'r');
++			if (fd) {
++				let onlineusers = 0;
++
++				for (let line = fd.read('line'); length(line); line = fd.read('line'))
++					if (match(trim(line), /^.*(0x2).*(br-lan)$/))
++						onlineusers++;
++
++				fd.close();
++
++				return { onlineusers: onlineusers };
++			} else {
++				return { onlineusers: error() };
++			}
++		}
+ 	}
+ };
+ 
+
+--- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
++++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
+@@ -2560,6 +2560,16 @@ Protocol = baseclass.extend(/** @lends LuCI.network.Protocol.prototype */ {
+ 		return (this._ubus('dynamic') == true);
+ 	},
+ 
++	/**
++	 * Checks whether this logical interface is pending.
++	 *
++	 * @returns {boolean}
++	 * returns `true` when the interface is pending or `false` when it is not.
++	 */
++	isPending: function() {
++		return (this._ubus('pending') == true);
++	},
++
+ 	/**
+ 	 * Checks whether this interface is an alias interface.
+ 	 *
+
+--- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
++++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
+@@ -4376,4 +4376,10 @@ WifiNetwork = baseclass.extend(/** @lends LuCI.network.WifiNetwork.prototype */
+ 	}
+ });
+ 
++setTimeout(function(){
++try{
++  document.getElementsByClassName('cbi-button-apply')[0].children[3].children[0].value='1'
++}catch(err) {
++}},1000)
++
+ return Network;
+
+--- a/package/feeds/luci/luci-base/ucode/dispatcher.uc
++++ b/package/feeds/luci/luci-base/ucode/dispatcher.uc
+@@ -939,7 +939,12 @@ dispatch = function(_http, path) {
+ 				let cookie_name = (http.getenv('HTTPS') == 'on') ? 'sysauth_https' : 'sysauth_http',
+ 				    cookie_secure = (http.getenv('HTTPS') == 'on') ? '; secure' : '';
+ 
+-				http.header('Set-Cookie', `${cookie_name}=${session.sid}; path=${build_url()}; SameSite=strict; HttpOnly${cookie_secure}`);
++				let cookie_p = uci.get('wizard', 'default', 'cookie_p');
++				if (cookie_p == '0') {
++					http.header('Set-Cookie', `${cookie_name}=${session.sid}; path=${build_url()}; SameSite=strict; HttpOnly${cookie_secure}`);
++				} else {
++					http.header('Set-Cookie', `${cookie_name}=${session.sid}; Max-Age=2147483647; path=${build_url()}; SameSite=strict; HttpOnly${cookie_secure}`);
++				}
+ 				http.redirect(build_url(...resolved.ctx.request_path));
+ 
+ 				return;
+
+--- a/package/feeds/luci/luci-base/root/www/index.html
++++ b/package/feeds/luci/luci-base/root/www/index.html
+@@ -15,6 +15,5 @@
+ 		</style>
+ 	</head>
+ 	<body>
+-		<a href="cgi-bin/luci/">LuCI - Lua Configuration Interface</a>
+ 	</body>
+ </html>
+
+--- a/package/feeds/luci/luci-base/root/etc/init.d/ucitrack
++++ b/package/feeds/luci/luci-base/root/etc/init.d/ucitrack
+@@ -8,7 +8,7 @@ register_init() {
+ 	local init="$2"
+ 	shift; shift
+ 
+-	if [ -x "$init" ] && "$init" enabled && ! grep -sqE 'USE_PROCD=.' "$init"; then
++	if [ -x "$init" ] && ! grep -sqE 'USE_PROCD=.' "$init"; then
+ 		logger -t "ucitrack" "Setting up /etc/config/$config reload trigger for non-procd $init"
+ 		procd_add_config_trigger "config.change" "$config" "$init" "$@"
+ 	fi
+
+--- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/tools/widgets.js
++++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/tools/widgets.js
+@@ -4,6 +4,7 @@
+ 'require network';
+ 'require firewall';
+ 'require fs';
++'require uci';
+ 
+ function getUsers() {
+     return fs.lines('/etc/passwd').then(function(lines) {
+@@ -645,6 +646,83 @@ var CBIGroupSelect = form.ListValue.extend({
+ 	},
+ });
+ 
++// how to name a ListValue class which contain domain and mac group
++
++var CBIWifidogxGroupSelect = form.ListValue.extend({
++	__name__: 'CBI.WifidogxGroupSelect',
++
++	// group_type: 1: Domain Group, 2: MAC Group
++	// add a new property to store the group type
++	group_type: '1',
++
++	load: function(section_id) {
++		this.sappList = [];
++		var sections = uci.sections('wifidogx', 'group');
++		
++		for (var i = 0; i < sections.length; i++) {
++			if (sections[i]['g_type'] == this.group_type)
++				this.sappList.push(sections[i]['.name']);
++		}
++		
++		return this.super('load', section_id);
++	},
++
++	setGroupType: function(group_type) {
++		if (group_type == 'mac') {
++			this.group_type = '2';
++		} else if (group_type == 'wildcard') {
++			this.group_type = '3';
++		}
++	},
++
++	filter: function(section_id, value) {
++		return true;
++	},
++
++	renderWidget: function(section_id, option_index, cfgvalue) {
++		var values = L.toArray((cfgvalue != null) ? cfgvalue : this.default),
++		    choices = {},
++		    checked = {};
++
++		for (var i = 0; i < values.length; i++)
++			checked[values[i]] = true;
++
++		values = [];
++
++		if (!this.multiple && (this.rmempty || this.optional))
++			choices[''] = E('em', _('unspecified'));
++
++		for (var i = 0; i < this.sappList.length; i++) {
++			var name = this.sappList[i];
++
++			if (checked[name])
++				values.push(name);
++
++			choices[name] =  E('span', { 'class': 'ifacebadge' }, name);
++		}
++
++		var widget = new ui.Dropdown(this.multiple ? values : values[0], choices, {
++			id: this.cbid(section_id),
++			sort: true,
++			multiple: this.multiple,
++			optional: this.optional || this.rmempty,
++			disabled: (this.readonly != null) ? this.readonly : this.map.readonly,
++			select_placeholder: E('em', _('unspecified')),
++			display_items: this.display_size || this.size || 3,
++			dropdown_items: this.dropdown_size || this.size || 5,
++			validate: L.bind(this.validate, this, section_id),
++			create: !this.nocreate,
++			create_markup: '' +
++				'<li data-value="{{value}}">' +
++					'<span class="ifacebadge" style="background:repeating-linear-gradient(45deg,rgba(204,204,204,0.5),rgba(204,204,204,0.5) 5px,rgba(255,255,255,0.5) 5px,rgba(255,255,255,0.5) 10px)">' +
++						'{{value}}: <em>('+_('create')+')</em>' +
++					'</span>' +
++				'</li>'
++		});
++
++		return widget.render();
++	}
++});
+ 
+ return L.Class.extend({
+ 	ZoneSelect: CBIZoneSelect,
+@@ -653,4 +731,5 @@ return L.Class.extend({
+ 	DeviceSelect: CBIDeviceSelect,
+ 	UserSelect: CBIUserSelect,
+ 	GroupSelect: CBIGroupSelect,
++	WifidogxGroupSelect: CBIWifidogxGroupSelect,
+ });
+
+--- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/validation.js
++++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/validation.js
+@@ -403,6 +403,14 @@ const ValidatorFactory = baseclass.extend({
+ 			return this.assert(false, _('valid hostname'));
+ 		},
+ 
++		wildcard() {
++			// must start with '.', then remove it and check if it's a valid hostname
++			if (this.value[0] != '.')
++				return this.assert(false, _('valid wildcard hostname'));
++			const hostname = this.value.substr(1);
++			return this.apply('hostname', hostname);
++		},
++
+ 		network() {
+ 			return this.assert(this.apply('uciname') || this.apply('hostname') || this.apply('ip4addr') || this.apply('ip6addr'),
+ 				_('valid UCI identifier, hostname or IP address range'));
+
+--- a/package/feeds/luci/luci-base/root/usr/share/luci/menu.d/luci-base.json
++++ b/package/feeds/luci/luci-base/root/usr/share/luci/menu.d/luci-base.json
+@@ -50,6 +50,24 @@
+ 		}
+ 	},
+ 
++	"admin/nas": {
++		"title": "NAS",
++		"order": 60,
++		"action": {
++			"type": "firstchild",
++			"recurse": true
++		}
++	},
++
++	"admin/control": {
++		"title": "Control",
++		"order": 61,
++		"action": {
++			"type": "firstchild",
++			"recurse": true
++		}
++	},
++
+ 	"admin/vpn": {
+ 		"title": "VPN",
+ 		"order": 70,
