@@ -492,7 +492,7 @@ jobs:
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall/root/www/luci-static/passwall/
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-passwall2/root/www/luci-static/passwall2/
         cp -rf luci-app-bypass/root/www/luci-static/bypass/* luci-app-ssr-plus/root/www/luci-static/shadowsocksr/
-        echo ".page-container>div:first-child{display:none}
+        echo ".page-container>div:first-child{display:none}" >>luci-app-quickstart/htdocs/luci-static/quickstart/style.css
         sed -i 's/+php8-cgi /+php8-cgi +php8-fpm /' luci-theme-spectra/Makefile
 
         while [[ ! -f /tmp/ok || ! -f /tmp/ok2 || ! -f /tmp/ok3 ]]; do
