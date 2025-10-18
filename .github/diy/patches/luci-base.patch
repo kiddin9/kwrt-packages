@@ -1,5 +1,5 @@
---- a/package/feeds/luci/luci-base/root/usr/share/rpcd/ucode/luci
-+++ b/package/feeds/luci/luci-base/root/usr/share/rpcd/ucode/luci
+--- a/luci-base/root/usr/share/rpcd/ucode/luci
++++ b/luci-base/root/usr/share/rpcd/ucode/luci
 @@ -192,6 +192,7 @@ const methods = {
  
  	getFeatures: {
@@ -117,8 +117,8 @@
  };
  
 
---- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
-+++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
+--- a/luci-base/htdocs/luci-static/resources/network.js
++++ b/luci-base/htdocs/luci-static/resources/network.js
 @@ -2560,6 +2560,16 @@ Protocol = baseclass.extend(/** @lends LuCI.network.Protocol.prototype */ {
  		return (this._ubus('dynamic') == true);
  	},
@@ -137,8 +137,8 @@
  	 * Checks whether this interface is an alias interface.
  	 *
 
---- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
-+++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/network.js
+--- a/luci-base/htdocs/luci-static/resources/network.js
++++ b/luci-base/htdocs/luci-static/resources/network.js
 @@ -4376,4 +4376,10 @@ WifiNetwork = baseclass.extend(/** @lends LuCI.network.WifiNetwork.prototype */
  	}
  });
@@ -151,8 +151,8 @@
 +
  return Network;
 
---- a/package/feeds/luci/luci-base/ucode/dispatcher.uc
-+++ b/package/feeds/luci/luci-base/ucode/dispatcher.uc
+--- a/luci-base/ucode/dispatcher.uc
++++ b/luci-base/ucode/dispatcher.uc
 @@ -939,7 +939,12 @@ dispatch = function(_http, path) {
  				let cookie_name = (http.getenv('HTTPS') == 'on') ? 'sysauth_https' : 'sysauth_http',
  				    cookie_secure = (http.getenv('HTTPS') == 'on') ? '; secure' : '';
@@ -168,8 +168,8 @@
  
  				return;
 
---- a/package/feeds/luci/luci-base/root/www/index.html
-+++ b/package/feeds/luci/luci-base/root/www/index.html
+--- a/luci-base/root/www/index.html
++++ b/luci-base/root/www/index.html
 @@ -15,6 +15,5 @@
  		</style>
  	</head>
@@ -178,8 +178,8 @@
  	</body>
  </html>
 
---- a/package/feeds/luci/luci-base/root/etc/init.d/ucitrack
-+++ b/package/feeds/luci/luci-base/root/etc/init.d/ucitrack
+--- a/luci-base/root/etc/init.d/ucitrack
++++ b/luci-base/root/etc/init.d/ucitrack
 @@ -8,7 +8,7 @@ register_init() {
  	local init="$2"
  	shift; shift
@@ -190,8 +190,8 @@
  		procd_add_config_trigger "config.change" "$config" "$init" "$@"
  	fi
 
---- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/tools/widgets.js
-+++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/tools/widgets.js
+--- a/luci-base/htdocs/luci-static/resources/tools/widgets.js
++++ b/luci-base/htdocs/luci-static/resources/tools/widgets.js
 @@ -4,6 +4,7 @@
  'require network';
  'require firewall';
@@ -291,8 +291,8 @@
 +	WifidogxGroupSelect: CBIWifidogxGroupSelect,
  });
 
---- a/package/feeds/luci/luci-base/htdocs/luci-static/resources/validation.js
-+++ b/package/feeds/luci/luci-base/htdocs/luci-static/resources/validation.js
+--- a/luci-base/htdocs/luci-static/resources/validation.js
++++ b/luci-base/htdocs/luci-static/resources/validation.js
 @@ -403,6 +403,14 @@ const ValidatorFactory = baseclass.extend({
  			return this.assert(false, _('valid hostname'));
  		},
@@ -309,8 +309,8 @@
  			return this.assert(this.apply('uciname') || this.apply('hostname') || this.apply('ip4addr') || this.apply('ip6addr'),
  				_('valid UCI identifier, hostname or IP address range'));
 
---- a/package/feeds/luci/luci-base/root/usr/share/luci/menu.d/luci-base.json
-+++ b/package/feeds/luci/luci-base/root/usr/share/luci/menu.d/luci-base.json
+--- a/luci-base/root/usr/share/luci/menu.d/luci-base.json
++++ b/luci-base/root/usr/share/luci/menu.d/luci-base.json
 @@ -50,6 +50,24 @@
  		}
  	},
