@@ -19,6 +19,7 @@ start_service() {
 	local traffic_enabled
 	local traffic_retention_seconds
 	local traffic_flush_interval_seconds
+	local traffic_persist_history
 	local connections_enabled
 	
 	config_load 'bandix'
@@ -28,6 +29,7 @@ start_service() {
 	config_get_bool traffic_enabled 'traffic' 'enabled'
 	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
 	config_get traffic_flush_interval_seconds 'traffic' 'traffic_flush_interval_seconds'
+	config_get_bool traffic_persist_history 'traffic' 'traffic_persist_history'
 	config_get_bool connections_enabled 'connections' 'enabled'
 
 	[ "$connections_enabled" != 1 ] && [ "$traffic_enabled" != 1 ] && return 1
@@ -44,6 +46,9 @@ start_service() {
 	fi
 	if [ -n "$traffic_flush_interval_seconds" ]; then
 		args="$args --traffic-flush-interval-seconds $traffic_flush_interval_seconds"
+	fi
+	if [ "$traffic_persist_history" -eq 1 ]; then
+		args="$args --traffic-persist-history"
 	fi
 	
 	# 添加连接统计监控参数
