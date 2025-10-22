@@ -17,9 +17,11 @@ start_service() {
 	local port
 	local data_dir
 	local traffic_enabled
-	local traffic_retention_seconds
 	local traffic_flush_interval_seconds
-	local traffic_persist_history
+	local traffic_persist_main_ring
+	local traffic_main_ring_retention_seconds
+	local traffic_persist_day_ring
+	local traffic_persist_week_ring
 	local connections_enabled
 	
 	config_load 'bandix'
@@ -27,9 +29,11 @@ start_service() {
 	config_get port 'general' 'port'
 	config_get data_dir 'general' 'data_dir'
 	config_get_bool traffic_enabled 'traffic' 'enabled'
-	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
 	config_get traffic_flush_interval_seconds 'traffic' 'traffic_flush_interval_seconds'
-	config_get_bool traffic_persist_history 'traffic' 'traffic_persist_history'
+	config_get_bool traffic_persist_main_ring 'traffic' 'traffic_persist_main_ring'
+	config_get traffic_main_ring_retention_seconds 'traffic' 'traffic_main_ring_retention_seconds'
+	config_get_bool traffic_persist_day_ring 'traffic' 'traffic_persist_day_ring'
+	config_get_bool traffic_persist_week_ring 'traffic' 'traffic_persist_week_ring'
 	config_get_bool connections_enabled 'connections' 'enabled'
 
 	[ "$connections_enabled" != 1 ] && [ "$traffic_enabled" != 1 ] && return 1
@@ -41,14 +45,20 @@ start_service() {
 	if [ "$traffic_enabled" -eq 1 ]; then
 		args="$args --enable-traffic"
 	fi
-	if [ -n "$traffic_retention_seconds" ]; then
-		args="$args --traffic-retention-seconds $traffic_retention_seconds"
-	fi
 	if [ -n "$traffic_flush_interval_seconds" ]; then
 		args="$args --traffic-flush-interval-seconds $traffic_flush_interval_seconds"
 	fi
-	if [ "$traffic_persist_history" -eq 1 ]; then
-		args="$args --traffic-persist-history"
+	if [ "$traffic_persist_main_ring" -eq 1 ]; then
+		args="$args --traffic-persist-main-ring"
+	fi
+	if [ -n "$traffic_main_ring_retention_seconds" ]; then
+		args="$args --traffic-main-ring-retention-seconds $traffic_main_ring_retention_seconds"
+	fi
+	if [ "$traffic_persist_day_ring" -eq 1 ]; then
+		args="$args --traffic-persist-day-ring"
+	fi
+	if [ "$traffic_persist_week_ring" -eq 1 ]; then
+		args="$args --traffic-persist-week-ring"
 	fi
 	
 	# 添加连接统计监控参数
