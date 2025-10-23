@@ -22,6 +22,8 @@ start_service() {
 	local traffic_main_ring_retention_seconds
 	local traffic_persist_day_ring
 	local traffic_persist_week_ring
+	local traffic_persist_month_ring
+	local traffic_persist_year_ring
 	local connections_enabled
 	
 	config_load 'bandix'
@@ -34,6 +36,8 @@ start_service() {
 	config_get traffic_main_ring_retention_seconds 'traffic' 'traffic_main_ring_retention_seconds'
 	config_get_bool traffic_persist_day_ring 'traffic' 'traffic_persist_day_ring'
 	config_get_bool traffic_persist_week_ring 'traffic' 'traffic_persist_week_ring'
+	config_get_bool traffic_persist_month_ring 'traffic' 'traffic_persist_month_ring'
+	config_get_bool traffic_persist_year_ring 'traffic' 'traffic_persist_year_ring'
 	config_get_bool connections_enabled 'connections' 'enabled'
 
 	[ "$connections_enabled" != 1 ] && [ "$traffic_enabled" != 1 ] && return 1
@@ -59,6 +63,12 @@ start_service() {
 	fi
 	if [ "$traffic_persist_week_ring" -eq 1 ]; then
 		args="$args --traffic-persist-week-ring"
+	fi
+	if [ "$traffic_persist_month_ring" -eq 1 ]; then
+		args="$args --traffic-persist-month-ring"
+	fi
+	if [ "$traffic_persist_year_ring" -eq 1 ]; then
+		args="$args --traffic-persist-year-ring"
 	fi
 	
 	# 添加连接统计监控参数

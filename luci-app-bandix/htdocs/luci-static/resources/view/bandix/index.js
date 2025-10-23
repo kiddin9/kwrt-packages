@@ -74,6 +74,8 @@ const translations = {
         '小时': '小时',
         '天': '天',
         '周': '周',
+        '月': '月',
+        '年': '年',
         '其他速率': '其他速率',
         '累计流量': '累计流量',
         '总上传': '总上传',
@@ -109,6 +111,8 @@ const translations = {
         '实时': '实时',
         '最近1天': '最近1天',
         '最近7天': '最近7天',
+        '最近1月': '最近1月',
+        '最近1年': '最近1年',
         '峰值速率': '峰值速率',
         'WAN 上传峰值': 'WAN 上传峰值',
         'WAN 下载峰值': 'WAN 下载峰值'
@@ -179,6 +183,8 @@ const translations = {
         '小时': '小時',
         '天': '天',
         '周': '週',
+        '月': '月',
+        '年': '年',
         '其他速率': '其他速率',
         '累计流量': '累計流量',
         '总上传': '總上傳',
@@ -214,6 +220,8 @@ const translations = {
         '实时': '即時',
         '最近1天': '最近1天',
         '最近7天': '最近7天',
+        '最近1月': '最近1月',
+        '最近1年': '最近1年',
         '峰值速率': '峰值速率',
         'WAN 上传峰值': 'WAN 上傳峰值',
         'WAN 下载峰值': 'WAN 下載峰值'
@@ -284,6 +292,8 @@ const translations = {
         '小时': 'hour',
         '天': 'day',
         '周': 'week',
+        '月': 'month',
+        '年': 'year',
         '其他速率': 'Other Rates',
         '累计流量': 'Cumulative',
         '总上传': 'Total Uploaded',
@@ -319,6 +329,8 @@ const translations = {
         '实时': 'Real-time',
         '最近1天': 'Last 24 Hours',
         '最近7天': 'Last 7 Days',
+        '最近1月': 'Last 30 Days',
+        '最近1年': 'Last 12 Months',
         '峰值速率': 'Peak Rate',
         'WAN 上传峰值': 'WAN Upload Peak',
         'WAN 下载峰值': 'WAN Download Peak'
@@ -384,6 +396,8 @@ const translations = {
         '小时': 'heure',
         '天': 'jour',
         '周': 'semaine',
+        '月': 'mois',
+        '年': 'année',
         '其他速率': 'Autres débits',
         '累计流量': 'Trafic cumulé',
         '总上传': 'Total téléversé',
@@ -419,6 +433,8 @@ const translations = {
         '实时': 'Temps réel',
         '最近1天': 'Dernières 24h',
         '最近7天': 'Derniers 7 jours',
+        '最近1月': 'Dernier mois',
+        '最近1年': 'Dernière année',
         '峰值速率': 'Débit de pointe',
         'WAN 上传峰值': 'Pic téléversement WAN',
         'WAN 下载峰值': 'Pic téléchargement WAN'
@@ -484,6 +500,8 @@ const translations = {
         '小时': '時間',
         '天': '日',
         '周': '週間',
+        '月': '月',
+        '年': '年',
         '其他速率': 'その他の速度',
         '累计流量': '累計トラフィック',
         '总上传': '総アップロード',
@@ -519,6 +537,8 @@ const translations = {
         '实时': 'リアルタイム',
         '最近1天': '過去24時間',
         '最近7天': '過去7日間',
+        '最近1月': '過去30日間',
+        '最近1年': '過去12ヶ月間',
         '峰值速率': 'ピーク速度',
         'WAN 上传峰值': 'WANアップロードピーク',
         'WAN 下载峰值': 'WANダウンロードピーク'
@@ -584,6 +604,8 @@ const translations = {
         '小时': 'ч.',
         '天': 'дн.',
         '周': 'нед.',
+        '月': 'мес.',
+        '年': 'г.',
         '其他速率': 'Другие скорости',
         '累计流量': 'Суммарный трафик',
         '总上传': 'Всего отправлено',
@@ -619,6 +641,8 @@ const translations = {
         '实时': 'В реальном времени',
         '最近1天': 'За 24 часа',
         '最近7天': 'За 7 дней',
+        '最近1月': 'За 30 дней',
+        '最近1年': 'За 12 месяцев',
         '峰值速率': 'Пиковая скорость',
         'WAN 上传峰值': 'Пик отправки WAN',
         'WAN 下载峰值': 'Пик загрузки WAN'
@@ -819,6 +843,22 @@ var callGetMetricsDay = rpc.declare({
 var callGetMetricsWeek = rpc.declare({
     object: 'luci.bandix',
     method: 'getMetricsWeek',
+    params: ['mac'],
+    expect: {}
+});
+
+// 月指标 RPC
+var callGetMetricsMonth = rpc.declare({
+    object: 'luci.bandix',
+    method: 'getMetricsMonth',
+    params: ['mac'],
+    expect: {}
+});
+
+// 年指标 RPC
+var callGetMetricsYear = rpc.declare({
+    object: 'luci.bandix',
+    method: 'getMetricsYear',
     params: ['mac'],
     expect: {}
 });
@@ -1579,7 +1619,9 @@ return view.extend({
                     E('div', { 'class': 'history-tabs' }, [
                         E('button', { 'class': 'history-tab active', 'data-tier': 'realtime', 'id': 'tab-realtime' }, getTranslation('实时', language)),
                         E('button', { 'class': 'history-tab', 'data-tier': 'day', 'id': 'tab-day' }, getTranslation('最近1天', language)),
-                        E('button', { 'class': 'history-tab', 'data-tier': 'week', 'id': 'tab-week' }, getTranslation('最近7天', language))
+                        E('button', { 'class': 'history-tab', 'data-tier': 'week', 'id': 'tab-week' }, getTranslation('最近7天', language)),
+                        E('button', { 'class': 'history-tab', 'data-tier': 'month', 'id': 'tab-month' }, getTranslation('最近1月', language)),
+                        E('button', { 'class': 'history-tab', 'data-tier': 'year', 'id': 'tab-year' }, getTranslation('最近1年', language))
                     ]),
                     E('div', { 'class': 'history-legend' }, [
                         E('div', { 'class': 'legend-item' }, [
@@ -1994,9 +2036,9 @@ return view.extend({
         function getTypeKeys(type, tier) {
             tier = tier || currentTier;
 
-            // 对于 day 和 week API，只有 WAN 流量数据
-            if (tier === 'day' || tier === 'week') {
-                // day/week 只有 wide_* 字段，忽略 type 参数
+            // 对于 day、week、month、year API，只有 WAN 流量数据
+            if (tier === 'day' || tier === 'week' || tier === 'month' || tier === 'year') {
+                // day/week/month/year 只有 wide_* 字段，忽略 type 参数
                 return { up: 'wide_tx_rate_avg', down: 'wide_rx_rate_avg' };
             }
 
@@ -2015,6 +2057,10 @@ return view.extend({
                 rpcCall = callGetMetricsDay;
             } else if (tier === 'week') {
                 rpcCall = callGetMetricsWeek;
+            } else if (tier === 'month') {
+                rpcCall = callGetMetricsMonth;
+            } else if (tier === 'year') {
+                rpcCall = callGetMetricsYear;
             } else {
                 rpcCall = callGetMetrics;
             }
@@ -2249,8 +2295,8 @@ return view.extend({
             drawAreaSeries(upSeries, '#f97316', 'rgba(249,115,22,0.16)', 'rgba(249,115,22,0.02)');
             drawAreaSeries(downSeries, '#06b6d4', 'rgba(6,182,212,0.12)', 'rgba(6,182,212,0.02)');
 
-            // 绘制突发脉冲标记（仅用于1天/7天）
-            if (currentTier === 'day' || currentTier === 'week') {
+            // 绘制突发脉冲标记（用于1天/7天/1月/1年）
+            if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
                 // 绘制P95参考线
                 function drawP95ReferenceLine(series, color) {
                     if (!series || series.length === 0) return;
@@ -2380,8 +2426,8 @@ return view.extend({
             }
 
             function labelsFor(type) {
-                // 1天/7天模式下使用"平均"标签
-                if (currentTier === 'day' || currentTier === 'week') {
+                // 1天/7天/1月/1年模式下使用"平均"标签
+                if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
                     if (type === 'wan') return { up: getTranslation('WAN 上传平均', language), down: getTranslation('WAN 下载平均', language) };
                 }
                 // 实时模式使用"速率"标签
@@ -2392,8 +2438,8 @@ return view.extend({
 
             function rateKeysFor(type) {
                 // 根据当前的 tier 使用不同的字段名
-                if (currentTier === 'day' || currentTier === 'week') {
-                    // day/week 只有 WAN 数据
+                if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
+                    // day/week/month/year 只有 WAN 数据
                     return { up: 'wide_tx_rate_avg', down: 'wide_rx_rate_avg' };
                 }
                 // realtime
@@ -2408,8 +2454,8 @@ return view.extend({
                 return { up: 'total_tx_bytes', down: 'total_rx_bytes' };
             }
 
-            // 1天/7天模式下，悬浮框时间标签包含日期
-            var includeDate = (currentTier === 'day' || currentTier === 'week');
+            // 1天/7天/1月/1年模式下，悬浮框时间标签包含日期
+            var includeDate = (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year');
             lines.push('<div class="ht-title">' + msToTimeLabel(point.ts_ms, includeDate) + '</div>');
 
             // 若选择了设备，显示设备信息
@@ -2431,8 +2477,8 @@ return view.extend({
             } catch (e) { }
 
             // 关键信息：选中类型的上下行速率（大号显示）
-            if (currentTier === 'day' || currentTier === 'week') {
-                // day/week 只显示 WAN 数据
+            if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
+                // day/week/month/year 只显示 WAN 数据
                 var wanLabels = labelsFor('wan');
                 var wanKeys = rateKeysFor('wan');
                 lines.push(
@@ -2763,7 +2809,15 @@ return view.extend({
             if (!seconds || seconds <= 0) return '';
             var value;
             var unitKey;
-            if (seconds < 60) {
+            
+            // 特殊处理月度和年度的固定值
+            if (seconds === 2592000) { // 30天 = 月度
+                value = 1;
+                unitKey = '月';
+            } else if (seconds === 31536000) { // 365天 = 年度
+                value = 1;
+                unitKey = '年';
+            } else if (seconds < 60) {
                 value = Math.round(seconds);
                 unitKey = '秒';
             } else if (seconds < 3600) {
@@ -2850,14 +2904,14 @@ return view.extend({
                 var upSeries = filtered.map(function (x) { return x[keys.up] || 0; });
                 var downSeries = filtered.map(function (x) { return x[keys.down] || 0; });
                 var labels = filtered.map(function (x, idx) {
-                    var shouldIncludeDate = (currentTier === 'day' || currentTier === 'week') && (idx === 0 || idx === filtered.length - 1);
+                    var shouldIncludeDate = (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') && (idx === 0 || idx === filtered.length - 1);
                     return msToTimeLabel(x.ts_ms, shouldIncludeDate);
                 });
 
-                // 提取峰值数据（仅用于1天/7天）
+                // 提取峰值数据（用于1天/7天/1月/1年）
                 var upPeakSeries = [];
                 var downPeakSeries = [];
-                if (currentTier === 'day' || currentTier === 'week') {
+                if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
                     upPeakSeries = filtered.map(function (x) { return x.wide_tx_rate_peak || 0; });
                     downPeakSeries = filtered.map(function (x) { return x.wide_rx_rate_peak || 0; });
                 }
@@ -3055,8 +3109,8 @@ return view.extend({
                         tabs.forEach(function (t) { t.classList.remove('active'); });
                         this.classList.add('active');
 
-                        // day/week 模式隐藏类型选择器
-                        if (tier === 'day' || tier === 'week') {
+                        // day/week/month/year 模式隐藏类型选择器
+                        if (tier === 'day' || tier === 'week' || tier === 'month' || tier === 'year') {
                             if (typeSelectLabel) typeSelectLabel.style.display = 'none';
                             if (typeSelect) typeSelect.style.display = 'none';
                         } else {
@@ -3088,13 +3142,13 @@ return view.extend({
                     var upSeries = filtered.map(function (x) { return x[keys.up] || 0; });
                     var downSeries = filtered.map(function (x) { return x[keys.down] || 0; });
                     var labels = filtered.map(function (x, idx) {
-                        var shouldIncludeDate = (currentTier === 'day' || currentTier === 'week') && (idx === 0 || idx === filtered.length - 1);
+                        var shouldIncludeDate = (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') && (idx === 0 || idx === filtered.length - 1);
                         return msToTimeLabel(x.ts_ms, shouldIncludeDate);
                     });
                     // 提取峰值数据
                     var upPeakSeries = [];
                     var downPeakSeries = [];
-                    if (currentTier === 'day' || currentTier === 'week') {
+                    if (currentTier === 'day' || currentTier === 'week' || currentTier === 'month' || currentTier === 'year') {
                         upPeakSeries = filtered.map(function (x) { return x.wide_tx_rate_peak || 0; });
                         downPeakSeries = filtered.map(function (x) { return x.wide_rx_rate_peak || 0; });
                     }
