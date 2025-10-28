@@ -1,21 +1,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hickory-dns
-PKG_VERSION:=2025.10.17
-PKG_RELEASE:=47
+PKG_VERSION:=2025.10.28
+PKG_RELEASE:=48
 
-HICKORY_COMMIT:=338f8a10796481b1c5932655596911c007464811
+HICKORY_COMMIT:=b7efb694b690a1a757cdc5c1bf546f5911a25f95
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/hickory-dns/hickory-dns/tar.gz/338f8a10796481b1c5932655596911c007464811?
+PKG_SOURCE_URL:=https://codeload.github.com/hickory-dns/hickory-dns/tar.gz/b7efb694b690a1a757cdc5c1bf546f5911a25f95?
 PKG_HASH:=skip
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-338f8a10796481b1c5932655596911c007464811
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-b7efb694b690a1a757cdc5c1bf546f5911a25f95
 
 PKG_BUILD_DEPENDS:=rust/host
 PKG_BUILD_PARALLEL:=1
 
-RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,sqlite,prometheus-metrics
+RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,sqlite
 
 include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk
