@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mtproxy
 PKG_VERSION:=3.0.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Kosntantine Shevlakov <shevlakov@132lan.ru>
 PKG_LICENSE:=GPLv2
@@ -23,7 +23,7 @@ define Package/$(PKG_NAME)
   SECTION:=net
   CATEGORY:=Network
   TITLE:=MTProxy OpenWRT package
-  DEPENDS:=+libopenssl +libcurl +zlib
+  DEPENDS:=+libopenssl +zlib
 endef
 
 define Package/$(PKG_NAME)/install
