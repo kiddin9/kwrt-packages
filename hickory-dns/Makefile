@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hickory-dns
 PKG_VERSION:=2025.10.29
-PKG_RELEASE:=49
+PKG_RELEASE:=50
 
 HICKORY_COMMIT:=c86328365ba9416609e25ee6ffa941d75794c7de
 
@@ -15,6 +15,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-c86328365ba9416609e25ee6ffa941d75794c7de
 PKG_BUILD_DEPENDS:=rust/host
 PKG_BUILD_PARALLEL:=1
 
+RUST_PKG_LOCKED:=0
 RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,sqlite,prometheus-metrics
 
 include $(INCLUDE_DIR)/package.mk
@@ -30,7 +31,17 @@ define Package/hickory-dns
 endef
 
 define Build/Compile
-  $(call Build/Compile/Cargo,bin,--no-default-features)
+	+$(CARGO_PKG_VARS) \
+	cargo build -v --profile $(CARGO_PKG_PROFILE) \
+		--manifest-path "$(PKG_BUILD_DIR)/Cargo.toml" \
+		--bin hickory-dns \
+		--target $(RUSTC_TARGET_ARCH) \
+		--features "$(RUST_PKG_FEATURES)" \
+		--no-default-features \
+		$(if $(filter --jobserver%,$(PKG_JOBS)),,-j1) \
+		$(CARGO_PKG_ARGS)
+	+$(INSTALL_DIR) $(PKG_INSTALL_DIR)/bin/
+	+$(INSTALL_BIN) $(PKG_BUILD_DIR)/target/$(RUSTC_TARGET_ARCH)/$(CARGO_PKG_PROFILE)/hickory-dns $(PKG_INSTALL_DIR)/bin/
 endef
 
 define Package/hickory-dns/install
@@ -45,3 +56,4 @@ endef
 
 $(eval $(call RustBinPackage,hickory-dns))
 $(eval $(call BuildPackage,hickory-dns))
+
