@@ -12,7 +12,7 @@
 
 --- a/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 +++ b/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
-@@ -26,6 +26,62 @@ function index()
+@@ -26,6 +26,63 @@ function index()
  	entry({"admin", "services", "shadowsocksr", "delete"}, call("act_delete"))
  		--[[Backup]]
  	entry({"admin", "services", "shadowsocksr", "backup"}, call("create_backup")).leaf = true
@@ -72,6 +72,7 @@
 +    e.youtube = check_site('www.youtube.com', port)
 +    luci.http.prepare_content('application/json')
 +    luci.http.write_json(e)
++	
  end
  
  function subscribe()
