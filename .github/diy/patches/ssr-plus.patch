@@ -17,6 +17,7 @@
  		--[[Backup]]
  	entry({"admin", "services", "shadowsocksr", "backup"}, call("create_backup")).leaf = true
 +	entry({'admin', 'services', "shadowsocksr", 'ip'}, call('check_ip')) -- 获取ip情况
++	
 +end
 +
 +function check_site(host, port)
@@ -72,7 +73,6 @@
 +    e.youtube = check_site('www.youtube.com', port)
 +    luci.http.prepare_content('application/json')
 +    luci.http.write_json(e)
-+	
  end
  
  function subscribe()
