@@ -12,14 +12,16 @@
 
 --- a/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
 +++ b/luci-app-ssr-plus/luasrc/controller/shadowsocksr.lua
-@@ -26,6 +26,63 @@ function index()
+@@ -28,11 +28,67 @@ function index()
+ 	entry({"admin", "services", "shadowsocksr", "reset"}, call("act_reset"))
+ 	entry({"admin", "services", "shadowsocksr", "restart"}, call("act_restart"))
  	entry({"admin", "services", "shadowsocksr", "delete"}, call("act_delete"))
++	entry({'admin', 'services', "shadowsocksr", 'ip'}, call('check_ip')) -- 获取ip情况
  		--[[Backup]]
  	entry({"admin", "services", "shadowsocksr", "backup"}, call("create_backup")).leaf = true
-+	entry({'admin', 'services', "shadowsocksr", 'ip'}, call('check_ip')) -- 获取ip情况
-+	
-+end
-+
+ 	
+ end
+ 
 +function check_site(host, port)
 +    local nixio = require "nixio"
 +    local socket = nixio.socket("inet", "stream")
@@ -73,9 +75,11 @@
 +    e.youtube = check_site('www.youtube.com', port)
 +    luci.http.prepare_content('application/json')
 +    luci.http.write_json(e)
- end
- 
++end
++
  function subscribe()
+ 	luci.sys.call("/usr/bin/lua /usr/share/shadowsocksr/subscribe.lua >>/var/log/ssrplus.log")
+ 	luci.http.prepare_content("application/json")
 
 --- a/luci-app-ssr-plus/luasrc/model/cbi/shadowsocksr/client.lua
 +++ b/luci-app-ssr-plus/luasrc/model/cbi/shadowsocksr/client.lua
