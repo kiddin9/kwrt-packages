@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glorytun
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=95fa5ead2154adb546bcdb454c56c876e9f60bb5
 PKG_SOURCE:=glorytun-$(PKG_VERSION).tar.gz

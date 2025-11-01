@@ -39,7 +39,9 @@ validate_section() {
 		'chacha20:bool:0'    \
 		'multiqueue:bool:1'  \
 		'cpu_affinity:bool:1' \
-		'proto:string'
+		'proto:string' \
+		'localip:string' \
+		'remoteip:string'
 }
 
 # New function for CPU core optimization
@@ -79,7 +81,7 @@ optimize_cpu_cores() {
 }
 
 start_instance() {
-	local enable key host port dev mptcp proto chacha20 mode multiqueue cpu_affinity timeout
+	local enable key host port dev mptcp proto chacha20 mode multiqueue cpu_affinity timeout localip remoteip
 
 	validate_section "${1}" || {
 		_err "validation failed"
@@ -141,6 +143,23 @@ start_instance() {
 	
 	# Apply CPU optimizations after the instance is started
 	optimize_cpu_cores "$dev" "$multiqueue" "$cpu_affinity"
+	
+	# Configure interface IP addresses
+	if [ -n "$localip" ] && [ -n "$remoteip" ]; then
+                (
+                        # Wait for device to be created
+                        local count=0
+                        while [ $count -lt 10 ]; do
+                                if ip link show "$dev" >/dev/null 2>&1; then
+                                        ifconfig "$dev" "$localip" pointopoint "$remoteip" up && \
+                                        _log "Configured $dev with IP $localip peer $remoteip"
+                                        break
+                                fi
+                                sleep 1
+                                count=$((count + 1))
+                        done
+                ) &
+	fi
 }
 
 start_service() {
