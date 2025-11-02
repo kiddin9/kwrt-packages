@@ -30,7 +30,7 @@ msgstr "Производительность ЦПУ"
 msgid "CPU performance management."
 msgstr "Управление производительностью процессора."
 
-msgid "CPU performance scaling not available..."
+msgid "CPU performance scaling is not available..."
 msgstr "Масштабирование производительности ЦПУ недоступно..."
 
 msgid "Command failed"
@@ -41,6 +41,9 @@ msgstr "Регулятор conservative"
 
 msgid "Current frequency"
 msgstr "Текущая частота"
+
+msgid "Current values"
+msgstr "Текущие значения"
 
 msgid "Disabled"
 msgstr "Отключено"
@@ -111,8 +114,8 @@ msgstr "Регулятор ondemand"
 msgid "Performance managment"
 msgstr "Управление производительностью"
 
-msgid "Performance scaling not available for this CPU..."
-msgstr "Масштабирование производительности недоступно для этого процессора..."
+msgid "Performance scaling is not available for this policy..."
+msgstr "Масштабирование производительности недоступно для этой политики..."
 
 msgid "Policy"
 msgstr "Политика"

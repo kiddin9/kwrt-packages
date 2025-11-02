@@ -69,10 +69,10 @@ return view.extend({
 		if(!freq) {
 			return '-';
 		};
-		return (freq >= 1e6) ?
-			(freq / 1e6) + ' ' + _('GHz')
+		return (freq >= 1000000) ?
+			(freq / 1000000) + ' ' + _('GHz')
 		:
-			(freq / 1e3) + ' ' + _('MHz');
+			(freq / 1000) + ' ' + _('MHz');
 	},
 
 	updateCpuPerfData() {
@@ -411,143 +411,37 @@ return view.extend({
 			easValue = cpuPerfDataArray.eas.schedEnergyAware;
 		};
 
-		let s, o;
+		let s, o, ss;
 		let m = new form.Map(this.appName,
 			_('CPU Performance'),
 			_('CPU performance management.'));
 
+		s = m.section(form.NamedSection, 'config', 'main');
+
 		/* Status */
 
-		s = m.section(form.NamedSection, 'config', 'main');
-		o = s.option(this.CBIBlockPerf, this, cpuPerfDataArray);
+		s.tab('values', _('Current values'));
+
+		o = s.taboption('values', this.CBIBlockPerf, this, cpuPerfDataArray);
 
 		/* Performance managment */
 
-		s = m.section(form.NamedSection, 'config', 'main',
-			_("Performance managment"));
+		s.tab('performance', _('Performance managment'));
 
 		// enabled
-		o = s.option(form.Flag, 'enabled',
+		o = s.taboption('performance', form.Flag, 'enabled',
 			_('Enable'));
 		o.rmempty = false;
 
 		// init button
-		o = s.option(this.CBIBlockInitButton, this);
-
-		/* PCIe ASPM */
-
-		if(pcieAspmPolicies && pcieAspmPolicies.length > 0) {
-			s = m.section(form.NamedSection, 'pcie_aspm', 'module',
-				_("PCIe ASPM"));
-
-			// policy
-			o = s.option(form.ListValue, 'policy', 'policy',
-				_('Active-State Power Management (ASPM) policy for PCIe links, which saves power by putting unused PCIe links into a low-power state.')
-			);
-			o.rmempty  = true;
-			o.optional = true;
-			pcieAspmPolicies.forEach(e => o.value(e));
-		};
-
-		/* EAS */
-
-		if(easValue !== undefined ) {
-			s = m.section(form.NamedSection, 'eas', 'kernel',
-				_("EAS"));
-
-			// sched_energy_aware
-			o = s.option(form.Flag, 'sched_energy_aware', 'sched_energy_aware',
-				_('Enable/disable Energy Aware Scheduling (EAS).')
-			);
-			o.rmempty = false;
-			o.default = '1';
-		};
-
-		/* Ondemand governor */
-
-		s = m.section(form.NamedSection, 'ondemand', 'governor',
-			_("Ondemand governor"));
-
-		// up_threshold
-		o = s.option(form.Value,
-			'up_threshold', 'up_threshold',
-			_('If the estimated CPU load is above this value (in percent), the governor will set the frequency to the maximum value.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '1-100';
-		o.datatype    = 'and(integer,range(1,100))';
-
-		// ignore_nice_load
-		o = s.option(form.Flag,
-			'ignore_nice_load', 'ignore_nice_load',
-			_('If checked, it will cause the CPU load estimation code to treat the CPU time spent on executing tasks with "nice" levels greater than 0 as CPU idle time.')
-		);
-		o.rmempty  = true;
-		o.optional = true;
-
-		// sampling_down_factor
-		o = s.option(form.Value,
-			'sampling_down_factor', 'sampling_down_factor',
-			_('Frequency decrease deferral factor.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '1-100';
-		o.datatype    = 'and(integer,range(1,100))';
-
-		// powersave_bias
-		o = s.option(form.Value,
-			'powersave_bias', 'powersave_bias',
-			_('Reduction factor to apply to the original frequency target of the governor.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '0-1000';
-		o.datatype    = 'and(integer,range(0,1000))';
-
-		/* Conservative governor */
-
-		s = m.section(form.NamedSection, 'conservative', 'governor',
-			_("Conservative governor"));
-
-		// freq_step
-		o = s.option(form.Value,
-			'freq_step', 'freq_step',
-			_('Frequency step in percent of the maximum frequency the governor is allowed to set.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '1-100';
-		o.datatype    = 'and(integer,range(1,100))';
-
-		// down_threshold
-		o = s.option(form.Value,
-			'down_threshold', 'down_threshold',
-			_('Threshold value (in percent) used to determine the frequency change direction.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '1-100';
-		o.datatype    = 'and(integer,range(1,100))';
-
-		// sampling_down_factor
-		o = s.option(form.Value,
-			'sampling_down_factor', 'sampling_down_factor',
-			_('Frequency decrease deferral factor.')
-		);
-		o.rmempty     = true;
-		o.optional    = true;
-		o.placeholder = '1-10';
-		o.datatype    = 'and(integer,range(1,10))';
+		o = s.taboption('performance', this.CBIBlockInitButton, this);
 
 		/* CPU frequency policies */
 
 		let sections = uci.sections(this.appName, 'cpu_freq_policy');
 
 		if(sections.length == 0) {
-			s = m.section(form.NamedSection, 'config', 'main');
-			o = s.option(form.DummyValue, '_dummy');
+			o = s.taboption('performance', form.DummyValue, '_dummy');
 			o.rawhtml = true;
 			o.default = '<label class="cbi-value-title"></label><div class="cbi-value-field"><em>' +
 				_('CPU performance scaling is not available...') +
@@ -569,15 +463,17 @@ return view.extend({
 				};
 
 				let o;
-				let s = m.section(form.NamedSection, sectionName, 'cpu_freq_policy',
-					_('Policy') + ' ' + policyNum + ' ( ' + cpuString + ' )');
+				o        = s.taboption('performance', form.SectionValue,
+						'cpu_freq_policy', form.NamedSection, sectionName, 'cpu_freq_policy');
+				ss       = o.subsection;
+				ss.title = _('Policy') + ' ' + policyNum + ' ( ' + cpuString + ' )';
 
 				if(freqPolicyArray[policyNum]) {
 					if(freqPolicyArray[policyNum].sAvailGovernors &&
 					   freqPolicyArray[policyNum].sAvailGovernors.length > 0) {
 
 						// scaling_governor
-						o = s.option(form.ListValue,
+						o = ss.option(form.ListValue,
 							'scaling_governor', _('Scaling governor'),
 							_('Scaling governors implement algorithms to estimate the required CPU capacity.')
 						);
@@ -598,7 +494,7 @@ return view.extend({
 							);
 
 							// scaling_min_freq
-							minFreq = s.option(form.ListValue,
+							minFreq = ss.option(form.ListValue,
 								'scaling_min_freq', _('Minimum scaling frequency'),
 								_('Minimum frequency the CPU is allowed to be running.') +
 									' ('  + _('default value:') + ' <code>' +
@@ -608,7 +504,7 @@ return view.extend({
 							minFreq.optional = true;
 
 							// scaling_max_freq
-							maxFreq = s.option(form.ListValue,
+							maxFreq = ss.option(form.ListValue,
 								'scaling_max_freq', _('Maximum scaling frequency'),
 								_('Maximum frequency the CPU is allowed to be running.') +
 									' ('  + _('default value:') + ' <code>' +
@@ -625,7 +521,7 @@ return view.extend({
 						} else {
 
 							// scaling_min_freq
-							minFreq = s.option(form.Value,
+							minFreq = ss.option(form.Value,
 								'scaling_min_freq', `${_('Minimum scaling frequency')} (${_('KHz')})`,
 								_('Minimum frequency the CPU is allowed to be running.') +
 									' ('  + _('default value:') + ' <code>' +
@@ -637,7 +533,7 @@ return view.extend({
 							minFreq.placeholder = `${freqPolicyArray[policyNum].minFreq}-${freqPolicyArray[policyNum].maxFreq} ${_('KHz')}`;
 
 							// scaling_max_freq
-							maxFreq = s.option(form.Value,
+							maxFreq = ss.option(form.Value,
 								'scaling_max_freq', `${_('Maximum scaling frequency')} (${_('KHz')})`,
 								_('Maximum frequency the CPU is allowed to be running.') +
 									' ('  + _('default value:') + ' <code>' +
@@ -669,13 +565,128 @@ return view.extend({
 				   freqPolicyArray[policyNum].sAvailGovernors.length > 0) &&
 				   !(freqPolicyArray[policyNum].sMinFreq && freqPolicyArray[policyNum].sMaxFreq &&
 					 freqPolicyArray[policyNum].minFreq && freqPolicyArray[policyNum].maxFreq)) {
-					o         = s.option(form.DummyValue, '_dummy');
+					o         = ss.option(form.DummyValue, '_dummy');
 					o.rawhtml = true;
 					o.default = '<label class="cbi-value-title"></label><div class="cbi-value-field"><em>' +
 						_('Performance scaling is not available for this policy...') +
 						'</em></div>';
 				};
 			};
+		};
+
+		/* Ondemand governor */
+
+		o        = s.taboption('performance', form.SectionValue,
+						'ondemand', form.NamedSection, 'ondemand', 'governor');
+		ss       = o.subsection;
+		ss.title = _("Ondemand governor");
+
+		// up_threshold
+		o = ss.option(form.Value,
+			'up_threshold', 'up_threshold',
+			_('If the estimated CPU load is above this value (in percent), the governor will set the frequency to the maximum value.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '1-100';
+		o.datatype    = 'and(integer,range(1,100))';
+
+		// ignore_nice_load
+		o = ss.option(form.Flag,
+			'ignore_nice_load', 'ignore_nice_load',
+			_('If checked, it will cause the CPU load estimation code to treat the CPU time spent on executing tasks with "nice" levels greater than 0 as CPU idle time.')
+		);
+		o.rmempty  = true;
+		o.optional = true;
+
+		// sampling_down_factor
+		o = ss.option(form.Value,
+			'sampling_down_factor', 'sampling_down_factor',
+			_('Frequency decrease deferral factor.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '1-100';
+		o.datatype    = 'and(integer,range(1,100))';
+
+		// powersave_bias
+		o = ss.option(form.Value,
+			'powersave_bias', 'powersave_bias',
+			_('Reduction factor to apply to the original frequency target of the governor.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '0-1000';
+		o.datatype    = 'and(integer,range(0,1000))';
+
+		/* Conservative governor */
+
+		o        = s.taboption('performance', form.SectionValue,
+						'conservative', form.NamedSection, 'conservative', 'governor');
+		ss       = o.subsection;
+		ss.title = _("Conservative governor");
+
+		// freq_step
+		o = ss.option(form.Value,
+			'freq_step', 'freq_step',
+			_('Frequency step in percent of the maximum frequency the governor is allowed to set.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '1-100';
+		o.datatype    = 'and(integer,range(1,100))';
+
+		// down_threshold
+		o = ss.option(form.Value,
+			'down_threshold', 'down_threshold',
+			_('Threshold value (in percent) used to determine the frequency change direction.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '1-100';
+		o.datatype    = 'and(integer,range(1,100))';
+
+		// sampling_down_factor
+		o = ss.option(form.Value,
+			'sampling_down_factor', 'sampling_down_factor',
+			_('Frequency decrease deferral factor.')
+		);
+		o.rmempty     = true;
+		o.optional    = true;
+		o.placeholder = '1-10';
+		o.datatype    = 'and(integer,range(1,10))';
+
+		/* EAS */
+
+		if(easValue !== undefined ) {
+			o        = s.taboption('performance', form.SectionValue,
+						'eas', form.NamedSection, 'eas', 'kernel');
+			ss       = o.subsection;
+			ss.title = _("EAS");
+
+			// sched_energy_aware
+			o = ss.option(form.Flag, 'sched_energy_aware', 'sched_energy_aware',
+				_('Enable/disable Energy Aware Scheduling (EAS).')
+			);
+			o.rmempty = false;
+			o.default = '1';
+		};
+
+		/* PCIe ASPM */
+
+		if(pcieAspmPolicies && pcieAspmPolicies.length > 0) {
+			o        = s.taboption('performance', form.SectionValue,
+						'pcie_aspm', form.NamedSection, 'pcie_aspm', 'module');
+			ss       = o.subsection;
+			ss.title = _("PCIe ASPM");
+
+			// policy
+			o = ss.option(form.ListValue, 'policy', 'policy',
+				_('Active-State Power Management (ASPM) policy for PCIe links, which saves power by putting unused PCIe links into a low-power state.')
+			);
+			o.rmempty  = true;
+			o.optional = true;
+			pcieAspmPolicies.forEach(e => o.value(e));
 		};
 
 		let mapPromise = m.render();

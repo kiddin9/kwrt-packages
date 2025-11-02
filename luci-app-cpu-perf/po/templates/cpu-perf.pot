@@ -19,7 +19,7 @@ msgstr ""
 msgid "CPU performance management."
 msgstr ""
 
-msgid "CPU performance scaling not available..."
+msgid "CPU performance scaling is not available..."
 msgstr ""
 
 msgid "Command failed"
@@ -29,6 +29,9 @@ msgid "Conservative governor"
 msgstr ""
 
 msgid "Current frequency"
+msgstr ""
+
+msgid "Current values"
 msgstr ""
 
 msgid "Disabled"
@@ -100,7 +103,7 @@ msgstr ""
 msgid "Performance managment"
 msgstr ""
 
-msgid "Performance scaling not available for this CPU..."
+msgid "Performance scaling is not available for this policy..."
 msgstr ""
 
 msgid "Policy"
