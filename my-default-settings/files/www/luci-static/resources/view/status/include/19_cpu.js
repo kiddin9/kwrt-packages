@@ -29,12 +29,12 @@ return L.Class.extend({
 			_('Used'), (info.cpuusage) ? info.cpuusage : 0, 100
 		];
 
-		var table = E('div', { 'class': 'table cpu' });
+		var table = E('table', { 'class': 'table cpu' });
 
 		for (var i = 0; i < fields.length; i += 3) {
-			table.appendChild(E('div', { 'class': 'tr' }, [
-				E('div', { 'class': 'td left', 'width': '33%' }, [ fields[i] ]),
-				E('div', { 'class': 'td left' }, [
+			table.appendChild(E('tr', { 'class': 'tr' }, [
+				E('td', { 'class': 'td left', 'width': '33%' }, [ fields[i] ]),
+				E('td', { 'class': 'td left' }, [
 					(fields[i + 1] != null) ? progressbar(fields[i + 1], fields[i + 2], true) : '?'
 				])
 			]));
