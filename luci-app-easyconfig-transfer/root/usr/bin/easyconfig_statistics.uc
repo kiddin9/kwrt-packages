@@ -4,18 +4,22 @@
 //
 // (c) 2023 Cezary Jackiewicz <cezary@eko.one.pl>
 //
+// (c) 2025 modified by Rafał Wabik (IceG) <https://github.com/4IceG>
+//
+// From eko.one.pl forum
+//
 
 import { readfile, writefile } from "fs";
 
 let filename = `/tmp/easyconfig_statistics.json`;
 
-let MAC = shift(ARGV);
-let IFNAME = shift(ARGV);
-let TX = shift(ARGV);
-let RX = shift(ARGV);
+let MAC       = shift(ARGV);
+let IFNAME    = shift(ARGV);
+let TX        = shift(ARGV);
+let RX        = shift(ARGV);
 let CONNECTED = shift(ARGV);
-let DHCPNAME = shift(ARGV);
-let TYPE = shift(ARGV);
+let DHCPNAME  = shift(ARGV);
+let TYPE      = shift(ARGV);
 
 if (!MAC || !IFNAME || !TYPE) {
 	warn("Usage: easyconfig_statistics.uc <MAC> <IFNAME> <TX> <RX> <CONNECTED> <DHCPNAME> <TYPE>\n");
@@ -25,20 +29,18 @@ if (!MAC || !IFNAME || !TYPE) {
 // compatibility with old scripts
 MAC = replace(MAC, /:/g, "_");
 
-if (!CONNECTED)
-	CONNECTED = 0;
-if (!TX)
-	TX = 0;
-if (!RX)
-	RX = 0;
+if (!CONNECTED) CONNECTED = 0;
+if (!TX)        TX = 0;
+if (!RX)        RX = 0;
 
-TX = int(TX);
-RX = int(RX);
-TYPE = int(TYPE);
+TX        = int(TX);
+RX        = int(RX);
+TYPE      = int(TYPE);
 CONNECTED = int(CONNECTED);
 
-let ts = localtime();
-let day = sprintf("%04d%02d%02d", ts.year, ts.mon, ts.mday);
+let ts     = localtime();
+let day    = sprintf("%04d%02d%02d", ts.year, ts.mon, ts.mday);
+let hour   = sprintf("%02d", ts.hour);
 let ts_now = sprintf("%04d%02d%02d%02d%02d", ts.year, ts.mon, ts.mday, ts.hour, ts.min);
 
 let db = {};
@@ -92,6 +94,7 @@ if (!tmp) {
 	db[MAC][IFNAME].last_rx = 0;
 	db[MAC][IFNAME].first_seen = ts_now;
 }
+
 let last_tx = int(db[MAC][IFNAME].last_tx);
 let last_rx = int(db[MAC][IFNAME].last_rx);
 
@@ -100,17 +103,30 @@ if (!tmp) {
 	db[MAC][IFNAME][day] = {};
 	db[MAC][IFNAME][day].total_tx = 0;
 	db[MAC][IFNAME][day].total_rx = 0;
+	db[MAC][IFNAME][day].hours = {};
 }
+
+if (!db[MAC][IFNAME][day].hours)
+	db[MAC][IFNAME][day].hours = {};
+
+if (!db[MAC][IFNAME][day].hours[hour]) {
+	db[MAC][IFNAME][day].hours[hour] = {
+		total_tx: 0,
+		total_rx: 0
+	};
+}
+
 let total_tx = int(db[MAC][IFNAME][day].total_tx);
 let total_rx = int(db[MAC][IFNAME][day].total_rx);
 
+let hour_tx = int(db[MAC][IFNAME][day].hours[hour].total_tx);
+let hour_rx = int(db[MAC][IFNAME][day].hours[hour].total_rx);
+
 let dtx = TX - last_tx;
-if (dtx < 0)
-	dtx = TX;
+if (dtx < 0) dtx = TX;
 
 let drx = RX - last_rx;
-if (drx < 0)
-	drx = RX;
+if (drx < 0) drx = RX;
 
 if (CONNECTED <= 60) {
 	dtx = TX;
@@ -119,11 +135,14 @@ if (CONNECTED <= 60) {
 
 db[MAC][IFNAME][day].total_tx = total_tx + dtx;
 db[MAC][IFNAME][day].total_rx = total_rx + drx;
+
+db[MAC][IFNAME][day].hours[hour].total_tx = hour_tx + dtx;
+db[MAC][IFNAME][day].hours[hour].total_rx = hour_rx + drx;
+
 db[MAC][IFNAME].last_tx = TX;
 db[MAC][IFNAME].last_rx = RX;
 db[MAC][IFNAME].last_seen = ts_now;
 db[MAC].last_seen = ts_now;
 
 writefile(filename, db);
-
 exit(0);

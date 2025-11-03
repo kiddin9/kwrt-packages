@@ -5,8 +5,8 @@
 chmod +x /etc/uci-defaults/setup_easyconfig_transfer.sh 2>&1 &
 chmod +x /sbin/transfer2cron.sh 2>&1 &
 chmod +x /sbin/backup2cron.sh 2>&1 &
-chmod +x /usr/sbin/easyconfig_statistics.sh 2>&1 &
-chmod +x /usr/sbin/easyconfig_statistics.uc 2>&1 &
+chmod +x /usr/bin/easyconfig_statistics.sh 2>&1 &
+chmod +x /usr/bin/easyconfig_statistics.uc 2>&1 &
 
 echo "{}" > /tmp/easyconfig_statistics.json
 

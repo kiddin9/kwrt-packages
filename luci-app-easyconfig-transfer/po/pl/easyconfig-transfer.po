@@ -79,6 +79,12 @@ msgstr "Ostatnie 7 dni"
 msgid "Last 30 days"
 msgstr "Ostatnie 30 dni"
 
+msgid "Yearly"
+msgstr "Roczne"
+
+msgid "Clients data usage"
+msgstr "Zużycie danych przez klienta(-ów)"
+
 msgid "Total"
 msgstr "Łącznie"
 
@@ -96,9 +102,6 @@ msgstr "Statystyki zużycia danych"
 
 msgid "Calculations may differ from the operator indications"
 msgstr "Wyliczenia mogą się różnić od wskazań operatora"
-
-msgid "Clients"
-msgstr "Klienci"
 
 msgid "Make a copy of Database"
 msgstr "Utwórz kopię bazy danych"
@@ -134,10 +137,10 @@ msgid "Hide MAC addresses without transfer information."
 msgstr "Ukryj adresy MAC bez danych o transferze."
 	
 msgid ""
-"Select how often a compressed copy of the data will be made. <br />Archive path <code>/etc/modem/easyconfig_statistics.json.gz</code>. <br /><br /><b>Important</b> <br />Please "
+"Select how often a compressed copy of the data will be made. <br />Archive path <code>/usr/lib/easyconfig/easyconfig_statistics.json.gz</code>. <br /><br /><b>Important</b> <br />Please "
 "remember that frequent write operations shorten the life cycle of memory."
 msgstr ""
-"Wybierz co jaki czas będzie robiona skompresowana kopia danych. <br />Ścieżka do archiwum <code>/etc/modem/easyconfig_statistics.json.gz</code>. <br /><br /><b>Ważne</b> <br />Należy "
+"Wybierz co jaki czas będzie robiona skompresowana kopia danych. <br />Ścieżka do archiwum <code>/usr/lib/easyconfig/easyconfig_statistics.json.gz</code>. <br /><br /><b>Ważne</b> <br />Należy "
 "pamiętać że częste operacje zapisu skracają cykl życia pamięci."
 
 msgid ""
@@ -334,3 +337,155 @@ msgstr "Zapisz archiwum .gz"
 msgid "Save .json file"
 msgstr "Zapisz plik .json"
 
+msgid "Copy .json file to external storage"
+msgstr "Skopiuj plik .json na pamięć zewnętrzną"
+
+msgid "Check this option if you want to create a copy on an external drive."
+msgstr "Zaznacz tę opcję, jeśli chcesz utworzyć kopię na dysku zewnętrznym."
+
+msgid "Path to .json file"
+msgstr "Ścieżka do pliku .json"
+
+msgid "Enter the path to the directory where a copy of the .json file will be saved."
+msgstr "Wprowadź ścieżkę do katalogu, w którym zostanie zapisana kopia pliku .json."
+
+msgid "Data in easyconfig_statistics.json file has been reset."
+msgstr "Dane w pliku easyconfig_statistics.json zostały zresetowane."
+
+msgid "Successfully copied easyconfig_statistics.json file to"
+msgstr "Pomyślnie skopiowano plik easyconfig_statistics.json do"
+
+msgid "Successfully copied easyconfig_statistics.json file to /usr/lib/easyconfig."
+msgstr "Pomyślnie skopiowano plik easyconfig_statistics.json z /usr/lib/easyconfig."
+
+msgid "Auto data reset"
+msgstr "Auto reset danych"
+
+msgid "Check this option if you want reset data with the new year."
+msgstr "Zaznacz tę opcję jeśli chcesz zresetować dane z nowym rokiem."
+
+msgid "Monthly"
+msgstr "Miesięczne"
+
+msgid "Last 12 months"
+msgstr "Ostatnie 12 miesięcy"
+
+msgid "Refreshing data…"
+msgstr "Odświeżanie danych…"
+
+msgid "Current period"
+msgstr "Bieżący okres"
+
+msgid "Presentation of downloaded and uploaded data. Click Refresh to update the charts."
+msgstr "Prezentacja pobranych i wysłanych danych. Kliknij Odśwież aby zaktualizować wykresy."
+
+msgid "Jan"
+msgstr "Sty"
+
+msgid "Feb"
+msgstr "Lut"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Kwi"
+
+msgid "May"
+msgstr "Maj"
+
+msgid "Jun"
+msgstr "Cze"
+
+msgid "Jul"
+msgstr "Lip"
+
+msgid "Aug"
+msgstr "Sie"
+
+msgid "Sep"
+msgstr "Wrz"
+
+msgid "Oct"
+msgstr "Paź"
+
+msgid "Nov"
+msgstr "Lis"
+
+msgid "Dec"
+msgstr "Gru"
+
+msgid "No data available"
+msgstr "Dane nie są dostępne"
+
+msgid "Percentage"
+msgstr "Procentowo"
+
+msgid "Legend"
+msgstr "Legenda"
+
+msgid "Select day"
+msgstr "Wybierz dzień"
+
+msgid "Select month"
+msgstr "Wybierz miesiąc"
+
+msgid "Select year"
+msgstr "Wybierz rok"
+
+msgid "Select period"
+msgstr "Wybierz okres"
+
+msgid "Others"
+msgstr "Pozostali"
+
+msgid "(Hour-by-hour data usage chart for selected day)"
+msgstr "(Wykres zużycia danych, godzina po godzinie dla wybranego dnia)"
+
+msgid "(Daily usage chart for a selected month)"
+msgstr "(Wykres dziennego zużycia danych dla wybranego miesiąca)"
+
+msgid "(Data usage chart for individual months)"
+msgstr "(Wykres zużycia danych w poszczególnych miesiącach)"
+
+msgid "(Data usage chart for each month of the year "
+msgstr "(Wykres zużycia danych w poszczególnych miesiącach w roku "
+
+msgid "Refreshing data..."
+msgstr "Odświeżam dane..."
+
+msgid "Please wait..."
+msgstr "Proszę czekać..."
+
+msgid "Statistics of data usage by clients."
+msgstr "Statystyki zużycia danych przez klienta(-ów)."
+
+msgid "Clients"
+msgstr "Klienci"
+
+msgid "Do you want to clear transfer statistics data?"
+msgstr "Czy chcesz wyczyścić dane dotyczące transferów?"
+
+msgid "Statistics data cleared"
+msgstr "Dane zostały wyczyszczone"
+
+msgid "No hourly data available for this day"
+msgstr "Brak danych godzinowych dla tego dnia"
+
+msgid "Would you like to show an estimated hourly distribution based on daily totals? (This is only an approximation)"
+msgstr "Czy chcesz wyświetlić szacunkowy rozkład godzinowy na podstawie dziennych sum? (To są jedynie przybliżone wartości)."
+
+msgid "Yes, show estimate"
+msgstr "Tak, pokaż rozkład"
+
+msgid "Size of .json file"
+msgstr "Rozmiar pliku .json"
+
+msgid "Size of .gz file"
+msgstr "Rozmiar pliku .gz"
+
+msgid "Client"
+msgstr "Klient"
+
+msgid "Date"
+msgstr "Data"

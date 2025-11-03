@@ -3,7 +3,7 @@
 #
 # (c) 2024 Cezary Jackiewicz <cezary@eko.one.pl>
 #
-# (c) 2024 modified by Rafał Wabik (IceG) <https://github.com/4IceG>
+# (c) 2024-2025 modified by Rafał Wabik (IceG) <https://github.com/4IceG>
 #
 # From eko.one.pl forum
 #
@@ -14,7 +14,7 @@ grep -q "time is valid" /tmp/state/dnsmasqsec 2>/dev/null && TIMEISVALID="yes"
 [ -z "$TIMEISVALID" ] && exit 0
 
 DB=/tmp/easyconfig_statistics.json
-SDB=/etc/modem/easyconfig_statistics.json.gz
+SDB=/usr/lib/easyconfig/easyconfig_statistics.json.gz
 
 LOCK=/var/lock/easyconfig_statistics.lock
 
@@ -76,6 +76,12 @@ if [ $WRITETS -le $NOW ]; then
 	gzip -k "$DB"
 	mv "$DB.gz" "$SDB"
 	sync
+fi
+MBACKUP=$(uci -q get easyconfig_transfer.traffic.external_backup)
+MBACKUPATH=$(uci -q get easyconfig_transfer.traffic.external_path)
+if [ "$MBACKUP" = "1" ]; then
+sleep 10
+cp "$DB" "$MBACKUPATH/easyconfig_statistics.json"
 fi
 
 lock -u $LOCK

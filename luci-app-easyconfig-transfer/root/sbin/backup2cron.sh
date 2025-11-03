@@ -5,17 +5,17 @@
 sleep 2
 ONF=$(uci -q get easyconfig_transfer.traffic.enable_backup)
 if [ "x$ONF" != "x1" ]; then
-	if grep -q "easyconfig_statistics.json" /etc/crontabs/root; then
-		grep -v "easyconfig_statistics.json" /etc/crontabs/root > /tmp/new_cron
+	if grep -q "/usr/lib/easyconfig" /etc/crontabs/root; then
+		grep -v "/usr/lib/easyconfig" /etc/crontabs/root > /tmp/new_cron
 		mv /tmp/new_cron /etc/crontabs/root
 		/etc/init.d/cron restart
 	fi
 	exit 0
 fi
 
-if ! grep -q "easyconfig_statistics.json" /etc/crontabs/root; then
+if ! grep -q "/usr/lib/easyconfig" /etc/crontabs/root; then
 
-	grep -v "easyconfig_statistics.json" /etc/crontabs/root > /tmp/new_cron
+	grep -v "/usr/lib/easyconfig" /etc/crontabs/root > /tmp/new_cron
 	mv /tmp/new_cron /etc/crontabs/root
 		
 		TM=$(uci -q get easyconfig_transfer.traffic.make_time)
@@ -48,8 +48,8 @@ if ! grep -q "easyconfig_statistics.json" /etc/crontabs/root; then
 				TRMM="${TRMM:1}"
 			fi
 
-		echo "$TMMM $TMHH * * * cp /tmp/easyconfig_statistics.json /etc/modem" >> /etc/crontabs/root
-		echo "$TRMM $TRHH * * * cp /etc/modem/easyconfig_statistics.json /tmp" >> /etc/crontabs/root
+		echo "$TMMM $TMHH * * * cp /tmp/easyconfig_statistics.json /usr/lib/easyconfig" >> /etc/crontabs/root
+		echo "$TRMM $TRHH * * * cp /usr/lib/easyconfig/easyconfig_statistics.json /tmp" >> /etc/crontabs/root
 	/etc/init.d/cron restart
 	exit 0
 	

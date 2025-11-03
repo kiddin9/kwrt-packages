@@ -9,7 +9,7 @@
 'require tools.widgets as widgets';
 
 /*
-	Copyright (c) 2024 Rafał Wabik - IceG - From eko.one.pl forum
+	Copyright (c) 2024-2025 Rafał Wabik - IceG - From eko.one.pl forum
 	
 	Licensed to the GNU General Public License v3.0.
 	
@@ -119,6 +119,25 @@ return view.extend({
 			}
 			return form.Flag.prototype.write.apply(this, [section_id, value]);
 		};
+		
+		o = s.option(form.Flag, 'auto_reset', _('Auto data reset'), _('Check this option if you want reset data with the new year.'));
+
+		o.rmempty = false;
+		o.write = function(section_id, value) {
+			if(value == '1') {
+				uci.set('easyconfig_transfer', 'global', 'auto_reset', "1");
+				uci.save();
+				fs.exec('sleep 2');
+				fs.exec_direct('/sbin/ar2cron.sh');
+			}
+			if(value == '0') {
+				uci.set('easyconfig_transfer', 'global', 'auto_reset', "0");
+				uci.save();
+				fs.exec('sleep 2');
+				fs.exec_direct('/sbin/ar2cron.sh');
+			}
+			return form.Flag.prototype.write.apply(this, [section_id, value]);
+		};
 
 		o = s.option(widgets.NetworkSelect, 'network', _('Interface'), _('Network interface for Internet access.'));
 		o.exclude = s.section;
@@ -136,7 +155,7 @@ return view.extend({
 		//o.depends('transfer_enabled', '1');
 
 		o = s.option(form.ListValue, 'datarec_period', _('Data recording period'),
-			 _('Select how often a compressed copy of the data will be made. <br />Archive path <code>/etc/modem/easyconfig_statistics.json.gz</code>. \
+			 _('Select how often a compressed copy of the data will be made. <br />Archive path <code>/usr/lib/easyconfig/easyconfig_statistics.json.gz</code>. \
 				<br /><br /><b>Important</b> \
 				<br />Please remember that frequent write operations shorten the life cycle of memory.'));
 
@@ -264,27 +283,54 @@ return view.extend({
 			});
 		};
 
+		o = s.taboption('bkTab', form.Flag, 'external_backup', _('Copy .json file to external storage'), _('Check this option if you want to create a copy on an external drive.'));
+		o.rmempty = false;
+		o.write = function(section_id, value) {
+			if(value == '1') {
+				uci.set('easyconfig_transfer', 'service', 'traffic', 'external_backup', "1");
+				uci.save();
+				//fs.exec('sleep 2');
+				//fs.exec_direct('/sbin/backup2cron.sh');
+			}
+			if(value == '0') {
+				uci.set('easyconfig_transfer', 'service', 'traffic', 'external_backup', "0");
+				uci.save();
+				//fs.exec('sleep 2');
+				//fs.exec_direct('/sbin/backup2cron.sh');
+			}
+			return form.Flag.prototype.write.apply(this, [section_id, value]);
+		};
+		//o.depends('transfer_enabled', '1');
+
+		o = s.taboption('bkTab', form.Value, 'external_path', _('Path to .json file'), _("Enter the path to the directory where a copy of the .json file will be saved."));
+		o.rmempty = false;
+		o.depends('external_backup', '1');
+		o.default = '/mnt';
+
+
 		o = s.taboption('bkTab', form.Flag, 'enable_backup', _('Move .json file'), _('Check this option if you want to save data during a scheduled device restart.'));
 		o.rmempty = false;
 		o.write = function(section_id, value) {
 			if(value == '1') {
 				uci.set('easyconfig_transfer', 'service', 'traffic', 'enable_backup', "1");
 				uci.save();
+				uci.apply();
 				fs.exec('sleep 2');
-				fs.exec_direct('/sbin/backup2cron.sh');
+			        fs.exec_direct('/sbin/backup2cron.sh');
 			}
 			if(value == '0') {
 				uci.set('easyconfig_transfer', 'service', 'traffic', 'enable_backup', "0");
 				uci.save();
+				uci.apply();
 				fs.exec('sleep 2');
-				fs.exec_direct('/sbin/backup2cron.sh');
+			        fs.exec_direct('/sbin/backup2cron.sh');
 			}
 			return form.Flag.prototype.write.apply(this, [section_id, value]);
 		};
 		//o.depends('transfer_enabled', '1');
 
 		o = s.taboption('bkTab', form.Value, 'make_time', _('Backup at'), _("Correct time format <code>HH:MM</code>."));
-		o.rmempty = true;
+		o.rmempty = false;
 		//o.depends('transfer_enabled', '1');
 		o.validate = function(section_id, value) {
 			if(value.match(/^\d{1,2}:\d{2}$/)) {
@@ -300,7 +346,7 @@ return view.extend({
 		o.default = '05:05';
 
 		o = s.taboption('bkTab', form.Value, 'restore_time', _('Restore backup at'), _("Correct time format <code>HH:MM</code>."));
-		o.rmempty = true;
+		o.rmempty = false;
 		//o.depends('transfer_enabled', '1');
 		o.validate = function(section_id, value) {
 			if(value.match(/^\d{1,2}:\d{2}$/)) {
@@ -314,6 +360,8 @@ return view.extend({
 			return _('Expected time is in HH:MM format');
 		};
 		o.default = '05:10';
+
 		return m.render();
 	}
 });
+
