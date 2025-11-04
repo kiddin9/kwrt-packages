@@ -1,27 +1,17 @@
 # SPDX-License-Identifier: GPL-3.0
 #
-# Copyright (C) 2022-2025 muink <https://github.com/muink>
+# Copyright (C) 2021-2025  sirpdboy  <herboy2008@gmail.com> https://github.com/sirpdboy/luci-app-netdata
 
 include $(TOPDIR)/rules.mk
 
-LUCI_NAME:=luci-app-netdata
 
-LUCI_TITLE:=LuCI Netdata
-LUCI_DEPENDS:=+netdata-ssl +openssl-util
+LUCI_TITLE:=LuCI app for netdata
+LUCI_DEPENDS:=+netdata
 
-LUCI_DESCRIPTION:=Real-time performance monitoring
-
-PKG_MAINTAINER:=Anya Lin <hukk1996@gmail.com>
+PKG_NAME:=luci-app-netdata
+PKG_VERSION:=2.0.2
+PKG_RELEASE:=9
 PKG_LICENSE:=GPL-3.0
-
-define Package/$(LUCI_NAME)/conffiles
-endef
-
-define Package/$(LUCI_NAME)/postinst
-endef
-
-define Package/$(LUCI_NAME)/prerm
-endef
 
 include $(TOPDIR)/feeds/luci/luci.mk
 

@@ -12,26 +12,26 @@
   },
   "admin/status/netdata/netdata": {
     "title": "Netdata",
-    "order": 1,
+    "order": 10,
     "action": {
       "type": "view",
-      "path": "netdata/main"
+      "path": "netdata/netdata"
+    }
+  },
+  "admin/status/netdata/basic": {
+    "title": "Basic Setting",
+    "order": 20,
+    "action": {
+      "type": "view",
+      "path": "netdata/basic"
     }
   },
   "admin/status/netdata/config": {
-    "title": "Config",
-    "order": 2,
+    "title": "Config Setting",
+    "order": 30,
     "action": {
       "type": "view",
       "path": "netdata/config"
-    }
-  },
-  "admin/status/netdata/advanced": {
-    "title": "Advanced",
-    "order": 3,
-    "action": {
-      "type": "view",
-      "path": "netdata/advanced"
     }
   }
 }
