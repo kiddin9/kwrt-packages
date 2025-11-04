@@ -98,7 +98,7 @@ jobs:
         # git_clone https://github.com/kiddin9/nginx-ui-openwrt && mvdir nginx-ui-openwrt
         ) &
         (
-        git_clone https://github.com/kiddin9/openwrt-netdata netdata
+        # git_clone https://github.com/kiddin9/openwrt-netdata netdata
         git_clone https://github.com/kiddin9/luci-app-syscontrol
         git_clone https://github.com/kiddin9/luci-app-chinadns-ng
         git_clone https://github.com/kiddin9/openwrt-my-dnshelper && mvdir openwrt-my-dnshelper
