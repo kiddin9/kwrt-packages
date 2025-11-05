@@ -1,0 +1,157 @@
+<script type="text/javascript">//<![CDATA[
+XHR.poll(5, '<%=url("admin/services/natpierce_status")%>', null,
+    function(x, d) {
+        var tb = document.getElementById('natpierce_status');
+        if (d && tb) {
+            if (d.running) {
+                var URL = "http://" + window.location.hostname + ":" + d.port + "";
+                tb.innerHTML = '<span style="color:green; font-weight:bold;"><%:正在运行%></span><br/><br/><b><%:请访问控制页面 %> </b><em><a href="' + URL + '" target="_blank">' + URL + ' </a></em>';
+            } 
+            else if (d.process_alive === true) { 
+                tb.innerHTML = '<span style="color:orange;font-weight:bolder"><%:运行异常%></span><br/>' + 
+                               '<span><%:服务进程已启动，但端口未被监听或端口被占用，请检查配置或系统日志，或者防火墙阻隔。%></span>';
+            }
+            else {
+                tb.innerHTML = '<a style="color:red;font-weight:bolder"><%:未启动%></a>';
+            }
+        }
+    }
+);
+
+function updateStatusMessage(message, isError) {
+    var msgDiv = document.getElementById('action_status_message');
+    if (msgDiv) {
+        if (!message || message.trim() === '') {
+            msgDiv.style.display = 'none';
+        } else {
+            msgDiv.style.display = 'block';
+            msgDiv.textContent = message;
+            if (isError) {
+                msgDiv.classList.add('cbi-button-error');
+            } else {
+                msgDiv.classList.remove('cbi-button-error');
+            }
+        }
+    }
+}
+
+function displayLocalVersionInfo() {
+    var localVersionField = document.getElementById('local_version_field');
+    var latestVersionField = document.getElementById('latest_version_field');
+
+    localVersionField.textContent = '<%=translate("加载中...")%>';
+    latestVersionField.textContent = '<%=translate("加载中...")%>';
+    updateStatusMessage('<%:正在从本地读取版本信息...%>', false);
+
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "natpierce_get_version")%>', null,
+        function(x, result) {
+            if (result && result.status === 'success') {
+                localVersionField.textContent = result.current_installed_version || '<%=translate("未知")%>';
+                latestVersionField.textContent = result.latest_version_text || '<%=translate("N/A")%>';
+                updateStatusMessage('', false);
+            } else {
+                localVersionField.textContent = '<%=translate("N/A")%>';
+                latestVersionField.textContent = '<%=translate("N/A")%>';
+                updateStatusMessage(`<%:获取版本信息失败：%> ${result ? result.message : x.statusText}`, true);
+            }
+        }
+    );
+}
+
+function manualCheckAndUpdate() {
+    var checkUpdateButton = document.getElementById('check_version_button');
+    var performUpdateButton = document.getElementById('perform_update_button');
+    
+    updateStatusMessage('<%:正在远程检查最新版本并更新本地记录...%>', false);
+    
+    checkUpdateButton.disabled = true;
+    performUpdateButton.disabled = true;
+    checkUpdateButton.textContent = '<%=translate("检查中...")%>';
+
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "natpierce_update")%>', null,
+        function(x, result) {
+            if (result && result.status === 'success') {
+                updateStatusMessage(`<%:手动检查完成：%> ${result.message}`, false);
+                displayLocalVersionInfo();
+            } else {
+                updateStatusMessage(`<%:手动检查失败：%> ${result ? result.message : x.statusText}`, true);
+            }
+            checkUpdateButton.disabled = false;
+            performUpdateButton.disabled = false;
+            checkUpdateButton.textContent = '<%=translate("检查更新")%>';
+        }
+    );
+}
+
+function performActualUpdate() {
+    var checkUpdateButton = document.getElementById('check_version_button');
+    var performUpdateButton = document.getElementById('perform_update_button');
+    
+    updateStatusMessage('<%:正在执行更新操作，请稍候...%>', false);
+    
+    checkUpdateButton.disabled = true;
+    performUpdateButton.disabled = true;
+    performUpdateButton.textContent = '<%=translate("更新中...")%>';
+
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "natpierce_upgrade")%>', null,
+        function(x, result) {
+            if (result && result.status === 'success') {
+                updateStatusMessage(`<%:更新完成：%> ${result.message}`, false);
+                setTimeout(function() {
+                    window.location.reload();
+                }, 3000);
+            } else {
+                updateStatusMessage(`<%:更新失败：%> ${result ? result.message : x.statusText}`, true);
+                displayLocalVersionInfo();
+            }
+            checkUpdateButton.disabled = false;
+            performUpdateButton.disabled = false;
+            performUpdateButton.textContent = '<%=translate("执行更新")%>';
+            if (result.status !== 'success') {
+                XHR.get('<%=url("admin/services/natpierce_status")%>', null, function(x,d){ /* 手动触发服务状态刷新 */ });
+            }
+        }
+    );
+}
+
+window.addEventListener('load', function() {
+    displayLocalVersionInfo();
+    document.getElementById('check_version_button').onclick = manualCheckAndUpdate;
+    document.getElementById('perform_update_button').onclick = performActualUpdate;
+});
+//]]></script>
+
+<div class="cbi-section">
+    <div class="cbi-section-node">
+        <h3 class="cbi-section-title"><%:运行状态%></h3>
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:服务状态%></label>
+            <div  class="cbi-value-field" id="natpierce_status">
+                <em><%:Collecting data...%></em>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cbi-section">
+    <div class="cbi-section-node">
+        <h3 class="cbi-section-title"><%:软件更新%></h3>
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:最新版本%></label>
+            <div class="cbi-value-field" id="latest_version_field"><em><%:Collecting data...%></em></div>
+            <div class="cbi-value-field">
+                <input type="button" class="cbi-button cbi-button-action" id="check_version_button" value="<%=translate("检查更新")%>" style="font-weight: bold;margin-left: 20px;"/>
+            </div>
+        </div>
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:本地版本%></label>
+            <div class="cbi-value-field" id="local_version_field"><em><%:Collecting data...%></em></div>
+            <div class="cbi-value-field">
+                <input type="button" class="cbi-button cbi-button-action" id="perform_update_button" value="<%=translate("执行更新")%>" style="font-weight: bold;margin-left: 20px;"/>
+            </div>
+        </div>
+        <div id="action_status_message" class="cbi-button-apply" style="display:none; margin-top: 10px;"></div>
+        
+        <p class="cbi-value-description"><%:点击“执行更新”将停止当前服务、下载最新版本并自动更新。%></p>
+    </div>
+</div>

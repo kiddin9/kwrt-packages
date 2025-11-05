@@ -1,0 +1,11 @@
+{
+	"luci-app-natpierce": {
+		"description": "Grant UCI access for luci-app-natpierce",
+		"read": {
+			"uci": [ "natpierce" ]
+		},
+		"write": {
+			"uci": [ "natpierce" ]
+		}
+	}
+}
