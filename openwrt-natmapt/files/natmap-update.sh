@@ -67,8 +67,8 @@ if [ -n "$DDNS" ]; then
 	_hostype="$(jsonfilter -qs "$DDNS_PARAM" -e '@["hostype"]')"
 	_svcparams="$(jsonfilter -qs "$DDNS_PARAM" -e '@["https_svcparams"]')"
 	_svcparams="$(echo "$_svcparams" | sed -E "s,\s*(port=\d*|$), port=${port},")" # port
-	[ "$_hostype" = A ]    && _svcparams="$(echo "$_svcparams" | sed -E "s|\b(ipv4hint=)[\d\.]*|\1${ip}|")" # ipv4hint
-	[ "$_hostype" = AAAA ] && _svcparams="$(echo "$_svcparams" | sed -E "s|\b(ipv6hint=)[[:xdigit:]:\.]*|\1${ip}|")" # ipv6hint
+	[ "$_hostype" = A ]    && _svcparams="$(echo "$_svcparams" | sed -E "s|\b(ipv4hint=)\S*|\1${ip}|")" # ipv4hint
+	[ "$_hostype" = AAAA ] && _svcparams="$(echo "$_svcparams" | sed -E "s|\b(ipv6hint=)\S*|\1${ip}|")" # ipv6hint
 	json_init
 	json_load "$DDNS_PARAM"
 	json_add_string https_svcparams "$_svcparams"
