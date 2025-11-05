@@ -1,0 +1,11 @@
+{
+	"luci-app-qbittorrent-ee": {
+		"description": "Grant UCI access for luci-app-qbittorrent-ee",
+		"read": {
+			"uci": [ "qbittorrent_ee" ]
+		},
+		"write": {
+			"uci": [ "qbittorrent_ee" ]
+		}
+	}
+}
