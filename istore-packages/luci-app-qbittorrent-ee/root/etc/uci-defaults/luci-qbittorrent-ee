@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-qbittorrent_ee.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-qbittorrent_ee.json << EEOF
+{
+    "config": "qbittorrent_ee",
+    "init": "qbittorrent_ee"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@qbittorrent_ee[-1]
+	add ucitrack qbittorrent_ee
+	set ucitrack.@qbittorrent_ee[-1].init=qbittorrent_ee
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

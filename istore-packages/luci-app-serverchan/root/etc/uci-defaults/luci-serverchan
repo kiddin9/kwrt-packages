@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-serverchan.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-serverchan.json << EEOF
+{
+    "config": "serverchan",
+    "init": "serverchan"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@serverchan[-1]
+	add ucitrack serverchan
+	set ucitrack.@serverchan[-1].init=serverchan
+	commit ucitrack
+EOF
+
+rm -rf /tmp/luci-*
+exit 0

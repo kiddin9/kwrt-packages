@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-rclone.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-rclone.json << EEOF
+{
+    "config": "rclone",
+    "init": "rclone"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@rclone[-1]
+	add ucitrack rclone
+	set ucitrack.@rclone[-1].init=rclone
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

@@ -1,0 +1,3 @@
+chain zerotier_forward {}
+chain zerotier_input {}
+chain zerotier_postrouting {}

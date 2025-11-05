@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
+
+#: luci-app-cpulimit/luasrc/controller/cpulimit.lua:9
+msgid "CPU限制"
+msgstr "CPU limit"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:6
+msgctxt "Enable"
+msgid "Enable"
+msgstr "Enable"
+
+#: luci-app-cpulimit/root/usr/share/rpcd/acl.d/luci-app-cpulimit.json:3
+msgid "Grant UCI access for luci-app-cpulimit"
+msgstr "Grant UCI access for luci-app-cpulimit"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:2
+msgid "Settings"
+msgstr "Settings"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:1
+msgid "Use cpulimit to restrict app's cpu usage."
+msgstr "Use cpulimit to restrict app's cpu usage."
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:1
+msgid "cpulimit"
+msgstr "cpulimit"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:11
+msgid "exename"
+msgstr "exename"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:18
+msgid "limit"
+msgstr "limit"
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:11
+msgid "name of the executable program file or path name"
+msgstr "name of the executable program file or path name"

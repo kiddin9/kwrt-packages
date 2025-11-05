@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: luci-app-cpulimit/luasrc/controller/cpulimit.lua:9
+msgid "CPU限制"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:6
+msgctxt "Enable"
+msgid "Enable"
+msgstr ""
+
+#: luci-app-cpulimit/root/usr/share/rpcd/acl.d/luci-app-cpulimit.json:3
+msgid "Grant UCI access for luci-app-cpulimit"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:2
+msgid "Settings"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:1
+msgid "Use cpulimit to restrict app's cpu usage."
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:1
+msgid "cpulimit"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:11
+msgid "exename"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:18
+msgid "limit"
+msgstr ""
+
+#: luci-app-cpulimit/luasrc/model/cbi/cpulimit.lua:11
+msgid "name of the executable program file or path name"
+msgstr ""

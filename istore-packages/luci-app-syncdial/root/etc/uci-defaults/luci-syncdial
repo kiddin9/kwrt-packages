@@ -1,0 +1,20 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-syncdial.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-syncdial.json << EEOF
+{
+    "config": "syncdial",
+    "init": "syncdial"
+}
+EEOF
+}
+touch /etc/config/syncdial
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@syncdial[-1]
+	add ucitrack syncdial
+	set ucitrack.@syncdial[-1].exec='/bin/genwancfg'
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
