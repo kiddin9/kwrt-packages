@@ -11,7 +11,7 @@ PKG_NAME:=luci-theme-$(THEME_NAME)
 LUCI_TITLE:=Kucat Theme by sirpdboy
 LUCI_DEPENDS:=
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=61
+PKG_RELEASE:=62
 
 define Package/luci-theme-$(THEME_NAME)/conffiles
 /www/luci-static/resources/background/
