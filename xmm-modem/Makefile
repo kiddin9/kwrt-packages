@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xmm-modem
 PKG_VERSION:=0.1.5
-PKG_RELEASE:=16
+PKG_RELEASE:=17
 PKG_MAINTAINER:=Konstantine Shevlakov <shevlakov@132lan.ru>
 
 include $(INCLUDE_DIR)/package.mk
