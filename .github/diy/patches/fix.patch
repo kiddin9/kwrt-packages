@@ -8,18 +8,6 @@
 +	kill `pidof oscam | sed "s/$$//g"`
  }
 
---- a/totd/root/etc/init.d/totd
-+++ b/totd/root/etc/init.d/totd
-@@ -55,7 +55,7 @@ start_service(){
- }
- 
- stop_service(){
--	killall $PROG > /dev/null 2&>1
-+	kill `pgrep -f $PROG` > /dev/null 2&>1
- }
- 
- reload_service() {
-
 --- a/gowebdav/files/webdav.init
 +++ b/gowebdav/files/webdav.init
 @@ -17,6 +17,6 @@ start() {
