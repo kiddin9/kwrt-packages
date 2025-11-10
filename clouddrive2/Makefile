@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clouddrive2
-PKG_VERSION:=0.9.8
+PKG_VERSION:=0.9.13
 PKG_RELEASE=1
 
 ifeq ($(ARCH),aarch64)
