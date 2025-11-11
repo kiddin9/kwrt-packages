@@ -221,67 +221,118 @@ function drawPieChart(container, data, title) {
 		path.style.transition = 'all 0.2s';
 
 		path.addEventListener('mouseenter', function(e) {
-			this.setAttribute('stroke-width', '3');
-			this.style.filter = 'brightness(1.1)';
-			
-			var downloadedBytes = item.uploaded || 0;
-			var uploadedBytes = item.downloaded || 0;
-			
-			tooltip.innerHTML = 
-				'<div style="font-weight: bold; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border-color-low, rgba(0,0,0,0.2));">' + 
-				item.label + 
-				'</div>' +
-				'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
-				'<span>▼ ' + _('Downloaded') + ':</span>' +
-				'<strong>' + bytesToSize(downloadedBytes) + '</strong>' +
-				'</div>' +
-				'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
-				'<span>▲ ' + _('Uploaded') + ':</span>' +
-				'<strong>' + bytesToSize(uploadedBytes) + '</strong>' +
-				'</div>' +
-				'<div style="margin: 4px 0; padding-top: 5px; border-top: 1px solid var(--border-color-low, rgba(0,0,0,0.2)); display: flex; justify-content: space-between; gap: 15px;">' +
-				'<span>' + _('Total') + ':</span>' +
-				'<strong>' + bytesToSize(item.value) + '</strong>' +
-				'</div>' +
-				'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
-				'<span>' + _('Percentage') + ':</span>' +
-				'<strong>' + percentage.toFixed(2) + '%</strong>' +
-				'</div>';
-			
-			tooltip.style.display = 'block';
-			
-			var midAngle = startAngle + angle / 2;
-			var midX = centerX + (radius * 0.7) * Math.cos(midAngle);
-			var midY = centerY + (radius * 0.7) * Math.sin(midAngle);
-			var normalizedAngle = ((midAngle * 180 / Math.PI) + 90 + 360) % 360;
-			var tooltipRect = tooltip.getBoundingClientRect();
+	this.setAttribute('stroke-width', '3');
+	this.style.filter = 'brightness(1.1)';
+	
+	var downloadedBytes = item.uploaded || 0;
+	var uploadedBytes = item.downloaded || 0;
+	
+	tooltip.innerHTML = 
+		'<div style="font-weight: bold; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border-color-low, rgba(0,0,0,0.2));">' + 
+		item.label + 
+		'</div>' +
+		'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
+		'<span>▼ ' + _('Downloaded') + ':</span>' +
+		'<strong>' + bytesToSize(downloadedBytes) + '</strong>' +
+		'</div>' +
+		'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
+		'<span>▲ ' + _('Uploaded') + ':</span>' +
+		'<strong>' + bytesToSize(uploadedBytes) + '</strong>' +
+		'</div>' +
+		'<div style="margin: 4px 0; padding-top: 5px; border-top: 1px solid var(--border-color-low, rgba(0,0,0,0.2)); display: flex; justify-content: space-between; gap: 15px;">' +
+		'<span>' + _('Total') + ':</span>' +
+		'<strong>' + bytesToSize(item.value) + '</strong>' +
+		'</div>' +
+		'<div style="margin: 4px 0; display: flex; justify-content: space-between; gap: 15px;">' +
+		'<span>' + _('Percentage') + ':</span>' +
+		'<strong>' + percentage.toFixed(2) + '%</strong>' +
+		'</div>';
+	
+	tooltip.style.display = 'block';
+	
+	var midAngle = startAngle + angle / 2;
+	
+	var distanceFromCenter;
+	if (percentage > 25) {
+		distanceFromCenter = radius * 0.4;
+	} else if (percentage > 15) {
+		distanceFromCenter = radius * 0.55;
+	} else {
+		distanceFromCenter = radius * 0.7;
+	}
+	
+	var midX = centerX + distanceFromCenter * Math.cos(midAngle);
+	var midY = centerY + distanceFromCenter * Math.sin(midAngle);
+	
+	var normalizedAngle = ((midAngle * 180 / Math.PI) + 90 + 360) % 360;
+	var tooltipRect = tooltip.getBoundingClientRect();
 
-			if (normalizedAngle >= 240 && normalizedAngle < 300) {
-				tooltip.style.left = (midX + 15) + 'px';
-				tooltip.style.right = 'auto';
-			} else if (normalizedAngle >= 120 && normalizedAngle < 240) {
-				tooltip.style.left = 'auto';
-				tooltip.style.right = (size - midX + 15) + 'px';
-			} else {
-				if (normalizedAngle >= 330 || normalizedAngle < 30) {
-					tooltip.style.left = (midX - tooltipRect.width / 2) + 'px';
-					tooltip.style.right = 'auto';
-				} else if (normalizedAngle >= 300 && normalizedAngle < 330) {
-					tooltip.style.left = (midX + 15) + 'px';
-					tooltip.style.right = 'auto';
-				} else {
-					tooltip.style.left = 'auto';
-					tooltip.style.right = (size - midX + 15) + 'px';
-				}
-			}
-			tooltip.style.top = (midY - 40) + 'px';
-		});
-
-		path.addEventListener('mouseleave', function() {
-			this.setAttribute('stroke-width', '2');
-			this.style.filter = 'none';
-			tooltip.style.display = 'none';
-		});
+	var left, top;
+	
+	        if (normalizedAngle >= 330 || normalizedAngle < 30) {
+		        if (percentage > 25) {
+			        left = midX - tooltipRect.width / 2;
+			        top = midY - tooltipRect.height - 15;
+		        } else {
+			        left = midX - tooltipRect.width / 2;
+			        top = midY - tooltipRect.height - 10;
+		        }
+	        }
+	        else if (normalizedAngle >= 30 && normalizedAngle < 120) {
+		        if (percentage > 25) {
+			        left = midX + 10;
+			        top = midY - tooltipRect.height / 2;
+		        } else {
+			        left = midX + 15;
+			        top = midY - tooltipRect.height + 20;
+		        }
+	        }
+	        else if (normalizedAngle >= 120 && normalizedAngle < 150) {
+		        if (percentage > 25) {
+			        left = midX + 10;
+			        top = midY - tooltipRect.height / 2;
+		        } else {
+			        left = midX + 15;
+			        top = midY - tooltipRect.height / 2;
+		        }
+	        }
+	        else if (normalizedAngle >= 150 && normalizedAngle < 240) {
+		        if (percentage > 25) {
+			        left = midX + 10;
+			        top = midY - tooltipRect.height / 2;
+		        } else {
+			        left = midX + 15;
+			        top = midY - 20;
+		        }
+	        }
+	        else if (normalizedAngle >= 240 && normalizedAngle < 300) {
+		        if (percentage > 25) {
+			        left = midX - tooltipRect.width - 10;
+			        top = midY - tooltipRect.height / 2;
+		        } else {
+			        left = midX - tooltipRect.width - 15;
+			        top = midY - 20;
+		        }
+	        }
+	        else {
+		        if (percentage > 25) {
+			        left = midX - tooltipRect.width - 10;
+			        top = midY - tooltipRect.height / 2;
+		        } else {
+			        left = midX - tooltipRect.width - 15;
+			        top = midY - tooltipRect.height + 20;
+		        }
+	        }
+	        
+	        if (left < 0) left = 10;
+	        if (left + tooltipRect.width > size) left = size - tooltipRect.width - 10;
+	        if (top < 0) top = 10;
+	        if (top + tooltipRect.height > size) top = size - tooltipRect.height - 10;
+	        
+	        tooltip.style.left = left + 'px';
+	        tooltip.style.top = top + 'px';
+	        tooltip.style.right = 'auto';
+        });
 
 		svg.appendChild(path);
 		startAngle = endAngle;
@@ -1215,7 +1266,7 @@ function drawStaticGraph(svg, rxSeries, txSeries, scaleText, labelsX, jsonData, 
 	if (!scaleEl) tab.appendChild(E('div', { 'class':'right' }, E('small', { 'id':'scale' }, scaleText || '-')));
 	else dom.content(scaleEl, scaleText || '-');
 
-	// Oś X
+	// Desc X
 	if (labelsX && labelsX.length > 0) {
 		var labelsContainer = E('div', { 'class': 'x-axis-labels', 'style': 'position: relative; height: 20px; margin-top: 5px; font-size: 10px; color: #666;' });
 		var labelStep = (labelsX.length === 24) ? 3 : (labelsX.length <= 7 ? 1 : Math.max(1, Math.floor(labelsX.length / 10)));
@@ -1248,30 +1299,30 @@ function drawStaticGraph(svg, rxSeries, txSeries, scaleText, labelsX, jsonData, 
 	});
 	svg.parentNode.insertBefore(pointsContainer, svg.nextSibling);
 
-	for (var p = 0; p < points; p++) {
-		var rv2 = rx[p], tv2 = tx[p];
+for (var p = 0; p < points; p++) {
+	var rv2 = rx[p], tv2 = tx[p];
 
-		if (rv2 == null && tv2 == null) continue;
-		if ((rv2 || 0) === 0 && (tv2 || 0) === 0) continue;
+	if (rv2 == null && tv2 == null) continue;
+	if ((rv2 || 0) === 0 && (tv2 || 0) === 0) continue;
 
-		var x = p * step;
-		var yRx = height - Math.floor((rv2 || 0) * data_scale);
-		var yTx = height - Math.floor((tv2 || 0) * data_scale);
+	var x = p * step;
+	var yRx = height - Math.floor((rv2 || 0) * data_scale);
+	var yTx = height - Math.floor((tv2 || 0) * data_scale);
 
-		var pointRx = E('div', {
-			'class': 'data-point data-point-rx',
-			'style': 'position:absolute; width:8px; height:8px; background:#4169E1; border:2px solid white; border-radius:50%; left:' + (x - 4) + 'px; top:' + (yRx - 4) + 'px; pointer-events:auto; cursor:pointer; transition:all 0.2s;',
-			'data-index': p, 
-			'data-type': 'rx',
-			'data-x': x
-		});
-		var pointTx = E('div', {
-			'class': 'data-point data-point-tx',
-			'style': 'position:absolute; width:8px; height:8px; background:#32CD32; border:2px solid white; border-radius:50%; left:' + (x - 4) + 'px; top:' + (yTx - 4) + 'px; pointer-events:auto; cursor:pointer; transition:all 0.2s;',
-			'data-index': p, 
-			'data-type': 'tx',
-			'data-x': x
-		});
+var pointRx = E('div', {
+	'class': 'data-point data-point-rx',
+	'style': 'position:absolute; width:8px; height:8px; background:#4169E1; border:2px solid white; border-radius:50%; left:' + (x - 3) + 'px; top:' + (yRx - 4) + 'px; pointer-events:auto; cursor:pointer; transition:all 0.2s;',
+	'data-index': p, 
+	'data-type': 'rx',
+	'data-x': x
+});
+var pointTx = E('div', {
+	'class': 'data-point data-point-tx',
+	'style': 'position:absolute; width:8px; height:8px; background:#32CD32; border:2px solid white; border-radius:50%; left:' + (x - 3) + 'px; top:' + (yTx - 4) + 'px; pointer-events:auto; cursor:pointer; transition:all 0.2s;',
+	'data-index': p, 
+	'data-type': 'tx',
+	'data-x': x
+});
 
 		[pointRx, pointTx].forEach(function(point){
 			point.addEventListener('mouseenter', function(){
