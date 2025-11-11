@@ -93,9 +93,12 @@ e:value('vssr', translate('Hello World'))
 e.default = 'bypass'
 e.rmempty = false
 
-e = t:option(Flag, "fontmode", translate("Care mode (large font)"))
+e = t:option(ListValue, "fontmode", translate("Set font size"))
 e.rmempty = false
-e.default = '0'
+e:value('0', translate('Small font'))
+e:value('1', translate('Normal font'))
+e:value('2', translate('Large font'))
+e.default = '1'
 
 e = t:option(DummyValue, '', translate('RGB Palette Tools'))
 e.rawhtml = true

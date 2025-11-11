@@ -250,7 +250,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='26,131,97'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='76,157,69'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		orange)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -259,7 +258,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='163,71,6'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='142,93,8'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		red)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -268,7 +266,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='143,32,13'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='243,119,72'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		black)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -277,7 +274,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='25,25,26'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='55,80,90'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		gray)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -286,7 +282,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='50,67,77'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='64,68,70'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		bluets)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -295,7 +290,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm='66,139,139'
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
 			uci set advancedplus.@basic[0].primary_rgbs='55,103,128'
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
 		;;
 		*)
 			uci set advancedplus.@basic[0].bkuse=`uci -q get advancedplus.@theme[$i].bkuse`
@@ -304,7 +298,6 @@ do
 			uci set advancedplus.@basic[0].primary_rgbm=`echo $primary_rgbm | sed 's#(##; s#)##g; s#rgb##g; s#\,\ #\,#g;s#\ #\,#g;'`
 			uci set advancedplus.@basic[0].primary_rgbs=`uci -q get advancedplus.@theme[$i].primary_rgbs | sed 's#(##; s#)##g; s#rgb##g; s#\,\ #\,#g;s#\ #\,#g;'`
 			uci set advancedplus.@basic[0].primary_rgbs_ts=`uci -q get advancedplus.@theme[$i].primary_rgbs_ts`
- 			[ $mode = dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
  		;;
 	esac
 	useset=1
@@ -317,19 +310,27 @@ if [ "x$useset" == "x0" ] ; then
 	uci set advancedplus.@basic[0].primary_rgbs_ts='0.1'
 	uci set advancedplus.@basic[0].primary_rgbs='225,112,88'
 	uci set advancedplus.@basic[0].bkuse='1'
-	uci set advancedplus.@basic[0].primary_rgbm_ts='0.7'
-	uci set advancedplus.@basic[0].primary_opacity='5'
- 	[ $mode == dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='248,248,248'
+	uci set advancedplus.@basic[0].primary_rgbm_ts='0.9'
+	uci set advancedplus.@basic[0].primary_opacity='0'
 fi
-if [ "x$(uci -q get advancedplus.@basic[0].fontmode)" = "x1" ] ; then
-	uci set advancedplus.@basic[0].font_d='1.3rem'
-	uci set advancedplus.@basic[0].font_z='1.1rem'
-	uci set advancedplus.@basic[0].font_x='0.92rem'
-else
+[ $mode == dark ] && uci set advancedplus.@basic[0].primary_rgbbody='33,45,60' || uci set advancedplus.@basic[0].primary_rgbbody='244,245,247'
+case "x$(uci -q get advancedplus.@basic[0].fontmode)" in
+	x1)
 	uci set advancedplus.@basic[0].font_d='1.1rem'
 	uci set advancedplus.@basic[0].font_z='0.92rem'
 	uci set advancedplus.@basic[0].font_x='0.875rem'
-fi
+	;;
+	x2)
+	uci set advancedplus.@basic[0].font_d='1.3rem'
+	uci set advancedplus.@basic[0].font_z='1.1rem'
+	uci set advancedplus.@basic[0].font_x='0.92rem'
+	;;
+	*)
+	uci set advancedplus.@basic[0].font_d='0.92rem'
+	uci set advancedplus.@basic[0].font_z='0.875rem'
+	uci set advancedplus.@basic[0].font_x='0.82rem'
+	;;
+esac
 uci commit advancedplus
 }
 

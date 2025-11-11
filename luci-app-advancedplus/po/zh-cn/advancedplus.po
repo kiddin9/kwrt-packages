@@ -98,11 +98,20 @@ msgstr "清爽模式"
 msgid "Enable Daily Word"
 msgstr "启用每日一言"
 
-msgid "Care mode (large font)"
-msgstr "关怀模式(大字体)"
+msgid "Set font size"
+msgstr "设置字体大小"
+
+msgid "Small font"
+msgstr "小字体"
+
+msgid "Normal font"
+msgstr "正常字体"
+
+msgid "Large font"
+msgstr "大字体"
 
 msgid "Expand Toolbar"
-msgstr "展开导航栏"
+msgstr "扩展工具栏"
 
 msgid "Expand or shrink the toolbar"
 msgstr "展开或者收缩导航栏"
