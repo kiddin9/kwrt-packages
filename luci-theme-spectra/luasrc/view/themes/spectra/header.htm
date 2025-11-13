@@ -3143,14 +3143,14 @@ function playTrack(index) {
     speakMessage(message);
     updateCurrentSong(songs[index]);
     
-    if (event && event.target) {
-        event.target.classList.add('clicked');
-        setTimeout(() => {
-            if (event.target) {
-                event.target.classList.remove('clicked');
-            }
-        }, 200);
-    }
+    // if (event && event.target) {
+    //     event.target.classList.add('clicked');
+    //     setTimeout(() => {
+    //         if (event.target) {
+    //             event.target.classList.remove('clicked');
+    //         }
+    //     }, 200);
+    // }
 }
 
 function scrollToCurrentTrack() {
@@ -3259,7 +3259,7 @@ function fetchLyricsFromAPI(songUrl) {
         }
     });
 
-    console.log(`Searching lyrics for: Artist="${artist}", Title="${title}"`);
+    // console.log(`Searching lyrics for: Artist="${artist}", Title="${title}"`);
 
     const apiPromises = [
         tryNeteaseProxy(artist, title, cleanName),
@@ -3271,7 +3271,7 @@ function fetchLyricsFromAPI(songUrl) {
     Promise.any(apiPromises)
         .then(lyricsData => {
             if (lyricsData && lyricsData.lyrics) {
-                console.log(`Lyrics found from: ${lyricsData.source}`);
+                // console.log(`Lyrics found from: ${lyricsData.source}`);
                 if (lyricsData.hasTimestamps) {
                     processLrcLyrics(lyricsData.lyrics, containers);
                 } else {
@@ -3283,7 +3283,6 @@ function fetchLyricsFromAPI(songUrl) {
             }
         })
         .catch(error => {
-            console.error("All lyrics APIs failed:", error);
             containers.forEach(container => {
                 if (container) {
                     const message = translations['lyrics_not_found'] || 'Lyrics not found online';
@@ -3565,7 +3564,9 @@ function tryLRCLib(artist, title) {
                     reject(new Error('No results found'));
                 }
             })
-            .catch(error => reject(error));
+            .catch(error => {
+                reject(error);
+            });
     });
 }
 
@@ -4247,40 +4248,6 @@ document.getElementById('goFirstBtn')?.addEventListener('click', function() {
     localStorage.setItem(`${LYRICS_STORAGE_PREFIX}floatingLyricsTop`, box.style.top);
   }
 })();
-</script>
-
-<script>
-const PLAYER_STORAGE_PREFIX = 'musicPlayer_';
-let isLyricsMode = localStorage.getItem(`${PLAYER_STORAGE_PREFIX}lyricsMode`) === 'true';
-
-function toggleLyricsMode() {
-    const modal = document.getElementById('musicModal');
-    const icon = document.getElementById('lyricsIcon');
-
-    isLyricsMode = !isLyricsMode;
-    modal.classList.toggle('lyrics-mode', isLyricsMode);
-    localStorage.setItem(`${PLAYER_STORAGE_PREFIX}lyricsMode`, isLyricsMode);
-
-    if (isLyricsMode) {
-        icon.classList.remove('bi-chevron-down');
-        icon.classList.add('bi-chevron-up');
-    } else {
-        icon.classList.remove('bi-chevron-up');
-        icon.classList.add('bi-chevron-down');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const icon = document.getElementById('lyricsIcon');
-    document.getElementById('lyricsToggle').addEventListener('click', toggleLyricsMode);
-
-    if (isLyricsMode) {
-        document.getElementById('musicModal').classList.add('lyrics-mode');
-        icon.classList.add('bi-chevron-up');
-    } else {
-        icon.classList.add('bi-chevron-down');
-    }
-});
 </script>
 
 <script>
