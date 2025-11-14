@@ -445,8 +445,8 @@ function modemaddon(idx) {
 		switch (e.idx) {
 			// MODE
 			case 1:
-				if ((e.value).search(/^LTE B/) > -1 || (e.value).search(/^LTE_A B/) > -1) {
-					pcc[1] = (e.value).replace(/^LTE /, '').replace(/^LTE_A /, '');
+				if ((e.value).search(/^LTE B/) > -1 || (e.value).search(/^LTE-A B/) > -1) {
+					pcc[1] = (e.value).replace(/^LTE /, '').replace(/^LTE-A /, '');
 				}
 				if ((e.value).search(/^5G/) > -1) {
 					pcc[1] = (e.value).replace(/^5G NSA /, '').replace(/^5G SA /, '');
