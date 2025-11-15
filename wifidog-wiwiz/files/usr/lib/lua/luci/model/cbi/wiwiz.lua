@@ -5,7 +5,7 @@ m = Map("wiwiz", translate("Wiwiz"),
 
 portal = m:section(TypedSection, "wiwiz", "")
 
-enabled = portal:option(Flag, "enabled", translate("Enable"));
+enabled = portal:option(Flag, "enabled", translate("Enable"), translate("network service will restart after enabling portal, please reconnect to the router if necessary"));
 enabled.optional = false 
 enabled.rmempty = false
 
