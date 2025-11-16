@@ -98,7 +98,7 @@
 @@ -82,6 +82,7 @@ function index()
  	entry({"admin", "services", appname, "subscribe_manual"}, call("subscribe_manual")).leaf = true
  	entry({"admin", "services", appname, "subscribe_manual_all"}, call("subscribe_manual_all")).leaf = true
-  entry({"admin", "services", appname, "flush_set"}, call("flush_set")).leaf = true
+ 	entry({"admin", "services", appname, "flush_set"}, call("flush_set")).leaf = true
 +	entry({"admin", "services", appname, "ip"}, call('check_ip')).leaf = true
  
  	--[[Components update]]
