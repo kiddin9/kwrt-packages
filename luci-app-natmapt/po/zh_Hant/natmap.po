@@ -10,16 +10,16 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.15.1-dev\n"
 
-#: htdocs/luci-static/resources/view/natmap.js:592
-#: htdocs/luci-static/resources/view/natmap.js:628
+#: htdocs/luci-static/resources/view/natmap.js:598
+#: htdocs/luci-static/resources/view/natmap.js:634
 msgid "<code># All external tokens required</code> Field"
 msgstr "<code># All external tokens required</code> 字段"
 
-#: htdocs/luci-static/resources/view/natmap.js:634
+#: htdocs/luci-static/resources/view/natmap.js:640
 msgid "A Record"
 msgstr "A 記錄"
 
-#: htdocs/luci-static/resources/view/natmap.js:641
+#: htdocs/luci-static/resources/view/natmap.js:647
 msgid "AAAA Record"
 msgstr "AAAA 記錄"
 
@@ -40,8 +40,8 @@ msgstr "可用的伺服器<a href=\"%s\" target=\"_blank\">參考</a>"
 msgid "Bind port"
 msgstr "綁定埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:669
-#: htdocs/luci-static/resources/view/natmap.js:678
+#: htdocs/luci-static/resources/view/natmap.js:675
+#: htdocs/luci-static/resources/view/natmap.js:684
 msgid "Can refer to RFC8552"
 msgstr "可以參考 RFC8552"
 
@@ -58,12 +58,12 @@ msgid "Comment"
 msgstr "備註"
 
 #: htdocs/luci-static/resources/view/natmap.js:302
-#: htdocs/luci-static/resources/view/natmap.js:749
+#: htdocs/luci-static/resources/view/natmap.js:755
 msgid "Custom Script"
 msgstr "自定義腳本"
 
 #: htdocs/luci-static/resources/view/natmap.js:301
-#: htdocs/luci-static/resources/view/natmap.js:614
+#: htdocs/luci-static/resources/view/natmap.js:620
 msgid "DDNS Scripts"
 msgstr "DDNS 腳本"
 
@@ -78,11 +78,11 @@ msgstr "DDNS 腳本"
 msgid "Default"
 msgstr "默認"
 
-#: htdocs/luci-static/resources/view/natmap.js:609
+#: htdocs/luci-static/resources/view/natmap.js:615
 msgid "EnDDNS"
 msgstr "啟用DDNS"
 
-#: htdocs/luci-static/resources/view/natmap.js:573
+#: htdocs/luci-static/resources/view/natmap.js:579
 msgid "EnNotify"
 msgstr "啟用通知"
 
@@ -96,21 +96,22 @@ msgid "Expand/Collapse result"
 msgstr "展開/折疊 結果"
 
 #: htdocs/luci-static/resources/view/natmap.js:390
+#: htdocs/luci-static/resources/view/natmap.js:471
 msgid "Expecting: %s"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/natmap.js:559
+#: htdocs/luci-static/resources/view/natmap.js:565
 msgid "External IP"
 msgstr "外部 IP"
 
-#: htdocs/luci-static/resources/view/natmap.js:566
+#: htdocs/luci-static/resources/view/natmap.js:572
 msgid "External Port"
 msgstr "外部通訊埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:634
-#: htdocs/luci-static/resources/view/natmap.js:641
-#: htdocs/luci-static/resources/view/natmap.js:663
-#: htdocs/luci-static/resources/view/natmap.js:721
+#: htdocs/luci-static/resources/view/natmap.js:640
+#: htdocs/luci-static/resources/view/natmap.js:647
+#: htdocs/luci-static/resources/view/natmap.js:669
+#: htdocs/luci-static/resources/view/natmap.js:727
 msgid "FQDN"
 msgstr ""
 
@@ -119,6 +120,7 @@ msgid "Firewall DNAT"
 msgstr "防火牆 DNAT"
 
 #: htdocs/luci-static/resources/view/natmap.js:325
+#: htdocs/luci-static/resources/view/natmap.js:446
 msgid "For TCP mode"
 msgstr "用於 TCP 模式"
 
@@ -138,15 +140,15 @@ msgstr "轉發方法"
 msgid "Forward mode"
 msgstr "轉發模式"
 
-#: htdocs/luci-static/resources/view/natmap.js:464
+#: htdocs/luci-static/resources/view/natmap.js:462
 msgid "Forward target"
 msgstr "轉發目標"
 
-#: htdocs/luci-static/resources/view/natmap.js:488
+#: htdocs/luci-static/resources/view/natmap.js:494
 msgid "Forward target port"
 msgstr "轉發目標埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:456
+#: htdocs/luci-static/resources/view/natmap.js:455
 msgid "Forward timeout"
 msgstr "轉發逾時"
 
@@ -171,7 +173,7 @@ msgstr ""
 msgid "HTTP server"
 msgstr "HTTP 伺服器"
 
-#: htdocs/luci-static/resources/view/natmap.js:708
+#: htdocs/luci-static/resources/view/natmap.js:714
 msgid "HTTPS Record"
 msgstr "HTTPS 記錄"
 
@@ -226,8 +228,8 @@ msgid "Name"
 msgstr "名称"
 
 #: htdocs/luci-static/resources/view/natmap.js:415
-#: htdocs/luci-static/resources/view/natmap.js:485
-#: htdocs/luci-static/resources/view/natmap.js:508
+#: htdocs/luci-static/resources/view/natmap.js:491
+#: htdocs/luci-static/resources/view/natmap.js:514
 msgid "No"
 msgstr ""
 
@@ -242,7 +244,7 @@ msgid ""
 msgstr "注意: 使用 <code>portrange</code> 後, 會輪換打開公網埠</br>"
 
 #: htdocs/luci-static/resources/view/natmap.js:300
-#: htdocs/luci-static/resources/view/natmap.js:578
+#: htdocs/luci-static/resources/view/natmap.js:584
 msgid "Notify Scripts"
 msgstr "通知腳本"
 
@@ -254,7 +256,7 @@ msgstr "外部位址"
 msgid "Outer Port"
 msgstr "外部通訊埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:553
+#: htdocs/luci-static/resources/view/natmap.js:559
 msgid "Password"
 msgstr "密碼"
 
@@ -264,21 +266,21 @@ msgid ""
 "conflicts.</br>"
 msgstr "請檢查<a href=\"%s\"><b>防火牆規則</b></a>以避免埠衝突</br>"
 
-#: htdocs/luci-static/resources/view/natmap.js:456
+#: htdocs/luci-static/resources/view/natmap.js:455
 msgid "Port forwarding session idle timeout in seconds"
 msgstr "連接埠轉發會話空閒逾時 (以秒為單位)"
 
-#: htdocs/luci-static/resources/view/natmap.js:694
-#: htdocs/luci-static/resources/view/natmap.js:742
+#: htdocs/luci-static/resources/view/natmap.js:700
+#: htdocs/luci-static/resources/view/natmap.js:748
 msgid "Priority"
 msgstr "優先權"
 
-#: htdocs/luci-static/resources/view/natmap.js:598
+#: htdocs/luci-static/resources/view/natmap.js:604
 msgid "Private API Domain"
 msgstr "私有 API 域名"
 
 #: htdocs/luci-static/resources/view/natmap.js:337
-#: htdocs/luci-static/resources/view/natmap.js:678
+#: htdocs/luci-static/resources/view/natmap.js:684
 #: htdocs/luci-static/resources/view/status/include/72_natmap.js:60
 msgid "Protocol"
 msgstr "協議"
@@ -287,11 +289,11 @@ msgstr "協議"
 msgid "Randomly allocation ports"
 msgstr "隨機分配端口"
 
-#: htdocs/luci-static/resources/view/natmap.js:518
+#: htdocs/luci-static/resources/view/natmap.js:524
 msgid "Refresh Scripts"
 msgstr "用戶端更新腳本"
 
-#: htdocs/luci-static/resources/view/natmap.js:511
+#: htdocs/luci-static/resources/view/natmap.js:517
 msgid "Refresh client listen port"
 msgstr "更新用戶端監聽埠"
 
@@ -304,7 +306,7 @@ msgstr "重新載入"
 msgid "Restrict to address family"
 msgstr "限制到位址群"
 
-#: htdocs/luci-static/resources/view/natmap.js:648
+#: htdocs/luci-static/resources/view/natmap.js:654
 msgid "SRV Record"
 msgstr "SRV 記錄"
 
@@ -323,20 +325,20 @@ msgstr "STUN 伺服器"
 msgid "Server"
 msgstr "伺服器"
 
-#: htdocs/luci-static/resources/view/natmap.js:669
+#: htdocs/luci-static/resources/view/natmap.js:675
 msgid "Service"
 msgstr "服務"
 
-#: htdocs/luci-static/resources/view/natmap.js:488
+#: htdocs/luci-static/resources/view/natmap.js:494
 msgid "Set 0 will follow Public port"
 msgstr "設為 0 將遵循公共埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:735
+#: htdocs/luci-static/resources/view/natmap.js:741
 msgid "SvcParams"
 msgstr "服務參數"
 
 #: htdocs/luci-static/resources/view/natmap.js:170
-#: htdocs/luci-static/resources/view/natmap.js:679
+#: htdocs/luci-static/resources/view/natmap.js:685
 msgid "TCP"
 msgstr ""
 
@@ -348,16 +350,16 @@ msgstr "TCP 擁塞控制"
 msgid "TCP STUN"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/natmap.js:681
+#: htdocs/luci-static/resources/view/natmap.js:687
 msgid "TLS"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/natmap.js:687
-#: htdocs/luci-static/resources/view/natmap.js:727
+#: htdocs/luci-static/resources/view/natmap.js:693
+#: htdocs/luci-static/resources/view/natmap.js:733
 msgid "Target"
 msgstr "目標"
 
-#: htdocs/luci-static/resources/view/natmap.js:604
+#: htdocs/luci-static/resources/view/natmap.js:610
 msgid "Text content"
 msgstr "文本內容"
 
@@ -366,8 +368,8 @@ msgstr "文本內容"
 msgid "The DNAT method not support under IPv6"
 msgstr "DNAT 方法不支援在 IPv6 下使用"
 
-#: htdocs/luci-static/resources/view/natmap.js:589
-#: htdocs/luci-static/resources/view/natmap.js:625
+#: htdocs/luci-static/resources/view/natmap.js:595
+#: htdocs/luci-static/resources/view/natmap.js:631
 msgid ""
 "The KEY required by the script above. See <a href=\"%s\" "
 "target=\"_blank\">%s</a> for the format of KEY required by each script. Add "
@@ -377,17 +379,21 @@ msgstr ""
 "上面腳本所需的 KEY。請參閱 <a href=\"%s\" target=\"_blank\">%s</a> 以獲得對應"
 "腳本所需的 KEY 清單。請輸入格式為 KEY=VAL 的多個 KEY 條目"
 
+#: htdocs/luci-static/resources/view/natmap.js:471
+msgid "The hostname not support under DNAT mode"
+msgstr "DNAT 模式下不支援主機名"
+
 #: htdocs/luci-static/resources/view/status/include/72_natmap.js:83
 msgid "There are no active portmap"
 msgstr "沒有活動的通訊埠映射"
 
 #: htdocs/luci-static/resources/view/natmap.js:366
-#: htdocs/luci-static/resources/view/natmap.js:466
+#: htdocs/luci-static/resources/view/natmap.js:464
 msgid "This device default Lan"
 msgstr "本裝置默認 LAN"
 
 #: htdocs/luci-static/resources/view/natmap.js:367
-#: htdocs/luci-static/resources/view/natmap.js:467
+#: htdocs/luci-static/resources/view/natmap.js:465
 msgid "This device default Wan"
 msgstr "本裝置默認 WAN"
 
@@ -402,14 +408,14 @@ msgid ""
 "b></a> first"
 msgstr "檢查 NAT 行為需要先安裝 <a href=\"%s\"><b>stuntman-client</b></a>"
 
-#: htdocs/luci-static/resources/view/natmap.js:588
-#: htdocs/luci-static/resources/view/natmap.js:624
+#: htdocs/luci-static/resources/view/natmap.js:594
+#: htdocs/luci-static/resources/view/natmap.js:630
 msgid "Tokens"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:175
 #: htdocs/luci-static/resources/view/natmap.js:180
-#: htdocs/luci-static/resources/view/natmap.js:680
+#: htdocs/luci-static/resources/view/natmap.js:686
 msgid "UDP"
 msgstr ""
 
@@ -417,11 +423,11 @@ msgstr ""
 msgid "UDP STUN"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/natmap.js:530
+#: htdocs/luci-static/resources/view/natmap.js:536
 msgid "URI Scheme"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/natmap.js:547
+#: htdocs/luci-static/resources/view/natmap.js:553
 msgid "Username"
 msgstr "用戶名"
 
@@ -429,18 +435,18 @@ msgstr "用戶名"
 msgid "Via natmap"
 msgstr "經由 natmap"
 
-#: htdocs/luci-static/resources/view/natmap.js:539
+#: htdocs/luci-static/resources/view/natmap.js:545
 msgid "Web UI Port"
 msgstr "Web UI 通訊埠"
 
-#: htdocs/luci-static/resources/view/natmap.js:701
+#: htdocs/luci-static/resources/view/natmap.js:707
 msgid "Weight"
 msgstr "權重"
 
 #: htdocs/luci-static/resources/view/natmap.js:159
 msgid ""
-"https://github.com/muink/rfc5780-stun-server/blob/master/"
-"valid_hosts_rfc5780.txt"
+"https://github.com/muink/rfc5780-stun-server/blob/master/valid_hosts_rfc5780."
+"txt"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:153
@@ -458,6 +464,6 @@ msgstr "keep-alive 間隔 (秒)"
 msgid "luci check may not detect all conflicts."
 msgstr "luci 檢查可能無法檢測到所有衝突"
 
-#: htdocs/luci-static/resources/view/natmap.js:754
+#: htdocs/luci-static/resources/view/natmap.js:760
 msgid "⭮"
 msgstr ""

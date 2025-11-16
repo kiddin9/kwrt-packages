@@ -12,7 +12,7 @@ http_request() {
 	$CURL $retry --compressed -L -X POST \
 		-b "$1" -H "Content-Type: application/json" \
 		-d "$2" \
-		--url ${scheme}://${ip}:${web_port}/json
+		--url ${scheme}://${host}:${web_port}/json
 }
 
 start() {
@@ -20,7 +20,7 @@ start() {
 	local cookie="$($CURL $retry --compressed -L -i \
 		-H "Content-Type: application/json" \
 		-d '{"method": "auth.login", "params": ["'"${password}"'"], "id": 1}' \
-		--url ${scheme}://${ip}:${web_port}/json \
+		--url ${scheme}://${host}:${web_port}/json \
 		| grep -i set-cookie | sed -En 's|^.*(_session_id=\S+);.*|\1|p')"
 	local connected="$(http_request "$cookie" '{"method": "web.connected", "params": [], "id": 1}' | jsonfilter -qe '@.result')"
 	if [ "$connected" = "true" ]; then
@@ -32,6 +32,6 @@ start() {
 
 
 # All external parameters required
-ALL_PARAMS="ip port scheme web_port username password"
+ALL_PARAMS="host port scheme web_port username password"
 eval "$(JSON_EXPORT "$1")"; shift
 start "$@"

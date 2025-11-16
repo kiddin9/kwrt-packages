@@ -116,7 +116,7 @@ validate_section_natmap() {
 		'natloopback:bool:1' \
 		'forward_congestion:string' \
 		'forward_timeout:and(uinteger, min(1))' \
-		'forward_target:ipaddr(1)' \
+		'forward_target:or(hostname,ipaddr(1))' \
 		'forward_port:port' \
 		'refresh:bool:0' \
 		'clt_script:file' \
@@ -211,7 +211,7 @@ natmap_instance() {
 			json_add_int web_port "$clt_web_port"
 			json_add_string username "$clt_username"
 			json_add_string password "$clt_password"
-			json_add_string ip "$forward_target"
+			json_add_string host "$forward_target"
 			procd_append_param env "REFRESH_PARAM=$(json_dump)"
 		fi
 	fi
@@ -365,12 +365,18 @@ launcher() {
 		[ "$forward_mode" = "dnat" -a "$family" = "ipv6" ] && >&2 echo "$(basename $0): section $1 option forward_mode 'dnat' not support under IPv6" && let error++
 		[ "$forward_mode" != "dnat" ] && natloopback=0
 		if [ -n "$forward_target" ]; then
-			[ -n "$(grep -E "^127(\.\d+){3}" <<< $forward_target)" -o "$forward_target" = "::1" ] && forward_target="$lan_addr"
-			[ -n "$(grep -E "^0(\.\d+){3}"   <<< $forward_target)" -o "$forward_target" = "::" ] && forward_target="$bind_ip"
-			if [ -n "$forward_target" ]; then
-				[ -z "$(ip_match "$family" "$forward_target")" ] && >&2 echo "$(basename $0): section $1 option forward_target '$forward_target' not a $family address" && let error++
+			if grep -q "[a-zA-Z]" <<< "$forward_target"; then
+				# hostname
+				[ "$forward_mode" = "dnat" ] && >&2 echo "$(basename $0): section $1 option forward_target '$forward_target', hostname not support under DNAT mode" && let error++
 			else
-				>&2 echo "$(basename $0): section $1 option forward_target parsing failed, there may be no $family network connection"; let error++
+				# ipaddr(1)
+				[ -n "$(grep -E "^127(\.\d+){3}" <<< $forward_target)" -o "$forward_target" = "::1" ] && forward_target="$lan_addr"
+				[ -n "$(grep -E "^0(\.\d+){3}"   <<< $forward_target)" -o "$forward_target" = "::" ] && forward_target="$bind_ip"
+				if [ -n "$forward_target" ]; then
+					[ -z "$(ip_match "$family" "$forward_target")" ] && >&2 echo "$(basename $0): section $1 option forward_target '$forward_target' not a $family address" && let error++
+				else
+					>&2 echo "$(basename $0): section $1 option forward_target parsing failed, there may be no $family network connection"; let error++
+				fi
 			fi
 		else
 			err_msg__empty $1 forward_target; let error++

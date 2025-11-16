@@ -460,10 +460,18 @@ return view.extend({
 		o.modalonly = true;
 
 		o = s.taboption('forward', form.Value, 'forward_target', _('Forward target'));
-		o.datatype = 'ipaddr(1)';
+		o.datatype = 'or(hostname,ipaddr(1))';
 		o.value('127.0.0.1', '127.0.0.1/::1 (%s)'.format(_('This device default Lan')));
 		o.value('0.0.0.0', '0.0.0.0/:: (%s)'.format(_('This device default Wan')));
 		o.default = '127.0.0.1';
+		o.validate = function(section_id, value) {
+			const forward_mode = this.section.getUIElement(section_id, 'forward_mode').getValue();
+
+			if (new RegExp(/[a-zA-Z]/).test(value) && forward_mode === 'dnat')
+				return _('Expecting: %s').format(_('The hostname not support under DNAT mode'));
+
+			return true;
+		}
 		o.rmempty = false;
 		o.retain = true;
 		o.depends('forward', '1');
@@ -480,7 +488,7 @@ return view.extend({
 				let cval = this.cfgvalue(section_id) || this.default;
 				return (cval == this.enabled) ? true : false;
 			}.call(s.getOption('forward'));
-			return enforward ? this.vallist[i] : _('No');
+			return enforward ? this.vallist[i] ?? cval : _('No');
 		};
 
 		o = s.taboption('forward', form.Value, 'forward_port', _('Forward target port'), _('Set 0 will follow Public port'));

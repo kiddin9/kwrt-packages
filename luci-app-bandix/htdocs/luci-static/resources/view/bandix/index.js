@@ -4,663 +4,41 @@
 'require uci';
 'require rpc';
 'require poll';
-'use strict';
 
+// 暗色模式检测已改为使用 CSS 媒体查询 @media (prefers-color-scheme: dark)
 
-const translations = {
-    'zh-cn': {
-        'Bandix 流量监控': 'Bandix 流量监控',
-        '正在加载数据...': '正在加载数据...',
-        '无法获取数据': '无法获取数据',
-        '无法获取历史数据': '无法获取历史数据',
-        '主机名': '主机名',
-        'IP地址': 'IP地址',
-        'MAC地址': 'MAC地址',
-        '下载速度': '下载速度',
-        '上传速度': '上传速度',
-        '总下载量': '总下载量',
-        '总上传量': '总上传量',
-        '下载限速': '下载限速',
-        '上传限速': '上传限速',
-        '界面语言': '界面语言',
-        '选择 Bandix 流量监控的显示语言': '选择 Bandix 流量监控的显示语言',
-        '设备信息': '设备信息',
-        '设备列表': '设备列表',
-        'LAN 流量': 'LAN 流量',
-        'WAN 流量': 'WAN 流量',
-        '限速设置': '限速设置',
-        '操作': '操作',
-        '在线设备': '在线设备',
-        '仅限WAN 流量': '仅限WAN 流量',
-        '设置': '设置',
-        '设备设置': '设备设置',
-        '限速设置': '限速设置',
-        '取消限速': '取消限速',
-        '保存': '保存',
-        '取消': '取消',
-        '设置限速': '设置限速',
-        '设备': '设备',
-        '上传限速': '上传限速',
-        '下载限速': '下载限速',
-        '主机名': '主机名',
-        '设置主机名': '设置主机名',
-        '请输入主机名': '请输入主机名',
-        '主机名设置成功': '主机名设置成功',
-        '主机名设置失败': '主机名设置失败',
-        '无限制': '无限制',
-        '设置成功': '设置成功',
-        '设置失败': '设置失败',
-        '请输入有效的速度值': '请输入有效的速度值',
-        '速度值必须大于0': '速度值必须大于0',
-        '保存中...': '保存中...',
-        '限速功能仅对 WAN 流量生效。': '限速功能仅对 WAN 流量生效。',
-        '提示：输入 0 表示无限制': '提示：输入 0 表示无限制',
-        '历史流量趋势': '历史流量趋势',
-        '选择设备': '选择设备',
-        '所有设备': '所有设备',
-        '时间范围': '时间范围',
-        '最近5分钟': '最近5分钟',
-        '最近30分钟': '最近30分钟',
-        '最近2小时': '最近2小时',
-        '类型': '类型',
-        '总流量': '总流量',
-        'LAN 流量': 'LAN 流量',
-        'WAN 流量': 'WAN 流量',
-        '刷新': '刷新',
-        '上传速率': '上传速率',
-        '下载速率': '下载速率',
-        '最近': '最近',
-        '秒': '秒',
-        '分钟': '分钟',
-        '小时': '小时',
-        '天': '天',
-        '周': '周',
-        '其他速率': '其他速率',
-        '累计流量': '累计流量',
-        '总上传': '总上传',
-        '总下载': '总下载',
-        'LAN 已上传': 'LAN 已上传',
-        'LAN 已下载': 'LAN 已下载',
-        'WAN 已上传': 'WAN 已上传',
-        'WAN 已下载': 'WAN 已下载',
-        '总上传速率': '总上传速率',
-        '总下载速率': '总下载速率',
-        'LAN 上传速率': 'LAN 上传速率',
-        'LAN 下载速率': 'LAN 下载速率',
-        'WAN 上传速率': 'WAN 上传速率',
-        'WAN 下载速率': 'WAN 下载速率',
-        '从未上线': '从未上线',
-        '刚刚': '刚刚',
-        '分钟前': '分钟前',
-        '小时前': '小时前',
-        '天前': '天前',
-        '个月前': '个月前',
-        '年前': '年前',
-        '最后上线': '最后上线',
-        '缩放': '缩放',
-        '排序方式': '排序方式',
-        '在线状态': '在线状态',
-        '总流量': '总流量',
-        '升序': '升序',
-        '降序': '降序',
-        '按速度排序': '按速度排序',
-        '按用量排序': '按用量排序',
-        '简易模式': '简易模式',
-        '详细模式': '详细模式'
-    },
-    'zh-tw': {
-        'Bandix 流量监控': 'Bandix 流量監控',
-        '正在加载数据...': '正在載入資料...',
-        '无法获取数据': '無法獲取資料',
-        '无法获取历史数据': '無法獲取歷史資料',
-        '主机名': '主機名',
-        'IP地址': 'IP地址',
-        'MAC地址': 'MAC地址',
-        '下载速度': '下載速度',
-        '上传速度': '上傳速度',
-        '总下载量': '總下載量',
-        '总上传量': '總上傳量',
-        '下载限速': '下載限速',
-        '上传限速': '上傳限速',
-        '界面语言': '介面語言',
-        '选择 Bandix 流量监控的显示语言': '選擇 Bandix 流量監控的顯示語言',
-        '设备信息': '設備資訊',
-        '设备列表': '設備列表',
-        'LAN 流量': '局域網流量',
-        'WAN 流量': '跨網路流量',
-        '限速设置': '限速設定',
-        '操作': '操作',
-        '在线设备': '線上設備',
-        '仅限WAN 流量': '僅限跨網路',
-        '设置': '設定',
-        '设备设置': '設備設定',
-        '限速设置': '限速設定',
-        '取消限速': '取消限速',
-        '保存': '儲存',
-        '取消': '取消',
-        '设置限速': '設定限速',
-        '设备': '設備',
-        '上传限速': '上傳限速',
-        '下载限速': '下載限速',
-        '主机名': '主機名',
-        '设置主机名': '設定主機名',
-        '请输入主机名': '請輸入主機名',
-        '主机名设置成功': '主機名設定成功',
-        '主机名设置失败': '主機名設定失敗',
-        '无限制': '無限制',
-        '设置成功': '設定成功',
-        '设置失败': '設定失敗',
-        '请输入有效的速度值': '請輸入有效的速度值',
-        '速度值必须大于0': '速度值必須大於0',
-        '保存中...': '儲存中...',
-        '限速功能仅对 WAN 流量生效。': '限速功能僅對跨網路流量生效。',
-        '提示：输入 0 表示无限制': '提示：輸入 0 表示無限制',
-        '历史流量趋势': '歷史流量趨勢',
-        '选择设备': '選擇設備',
-        '所有设备': '所有設備',
-        '时间范围': '時間範圍',
-        '最近5分钟': '最近5分鐘',
-        '最近30分钟': '最近30分鐘',
-        '最近2小时': '最近2小時',
-        '类型': '類型',
-        '总流量': '總流量',
-        'LAN 流量': '局域網',
-        'WAN 流量': '跨網路',
-        '刷新': '重新整理',
-        '上传速率': '上傳速率',
-        '下载速率': '下載速率',
-        '最近': '最近',
-        '秒': '秒',
-        '分钟': '分鐘',
-        '小时': '小時',
-        '天': '天',
-        '周': '週',
-        '其他速率': '其他速率',
-        '累计流量': '累計流量',
-        '总上传': '總上傳',
-        '总下载': '總下載',
-        'LAN 已上传': 'LAN 已上傳',
-        'LAN 已下载': 'LAN 已下載',
-        'WAN 已上传': 'WAN 已上傳',
-        'WAN 已下载': 'WAN 已下載',
-        '总上传速率': '總上傳速率',
-        '总下载速率': '總下載速率',
-        'LAN 上传速率': '局域上傳速率',
-        'LAN 下载速率': '局域下載速率',
-        'WAN 上传速率': '跨網上傳速率',
-        'WAN 下载速率': '跨網下載速率',
-        '从未上线': '從未上線',
-        '刚刚': '剛剛',
-        '分钟前': '分鐘前',
-        '小时前': '小時前',
-        '天前': '天前',
-        '个月前': '個月前',
-        '年前': '年前',
-        '最后上线': '最後上線',
-        '缩放': '縮放',
-        '排序方式': '排序方式',
-        '在线状态': '線上狀態',
-        '总流量': '總流量',
-        '升序': '升序',
-        '降序': '降序',
-        '按速度排序': '按速度排序',
-        '按用量排序': '按用量排序',
-        '简易模式': '簡易模式',
-        '详细模式': '詳細模式'
-    },
-    'en': {
-        'Bandix 流量监控': 'Bandix Traffic Monitor',
-        '正在加载数据...': 'Loading data...',
-        '无法获取数据': 'Unable to fetch data',
-        '无法获取历史数据': 'Unable to fetch history data',
-        '主机名': 'Hostname',
-        'IP地址': 'IP Address',
-        'MAC地址': 'MAC Address',
-        '下载速度': 'Download Speed',
-        '上传速度': 'Upload Speed',
-        '总下载量': 'Total Download',
-        '总上传量': 'Total Upload',
-        '下载限速': 'Download Limit',
-        '上传限速': 'Upload Limit',
-        '界面语言': 'Interface Language',
-        '选择 Bandix 流量监控的显示语言': 'Select the display language for Bandix Traffic Monitor',
-        '设备信息': 'Device Info',
-        '设备列表': 'Device List',
-        'LAN 流量': 'LAN Traffic',
-        'WAN 流量': 'WAN Traffic',
-        '限速设置': 'Rate Limit',
-        '操作': 'Actions',
-        '在线设备': 'Online Devices',
-        '仅限WAN 流量': 'WAN Only',
-        '设置': 'Settings',
-        '设备设置': 'Device Settings',
-        '限速设置': 'Rate Limit Settings',
-        '取消限速': 'Remove Rate Limit',
-        '保存': 'Save',
-        '取消': 'Cancel',
-        '设置限速': 'Set Rate Limit',
-        '设备': 'Device',
-        '上传限速': 'Upload Limit',
-        '下载限速': 'Download Limit',
-        '主机名': 'Hostname',
-        '设置主机名': 'Set Hostname',
-        '请输入主机名': 'Please enter hostname',
-        '主机名设置成功': 'Hostname set successfully',
-        '主机名设置失败': 'Failed to set hostname',
-        '无限制': 'Unlimited',
-        '设置成功': 'Settings saved successfully',
-        '设置失败': 'Failed to save settings',
-        '请输入有效的速度值': 'Please enter a valid speed value',
-        '速度值必须大于0': 'Speed value must be greater than 0',
-        '保存中...': 'Saving...',
-        '限速功能仅对 WAN 流量生效。': 'Rate limiting only applies to WAN traffic.',
-        '提示：输入 0 表示无限制': 'Tip: Enter 0 for unlimited',
-        '历史流量趋势': 'Traffic History',
-        '选择设备': 'Select Device',
-        '所有设备': 'All Devices',
-        '时间范围': 'Time Range',
-        '最近5分钟': 'Last 5 minutes',
-        '最近30分钟': 'Last 30 minutes',
-        '最近2小时': 'Last 2 hours',
-        '类型': 'Type',
-        '总流量': 'Total',
-        'LAN 流量': 'LAN',
-        'WAN 流量': 'WAN',
-        '刷新': 'Refresh',
-        '上传速率': 'Upload Rate',
-        '下载速率': 'Download Rate',
-        '最近': 'Last',
-        '秒': 'second',
-        '分钟': 'minute',
-        '小时': 'hour',
-        '天': 'day',
-        '周': 'week',
-        '其他速率': 'Other Rates',
-        '累计流量': 'Cumulative',
-        '总上传': 'Total Uploaded',
-        '总下载': 'Total Downloaded',
-        'LAN 已上传': 'LAN Uploaded',
-        'LAN 已下载': 'LAN Downloaded',
-        'WAN 已上传': 'WAN Uploaded',
-        'WAN 已下载': 'WAN Downloaded',
-        '总上传速率': 'Total Upload',
-        '总下载速率': 'Total Download',
-        'LAN 上传速率': 'LAN Upload',
-        'LAN 下载速率': 'LAN Download',
-        'WAN 上传速率': 'WAN Upload',
-        'WAN 下载速率': 'WAN Download',
-        '从未上线': 'Never Online',
-        '刚刚': 'Just Now',
-        '分钟前': 'min ago',
-        '小时前': 'h ago',
-        '天前': 'days ago',
-        '个月前': 'months ago',
-        '年前': 'years ago',
-        '最后上线': 'Last Online',
-        '缩放': 'Zoom',
-        '排序方式': 'Sort By',
-        '在线状态': 'Online Status',
-        '总流量': 'Total Traffic',
-        '升序': 'Ascending',
-        '降序': 'Descending',
-        '按速度排序': 'Sort by Speed',
-        '按用量排序': 'Sort by Traffic',
-        '简易模式': 'Simple Mode',
-        '详细模式': 'Detailed Mode'
-    },
-    'fr': {
-        'Bandix 流量监控': 'Moniteur de Trafic Bandix',
-        '正在加载数据...': 'Chargement des données...',
-        '无法获取数据': 'Impossible de récupérer les données',
-        '无法获取历史数据': 'Impossible de récupérer les données historiques',
-        '主机名': 'Nom d\'hôte',
-        'IP地址': 'Adresse IP',
-        'MAC地址': 'Adresse MAC',
-        '下载速度': 'Vitesse de téléchargement',
-        '上传速度': 'Vitesse de téléversement',
-        '总下载量': 'Téléchargement total',
-        '总上传量': 'Téléversement total',
-        '下载限速': 'Limite de téléchargement',
-        '上传限速': 'Limite de téléversement',
-        '界面语言': 'Langue de l\'interface',
-        '选择 Bandix 流量监控的显示语言': 'Sélectionner la langue d\'affichage pour le Moniteur de Trafic Bandix',
-        '设备信息': 'Informations sur l\'appareil',
-        '设备列表': 'Liste des appareils',
-        'LAN 流量': 'Trafic LAN',
-        'WAN 流量': 'Trafic WAN',
-        '限速设置': 'Limitation de débit',
-        '操作': 'Actions',
-        '在线设备': 'Appareils en ligne',
-        '仅限WAN 流量': 'WAN uniquement',
-        '设置': 'Paramètres',
-        '设备设置': 'Paramètres de l\'appareil',
-        '限速设置': 'Paramètres de limitation',
-        '取消限速': 'Supprimer la limitation',
-        '保存': 'Enregistrer',
-        '取消': 'Annuler',
-        '设置限速': 'Définir la limitation',
-        '设备': 'Appareil',
-        '上传限速': 'Limite de téléversement',
-        '下载限速': 'Limite de téléchargement',
-        '无限制': 'Illimité',
-        '设置成功': 'Paramètres enregistrés avec succès',
-        '设置失败': 'Échec de l\'enregistrement des paramètres',
-        '请输入有效的速度值': 'Veuillez entrer une valeur de vitesse valide',
-        '速度值必须大于0': 'La valeur de vitesse doit être supérieure à 0',
-        '保存中...': 'Enregistrement...',
-        '限速功能仅对 WAN 流量生效。': 'La limitation de débit ne s\'applique qu\'au trafic WAN.',
-        '提示：输入 0 表示无限制': 'Conseil : Entrez 0 pour illimité',
-        '历史流量趋势': 'Historique du trafic',
-        '选择设备': 'Sélectionner l\'appareil',
-        '所有设备': 'Tous les appareils',
-        '时间范围': 'Plage de temps',
-        '最近5分钟': '5 dernières minutes',
-        '最近30分钟': '30 dernières minutes',
-        '最近2小时': '2 dernières heures',
-        '类型': 'Type',
-        '总流量': 'Total',
-        'LAN 流量': 'LAN',
-        'WAN 流量': 'WAN',
-        '刷新': 'Actualiser',
-        '上传速率': 'Débit montant',
-        '下载速率': 'Débit descendant',
-        '最近': 'Dernières',
-        '秒': 'seconde',
-        '分钟': 'minute',
-        '小时': 'heure',
-        '天': 'jour',
-        '周': 'semaine',
-        '其他速率': 'Autres débits',
-        '累计流量': 'Trafic cumulé',
-        '总上传': 'Total téléversé',
-        '总下载': 'Total téléchargé',
-        'LAN 已上传': 'LAN Téléversé',
-        'LAN 已下载': 'LAN Téléchargé',
-        'WAN 已上传': 'WAN Téléversé',
-        'WAN 已下载': 'WAN Téléchargé',
-        '总上传速率': 'Vitesse de téléversement totale',
-        '总下载速率': 'Vitesse de téléchargement totale',
-        'LAN 上传速率': 'Vitesse de téléversement LAN',
-        'LAN 下载速率': 'Vitesse de téléchargement LAN',
-        'WAN 上传速率': 'Vitesse de téléversement WAN',
-        'WAN 下载速率': 'Vitesse de téléchargement WAN',
-        '从未上线': 'Jamais en ligne',
-        '刚刚': 'À l\'instant',
-        '分钟前': 'min',
-        '小时前': 'h',
-        '天前': 'j',
-        '个月前': 'mois',
-        '年前': 'an',
-        '最后上线': 'Dernière connexion',
-        '缩放': 'Zoom',
-        '排序方式': 'Trier par',
-        '在线状态': 'Statut en ligne',
-        '总流量': 'Trafic total',
-        '升序': 'Croissant',
-        '降序': 'Décroissant',
-        '按速度排序': 'Trier par vitesse',
-        '按用量排序': 'Trier par volume',
-        '简易模式': 'Mode simple',
-        '详细模式': 'Mode détaillé'
-    },
-    'ja': {
-        'Bandix 流量监控': 'Bandix トラフィックモニター',
-        '正在加载数据...': 'データを読み込み中...',
-        '无法获取数据': 'データを取得できません',
-        '无法获取历史数据': '履歴データを取得できません',
-        '主机名': 'ホスト名',
-        'IP地址': 'IPアドレス',
-        'MAC地址': 'MACアドレス',
-        '下载速度': 'ダウンロード速度',
-        '上传速度': 'アップロード速度',
-        '总下载量': '総ダウンロード量',
-        '总上传量': '総アップロード量',
-        '下载限速': 'ダウンロード制限',
-        '上传限速': 'アップロード制限',
-        '界面语言': 'インターフェース言語',
-        '选择 Bandix 流量监控的显示语言': 'Bandix トラフィックモニターの表示言語を選択',
-        '设备信息': 'デバイス情報',
-        '设备列表': 'デバイスリスト',
-        'LAN 流量': 'LAN トラフィック',
-        'WAN 流量': 'WAN トラフィック',
-        '限速设置': '速度制限',
-        '操作': '操作',
-        '在线设备': 'オンラインデバイス',
-        '仅限WAN 流量': 'WAN のみ',
-        '设置': '設定',
-        '设备设置': 'デバイス設定',
-        '限速设置': '速度制限設定',
-        '取消限速': '速度制限を削除',
-        '保存': '保存',
-        '取消': 'キャンセル',
-        '设置限速': '速度制限を設定',
-        '设备': 'デバイス',
-        '上传限速': 'アップロード制限',
-        '下载限速': 'ダウンロード制限',
-        '无限制': '無制限',
-        '设置成功': '設定が正常に保存されました',
-        '设置失败': '設定の保存に失敗しました',
-        '请输入有效的速度值': '有効な速度値を入力してください',
-        '速度值必须大于0': '速度値は0より大きい必要があります',
-        '保存中...': '保存中...',
-        '限速功能仅对 WAN 流量生效。': '速度制限はWANトラフィックにのみ適用されます。',
-        '提示：输入 0 表示无限制': 'ヒント：0を入力すると無制限になります',
-        '历史流量趋势': 'トラフィック履歴',
-        '选择设备': 'デバイスを選択',
-        '所有设备': 'すべてのデバイス',
-        '时间范围': '時間範囲',
-        '最近5分钟': '最近5分',
-        '最近30分钟': '最近30分',
-        '最近2小时': '最近2時間',
-        '类型': 'タイプ',
-        '总流量': '合計',
-        'LAN 流量': 'LAN',
-        'WAN 流量': 'WAN',
-        '刷新': '更新',
-        '上传速率': 'アップロードレート',
-        '下载速率': 'ダウンロードレート',
-        '最近': '直近',
-        '秒': '秒',
-        '分钟': '分',
-        '小时': '時間',
-        '天': '日',
-        '周': '週間',
-        '其他速率': 'その他の速度',
-        '累计流量': '累計トラフィック',
-        '总上传': '総アップロード',
-        '总下载': '総ダウンロード',
-        'LAN 已上传': 'LAN アップロード済み',
-        'LAN 已下载': 'LAN ダウンロード済み',
-        'WAN 已上传': 'WAN アップロード済み',
-        'WAN 已下载': 'WAN ダウンロード済み',
-        '总上传速率': '総アップロード速度',
-        '总下载速率': '総ダウンロード速度',
-        'LAN 上传速率': 'LAN アップロード速度',
-        'LAN 下载速率': 'LAN ダウンロード速度',
-        'WAN 上传速率': 'WAN アップロード速度',
-        'WAN 下载速率': 'WAN ダウンロード速度',
-        '从未上线': 'オンライン未経験',
-        '刚刚': '今',
-        '分钟前': '分前',
-        '小时前': '時間前',
-        '天前': '日前',
-        '个月前': 'ヶ月前',
-        '年前': '年前',
-        '最后上线': '最終オンライン',
-        '缩放': 'ズーム',
-        '排序方式': '並び順',
-        '在线状态': 'オンライン状態',
-        '总流量': '総トラフィック',
-        '升序': '昇順',
-        '降序': '降順',
-        '按速度排序': '速度順',
-        '按用量排序': '使用量順',
-        '简易模式': 'シンプルモード',
-        '详细模式': '詳細モード'
-    },
-    'ru': {
-        'Bandix 流量监控': 'Монитор Трафика Bandix',
-        '正在加载数据...': 'Загрузка данных...',
-        '无法获取数据': 'Не удалось получить данные',
-        '无法获取历史数据': 'Не удалось получить исторические данные',
-        '主机名': 'Имя хоста',
-        'IP地址': 'IP-адрес',
-        'MAC地址': 'MAC-адрес',
-        '下载速度': 'Скорость загрузки',
-        '上传速度': 'Скорость выгрузки',
-        '总下载量': 'Общая загрузка',
-        '总上传量': 'Общая выгрузка',
-        '下载限速': 'Ограничение загрузки',
-        '上传限速': 'Ограничение выгрузки',
-        '界面语言': 'Язык интерфейса',
-        '选择 Bandix 流量监控的显示语言': 'Выберите язык отображения для Монитора Трафика Bandix',
-        '设备信息': 'Информация об устройстве',
-        '设备列表': 'Список устройств',
-        'LAN 流量': 'Трафик LAN',
-        'WAN 流量': 'Трафик WAN',
-        '限速设置': 'Ограничение скорости',
-        '操作': 'Действия',
-        '在线设备': 'Онлайн устройства',
-        '仅限WAN 流量': 'Только WAN',
-        '设置': 'Настройки',
-        '设备设置': 'Настройки устройства',
-        '限速设置': 'Настройки ограничения',
-        '取消限速': 'Удалить ограничение',
-        '保存': 'Сохранить',
-        '取消': 'Отмена',
-        '设置限速': 'Установить ограничение',
-        '设备': 'Устройство',
-        '上传限速': 'Ограничение выгрузки',
-        '下载限速': 'Ограничение загрузки',
-        '无限制': 'Без ограничений',
-        '设置成功': 'Настройки успешно сохранены',
-        '设置失败': 'Не удалось сохранить настройки',
-        '请输入有效的速度值': 'Пожалуйста, введите допустимое значение скорости',
-        '速度值必须大于0': 'Значение скорости должно быть больше 0',
-        '保存中...': 'Сохранение...',
-        '限速功能仅对 WAN 流量生效。': 'Ограничение скорости применяется только к WAN-трафику.',
-        '提示：输入 0 表示无限制': 'Совет: Введите 0 для снятия ограничений',
-        '历史流量趋势': 'История трафика',
-        '选择设备': 'Выбрать устройство',
-        '所有设备': 'Все устройства',
-        '时间范围': 'Временной диапазон',
-        '最近5分钟': 'Последние 5 минут',
-        '最近30分钟': 'Последние 30 минут',
-        '最近2小时': 'Последние 2 часа',
-        '类型': 'Тип',
-        '总流量': 'Общий',
-        'LAN 流量': 'LAN',
-        'WAN 流量': 'WAN',
-        '刷新': 'Обновить',
-        '上传速率': 'Скорость отправки',
-        '下载速率': 'Скорость загрузки',
-        '最近': 'За последние',
-        '秒': 'сек.',
-        '分钟': 'мин.',
-        '小时': 'ч.',
-        '天': 'дн.',
-        '周': 'нед.',
-        '其他速率': 'Другие скорости',
-        '累计流量': 'Суммарный трафик',
-        '总上传': 'Всего отправлено',
-        '总下载': 'Всего получено',
-        'LAN 已上传': 'LAN Отправлено',
-        'LAN 已下载': 'LAN Получено',
-        'WAN 已上传': 'WAN Отправлено',
-        'WAN 已下载': 'WAN Получено',
-        '总上传速率': 'Общая скорость отправки',
-        '总下载速率': 'Общая скорость загрузки',
-        'LAN 上传速率': 'Скорость отправки LAN',
-        'LAN 下载速率': 'Скорость загрузки LAN',
-        'WAN 上传速率': 'Скорость отправки WAN',
-        'WAN 下载速率': 'Скорость загрузки WAN',
-        '从未上线': 'Никогда не был онлайн',
-        '刚刚': 'Только что',
-        '分钟前': 'мин назад',
-        '小时前': 'ч назад',
-        '天前': 'дн назад',
-        '个月前': 'мес назад',
-        '年前': 'лет назад',
-        '最后上线': 'Последний онлайн',
-        '缩放': 'Масштаб',
-        '排序方式': 'Сортировка',
-        '在线状态': 'Статус онлайн',
-        '总流量': 'Общий трафик',
-        '升序': 'По возрастанию',
-        '降序': 'По убыванию',
-        '按速度排序': 'По скорости',
-        '按用量排序': 'По объёму',
-        '简易模式': 'Простой режим',
-        '详细模式': 'Подробный режим'
-    }
-};
-
-function getTranslation(key, language) {
-    return translations[language]?.[key] || key;
-}
-
-function getSystemLanguage() {
-    // 尝试获取 LuCI 的语言设置
-    var luciLang = uci.get('luci', 'main', 'lang');
-    
-    if (luciLang && translations[luciLang]) {
-        return luciLang;
-    }
-    
-    // 如果没有 LuCI 语言设置，尝试获取浏览器语言作为回退
-    var systemLang = document.documentElement.lang || 'en';
-    
-    if (translations[systemLang]) {
-        return systemLang;
-    }
-    
-    // 最终回退到英语
-    return 'en';
-}
-
-function isDarkMode() {
-    // 首先检查用户设置的主题
-    var userTheme = uci.get('bandix', 'general', 'theme');
-    if (userTheme) {
-        if (userTheme === 'dark') {
-            return true;
-        } else if (userTheme === 'light') {
-            return false;
-        }
-        // 如果是 'auto'，继续检查系统主题
-    }
-    
+// 检测主题类型：返回 'wide'（宽主题，如 Argon）或 'narrow'（窄主题，如 Bootstrap）
+function getThemeType() {
     // 获取 LuCI 主题设置
     var mediaUrlBase = uci.get('luci', 'main', 'mediaurlbase');
-    if (mediaUrlBase && mediaUrlBase.toLowerCase().includes('dark')) {
-        return true;
+    
+    if (!mediaUrlBase) {
+        // 如果无法获取，尝试从 DOM 中检测
+        var linkTags = document.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < linkTags.length; i++) {
+            var href = linkTags[i].getAttribute('href') || '';
+            if (href.toLowerCase().includes('argon')) {
+                return 'wide';
+            }
+        }
+        // 默认返回窄主题
+        return 'narrow';
     }
     
-    // 如果是 argon 主题，检查 argon 配置
-    if (mediaUrlBase && mediaUrlBase.toLowerCase().includes('argon')) {
-        var argonMode = uci.get('argon', '@global[0]', 'mode');
-        if (argonMode) {
-            if (argonMode.toLowerCase() === 'dark') {
-                return true;
-            } else if (argonMode.toLowerCase() === 'light') {
-                return false;
-            }
-            // 如果是 'normal' 或 'auto'，使用浏览器检测系统颜色偏好
-            if (argonMode.toLowerCase() === 'normal' || argonMode.toLowerCase() === 'auto') {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    return true;
-                }
-                return false;
-            }
+    var mediaUrlBaseLower = mediaUrlBase.toLowerCase();
+    
+    // 宽主题关键词列表（可以根据需要扩展）
+    var wideThemeKeywords = ['argon', 'material', 'design', 'edge'];
+    
+    // 检查是否是宽主题
+    for (var i = 0; i < wideThemeKeywords.length; i++) {
+        if (mediaUrlBaseLower.includes(wideThemeKeywords[i])) {
+            return 'wide';
         }
     }
     
-    // 默认情况下也使用浏览器检测系统颜色偏好
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return true;
-    }
-    
-    return false;
+    // 默认是窄主题（Bootstrap 等）
+    return 'narrow';
 }
 
 function formatSize(bytes) {
@@ -790,33 +168,22 @@ return view.extend({
     },
 
     render: function (data) {
-        var language = uci.get('bandix', 'general', 'language');
-        if (!language || language === 'auto') {
-            language = getSystemLanguage();
-        }
-        var darkMode = isDarkMode();
-
-        // 添加现代化样式，支持暗黑模式
+        
+        // 添加现代化样式
         var style = E('style', {}, `
             .bandix-container {
-                padding: 16px;
-                background-color: ${darkMode ? '#1a1a1a' : '#f8fafc'};
-                min-height: 100vh;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                color: ${darkMode ? '#e2e8f0' : '#1f2937'};
             }
             
             .bandix-header {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                margin-bottom: 20px;
             }
             
             .bandix-title {
                 font-size: 1.5rem;
                 font-weight: 600;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
                 margin: 0;
             }
             
@@ -830,17 +197,13 @@ return view.extend({
                 display: inline-flex;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
             }
             
             .device-mode-btn {
-                background-color: ${darkMode ? '#2a2a2a' : '#ffffff'};
                 border: none;
-                border-right: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
                 padding: 0 12px;
                 font-size: 0.8125rem;
                 line-height: 1.8;
-                color: ${darkMode ? '#a0a0a0' : '#64748b'};
                 cursor: pointer;
                 user-select: none;
                 transition: all 0.15s ease;
@@ -848,13 +211,8 @@ return view.extend({
                 height: 28px;
             }
             
-            .device-mode-btn:last-child {
-                border-right: none;
-            }
-            
             .device-mode-btn:hover:not(.active) {
-                background-color: ${darkMode ? '#3a3a3a' : '#f1f5f9'};
-                color: ${darkMode ? '#d0d0d0' : '#475569'};
+                opacity: 0.7;
             }
             
             .device-mode-btn.active {
@@ -863,29 +221,22 @@ return view.extend({
             }
             
             .bandix-badge {
-                background-color: ${darkMode ? '#2a2a2a' : '#f8fafc'};
-                border: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
                 border-radius: 4px;
                 padding: 4px 10px;
                 font-size: 0.875rem;
-                color: ${darkMode ? '#d0d0d0' : '#475569'};
             }
             
             .bandix-alert {
-                background-color: ${darkMode ? '#2a2a2a' : '#eff6ff'};
-                border-left: 3px solid ${darkMode ? '#3b82f6' : '#2563eb'};
                 border-radius: 4px;
                 padding: 10px 12px;
-                margin-bottom: 16px;
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 gap: 10px;
-                color: ${darkMode ? '#d0d0d0' : '#1e293b'};
                 font-size: 0.875rem;
             }
             
             .bandix-alert-icon {
-                color: ${darkMode ? '#60a5fa' : '#2563eb'};
                 font-size: 0.875rem;
                 font-weight: 700;
                 width: 18px;
@@ -893,48 +244,20 @@ return view.extend({
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border: 2px solid currentColor;
                 border-radius: 50%;
                 flex-shrink: 0;
             }
             
-            .bandix-card {
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                border-radius: 8px;
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
-                overflow: hidden;
-                margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, ${darkMode ? '0.3' : '0.08'});
-            }
-            
-            .bandix-card-header {
-                padding: 16px;
-                border-bottom: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
-                background-color: ${darkMode ? '#2a2a2a' : '#f8fafc'};
-            }
-            
-            .bandix-card-title {
-                font-size: 1.125rem;
-                font-weight: 600;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
-                margin: 0;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
             
             .bandix-table {
                 width: 100%;
-                border-collapse: collapse;
                 table-layout: fixed;
             }
             
             .bandix-table th {
-                background-color: ${darkMode ? '#2a2a2a' : '#f8fafc'};
                 padding: 10px 16px;
                 text-align: left;
                 font-weight: 600;
-                color: ${darkMode ? '#d0d0d0' : '#475569'};
                 border: none;
                 font-size: 0.875rem;
                 cursor: pointer;
@@ -944,7 +267,7 @@ return view.extend({
             }
             
             .bandix-table th:hover {
-                background-color: ${darkMode ? '#3a3a3a' : '#f1f5f9'};
+                opacity: 0.7;
             }
             
             .bandix-table th.sortable::after {
@@ -985,11 +308,11 @@ return view.extend({
             }
             
             .th-split-section:hover {
-                background-color: ${darkMode ? '#3a3a3a' : '#e5e7eb'};
+                opacity: 0.7;
             }
             
             .th-split-section.active {
-                background-color: ${darkMode ? '#3a3a3a' : '#e5e7eb'};
+                opacity: 0.7;
             }
             
             .th-split-icon {
@@ -1005,7 +328,7 @@ return view.extend({
             .th-split-divider {
                 width: 1px;
                 height: 16px;
-                background-color: ${darkMode ? '#3a3a3a' : '#d1d5db'};
+                background-color: currentColor;
                 opacity: 0.5;
             }
             
@@ -1015,12 +338,6 @@ return view.extend({
                 vertical-align: middle;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
-                color: ${darkMode ? '#d0d0d0' : '#334155'};
-                border-bottom: 1px solid ${darkMode ? '#333333' : '#f1f5f9'};
-            }
-            
-            .bandix-table tr:last-child td {
-                border-bottom: none;
             }
             
             .bandix-table th:nth-child(1),
@@ -1040,7 +357,7 @@ return view.extend({
             
             .bandix-table th:nth-child(4),
             .bandix-table td:nth-child(4) {
-                width: 22%;
+                width: 15%;
             }
             
             .bandix-table th:nth-child(5),
@@ -1061,7 +378,6 @@ return view.extend({
             
             .device-name {
                 font-weight: 600;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
                 display: flex;
                 align-items: center;
                 gap: 8px;
@@ -1083,18 +399,18 @@ return view.extend({
             }
             
             .device-ip {
-                color: ${darkMode ? '#94a3b8' : '#6b7280'};
+                opacity: 0.7;
                 font-size: 0.875rem;
             }
             
             .device-ipv6 {
-                color: ${darkMode ? '#94a3b8' : '#6b7280'};
+                opacity: 0.7;
                 font-size: 0.75rem;
                 font-family: monospace;
             }
             
             .device-mac {
-                color: ${darkMode ? '#64748b' : '#9ca3af'};
+                opacity: 0.6;
                 font-size: 0.75rem;
             }
             
@@ -1128,13 +444,9 @@ return view.extend({
                 font-size: 0.875rem;
             }
             
-            .traffic-speed {
-                color: ${darkMode ? '#e2e8f0' : '#374151'};
-            }
-            
             .traffic-total {
                 font-size: 0.75rem;
-                color: #64748b;
+                opacity: 0.6;
                 margin-left: 4px;
             }
             
@@ -1145,61 +457,36 @@ return view.extend({
             }
             
             .limit-badge {
-                background-color: ${darkMode ? '#1a1a1a' : '#f8fafc'};
-                color: ${darkMode ? '#a0a0a0' : '#64748b'};
                 padding: 3px 8px;
                 border-radius: 3px;
                 font-size: 0.75rem;
                 text-align: center;
                 margin-top: 4px;
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
             }
-            
-            .action-button {
-                background-color: ${darkMode ? '#2a2a2a' : '#f8fafc'};
-                border: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
-                border-radius: 4px;
-                padding: 6px 12px;
-                cursor: pointer;
-                font-size: 0.875rem;
-                color: ${darkMode ? '#d0d0d0' : '#475569'};
-                transition: all 0.15s ease;
-            }
-            
-            .action-button:hover {
-                background-color: ${darkMode ? '#3a3a3a' : '#e2e8f0'};
-                border-color: ${darkMode ? '#555555' : '#94a3b8'};
-            }
-            
             
             .loading {
                 text-align: center;
                 padding: 40px;
-                color: ${darkMode ? '#94a3b8' : '#6b7280'};
+                opacity: 0.7;
                 font-style: italic;
             }
             
             .error {
                 text-align: center;
                 padding: 40px;
-                color: ${darkMode ? '#f87171' : '#ef4444'};
             }
             
             .stats-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 16px;
-                margin-bottom: 16px;
+                margin-bottom: 0;
+                margin-top: 0;
             }
             
-            .stats-card {
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                border-radius: 8px;
-                padding: 20px;
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
-                position: relative;
-                overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, ${darkMode ? '0.3' : '0.08'});
+            
+            .bandix-container > .cbi-section:last-of-type {
+                margin-bottom: 0;
             }
             
             .stats-card-header {
@@ -1212,10 +499,34 @@ return view.extend({
             .stats-card-title {
                 font-size: 0.875rem;
                 font-weight: 600;
-                color: ${darkMode ? '#94a3b8' : '#64748b'};
-                margin: 0;
+                opacity: 0.7;
+                margin: 0 0 12px 0;
                 text-transform: uppercase;
                 letter-spacing: 0.025em;
+            }
+            
+            .stats-grid .cbi-section {
+                padding: 16px;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+            }
+            
+            .stats-grid .cbi-section:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                transform: translateY(-2px);
+            }
+            
+            @media (prefers-color-scheme: dark) {
+                .stats-grid .cbi-section {
+                    border-color: rgba(255, 255, 255, 0.15);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+                }
+                
+                .stats-grid .cbi-section:hover {
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                }
             }
             
             .stats-card-icon {
@@ -1230,14 +541,13 @@ return view.extend({
             .stats-card-main-value {
                 font-size: 2.25rem;
                 font-weight: 700;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
                 margin: 0 0 8px 0;
                 line-height: 1;
             }
             
             .stats-card-sub-value {
                 font-size: 0.875rem;
-                color: ${darkMode ? '#9ca3af' : '#6b7280'};
+                opacity: 0.7;
                 margin: 0;
             }
             
@@ -1256,7 +566,7 @@ return view.extend({
             }
             
             .stats-detail-label {
-                color: ${darkMode ? '#9ca3af' : '#6b7280'};
+                opacity: 0.7;
                 font-weight: 500;
             }
             
@@ -1267,7 +577,6 @@ return view.extend({
             .stats-title {
                 font-size: 0.875rem;
                 font-weight: 600;
-                color: ${darkMode ? '#e2e8f0' : '#374151'};
                 margin-bottom: 8px;
                 display: flex;
                 align-items: center;
@@ -1277,7 +586,6 @@ return view.extend({
             .stats-value {
                 font-size: 1.25rem;
                 font-weight: 700;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
             }
             
             /* 模态框样式 */
@@ -1304,31 +612,34 @@ return view.extend({
             }
             
             .modal {
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                border-radius: 8px;
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
                 max-width: 500px;
                 width: 90%;
                 max-height: 90vh;
                 overflow-y: auto;
                 opacity: 0;
                 transition: opacity 0.2s ease;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, ${darkMode ? '0.5' : '0.15'});
+                background-color: rgba(255, 255, 255, 0.98);
+                color: #1f2937;
             }
             
             .modal-overlay.show .modal {
                 opacity: 1;
             }
             
+            @media (prefers-color-scheme: dark) {
+                .modal {
+                    background-color: rgba(30, 30, 30, 0.98);
+                    color: #e5e7eb;
+                }
+            }
+            
             .modal-header {
                 padding: 20px;
-                border-bottom: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
             }
             
             .modal-title {
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
                 margin: 0;
             }
             
@@ -1350,77 +661,24 @@ return view.extend({
             .form-label {
                 display: block;
                 font-weight: 600;
-                color: ${darkMode ? '#e2e8f0' : '#374151'};
                 margin-bottom: 8px;
                 font-size: 0.875rem;
             }
             
             .form-input {
                 width: 100%;
-                border: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
                 border-radius: 4px;
                 padding: 8px 12px;
                 font-size: 0.875rem;
                 transition: border-color 0.15s ease;
                 box-sizing: border-box;
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                color: ${darkMode ? '#e2e8f0' : '#1f2937'};
             }
             
             .form-input:focus {
                 outline: none;
-                border-color: #3b82f6;
-            }
-            
-            .form-select {
-                width: 100%;
-                border: 1px solid ${darkMode ? '#444444' : '#cbd5e1'};
-                border-radius: 4px;
-                padding: 8px 12px;
-                font-size: 0.875rem;
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                transition: border-color 0.15s ease;
-                box-sizing: border-box;
-                color: ${darkMode ? '#e2e8f0' : '#1f2937'};
-            }
-            
-            .form-select:focus {
-                outline: none;
-                border-color: #3b82f6;
-            }
-            
-            .btn {
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-size: 0.875rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.15s ease;
-                border: none;
-            }
-            
-            .btn-primary {
-                background-color: #3b82f6;
-                color: white;
-            }
-            
-            .btn-primary:hover {
-                background-color: #2563eb;
-            }
-            
-            .btn-secondary {
-                background-color: ${darkMode ? '#3a3a3a' : '#f1f5f9'};
-                color: ${darkMode ? '#d0d0d0' : '#475569'};
-                border: 1px solid ${darkMode ? '#555555' : '#cbd5e1'};
-            }
-            
-            .btn-secondary:hover {
-                background-color: ${darkMode ? '#4a4a4a' : '#e2e8f0'};
             }
             
             .device-summary {
-                background-color: ${darkMode ? '#1a1a1a' : '#f8fafc'};
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
                 border-radius: 4px;
                 padding: 12px;
                 margin-bottom: 16px;
@@ -1428,12 +686,11 @@ return view.extend({
             
             .device-summary-name {
                 font-weight: 600;
-                color: ${darkMode ? '#f1f5f9' : '#1f2937'};
                 margin-bottom: 4px;
             }
             
             .device-summary-details {
-                color: ${darkMode ? '#94a3b8' : '#6b7280'};
+                opacity: 0.7;
                 font-size: 0.875rem;
             }
             
@@ -1442,7 +699,7 @@ return view.extend({
                 display: inline-block;
                 width: 16px;
                 height: 16px;
-                border: 2px solid #f3f4f6;
+                border: 2px solid transparent;
                 border-radius: 50%;
                 border-top-color: #3b82f6;
                 animation: spin 1s ease-in-out infinite;
@@ -1470,11 +727,8 @@ return view.extend({
                 gap: 12px;
                 align-items: center;
                 padding: 12px 16px;
-                border-bottom: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
-                background-color: ${darkMode ? '#2a2a2a' : '#f8fafc'};
             }
-            .history-controls .form-select,
-            .history-controls .form-input {
+            .history-controls .cbi-select {
                 width: auto;
                 min-width: 160px;
             }
@@ -1488,7 +742,7 @@ return view.extend({
                 align-items: center;
                 gap: 12px;
             }
-            .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; color: ${darkMode ? '#e2e8f0' : '#374151'}; }
+            .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
             .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
             .legend-up { background-color: #f97316; }
             .legend-down { background-color: #06b6d4; }
@@ -1498,31 +752,40 @@ return view.extend({
                 display: none;
 				width: 320px;
 				box-sizing: border-box;
-                background-color: ${darkMode ? '#2a2a2a' : 'white'};
-                color: ${darkMode ? '#e2e8f0' : '#1f2937'};
-                border: 1px solid ${darkMode ? '#444444' : '#e2e8f0'};
-                border-radius: 6px;
-                box-shadow: 0 6px 20px rgba(0,0,0,${darkMode ? '0.4' : '0.15'});
                 padding: 12px;
                 z-index: 10;
                 pointer-events: none;
                 font-size: 0.8125rem;
                 line-height: 1.5;
                 white-space: nowrap;
+                background-color: rgba(255, 255, 255, 0.98);
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                color: #1f2937;
+            }
+            
+            @media (prefers-color-scheme: dark) {
+                .history-tooltip {
+                    background-color: rgba(30, 30, 30, 0.98);
+                    border-color: rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                    color: #e5e7eb;
+                }
             }
             .history-tooltip .ht-title { font-weight: 700; margin-bottom: 6px; }
             .history-tooltip .ht-row { display: flex; justify-content: space-between; gap: 12px; }
-            .history-tooltip .ht-key { color: ${darkMode ? '#94a3b8' : '#6b7280'}; }
-            .history-tooltip .ht-val { color: ${darkMode ? '#e2e8f0' : '#111827'}; }
-			.history-tooltip .ht-device { margin-top: 4px; margin-bottom: 6px; color: ${darkMode ? '#94a3b8' : '#6b7280'}; font-size: 0.75rem; }
+            .history-tooltip .ht-key { opacity: 0.7; }
+            .history-tooltip .ht-val { }
+			.history-tooltip .ht-device { margin-top: 4px; margin-bottom: 6px; opacity: 0.7; font-size: 0.75rem; }
 			/* 强调关键信息的排版 */
 			.history-tooltip .ht-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2px; margin-bottom: 6px; }
-			.history-tooltip .ht-kpi .ht-k-label { color: ${darkMode ? '#94a3b8' : '#6b7280'}; font-size: 0.75rem; }
+			.history-tooltip .ht-kpi .ht-k-label { opacity: 0.7; font-size: 0.75rem; }
 			.history-tooltip .ht-kpi .ht-k-value { font-size: 1rem; font-weight: 700; }
 			.history-tooltip .ht-kpi.down .ht-k-value { color: #06b6d4; }
 			.history-tooltip .ht-kpi.up .ht-k-value { color: #f97316; }
-			.history-tooltip .ht-divider { height: 1px; background-color: ${darkMode ? '#3a3a3a' : '#e5e7eb'}; margin: 8px 0; }
-			.history-tooltip .ht-section-title { font-weight: 600; font-size: 0.75rem; color: ${darkMode ? '#94a3b8' : '#6b7280'}; margin: 4px 0 6px 0; }
+			.history-tooltip .ht-divider { height: 1px; background-color: currentColor; opacity: 0.3; margin: 8px 0; }
+			.history-tooltip .ht-section-title { font-weight: 600; font-size: 0.75rem; opacity: 0.7; margin: 4px 0 6px 0; }
         `);
 
         document.head.appendChild(style);
@@ -1530,46 +793,43 @@ return view.extend({
         var view = E('div', { 'class': 'bandix-container' }, [
             // 头部
             E('div', { 'class': 'bandix-header' }, [
-                E('h1', { 'class': 'bandix-title' }, getTranslation('Bandix 流量监控', language)),
-                E('div', { 'class': 'bandix-badge', 'id': 'device-count' }, getTranslation('在线设备', language) + ': 0 / 0')
+                E('h1', { 'class': 'bandix-title' }, _('Bandix Traffic Monitor'))
             ]),
 
-            // 警告提示
+            // 警告提示（包含在线设备数）
             E('div', { 'class': 'bandix-alert' }, [
-                E('span', { 'class': 'bandix-alert-icon' }, '!'),
-                E('span', {}, getTranslation('限速功能仅对 WAN 流量生效。', language))
+                E('span', {}, _('Rate limiting only applies to WAN traffic.')),
+                E('div', { 'class': 'bandix-badge', 'id': 'device-count' }, _('Online Devices') + ': 0 / 0')
             ]),
 
             // 统计卡片
             E('div', { 'class': 'stats-grid', 'id': 'stats-grid' }),
 
             // 历史趋势卡片（无时间范围筛选）
-            E('div', { 'class': 'bandix-card', 'id': 'history-card' }, [
-                E('div', { 'class': 'bandix-card-header history-header' }, [
-                    E('div', { 'class': 'bandix-card-title' }, [
-                        getTranslation('历史流量趋势', language)
-                    ]),
+            E('div', { 'class': 'cbi-section', 'id': 'history-card' }, [
+                E('h3', { 'class': 'history-header', 'style': 'display: flex; align-items: center; justify-content: space-between;' }, [
+                    E('span', {}, _('Traffic History')),
                     E('div', { 'class': 'history-legend' }, [
                         E('div', { 'class': 'legend-item' }, [
                             E('span', { 'class': 'legend-dot legend-up' }),
-                            getTranslation('上传速率', language)
+                            _('Upload Rate')
                         ]),
                         E('div', { 'class': 'legend-item' }, [
                             E('span', { 'class': 'legend-dot legend-down' }),
-                            getTranslation('下载速率', language)
+                            _('Download Rate')
                         ])
                     ])
                 ]),
                 E('div', { 'class': 'history-controls' }, [
-                    E('label', { 'class': 'form-label', 'style': 'margin: 0;' }, getTranslation('选择设备', language)),
-                    E('select', { 'class': 'form-select', 'id': 'history-device-select' }, [
-                        E('option', { 'value': '' }, getTranslation('所有设备', language))
+                    E('label', { 'class': 'form-label', 'style': 'margin: 0;' }, _('Select Device')),
+                    E('select', { 'class': 'cbi-select', 'id': 'history-device-select' }, [
+                        E('option', { 'value': '' }, _('All Devices'))
                     ]),
-                    E('label', { 'class': 'form-label', 'style': 'margin: 0;' }, getTranslation('类型', language)),
-                    E('select', { 'class': 'form-select', 'id': 'history-type-select' }, [
-                        E('option', { 'value': 'total' }, getTranslation('总流量', language)),
-                        E('option', { 'value': 'lan' }, getTranslation('LAN 流量', language)),
-                        E('option', { 'value': 'wan' }, getTranslation('WAN 流量', language))
+                    E('label', { 'class': 'form-label', 'style': 'margin: 0;' }, _('Type')),
+                    E('select', { 'class': 'cbi-select', 'id': 'history-type-select' }, [
+                        E('option', { 'value': 'total' }, _('Total')),
+                        E('option', { 'value': 'lan' }, _('LAN Traffic')),
+                        E('option', { 'value': 'wan' }, _('WAN Traffic'))
                     ]),
                     E('span', { 'class': 'bandix-badge', 'id': 'history-zoom-level', 'style': 'margin-left: 16px; display: none;' }, ''),
                     E('span', { 'class': 'bandix-badge', 'id': 'history-retention', 'style': 'margin-left: auto;' }, '')
@@ -1581,31 +841,29 @@ return view.extend({
             ]),
 
             // 主要内容卡片
-            E('div', { 'class': 'bandix-card' }, [
-                E('div', { 'class': 'bandix-card-header history-header' }, [
-                    E('div', { 'class': 'bandix-card-title' }, [
-                        getTranslation('设备列表', language)
-                    ]),
+            E('div', { 'class': 'cbi-section' }, [
+                E('h3', { 'class': 'history-header', 'style': 'display: flex; align-items: center; justify-content: space-between;' }, [
+                    E('span', {}, _('Device List')),
                     E('div', { 'class': 'device-mode-group' }, [
                         E('button', { 
                             'class': 'device-mode-btn' + (localStorage.getItem('bandix_device_mode') !== 'detailed' ? ' active' : ''),
                             'data-mode': 'simple'
-                        }, getTranslation('简易模式', language)),
+                        }, _('Simple Mode')),
                         E('button', { 
                             'class': 'device-mode-btn' + (localStorage.getItem('bandix_device_mode') === 'detailed' ? ' active' : ''),
                             'data-mode': 'detailed'
-                        }, getTranslation('详细模式', language))
+                        }, _('Detailed Mode'))
                     ])
                 ]),
                 E('div', { 'id': 'traffic-status' }, [
                     E('table', { 'class': 'bandix-table' }, [
                         E('thead', {}, [
                             E('tr', {}, [
-                                E('th', {}, getTranslation('设备信息', language)),
-                                E('th', {}, getTranslation('LAN 流量', language)),
-                                E('th', {}, getTranslation('WAN 流量', language)),
-                                E('th', {}, getTranslation('限速设置', language)),
-                                E('th', {}, getTranslation('操作', language))
+                                E('th', {}, _('Device Info')),
+                                E('th', {}, _('LAN Traffic')),
+                                E('th', {}, _('WAN Traffic')),
+                                E('th', {}, _('Rate Limit')),
+                                E('th', {}, _('Actions'))
                             ])
                         ]),
                         E('tbody', {})
@@ -1644,35 +902,35 @@ return view.extend({
         var modal = E('div', { 'class': 'modal-overlay', 'id': 'rate-limit-modal' }, [
             E('div', { 'class': 'modal' }, [
                 E('div', { 'class': 'modal-header' }, [
-                    E('h3', { 'class': 'modal-title' }, getTranslation('设备设置', language))
+                    E('h3', { 'class': 'modal-title' }, _('Device Settings'))
                 ]),
                 E('div', { 'class': 'modal-body' }, [
                     E('div', { 'class': 'device-summary', 'id': 'modal-device-summary' }),
                     E('div', { 'class': 'form-group' }, [
-                        E('label', { 'class': 'form-label' }, getTranslation('主机名', language)),
-                        E('input', { 'type': 'text', 'class': 'form-input', 'id': 'device-hostname-input', 'placeholder': getTranslation('请输入主机名', language) }),
-                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, getTranslation('设置主机名', language))
+                        E('label', { 'class': 'form-label' }, _('Hostname')),
+                        E('input', { 'type': 'text', 'class': 'form-input', 'id': 'device-hostname-input', 'placeholder': _('Please enter hostname') }),
+                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, _('Set Hostname'))
                     ]),
                     E('div', { 'class': 'form-group' }, [
-                        E('label', { 'class': 'form-label' }, getTranslation('上传限速', language)),
+                        E('label', { 'class': 'form-label' }, _('Upload Limit')),
                         E('div', { 'style': 'display: flex; gap: 8px;' }, [
                             E('input', { 'type': 'number', 'class': 'form-input', 'id': 'upload-limit-value', 'min': '0', 'step': '1', 'placeholder': '0' }),
-                            E('select', { 'class': 'form-select', 'id': 'upload-limit-unit', 'style': 'width: 100px;' })
+                            E('select', { 'class': 'cbi-select', 'id': 'upload-limit-unit', 'style': 'width: 100px;' })
                         ]),
-                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, getTranslation('提示：输入 0 表示无限制', language))
+                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, _('Tip: Enter 0 for unlimited'))
                     ]),
                     E('div', { 'class': 'form-group' }, [
-                        E('label', { 'class': 'form-label' }, getTranslation('下载限速', language)),
+                        E('label', { 'class': 'form-label' }, _('Download Limit')),
                         E('div', { 'style': 'display: flex; gap: 8px;' }, [
                             E('input', { 'type': 'number', 'class': 'form-input', 'id': 'download-limit-value', 'min': '0', 'step': '1', 'placeholder': '0' }),
-                            E('select', { 'class': 'form-select', 'id': 'download-limit-unit', 'style': 'width: 100px;' })
+                            E('select', { 'class': 'cbi-select', 'id': 'download-limit-unit', 'style': 'width: 100px;' })
                         ]),
-                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, getTranslation('提示：输入 0 表示无限制', language))
+                        E('div', { 'style': 'font-size: 0.75rem; color: #6b7280; margin-top: 4px;' }, _('Tip: Enter 0 for unlimited'))
                     ])
                 ]),
                 E('div', { 'class': 'modal-footer' }, [
-                    E('button', { 'class': 'btn btn-secondary', 'id': 'modal-cancel' }, getTranslation('取消', language)),
-                    E('button', { 'class': 'btn btn-primary', 'id': 'modal-save' }, getTranslation('保存', language))
+                    E('button', { 'class': 'cbi-button cbi-button-reset', 'id': 'modal-cancel' }, _('Cancel')),
+                    E('button', { 'class': 'cbi-button cbi-button-positive', 'id': 'modal-save' }, _('Save'))
                 ])
             ])
         ]);
@@ -1805,6 +1063,83 @@ return view.extend({
             }
             document.getElementById('download-limit-unit').value = downloadUnit;
 
+            // 应用 cbi-section 的颜色到模态框
+            try {
+                // 优先从 cbi-section 获取颜色
+                var cbiSection = document.querySelector('.cbi-section');
+                var targetElement = cbiSection || document.querySelector('.main') || document.body;
+                var computedStyle = window.getComputedStyle(targetElement);
+                var bgColor = computedStyle.backgroundColor;
+                var textColor = computedStyle.color;
+                
+                // 获取模态框元素
+                var modalElement = modal.querySelector('.modal');
+                
+                // 确保背景色不透明
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                    var rgbaMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                    if (rgbaMatch) {
+                        var r = parseInt(rgbaMatch[1]);
+                        var g = parseInt(rgbaMatch[2]);
+                        var b = parseInt(rgbaMatch[3]);
+                        var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                        
+                        if (alpha < 0.95) {
+                            modalElement.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                        } else {
+                            modalElement.style.backgroundColor = bgColor;
+                        }
+                    } else {
+                        modalElement.style.backgroundColor = bgColor;
+                    }
+                } else {
+                    // 如果无法获取背景色，尝试从其他 cbi-section 获取
+                    var allCbiSections = document.querySelectorAll('.cbi-section');
+                    var foundBgColor = false;
+                    for (var i = 0; i < allCbiSections.length; i++) {
+                        var sectionStyle = window.getComputedStyle(allCbiSections[i]);
+                        var sectionBg = sectionStyle.backgroundColor;
+                        if (sectionBg && sectionBg !== 'rgba(0, 0, 0, 0)' && sectionBg !== 'transparent') {
+                            var rgbaMatch = sectionBg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                            if (rgbaMatch) {
+                                var r = parseInt(rgbaMatch[1]);
+                                var g = parseInt(rgbaMatch[2]);
+                                var b = parseInt(rgbaMatch[3]);
+                                var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                                if (alpha < 0.95) {
+                                    modalElement.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                                } else {
+                                    modalElement.style.backgroundColor = sectionBg;
+                                }
+                            } else {
+                                modalElement.style.backgroundColor = sectionBg;
+                            }
+                            foundBgColor = true;
+                            break;
+                        }
+                    }
+                    // 如果无法获取背景色，CSS 会通过媒体查询自动处理暗色模式
+                    if (!foundBgColor) {
+                        // 不设置背景色，让 CSS 媒体查询处理
+                    }
+                }
+                
+                // 应用文字颜色
+                if (textColor && textColor !== 'rgba(0, 0, 0, 0)') {
+                    modalElement.style.color = textColor;
+                } else {
+                    if (cbiSection) {
+                        var sectionTextColor = window.getComputedStyle(cbiSection).color;
+                        if (sectionTextColor && sectionTextColor !== 'rgba(0, 0, 0, 0)') {
+                            modalElement.style.color = sectionTextColor;
+                        }
+                    }
+                }
+            } catch(e) {
+                // 如果出错，CSS 会通过媒体查询自动处理暗色模式
+                // 不设置样式，让 CSS 处理
+            }
+            
             // 显示模态框并添加动画
             modal.classList.add('show');
         }
@@ -1828,7 +1163,7 @@ return view.extend({
             var originalText = saveButton.textContent;
 
             // 显示加载状态
-            saveButton.innerHTML = '<span class="loading-spinner"></span>' + getTranslation('保存中...', language);
+            saveButton.innerHTML = '<span class="loading-spinner"></span>' + _('Saving...');
             saveButton.classList.add('btn-loading');
 
             var uploadLimit = 0;
@@ -1891,10 +1226,10 @@ return view.extend({
                 results.forEach(function(result, index) {
                     if (result && result.hostnameError) {
                         hasError = true;
-                        errorMessages.push(getTranslation('主机名设置失败', language));
+                        errorMessages.push(_('Failed to set hostname'));
                     } else if (result && result.rateLimitError) {
                         hasError = true;
-                        errorMessages.push(getTranslation('设置失败', language));
+                        errorMessages.push(_('Failed to save settings'));
                     } else if (result !== true && result !== undefined) {
                         // 检查是否有其他错误
                         if (result && result.error) {
@@ -1914,7 +1249,7 @@ return view.extend({
                 // 恢复按钮状态
                 saveButton.innerHTML = originalText;
                 saveButton.classList.remove('btn-loading');
-                ui.addNotification(null, E('p', {}, getTranslation('设置失败', language)), 'error');
+                ui.addNotification(null, E('p', {}, _('Failed to save settings')), 'error');
             });
         }
 
@@ -1990,7 +1325,7 @@ return view.extend({
             var prev = select.value;
             // 重建选项
             select.innerHTML = '';
-            select.appendChild(E('option', { 'value': '' }, getTranslation('所有设备', language)));
+            select.appendChild(E('option', { 'value': '' }, _('All Devices')));
             sortedDevices.forEach(function (d) {
                 var label = (d.hostname || d.ip || d.mac || '-') + (d.ip ? ' (' + d.ip + ')' : '') + (d.mac ? ' [' + d.mac + ']' : '');
                 select.appendChild(E('option', { 'value': d.mac }, label));
@@ -2020,11 +1355,18 @@ return view.extend({
             var zoomLevelElement = document.getElementById('history-zoom-level');
             if (!zoomLevelElement) return;
             
+            // 如果是窄主题，隐藏 zoom 显示
+            var themeType = getThemeType();
+            if (themeType === 'narrow') {
+                zoomLevelElement.style.display = 'none';
+                return;
+            }
+            
             if (zoomScale <= 1) {
                 zoomLevelElement.style.display = 'none';
             } else {
                 zoomLevelElement.style.display = 'inline-block';
-                zoomLevelElement.textContent = getTranslation('缩放', language) + ': ' + zoomScale.toFixed(1) + 'x';
+                zoomLevelElement.textContent = _('Zoom') + ': ' + zoomScale.toFixed(1) + 'x';
             }
         }
 
@@ -2109,7 +1451,7 @@ return view.extend({
 
             // 网格与Y轴刻度（更细更淡）
             var gridLines = 4;
-            ctx.strokeStyle = (darkMode ? 'rgba(148,163,184,0.06)' : 'rgba(148,163,184,0.08)');
+            ctx.strokeStyle = 'rgba(148,163,184,0.08)';
             ctx.lineWidth = 0.8;
             for (var g = 0; g <= gridLines; g++) {
                 var y = padding.top + (innerH * g / gridLines);
@@ -2118,7 +1460,7 @@ return view.extend({
                 ctx.lineTo(width - padding.right, y);
                 ctx.stroke();
                 var val = Math.round(maxVal * (gridLines - g) / gridLines);
-                ctx.fillStyle = (darkMode ? 'rgba(148,163,184,0.7)' : '#9ca3af');
+                ctx.fillStyle = '#9ca3af';
                 ctx.font = '12px sans-serif';
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'middle';
@@ -2213,8 +1555,7 @@ return view.extend({
                         hoverIdx = Math.max(0, Math.min(n - 1, hoverIdx));
                         var hoverX = info.padding.left + (n > 1 ? stepX * hoverIdx : innerW / 2);
                         ctx.save();
-                        var hoverColor = (typeof darkMode !== 'undefined' && darkMode) ? 'rgba(148,163,184,0.7)' : 'rgba(156,163,175,0.9)';
-                        ctx.strokeStyle = hoverColor;
+                        ctx.strokeStyle = 'rgba(156,163,175,0.9)';
                         ctx.lineWidth = 1;
                         ctx.setLineDash([6, 4]);
                         ctx.beginPath();
@@ -2236,10 +1577,9 @@ return view.extend({
             return hh + ':' + mm + ':' + ss;
         }
 
-		function buildTooltipHtml(point, language) {
+		function buildTooltipHtml(point) {
 			if (!point) return '';
 			var lines = [];
-			var zh = (language === 'zh-cn' || language === 'zh-tw');
 			var typeSel = (typeof document !== 'undefined' ? document.getElementById('history-type-select') : null);
 			var selType = (typeSel && typeSel.value) ? typeSel.value : 'total';
 			var speedUnit = uci.get('bandix', 'traffic', 'speed_unit') || 'bytes';
@@ -2257,9 +1597,9 @@ return view.extend({
 			}
 
 			function labelsFor(type) {
-				if (type === 'lan') return { up: getTranslation('LAN 上传速率', language), down: getTranslation('LAN 下载速率', language) };
-				if (type === 'wan') return { up: getTranslation('WAN 上传速率', language), down: getTranslation('WAN 下载速率', language) };
-				return { up: getTranslation('总上传速率', language), down: getTranslation('总下载速率', language) };
+				if (type === 'lan') return { up: _('LAN Upload'), down: _('LAN Download') };
+				if (type === 'wan') return { up: _('WAN Upload'), down: _('WAN Download') };
+				return { up: _('Total Upload'), down: _('Total Download') };
 			}
 
 			function rateKeysFor(type) {
@@ -2289,7 +1629,7 @@ return view.extend({
 							ipv6Info = ' | IPv6: ' + lanIPv6.join(', ');
 						}
 						var devLabel = (dev.hostname || '-') + (dev.ip ? ' (' + dev.ip + ')' : '') + (dev.mac ? ' [' + dev.mac + ']' : '') + ipv6Info;
-						lines.push('<div class="ht-device">' + getTranslation('设备', language) + ': ' + devLabel + '</div>');
+						lines.push('<div class="ht-device">' + _('Device') + ': ' + devLabel + '</div>');
 					}
 				}
 			} catch (e) {}
@@ -2313,7 +1653,7 @@ return view.extend({
 			// 次要信息：其余类型的速率（精简展示）
 			var otherTypes = ['total', 'lan', 'wan'].filter(function (t) { return t !== selType; });
 			if (otherTypes.length) {
-				lines.push('<div class="ht-section-title">' + getTranslation('其他速率', language) + '</div>');
+				lines.push('<div class="ht-section-title">' + _('Other Rates') + '</div>');
 				otherTypes.forEach(function (t) {
 					var lbs = labelsFor(t);
 					var ks = rateKeysFor(t);
@@ -2324,13 +1664,13 @@ return view.extend({
 
 			// 累计：区分LAN 流量与公网
 			lines.push('<div class="ht-divider"></div>');
-			lines.push('<div class="ht-section-title">' + getTranslation('累计流量', language) + '</div>');
-			row(getTranslation('总上传', language), bytesValue('total_tx_bytes'));
-			row(getTranslation('总下载', language), bytesValue('total_rx_bytes'));
-			row(getTranslation('LAN 已上传', language), bytesValue('local_tx_bytes'));
-			row(getTranslation('LAN 已下载', language), bytesValue('local_rx_bytes'));
-			row(getTranslation('WAN 已上传', language), bytesValue('wide_tx_bytes'));
-			row(getTranslation('WAN 已下载', language), bytesValue('wide_rx_bytes'));
+			lines.push('<div class="ht-section-title">' + _('Cumulative') + '</div>');
+			row(_('Total Uploaded'), bytesValue('total_tx_bytes'));
+			row(_('Total Downloaded'), bytesValue('total_rx_bytes'));
+			row(_('LAN Uploaded'), bytesValue('local_tx_bytes'));
+			row(_('LAN Downloaded'), bytesValue('local_rx_bytes'));
+			row(_('WAN Uploaded'), bytesValue('wide_tx_bytes'));
+			row(_('WAN Downloaded'), bytesValue('wide_rx_bytes'));
 
 			return lines.join('');
         }
@@ -2531,9 +1871,9 @@ function isDeviceOnline(device) {
 }
 
 // 格式化最后上线时间
-function formatLastOnlineTime(lastOnlineTs, language) {
+function formatLastOnlineTime(lastOnlineTs) {
     if (!lastOnlineTs || lastOnlineTs <= 0) {
-        return getTranslation('从未上线', language);
+        return _('Never Online');
     }
     
     // 如果时间戳小于1000000000000，说明是秒级时间戳，需要转换为毫秒
@@ -2546,12 +1886,12 @@ function formatLastOnlineTime(lastOnlineTs, language) {
     
     // 1分钟以内显示"刚刚"
     if (minutesDiff < 1) {
-        return getTranslation('刚刚', language);
+        return _('Just Now');
     }
     
     // 10分钟以内显示具体的"几分钟前"
     if (minutesDiff <= 10) {
-        return minutesDiff + getTranslation('分钟前', language);
+        return minutesDiff + _('min ago');
     }
     
     // 转换为小时
@@ -2559,7 +1899,7 @@ function formatLastOnlineTime(lastOnlineTs, language) {
     
     // 如果不满1小时，显示分钟
     if (hoursDiff < 1) {
-        return minutesDiff + getTranslation('分钟前', language);
+        return minutesDiff + _('min ago');
     }
     
     // 转换为天
@@ -2567,7 +1907,7 @@ function formatLastOnlineTime(lastOnlineTs, language) {
     
     // 如果不满1天，显示小时（忽略分钟）
     if (daysDiff < 1) {
-        return hoursDiff + getTranslation('小时前', language);
+        return hoursDiff + _('h ago');
     }
     
     // 转换为月（按30天计算）
@@ -2575,7 +1915,7 @@ function formatLastOnlineTime(lastOnlineTs, language) {
     
     // 如果不满1个月，显示天（忽略小时）
     if (monthsDiff < 1) {
-        return daysDiff + getTranslation('天前', language);
+        return daysDiff + _('days ago');
     }
     
     // 转换为年（按365天计算）
@@ -2583,63 +1923,39 @@ function formatLastOnlineTime(lastOnlineTs, language) {
     
     // 如果不满1年，显示月（忽略天）
     if (yearsDiff < 1) {
-        return monthsDiff + getTranslation('个月前', language);
+        return monthsDiff + _('months ago');
     }
     
     // 超过1年，显示年（忽略月）
-    return yearsDiff + getTranslation('年前', language);
+    return yearsDiff + _('years ago');
 }
 
-function formatRetentionSeconds(seconds, language) {
+function formatRetentionSeconds(seconds) {
     if (!seconds || seconds <= 0) return '';
     var value;
     var unitKey;
     if (seconds < 60) {
         value = Math.round(seconds);
-        unitKey = '秒';
+        unitKey = _('seconds');
     } else if (seconds < 3600) {
         value = Math.round(seconds / 60);
         if (value < 1) value = 1;
-        unitKey = '分钟';
+        unitKey = _('minutes');
     } else if (seconds < 86400) {
         value = Math.round(seconds / 3600);
         if (value < 1) value = 1;
-        unitKey = '小时';
+        unitKey = _('hours');
     } else if (seconds < 604800) {
         value = Math.round(seconds / 86400);
         if (value < 1) value = 1;
-        unitKey = '天';
+        unitKey = _('days');
     } else {
         value = Math.round(seconds / 604800);
         if (value < 1) value = 1;
-        unitKey = '周';
+        unitKey = _('weeks');
     }
 
-    // 多语言格式化
-    if (language === 'zh-cn' || language === 'zh-tw') {
-        return getTranslation('最近', language) + value + getTranslation(unitKey, language);
-    }
-
-    if (language === 'ja') {
-        return getTranslation('最近', language) + value + getTranslation(unitKey, language);
-    }
-
-    if (language === 'fr') {
-        // 法语单复数：值>1 用复数，天/周/小时/分钟/秒分别加 s
-        var unitFr = getTranslation(unitKey, 'fr');
-        if (value > 1) unitFr = unitFr + 's';
-        return getTranslation('最近', 'fr') + ' ' + value + ' ' + unitFr;
-    }
-
-    if (language === 'ru') {
-        // 俄语用缩写，避免复杂变格
-        return getTranslation('最近', 'ru') + ' ' + value + ' ' + getTranslation(unitKey, 'ru');
-    }
-
-    // 英语默认
-    var unitEn = getTranslation(unitKey, 'en');
-    if (value > 1) unitEn = unitEn + 's';
-    return getTranslation('最近', 'en') + ' ' + value + ' ' + unitEn;
+    return _('Last') + ' ' + value + ' ' + unitKey;
 }
 
         function refreshHistory() {
@@ -2662,7 +1978,7 @@ function formatRetentionSeconds(seconds, language) {
 
                 var retentionBadge = document.getElementById('history-retention');
                 if (retentionBadge) {
-                    var text = formatRetentionSeconds(res && res.retention_seconds, language);
+                    var text = formatRetentionSeconds(res && res.retention_seconds);
                     retentionBadge.textContent = text || '';
                 }
 
@@ -2729,7 +2045,88 @@ function formatRetentionSeconds(seconds, language) {
                     historyHoverIndex = idx;
                     // 立即重绘以显示垂直虚线
                     try { drawHistoryChart(canvas, canvas.__bandixChart && canvas.__bandixChart.originalLabels ? canvas.__bandixChart.originalLabels : labels, canvas.__bandixChart && canvas.__bandixChart.originalUpSeries ? canvas.__bandixChart.originalUpSeries : upSeries, canvas.__bandixChart && canvas.__bandixChart.originalDownSeries ? canvas.__bandixChart.originalDownSeries : downSeries, zoomScale, zoomOffsetX); } catch(e){}
-					tooltip.innerHTML = buildTooltipHtml(point, language);
+					tooltip.innerHTML = buildTooltipHtml(point);
+					
+					// 应用主题颜色到 tooltip，使用 cbi-section 的颜色
+					try {
+						// 优先从 cbi-section 获取颜色（历史趋势卡片就是 cbi-section）
+						var cbiSection = document.querySelector('.cbi-section');
+						var targetElement = cbiSection || document.querySelector('.main') || document.body;
+						var computedStyle = window.getComputedStyle(targetElement);
+						var bgColor = computedStyle.backgroundColor;
+						var textColor = computedStyle.color;
+						
+						// 确保背景色不透明
+						if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+							// 检查是否是 rgba/rgb 格式，如果是半透明则转换为不透明
+							var rgbaMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+							if (rgbaMatch) {
+								var r = parseInt(rgbaMatch[1]);
+								var g = parseInt(rgbaMatch[2]);
+								var b = parseInt(rgbaMatch[3]);
+								var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+								
+								// 如果 alpha < 0.95，使用不透明版本
+								if (alpha < 0.95) {
+									tooltip.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+								} else {
+									tooltip.style.backgroundColor = bgColor;
+								}
+							} else {
+								tooltip.style.backgroundColor = bgColor;
+							}
+						} else {
+							// 如果无法获取背景色，尝试从其他 cbi-section 获取
+							var allCbiSections = document.querySelectorAll('.cbi-section');
+							var foundBgColor = false;
+							for (var i = 0; i < allCbiSections.length; i++) {
+								var sectionStyle = window.getComputedStyle(allCbiSections[i]);
+								var sectionBg = sectionStyle.backgroundColor;
+								if (sectionBg && sectionBg !== 'rgba(0, 0, 0, 0)' && sectionBg !== 'transparent') {
+									var rgbaMatch = sectionBg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+									if (rgbaMatch) {
+										var r = parseInt(rgbaMatch[1]);
+										var g = parseInt(rgbaMatch[2]);
+										var b = parseInt(rgbaMatch[3]);
+										var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+										if (alpha < 0.95) {
+											tooltip.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+										} else {
+											tooltip.style.backgroundColor = sectionBg;
+										}
+									} else {
+										tooltip.style.backgroundColor = sectionBg;
+									}
+									foundBgColor = true;
+									break;
+								}
+							}
+							// 如果无法获取背景色，CSS 会通过媒体查询自动处理暗色模式
+							if (!foundBgColor) {
+								// 不设置背景色，让 CSS 媒体查询处理
+							}
+						}
+						
+						if (textColor && textColor !== 'rgba(0, 0, 0, 0)') {
+							tooltip.style.color = textColor;
+						} else {
+							// 如果无法获取文字颜色，从 cbi-section 获取
+							if (cbiSection) {
+								var sectionTextColor = window.getComputedStyle(cbiSection).color;
+								if (sectionTextColor && sectionTextColor !== 'rgba(0, 0, 0, 0)') {
+									tooltip.style.color = sectionTextColor;
+								}
+								// 否则使用 CSS 默认颜色（已通过媒体查询设置）
+							}
+							// 否则使用 CSS 默认颜色（已通过媒体查询设置）
+						}
+						
+						// 边框和阴影由 CSS 媒体查询自动处理
+					} catch(e) {
+						// 如果出错，CSS 会通过媒体查询自动处理暗色模式
+						// 不设置样式，让 CSS 处理
+					}
+					
 					// 先显示以计算尺寸
 					tooltip.style.display = 'block';
 					tooltip.style.left = '-9999px';
@@ -2835,7 +2232,7 @@ function formatRetentionSeconds(seconds, language) {
                 var ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawHistoryChart(canvas, [], [], [], 1, 0);
-                // ui.addNotification(null, E('p', {}, getTranslation('无法获取历史数据', language)), 'error');
+                // ui.addNotification(null, E('p', {}, _('Unable to fetch history data')), 'error');
             }).finally(function () {
                 isHistoryLoading = false;
             });
@@ -2892,21 +2289,17 @@ function formatRetentionSeconds(seconds, language) {
                 var trafficDiv = document.getElementById('traffic-status');
                 var deviceCountDiv = document.getElementById('device-count');
                 var statsGrid = document.getElementById('stats-grid');
-                var language = uci.get('bandix', 'general', 'language');
-                if (!language || language === 'auto') {
-                    language = getSystemLanguage();
-                }
                 var speedUnit = uci.get('bandix', 'traffic', 'speed_unit') || 'bytes';
 
                 var stats = result;
                 if (!stats || !stats.devices) {
-                    trafficDiv.innerHTML = '<div class="error">' + getTranslation('无法获取数据', language) + '</div>';
+                    trafficDiv.innerHTML = '<div class="error">' + _('Unable to fetch data') + '</div>';
                     return;
                 }
 
                 // 更新设备计数
                 var onlineCount = stats.devices.filter(d => isDeviceOnline(d)).length;
-                deviceCountDiv.textContent = getTranslation('在线设备', language) + ': ' + onlineCount + ' / ' + stats.devices.length;
+                deviceCountDiv.textContent = _('Online Devices') + ': ' + onlineCount + ' / ' + stats.devices.length;
 
                 // 计算统计数据（包含所有设备）
                 var totalLanUp = stats.devices.reduce((sum, d) => sum + (d.local_tx_bytes || 0), 0);
@@ -2926,11 +2319,9 @@ function formatRetentionSeconds(seconds, language) {
                 statsGrid.innerHTML = '';
 
                 // LAN 流量卡片
-                statsGrid.appendChild(E('div', { 'class': 'stats-card' }, [
-                    E('div', { 'class': 'stats-card-header' }, [
-                        E('div', { 'class': 'stats-card-title' }, getTranslation('LAN 流量', language))
-                    ]),
-                    E('div', { 'style': 'margin-top: 12px; display: flex; flex-direction: column; gap: 8px;' }, [
+                statsGrid.appendChild(E('div', { 'class': 'cbi-section' }, [
+                    E('div', { 'class': 'stats-card-title' }, _('LAN Traffic')),
+                    E('div', { 'style': 'display: flex; flex-direction: column; gap: 8px;' }, [
                         // 上传行
                         E('div', { 'style': 'display: flex; align-items: center; gap: 4px;' }, [
                             E('span', { 'style': 'color: #f97316; font-size: 0.75rem; font-weight: bold;' }, '↑'),
@@ -2947,11 +2338,9 @@ function formatRetentionSeconds(seconds, language) {
                 ]));
 
                 // WAN 流量卡片
-                statsGrid.appendChild(E('div', { 'class': 'stats-card' }, [
-                    E('div', { 'class': 'stats-card-header' }, [
-                        E('div', { 'class': 'stats-card-title' }, getTranslation('WAN 流量', language))
-                    ]),
-                    E('div', { 'style': 'margin-top: 12px; display: flex; flex-direction: column; gap: 8px;' }, [
+                statsGrid.appendChild(E('div', { 'class': 'cbi-section' }, [
+                    E('div', { 'class': 'stats-card-title' }, _('WAN Traffic')),
+                    E('div', { 'style': 'display: flex; flex-direction: column; gap: 8px;' }, [
                         // 上传行
                         E('div', { 'style': 'display: flex; align-items: center; gap: 4px;' }, [
                             E('span', { 'style': 'color: #f97316; font-size: 0.75rem; font-weight: bold;' }, '↑'),
@@ -2968,11 +2357,9 @@ function formatRetentionSeconds(seconds, language) {
                 ]));
 
                 // 总流量卡片
-                statsGrid.appendChild(E('div', { 'class': 'stats-card' }, [
-                    E('div', { 'class': 'stats-card-header' }, [
-                        E('div', { 'class': 'stats-card-title' }, getTranslation('总流量', language))
-                    ]),
-                    E('div', { 'style': 'margin-top: 12px; display: flex; flex-direction: column; gap: 8px;' }, [
+                statsGrid.appendChild(E('div', { 'class': 'cbi-section' }, [
+                    E('div', { 'class': 'stats-card-title' }, _('Total')),
+                    E('div', { 'style': 'display: flex; flex-direction: column; gap: 8px;' }, [
                         // 上传行
                         E('div', { 'style': 'display: flex; align-items: center; gap: 4px;' }, [
                             E('span', { 'style': 'color: #f97316; font-size: 0.75rem; font-weight: bold;' }, '↑'),
@@ -3037,7 +2424,7 @@ function formatRetentionSeconds(seconds, language) {
                     var speedBtn = E('div', {
                         'class': 'th-split-section' + (currentSortBy === speedKey ? ' active' : ''),
                         'data-sort': speedKey,
-                        'title': getTranslation('按速度排序', language)
+                        'title': _('Sort by Speed')
                     }, [
                         E('span', { 'class': 'th-split-icon' }, '⚡'),
                         E('span', { 'style': 'font-size: 0.75rem;' }, currentSortBy === speedKey ? (currentSortOrder ? '↑' : '↓') : '')
@@ -3050,7 +2437,7 @@ function formatRetentionSeconds(seconds, language) {
                     var trafficBtn = E('div', {
                         'class': 'th-split-section' + (currentSortBy === trafficKey ? ' active' : ''),
                         'data-sort': trafficKey,
-                        'title': getTranslation('按用量排序', language)
+                        'title': _('Sort by Traffic')
                     }, [
                         E('span', { 'class': 'th-split-icon' }, '∑'),
                         E('span', { 'style': 'font-size: 0.75rem;' }, currentSortBy === trafficKey ? (currentSortOrder ? '↑' : '↓') : '')
@@ -3103,11 +2490,11 @@ function formatRetentionSeconds(seconds, language) {
                 var table = E('table', { 'class': 'bandix-table' }, [
                     E('thead', {}, [
                         E('tr', {}, [
-                            createSortableHeader(getTranslation('设备信息', language), 'hostname'),
-                            createSplitHeader(getTranslation('LAN 流量', language), 'lan_speed', 'lan_traffic'),
-                            createSplitHeader(getTranslation('WAN 流量', language), 'wan_speed', 'wan_traffic'),
-                            E('th', {}, getTranslation('限速设置', language)),
-                            E('th', {}, getTranslation('操作', language))
+                            createSortableHeader(_('Device Info'), 'hostname'),
+                            createSplitHeader(_('LAN Traffic'), 'lan_speed', 'lan_traffic'),
+                            createSplitHeader(_('WAN Traffic'), 'wan_speed', 'wan_traffic'),
+                            E('th', {}, _('Rate Limit')),
+                            E('th', {}, _('Actions'))
                         ])
                     ]),
                     E('tbody', {})
@@ -3132,10 +2519,14 @@ function formatRetentionSeconds(seconds, language) {
 				filteredDevices.forEach(function (device) {
                     var isOnline = isDeviceOnline(device);
 
+                    // 根据主题类型决定按钮显示内容
+                    var themeType = getThemeType();
+                    var buttonText = themeType === 'narrow' ? '⚙' : _('Settings');
+
                     var actionButton = E('button', {
-                        'class': 'action-button',
-                        'title': getTranslation('设置', language)
-                    }, getTranslation('设置', language));
+                        'class': 'cbi-button cbi-button-action',
+                        'title': _('Settings')
+                    }, buttonText);
 
                     // 绑定点击事件
                     actionButton.addEventListener('click', function () {
@@ -3177,8 +2568,8 @@ function formatRetentionSeconds(seconds, language) {
 						deviceInfoElements.push(
 							E('div', { 'class': 'device-mac' }, device.mac),
 							E('div', { 'class': 'device-last-online' }, [
-								E('span', { 'style': 'color: #6b7280; font-size: 0.75rem;' }, getTranslation('最后上线', language) + ': '),
-								E('span', { 'style': 'color: #9ca3af; font-size: 0.75rem;' }, formatLastOnlineTime(device.last_online_ts, language))
+								E('span', { 'style': 'color: #6b7280; font-size: 0.75rem;' }, _('Last Online') + ': '),
+								E('span', { 'style': 'color: #9ca3af; font-size: 0.75rem;' }, formatLastOnlineTime(device.last_online_ts))
 							])
 						);
 					}
@@ -3266,6 +2657,111 @@ function formatRetentionSeconds(seconds, language) {
 
         // 立即执行一次，不等待轮询
         updateDeviceData();
+
+        // 自动适应主题背景色和文字颜色的函数（仅应用于弹窗和 tooltip）
+        function applyThemeColors() {
+            try {
+                // 优先从 cbi-section 获取颜色
+                var cbiSection = document.querySelector('.cbi-section');
+                var targetElement = cbiSection || document.querySelector('.main') || document.body;
+                var computedStyle = window.getComputedStyle(targetElement);
+                var bgColor = computedStyle.backgroundColor;
+                var textColor = computedStyle.color;
+                
+                // 如果无法获取背景色，尝试从其他 cbi-section 获取
+                if (!bgColor || bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') {
+                    var allCbiSections = document.querySelectorAll('.cbi-section');
+                    for (var i = 0; i < allCbiSections.length; i++) {
+                        var sectionStyle = window.getComputedStyle(allCbiSections[i]);
+                        var sectionBg = sectionStyle.backgroundColor;
+                        if (sectionBg && sectionBg !== 'rgba(0, 0, 0, 0)' && sectionBg !== 'transparent') {
+                            bgColor = sectionBg;
+                            textColor = sectionStyle.color;
+                            break;
+                        }
+                    }
+                }
+                
+                // 只应用到模态框和 tooltip，不修改页面其他元素
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                    // 应用到模态框（确保不透明）
+                    var modal = document.querySelector('.modal');
+                    if (modal) {
+                        var rgbaMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                        if (rgbaMatch) {
+                            var r = parseInt(rgbaMatch[1]);
+                            var g = parseInt(rgbaMatch[2]);
+                            var b = parseInt(rgbaMatch[3]);
+                            var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                            if (alpha < 0.95) {
+                                modal.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                            } else {
+                                modal.style.backgroundColor = bgColor;
+                            }
+                        } else {
+                            modal.style.backgroundColor = bgColor;
+                        }
+                    }
+                    
+                    // 应用到 tooltip（包括所有 tooltip 实例）
+                    var tooltips = document.querySelectorAll('.history-tooltip');
+                    tooltips.forEach(function(tooltip) {
+                        var rgbaMatch = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                        if (rgbaMatch) {
+                            var r = parseInt(rgbaMatch[1]);
+                            var g = parseInt(rgbaMatch[2]);
+                            var b = parseInt(rgbaMatch[3]);
+                            var alpha = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                            if (alpha < 0.95) {
+                                tooltip.style.backgroundColor = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                            } else {
+                                tooltip.style.backgroundColor = bgColor;
+                            }
+                        } else {
+                            tooltip.style.backgroundColor = bgColor;
+                        }
+                    });
+                }
+                
+                // 检测文字颜色并应用（仅应用到模态框和 tooltip）
+                if (textColor && textColor !== 'rgba(0, 0, 0, 0)') {
+                    // 应用到模态框的文字颜色
+                    var modal = document.querySelector('.modal');
+                    if (modal) {
+                        modal.style.color = textColor;
+                    }
+                    
+                    // 应用到 tooltip 的文字颜色
+                    var tooltips = document.querySelectorAll('.history-tooltip');
+                    tooltips.forEach(function(tooltip) {
+                        tooltip.style.color = textColor;
+                    });
+                }
+            } catch (e) {
+                // 如果检测失败，使用默认值
+                console.log('Theme adaptation:', e);
+            }
+        }
+        
+        // 初始应用主题颜色
+        setTimeout(applyThemeColors, 100);
+        
+        // 监听 DOM 变化，自动应用到新创建的元素
+        if (typeof MutationObserver !== 'undefined') {
+            var observer = new MutationObserver(function(mutations) {
+                applyThemeColors();
+            });
+            
+            setTimeout(function() {
+                var container = document.querySelector('.bandix-container');
+                if (container) {
+                    observer.observe(container, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+            }, 200);
+        }
 
         return view;
     }

@@ -20,21 +20,21 @@ start() {
 			payload='json={"listen_port":'"${port}"'}';;
 	esac
 	local cookie="$($CURL $retry $self_signed -L -i \
-		-H "Referer: ${scheme}://${ip}:${web_port}" \
+		-H "Referer: ${scheme}://${host}:${web_port}" \
 		-d "username=${username}&password=${password}" \
-		--url ${scheme}://${ip}:${web_port}/api/v2/auth/login \
+		--url ${scheme}://${host}:${web_port}/api/v2/auth/login \
 		| grep -i set-cookie | sed -En 's|^.*(SID=\S+);.*|\1|p')"
 	$CURL $retry $self_signed -L -X POST \
 		-b "$cookie" \
 		-d "$payload" \
-		--url ${scheme}://${ip}:${web_port}/api/v2/app/setPreferences
+		--url ${scheme}://${host}:${web_port}/api/v2/app/setPreferences
 	$CURL $retry $self_signed -L -I \
 		--cookie "$cookie" \
-		--url ${scheme}://${ip}:${web_port}/api/v2/auth/logout
+		--url ${scheme}://${host}:${web_port}/api/v2/auth/logout
 }
 
 
 # All external parameters required
-ALL_PARAMS="ip port scheme web_port username password"
+ALL_PARAMS="host port scheme web_port username password"
 eval "$(JSON_EXPORT "$1")"; shift
 start "$@"
