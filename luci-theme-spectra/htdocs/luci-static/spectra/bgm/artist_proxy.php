@@ -47,14 +47,14 @@ function optimizeImageUrl($url, $source) {
     switch ($source) {
         case 'netease':
             if (strpos($url, '?param=') !== false) {
-                $url = preg_replace('/\?param=\d+y\d+/', '?param=1000y1000', $url);
+                $url = preg_replace('/\?param=\d+y\d+/', '?param=2000y2000', $url);
             } else {
-                $url .= '?param=1000y1000';
+                $url .= '?param=2000y2000';
             }
             break;
 
         case 'itunes':
-            $url = str_replace(['100x100bb', '60x60bb', '30x30bb'], '1200x1200bb', $url);
+            $url = str_replace(['100x100bb', '60x60bb', '30x30bb'], '2000x2000bb', $url);
             break;
 
         case 'deezer':

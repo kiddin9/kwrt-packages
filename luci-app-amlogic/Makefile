@@ -16,8 +16,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-amlogic
-PKG_VERSION:=3.1.276
-PKG_RELEASE:=32
+PKG_VERSION:=3.1.278
+PKG_RELEASE:=33
 
 PKG_LICENSE:=GPL-2.0 License
 PKG_MAINTAINER:=ophub <https://github.com/ophub/luci-app-amlogic>

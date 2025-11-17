@@ -110,6 +110,8 @@ interface_max_metric() {
 			set openmptcprouter.${config}.metric=1201
 			commit openmptcprouter
 		EOF
+	elif [ "$1" = "lan" ]; then
+		sed -i 's:50 lan:9999 lan:g' /etc/iproute2/rt_tables
 	fi
 }
 
@@ -158,19 +160,19 @@ interface_multipath_settings() {
 	[ -n "$iface" ] && {
 		gro=$(uci -q get network.${config}.gro)
 		[ "$gro" = "1" ] && ethtool -K $iface gro on >/dev/null 2>&1
-		[ "$gro" = "0" ] && ethtool -K $iface gro on >/dev/null 2>&1
+		[ "$gro" = "0" ] && ethtool -K $iface gro off >/dev/null 2>&1
 		gso=$(uci -q get network.${config}.gso)
 		[ "$gso" = "1" ] && ethtool -K $iface gso on >/dev/null 2>&1
-		[ "$gso" = "0" ] && ethtool -K $iface gso on >/dev/null 2>&1
+		[ "$gso" = "0" ] && ethtool -K $iface gso off >/dev/null 2>&1
 		lro=$(uci -q get network.${config}.lro)
 		[ "$lro" = "1" ] && ethtool -K $iface lro on >/dev/null 2>&1
-		[ "$lro" = "0" ] && ethtool -K $iface lro on >/dev/null 2>&1
+		[ "$lro" = "0" ] && ethtool -K $iface lro off >/dev/null 2>&1
 		ufo=$(uci -q get network.${config}.ufo)
 		[ "$ufo" = "1" ] && ethtool -K $iface ufo on >/dev/null 2>&1
-		[ "$ufo" = "0" ] && ethtool -K $iface ufo on >/dev/null 2>&1
+		[ "$ufo" = "0" ] && ethtool -K $iface ufo off >/dev/null 2>&1
 		tso=$(uci -q get network.${config}.tso)
 		[ "$tso" = "1" ] && ethtool -K $iface tso on >/dev/null 2>&1
-		[ "$tso" = "0" ] && ethtool -K $iface tso on >/dev/null 2>&1
+		[ "$tso" = "0" ] && ethtool -K $iface tso off >/dev/null 2>&1
 	}
 	[ "$mode" = "" ] && {
 		mode="$(uci -q get openmptcprouter.${config}.multipath)"
