@@ -2,8 +2,8 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_VERSION:=1.1.4-r1
-PKG_RELEASE:=6
+PKG_VERSION:=1.1.5-r2
+PKG_RELEASE:=7
 
 LUCI_TITLE:=LuCI support for shadowrt
 LUCI_PKGARCH:=all
