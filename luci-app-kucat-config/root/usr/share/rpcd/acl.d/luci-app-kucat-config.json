@@ -5,7 +5,8 @@
 			"file": {
 				"/www/luci-static/kucat/background/*": [ "list" ],
 				"/www/luci-static/resources/background/*": [ "list" ],
-				"/www/luci-static/kucat/img/*": [ "list" ]
+				"/www/luci-static/kucat/img/*": [ "list" ],
+				"/etc/init.d/kucat": [ "exec" ]
 			},
 			"ubus": {
 				"luci.kucatconfig": [ "*" ]

@@ -619,13 +619,13 @@ footer a {
 }
 
 header.pd-primary {
-    background-color: var(--menu-barbgcolor);
     position: fixed;
     top: 0;
     right: 0;
     width: calc(100% - 15rem);
     z-index: 100;
     box-shadow: 0 0.3rem 0.5rem var(--input-boxcolor);
+    background-color: rgba(var(--primary-rgbm), 0.8);
     background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent) !important
 }
 
@@ -1073,16 +1073,15 @@ li {
     padding: 10px
 }
 
-.main>.loading {
-    position: fixed;
-    top: 0;
-    opacity: 1;
-    visibility: visible;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255, 255, 255, 0)
-}
 
+.main > .loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;
+}
 .spinning {
     position: relative;
     padding-left: 32px !important
@@ -2684,19 +2683,19 @@ label[data-index][data-depends] {
     text-decoration: none;
     padding: 0.9rem
 }
-
 .darkMask {
-    position: fixed;
-    z-index: 99;
-    width: 100%;
-    height: 100%;
-    content: "";
-    top: 0;
-    background-color: rgba(0, 0, 0, .6);
-    transition: opacity 200ms, visibility 200ms;
-    visibility: hidden;
-    opacity: 0
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  height: 100%;
+  content: "";
+  top: 0;
+  background-color: rgba(0,0,0,.6);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  visibility: hidden;
+  opacity: 0
 }
+
 
 #diag-rc-output>pre,
 #command-rc-output>pre,
@@ -3786,6 +3785,7 @@ input,
         position: fixed;
         background-image: var(--bgqs-image);
         width: calc(0% + 15rem);
+	transition: all 0.3s ease;
     }
 
     header .fill .container .flex1 .showSide {
@@ -4067,7 +4067,7 @@ input,
         width: 100%
     }
 
-    header .fill .container .flex1 .brand,
+    /* header .fill .container .flex1 .brand, */
     .mobile-hide,
     .node-main-login footer,
     .hide-sm,

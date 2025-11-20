@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 NAME:=kucat-config
 PKG_NAME:=luci-app-$(NAME)
 PKG_VERSION:=2.1.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=sirpdboy team <herboy2008@gmail.com>
 
@@ -22,6 +22,7 @@ endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
+chmod +x /etc/init.d/kucat
 rm -f /tmp/luci-*
 endef
 
