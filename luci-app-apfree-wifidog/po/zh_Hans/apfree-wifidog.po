@@ -315,6 +315,12 @@ msgstr "外部接口"
 msgid "The external interface of the device, if bypass mode, do not choose."
 msgstr "设备的外部接口，如果是旁路模式，请不要选择"
 
+msgid "Disable Portal Authentication"
+msgstr "禁用Portal认证"
+
+msgid "When enabled, users can access the internet without portal authentication. Firewall redirect rules will not be created. Use this mode for pure traffic statistics without captive portal."
+msgstr "启用后，用户无需Portal认证即可上网。不会创建防火墙重定向规则。适用于纯流量统计场景，不需要强制Portal认证页面。"
+
 msgid "Configuration"
 msgstr "配置"
 

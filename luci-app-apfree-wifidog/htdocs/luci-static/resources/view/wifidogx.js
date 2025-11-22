@@ -344,6 +344,11 @@ return view.extend({
 		o.placeholder = 'http://www.example.com';
 		o.depends('auth_server_mode', 'local');
 
+		o = s.taboption('basic', form.Flag, 'disable_portal_auth', _('Disable Portal Authentication'),
+						_('When enabled, users can access the internet without portal authentication. Firewall redirect rules will not be created. Use this mode for pure traffic statistics without captive portal.'));
+		o.rmempty = false;
+		o.default = '1';
+
 		o = s.taboption('basic', form.ListValue, 'log_level', _('Log Level'),
 						_('The log level of the apfree-wifidog.'));
 		o.value(7, _('Debug'));
