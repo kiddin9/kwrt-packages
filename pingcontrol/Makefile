@@ -1,9 +1,9 @@
-
+:
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pingcontrol
 PKG_VERSION:=1
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 PKG_BUILD_DIR:=$(BUILD_DIR)/pingcontrol
 
 include $(INCLUDE_DIR)/package.mk
