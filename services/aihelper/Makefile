@@ -24,15 +24,14 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
 	SECTION:=net
-	CATEGORY:=Network
-	SUBMENU:=Web Servers/Proxies
-	TITLE:=aihelper
-	DEPENDS:=@(x86_64||aarch64||arm)
+	CATEGORY:=System
+	SUBMENU:=
+	TITLE:=AiHelper
 	URL:=https://github.com/Carseason/openwrt-packages
 endef
 
 define Package/$(PKG_NAME)/description
-  aihelper is a dashboard & user guide
+  AiHelper is a dashboard & user guide
 endef
 
 define Package/$(PKG_NAME)/conffiles
@@ -40,13 +39,6 @@ define Package/$(PKG_NAME)/conffiles
 endef
 
 define Package/$(PKG_NAME)/postinst
-#!/bin/sh
-if [ -z "$${IPKG_INSTROOT}" ]; then
-	if [ -f /etc/uci-defaults/09-aihelper ]; then
-		chmod 755 /etc/uci-defaults/09-aihelper
-		/etc/uci-defaults/09-aihelper && rm -f /etc/uci-defaults/09-aihelper
-	fi
-fi
 endef
 
 define Build/Configure
