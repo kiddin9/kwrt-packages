@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bandix
 PKG_VERSION:=0.9.0
-PKG_RELEASE:=17
+PKG_RELEASE:=18
 
 PKG_LICENSE:=Apache-2.0
 PKG_MAINTAINER:=timsaya
@@ -50,13 +50,25 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_BIN) ./files/bandix.init $(1)/etc/init.d/bandix
-	$(INSTALL_CONF) ./files/bandix.config $(1)/etc/config/bandix
+
+	# 将配置文件安装到临时位置，由 postinst 决定是否复制到最终位置
+	$(INSTALL_DIR) $(1)/usr/share/bandix
+	$(INSTALL_CONF) ./files/bandix.config $(1)/usr/share/bandix/bandix.config.default
 endef
 
+define Package/$(PKG_NAME)/conffiles
+/etc/config/bandix
+endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
+    # 检查配置文件是否存在，如果不存在才从默认配置复制
+    if [ ! -f /etc/config/bandix ]; then
+        cp /usr/share/bandix/bandix.config.default /etc/config/bandix
+    fi
+    
+    # 添加到 sysupgrade.conf 以在系统升级时保留
     if ! grep -q "^/usr/share/bandix$$" /etc/sysupgrade.conf; then
         echo "/usr/share/bandix" >> /etc/sysupgrade.conf
     fi
