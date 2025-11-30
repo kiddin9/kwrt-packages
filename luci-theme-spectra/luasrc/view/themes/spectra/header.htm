@@ -118,7 +118,6 @@
     <meta name="msapplication-TileImage" content="<%=media%>/icon/ms-icon-144x144.png">
     <meta name="theme-color" content="<%=bar_color%>">
     <link rel="stylesheet" href="<%=media%>/css/cascade.css?v=2.2.10.10">
-    <script src="/luci-static/spectra/js/custom.js"></script>
     <script src="/luci-static/spectra/js/i18n.js"></script>
     <link href="/luci-static/spectra/css/bootstrap-icons.css" rel="stylesheet">
     <link href="/luci-static/spectra/css/weather-icons.min.css" rel="stylesheet">
@@ -223,8 +222,9 @@
                         <img src="<%=media%>/navbar/wifi.gif" title="Interface">
                     </a>
                 </div>
-                <div class="nav-icon" id="wifiIcon">
-                        <img id="settings-icon" src="<%=media%>/navbar/interface.gif" alt="Interface" style="cursor:pointer;">
+
+                <div class="nav-icon" id="control-panel-toggle" uk-toggle="target: #control-panel-modal">
+                        <img id="wifiIcon" src="<%=media%>/navbar/interface.gif" data-title="control_panel" style="cursor:pointer;">
                 </div>
 
                 <div class="app-icon-btn"  id="panel" onclick="openControlPanel()">
@@ -246,21 +246,8 @@
                        <input type="color" id="colorPicker" value="#0f3460" style="display: none;">
                </div>
 
-                <div class="app-icon-btn"  id="panel" onclick="openLanguageModal()">
-                   <a  style="cursor: pointer;" data-title="select_language">
-                       <i class="bi bi-translate"></i>
-                   </a>
-               </div>
-
                 <div class="icon-group">
-                        <button id="themeOpenUpdateConfirmBtn" class="app-icon-btn" data-title="theme_download"><i class="fas fa-cloud-download-alt"></i> <span class="btn-label"></span></button>
-                        <button  class="app-icon-btn" id="clear-cache-btn" onclick="clearCache()" data-title="clear_button"><i class="fa-solid fa-broom"></i></button>
-                        <button class="app-icon-btn" onclick="openMusicModal()" data-title="music_player"><i class="fa-solid fa-music"></i></button>
-                        <button class="app-icon-btn" id="themeLoaderToggle" data-title="theme_loader_btn_title"> <i class="fa fa-atom"></i> </button>
-                        <button class="app-icon-btn" onclick="myAppIP.showDetailModal()" data-title="ip_details"><i class="fas fa-globe"></i></button>
                         <button class="translation-toggle app-icon-btn" onclick="toggleTranslation()" data-title="online_translation"><i class="fas fa-language"></i></button>
-                        <button type="button" class="app-icon-btn" id="openEditModal" data-title="edit_ip_database"><i class="fas fa-edit"></i></button>
-                        <button id="setCityBtn" class="app-icon-btn"><i class="fas fa-location-dot"></i></button>
                 </div>
             </div>
 
@@ -316,44 +303,50 @@
     </div>
 </div>
 
-<div id="languageModal" class="glass-modal-overlay" style="display: none;">
-    <div class="glass-modal-container">
-        <div class="glass-modal-header">
-            <img id="currentFlag" src="/luci-static/ipip/flags/cn.png" class="modal-flag">
-            <h3 class="modal-title" data-translate="select_language"></h3>
+<div id="languageModal" uk-modal>
+    <div class="uk-modal-dialog">
+        <div class="language-modal-header">
+            <div class="language-modal-header-content">
+                <img id="currentFlag" src="/luci-static/ipip/flags/cn.png" class="language-modal-flag">
+                <h2 class="language-modal-title" data-translate="select_language"></h2>
+            </div>
+            <button class="uk-modal-close-default" type="button" uk-close></button>
         </div>
-        
-        <select id="languageSelect" class="glass-input modal-select">
-            <option value="zh" data-translate="simplified_chinese"></option>
-            <option value="hk" data-translate="traditional_chinese"></option>
-            <option value="en" data-translate="english"></option>
-            <option value="ko" data-translate="korean"></option>
-            <option value="vi" data-translate="vietnamese"></option>
-            <option value="th" data-translate="thailand"></option>
-            <option value="ja" data-translate="japanese"></option>
-            <option value="ru" data-translate="russian"></option>
-            <option value="de" data-translate="germany"></option>
-            <option value="fr" data-translate="france"></option>
-            <option value="ar" data-translate="arabic"></option>
-            <option value="es" data-translate="spanish"></option>
-            <option value="bn" data-translate="bangladesh"></option>
-        </select>
-        
-        <div id="voiceSelectContainer" class="voice-container">
-            <label class="voice-title" id="voiceSelectTitle" data-translate="voice_select_title"></label>
-            <select id="voiceSelect" class="glass-input modal-select">
-                <option value="" data-translate="select_voice_placeholder"></option>
-            </select>
-        </div>
-        
-        <div class="voice-toggle-container">
-            <input type="checkbox" id="voiceToggle" checked class="voice-checkbox">
-            <label for="voiceToggle" id="voiceLabel" data-translate="voice_label" class="voice-label"></label>
-        </div>
-        
-        <div class="modal-actions">
-            <button type="button" class="cbi-button cbi-button-remove" onclick="closeLanguageModal()" data-translate="cancel"></button>
-            <button type="button" class="cbi-button cbi-button-apply" onclick="saveLanguage()" data-translate="save"></button>
+        <div class="language-modal-body">
+            <div class="uk-margin">
+                <label class="language-form-label" data-translate="select_language"></label>
+                <select id="languageSelect" class="uk-select">
+                    <option value="zh" data-translate="simplified_chinese"></option>
+                    <option value="hk" data-translate="traditional_chinese"></option>
+                    <option value="en" data-translate="english"></option>
+                    <option value="ko" data-translate="korean"></option>
+                    <option value="vi" data-translate="vietnamese"></option>
+                    <option value="th" data-translate="thailand"></option>
+                    <option value="ja" data-translate="japanese"></option>
+                    <option value="ru" data-translate="russian"></option>
+                    <option value="de" data-translate="germany"></option>
+                    <option value="fr" data-translate="france"></option>
+                    <option value="ar" data-translate="arabic"></option>
+                    <option value="es" data-translate="spanish"></option>
+                    <option value="bn" data-translate="bangladesh"></option>
+                </select>
+            </div>
+            <div id="voiceSelectContainer" class="language-voice-container">
+                <label class="language-form-label" id="voiceSelectTitle" data-translate="voice_select_title"></label>
+                <select id="voiceSelect" class="uk-select">
+                    <option value="" data-translate="select_voice_placeholder"></option>
+                </select>
+            </div>
+            <div class="language-checkbox-container">
+                <input type="checkbox" id="voiceToggle" checked class="uk-checkbox">
+                <span id="voiceLabel" data-translate="voice_label"></span>
+            </div>
+        </div>        
+        <div class="language-modal-footer">
+            <div class="language-modal-footer-buttons">
+                <button type="button" class="uk-button uk-button-gray uk-modal-close" data-translate="cancel"></button>
+                <button type="button" class="uk-button uk-button-primary" onclick="saveLanguage()" data-translate="save"></button>
+            </div>
         </div>
     </div>
 </div>
@@ -387,7 +380,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <div class="header-left">
-                <h5 class="modal-title"><i class="fa-solid fa-music"></i> <span data-translate="music_player">Music Player</span></h5>
+                <h2 class="modal-title"><i class="fa-solid fa-music"></i> <span data-translate="music_player">Music Player</span></h2>
             </div>
             <div class="header-controls">
                 <button type="button" class="control-btn fullscreen-btn" onclick="toggleFullscreen()" data-title="toggle_fullscreen">
@@ -620,6 +613,227 @@
         </div>
     </div>
 </div>
+
+<div id="control-panel-modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <h2 class="uk-modal-title">
+            <span uk-icon="icon: cog; ratio: 1.8"></span>
+            <span data-translate="control_panel">Control Panel</span>
+        </h2>
+        
+        <style>
+            .control-card {
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                border-radius: 10px;
+            }
+
+            .control-card:hover {
+                transform: scale(1.06);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                z-index: 2;
+            }
+
+            .control-card span,
+            .control-card i  {
+                margin-bottom: 6px;
+            }
+
+            .control-card.disabled {
+                pointer-events: none;
+                opacity: 0.5;
+            }
+
+            .control-card.selected {
+                background-color: var(--accent-color) !important;
+                color: #fff !important;
+                border-color: var(--accent-color);
+            }
+        </style>
+
+        <div class="uk-grid-small uk-child-width-1-2 uk-child-width-1-4@l" uk-grid>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="spectra-theme-toggle" style="cursor: pointer; color: var(--text-primary);">
+                    <i id="theme-icon" class="bi bi-moon-fill" style="font-size:1.8rem; color: inherit;"></i>
+                    <span id="theme-text" data-translate="theme_dark" style="color: inherit;">Dark Mode</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-primary uk-card-hover uk-card-body uk-text-center control-card theme-settings-btn" 
+                     style="cursor: pointer; color: var(--text-primary);">
+                    <span uk-icon="icon: settings; ratio: 1.5" style="color: inherit;"></span>
+                    <span data-translate="theme_settings" style="color: inherit;">Theme Settings</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-secondary uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="master-switch" style="cursor: pointer; color: var(--text-primary);">
+                    <span id="power-icon" class="bi bi-toggle-off" style="font-size: 1.8rem; color: inherit;"></span>
+                    <span id="switch-text" data-translate="status_disabled" style="color: inherit;">Disabled</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-success uk-card-hover uk-card-body uk-text-center control-card sound-toggle" 
+                     style="cursor: pointer;">
+                    <span id="sound-icon" class="bi bi-volume-up" style="font-size: 1.8rem;"></span>
+                    <span data-translate="background_sound">Background Sound</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     data-mode="video" style="cursor: pointer;">
+                    <span uk-icon="icon: video-camera; ratio: 1.5"></span>
+                    <span data-translate="mode_video">Video Mode</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     data-mode="image" style="cursor: pointer;">
+                    <span uk-icon="icon: image; ratio: 1.5"></span>
+                    <span data-translate="mode_image">Image Mode</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     data-mode="solid" style="cursor: pointer;">
+                    <i class="bi bi-moon-stars-fill" style="font-size: 1.8rem;"></i>
+                    <span data-translate="mode_solid">Dark Mode</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     data-mode="auto" style="cursor: pointer;">
+                    <span uk-icon="icon: star; ratio: 1.5"></span>
+                    <span data-translate="mode_auto">Auto Mode</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card object-fit-btn" 
+                     style="cursor: pointer;">
+                    <span uk-icon="icon: expand; ratio: 1.5"></span>
+                    <span id="fit-text" data-translate="fit_cover">Default Crop</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="animation-toggle" style="cursor: pointer;">
+                    <span id="animation-icon" class="bi bi-play-circle" style="font-size: 1.8rem;"></span>
+                    <span id="animation-text" data-translate="animation_enable">Enable Animation</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="font-toggle" style="cursor: pointer;">
+                    <i class="bi bi-type" style="font-size: 1.8rem;"></i>
+                    <span id="font-text" data-translate="font_default">Default Font</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="themeOpenUpdateConfirmBtn" style="cursor: pointer;">
+                    <i class="bi bi-cloud-download" style="font-size:1.8rem;"></i>
+                    <span data-translate="theme_download">Theme Download</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     onclick="openMusicModal()" style="cursor: pointer;">
+                    <i class="bi bi-music-note-beamed" style="font-size:1.8rem;"></i>
+                    <span data-translate="music_player">Music Player</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="themeLoaderToggle" style="cursor: pointer;">
+                    <i id="themeLoaderIcon" class="bi bi-gear-fill" style="font-size: 1.8rem;"></i>
+                    <span data-translate="theme_loader_btn_title">Theme Loader</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     onclick="myAppIP.showDetailModal()" style="cursor: pointer;">
+                    <i class="bi bi-globe" style="font-size:1.8rem;"></i>
+                    <span data-translate="ip_details">IP Details</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="openEditModal" style="cursor: pointer; color: var(--text-primary) !important;">
+                    <span uk-icon="icon: file-edit; ratio: 1.5"></span>
+                    <span data-translate="edit_ip_database" style="color: inherit;">Edit IP Database</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     id="setCityBtn" style="cursor: pointer;">
+                    <i class="bi bi-geo-alt" style="font-size:1.8rem;"></i>
+                    <span data-translate="set_city">Set City</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     onclick="openLanguageModal()" style="cursor: pointer;">
+                    <i class="bi bi-translate" style="font-size:1.8rem;"></i>
+                    <span data-translate="select_language">Language</span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card" 
+                     onclick="clearCache()" style="cursor: pointer;">
+                    <i class="bi bi-eraser" style="font-size:1.8rem;"></i>
+                    <span data-translate="clear_button"></span>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body uk-text-center control-card info-btn" 
+                     style="cursor: pointer;">
+                    <span uk-icon="icon: info; ratio: 1.5"></span>
+                    <span data-translate="usage_guide">Usage Guide</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="usage-guide-modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <h2 class="uk-modal-title" data-translate="usage_guide">Usage Guide</h2>
+        <div class="uk-alert-primary" uk-alert>
+            <p data-translate="guide_video_mode">1. Video Mode: Default file name is "bg.mp4"</p>
+            <p data-translate="guide_image_mode">2. Image Mode: Default file names are "bg1-20.jpg"</p>
+            <p data-translate="guide_dark_mode">3. Dark Mode: Transparent background + spectrum animation</p>
+            <p data-translate="guide_light_mode">4. Light Mode: Switch via theme settings, automatically turns off control switch</p>
+            <p data-translate="guide_theme_settings">5. Theme Settings: Support custom backgrounds, clear background for mode switching</p>
+            <p data-translate="guide_mode_switching">6. Mode Switching: Image/Video modes only work in dark mode</p>
+            <p>
+                <span data-translate="guide_project_link">7. Project Address:</span>
+                <a href="https://github.com/Thaolga/openwrt-nekobox" target="_blank" class="uk-button uk-button-primary uk-button-small uk-margin-small-left">
+                    <span uk-icon="icon: github"></span>
+                    <span data-translate="visit_github">Visit GitHub</span>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div id="theme-settings-modal" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-width-xxlarge">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <h2 class="uk-modal-title" data-translate="theme_settings">Theme Settings</h2>
+        <iframe id="theme-iframe" 
+                src="/luci-static/spectra/bgm/index.php"
+                style="width: 100%; height: 80vh; border: none; border-radius: 5px;">
+        </iframe>
+    </div>
+</div>
+
 <script>
 const advancedColorControl = {
     isOpen: false,
@@ -879,6 +1093,72 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <style>
+.language-modal-header {
+    background-color: var(--header-bg)  !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px 15px;
+}
+
+.language-modal-header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.language-modal-flag {
+    width: 50px;
+    height: 35px;
+    object-fit: cover;
+}
+
+.language-modal-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.language-modal-body {
+    padding: 20px 30px;
+}
+
+.language-form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary) !important;
+}
+
+.language-voice-container {
+    margin-top: 25px;
+}
+
+.language-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.language-modal-footer {
+    background-color: var(--header-bg)  !important;
+    padding: 20px 30px;
+    border: none !important;
+}
+
+.language-modal-footer-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+#languageSelect option,
+#voiceSelect option {
+    color: var(--text-primary) !important;
+    background: color-mix(in oklch, var(--card-bg), transparent 20%);
+}
+
 .advanced-color-control-modal {
     position: fixed;
     top: 0;
@@ -986,6 +1266,7 @@ document.addEventListener('DOMContentLoaded', function() {
     justify-content: space-between;
     margin-bottom: 10px;
     font-weight: 500;
+    color: var(--text-primary);
 }
 
 .advanced-color-control-value {
@@ -1177,6 +1458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     border-radius: 8px;
     margin-bottom: 15px;
     word-break: break-all;
+    color: var(--text-primary);
 }
 
 .advanced-color-contrast-badge {
@@ -1400,7 +1682,7 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     white-space: nowrap;
 }
 
@@ -2732,213 +3014,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-.glass-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.1);
-    align-items: center;
-    justify-content: center;
-}
-
-.glass-modal-overlay.show {
-    display: flex;
-}
-
-.glass-modal-container {
-    background: color-mix(in oklch, var(--bg-container), transparent 20%);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.1));
-    border-radius: var(--radius, 20px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    min-width: 650px;
-    max-width: 90vw;
-    position: relative;
-}
-
-.glass-modal-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-flag {
-    width: 45px;
-    height: 34px;
-    margin-right: 15px;
-    object-fit: contain;
-    border-radius: 4px;
-}
-
-.modal-title {
-    margin: 0;
-    font-size: 20px;
-    color: var(--accent-color);
-    font-weight: 600;
-}
-
-.modal-select {
-    width: 100%;
-    padding: 10px 14px;
-    margin: 6px 0;
-    background: color-mix(in oklch, var(--bg-container), transparent 50%);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.1));
-    border-radius: calc(var(--radius, 20px) - 4px);
-    color: var(--text-primary);
-    font-size: 14px;
-}
-
-.modal-select option:checked {
-    background: var(--accent-color) !important;
-    color: var(--color-white-strong);
-}
-
-.modal-select:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent-color), transparent 70%);
-}
-
-.modal-select option {
-    background: color-mix(in oklch, var(--bg-container), transparent 20%);
-    color: var(--text-primary);
-    border-radius: 8px;
-    margin: 2px 0;
-    padding: 8px 12px;
-}
-
-.modal-select {
-    border-radius: calc(var(--radius, 20px) - 4px);
-}
-
-.modal-select:focus {
-    border-radius: calc(var(--radius, 20px) - 4px) calc(var(--radius, 20px) - 4px) 0 0;
-}
-
-.modal-select::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-select::-webkit-scrollbar-track {
-    background: color-mix(in oklch, var(--bg-container), transparent 80%);
-    backdrop-filter: blur(10px);
-    border-radius: 4px;
-}
-
-.modal-select::-webkit-scrollbar-thumb {
-    background: color-mix(in oklch, var(--accent-color), transparent 50%);
-    backdrop-filter: blur(10px);
-    border-radius: 4px;
-    border: 1px solid color-mix(in oklch, var(--accent-color), transparent 30%);
-}
-
-.voice-container {
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.voice-title {
-    font-weight: 600;
-    color: var(--accent-color);
-    display: block;
-    margin-bottom: 5px;
-    font-size: 16px;
-}
-
-.voice-toggle-container {
-    display: flex;
-    align-items: center;
-    margin: 12px 0;
-    padding: 12px;
-    background: color-mix(in oklch, var(--card-bg), transparent 50%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: calc(var(--radius, 20px) - 8px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.voice-checkbox {
-    vertical-align: middle;
-    margin: 0 !important;
-    transform: scale(1.2);
-}
-
-.voice-label {
-    margin-left: 12px;
-    color: var(--text-primary);
-    display: inline-flex;
-    align-items: center;
-    font-size: 14px;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 8px;
-    padding-top: 6px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-@media (max-width: 768px) {
-    .glass-modal-container {
-        min-width: 90% !important;
-        max-width: 95% !important;
-        padding: 20px !important;
-        margin: 20px !important;
-    }
-    
-    .glass-modal-header {
-        flex-direction: column !important;
-        text-align: center !important;
-    }
-    
-    .modal-flag {
-        margin-right: 0 !important;
-        margin-bottom: 10px !important;
-    }
-    
-    .modal-actions {
-        flex-direction: column !important;
-        gap: 10px !important;
-    }
-    
-    .modal-actions .glass-button {
-        width: 100% !important;
-    }
-}
-
-.glass-modal-overlay {
-    display: none;
-}
-
-.glass-modal-overlay.show {
-    display: flex;
-    animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.glass-modal-container {
-    animation: fadeIn 0.2s ease;
-}
-
-
-
 .overlay {
     display: none;
     position: fixed;
@@ -3224,10 +3299,10 @@ document.addEventListener('DOMContentLoaded', function() {
 <div id="controlPanel" uk-modal>
     <div class="uk-modal-dialog uk-modal-body uk-border-rounded">
         <div class="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
-            <h3 class="uk-modal-title uk-margin-remove">
+            <h2 class="uk-modal-title uk-margin-remove">
                 <span uk-icon="icon: settings; ratio: 1.2" class="uk-margin-small-right"></span>
                 <span data-translate="ui_control">UI Control</span>
-            </h3>
+            </h2>
             <button class="uk-modal-close-default" type="button" uk-close></button>
         </div>
         <div class="uk-child-width-1-2@m uk-grid-small" uk-grid>
@@ -3462,11 +3537,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div id="global-modal" uk-modal>
     <div class="uk-modal-dialog">
-        <div class="uk-modal-header uk-border-rounded-top">
-            <h3 class="uk-modal-title uk-margin-remove">
-                <span uk-icon="icon: lightning; ratio: 1.1" class="uk-margin-small-right"></span>
+        <div class="uk-modal-header uk-padding-small">
+            <h2 class="uk-modal-title uk-margin-remove">
+                <i class="fas fa-broom"></i>
                 <span data-translate="modal_title">Confirm Modal</span>
-            </h3>
+            </h2>
             <button class="uk-modal-close-default" type="button" uk-close></button>
         </div>
         <div class="uk-modal-body uk-text-center uk-padding-small">
@@ -6131,9 +6206,14 @@ document.getElementById('goFirstBtn')?.addEventListener('click', function() {
 </script>
 
 <script>
-function makeModalDraggable(modalElement) {
-    const modalHeader = modalElement.querySelector('.modal-header');
-    const modalContent = modalElement.querySelector('.modal-content');
+function makeModalDraggable(modalElement, { headerSelector, contentSelector, storageKey }) {
+    const modalHeader = modalElement.querySelector(headerSelector);
+    const modalContent = modalElement.querySelector(contentSelector);
+    
+    if (!modalHeader || !modalContent) {
+        return;
+    }
+    
     let isDragging = false;
     let offsetX = 0;
     let offsetY = 0;
@@ -6149,6 +6229,8 @@ function makeModalDraggable(modalElement) {
     document.addEventListener('touchend', handleTouchEnd);
 
     function startDrag(e) {
+        if (e.target.closest('button')) return;
+        
         isDragging = true;
         offsetX = e.clientX - modalContent.offsetLeft;
         offsetY = e.clientY - modalContent.offsetTop;
@@ -6178,15 +6260,17 @@ function makeModalDraggable(modalElement) {
     function stopDrag() {
         if (isDragging) {
             isDragging = false;
-            modalContent.style.cursor = 'default';
+            modalContent.style.cursor = '';
             modalContent.style.userSelect = 'auto';
             
-            localStorage.setItem('musicModalLeft', modalContent.style.left);
-            localStorage.setItem('musicModalTop', modalContent.style.top);
+            localStorage.setItem(storageKey + '_left', modalContent.style.left);
+            localStorage.setItem(storageKey + '_top', modalContent.style.top);
         }
     }
 
     function handleTouchStart(e) {
+        if (e.target.closest('button')) return;
+        
         const touch = e.touches[0];
         isDragging = true;
         offsetX = touch.clientX - modalContent.offsetLeft;
@@ -6220,16 +6304,16 @@ function makeModalDraggable(modalElement) {
     function handleTouchEnd() {
         if (isDragging) {
             isDragging = false;
-            modalContent.style.cursor = 'default';
+            modalContent.style.cursor = '';
             modalContent.style.userSelect = 'auto';
             
-            localStorage.setItem('musicModalLeft', modalContent.style.left);
-            localStorage.setItem('musicModalTop', modalContent.style.top);
+            localStorage.setItem(storageKey + '_left', modalContent.style.left);
+            localStorage.setItem(storageKey + '_top', modalContent.style.top);
         }
     }
 
-    const savedLeft = localStorage.getItem('musicModalLeft');
-    const savedTop = localStorage.getItem('musicModalTop');
+    const savedLeft = localStorage.getItem(storageKey + '_left');
+    const savedTop = localStorage.getItem(storageKey + '_top');
     
     if (savedLeft && savedTop) {
         modalContent.style.left = savedLeft;
@@ -6240,34 +6324,38 @@ function makeModalDraggable(modalElement) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const musicModal = document.getElementById('musicModal');
-    if (musicModal) {
-        makeModalDraggable(musicModal);
-    }
-});
-
-function openMusicModal() {
-    const modal = document.getElementById('musicModal');
-    const modalContent = modal.querySelector('.modal-content');
+function initAllModalDrag() {
+    const allModals = document.querySelectorAll('[uk-modal], .uk-modal, .modal, [class*="modal"]');
     
-    modal.classList.add('active');
-    
-    const savedLeft = localStorage.getItem('musicModalLeft');
-    const savedTop = localStorage.getItem('musicModalTop');
-    
-    if (!savedLeft || !savedTop) {
-        modalContent.style.left = '50%';
-        modalContent.style.top = '50%';
-        modalContent.style.transform = 'translate(-50%, -50%)';
-        modalContent.style.position = 'fixed';
-    }
+    allModals.forEach((modal, index) => {
+        const selectors = [
+            { header: '.uk-modal-header', content: '.uk-modal-dialog' },
+            { header: '.modal-header', content: '.modal-content' },
+            { header: '.header', content: '.content' },
+            { header: '.uk-flex-between', content: '.uk-modal-dialog' },
+            { header: '.language-modal-header', content: '.uk-modal-dialog' },
+            { header: '.uk-modal-title', content: '.uk-modal-dialog' }
+        ];
+        
+        for (let selector of selectors) {
+            const modalHeader = modal.querySelector(selector.header);
+            const modalContent = modal.querySelector(selector.content);
+            
+            if (modalHeader && modalContent) {
+                const storageKey = modal.id || `modal_${index}`;
+                
+                makeModalDraggable(modal, {
+                    headerSelector: selector.header,
+                    contentSelector: selector.content,
+                    storageKey: storageKey
+                });
+                break;
+            }
+        }
+    });
 }
 
-function closeMusicModal() {
-    const modal = document.getElementById('musicModal');
-    modal.classList.remove('active');
-}
+document.addEventListener('DOMContentLoaded', initAllModalDrag);
 </script>
 
 <script>
@@ -7588,7 +7676,7 @@ let myAppIP = {
             };
         
             closeBtn.addEventListener('click', closeModal);
-            closeModalBtn.addEventListener('click', closeModal);
+            closeModalBtn?.addEventListener('click', closeModal);
         
             overlay.addEventListener('click', (e) => {
                 if (e.target === overlay) {
@@ -7597,7 +7685,7 @@ let myAppIP = {
             });
 
             const refreshBtn = content.querySelector('.cbi-button-apply');
-            refreshBtn.addEventListener('click', () => {
+            refreshBtn?.addEventListener('click', () => {
                 closeModal();
                 setTimeout(() => {
                     this.getIpipnetIP();
@@ -7626,10 +7714,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="uk-modal-dialog uk-modal-large">
         <div class="uk-modal-header">
             <div class="uk-flex uk-flex-between uk-flex-middle">
-                <h3 class="uk-modal-title uk-margin-remove">
+                <h2 class="uk-modal-title uk-margin-remove">
                     <span uk-icon="icon: server; ratio: 1.1" class="uk-margin-small-right"></span>
                     <span data-translate="edit_ip_database">Edit IP Database</span>
-                </h3>
+                </h2>
                 <div class="uk-flex uk-flex-middle">
                     <button class="uk-icon-button uk-margin-small-right" id="fullscreen-toggle"
                         uk-tooltip="title: Fullscreen; pos: bottom">
@@ -8201,7 +8289,6 @@ const saveCityBtn = document.getElementById('saveCityBtn');
 const setCityBtn = document.getElementById('setCityBtn');
 
 const closeCityModal = document.getElementById('closeCityModal');
-const modalTitle = document.getElementById('modalTitle');
 const clearCacheBtn = document.getElementById('clearCacheBtn');
 const lastUpdatedDiv = document.getElementById('lastUpdated');
 
@@ -9534,11 +9621,11 @@ if (typeof audioPlayer !== 'undefined') {
 
 <div id="themeUpdateConfirmModal" uk-modal>
     <div class="uk-modal-dialog">
-        <div class="uk-modal-header">
-            <h3 class="uk-modal-title">
-                <span uk-icon="icon: palette; ratio: 1.1" class="uk-margin-small-right"></span>
+        <div class="uk-modal-header uk-padding-small">
+            <h2 class="uk-modal-title uk-margin-remove">
+                <i class="bi bi-cloud-download" style="font-size:1.8rem;"></i>
                 <span data-translate="theme_download">Theme Download</span>
-            </h3>
+            </h2>
             <button class="uk-modal-close-default" type="button" uk-close></button>
         </div>
         <div class="uk-modal-body">
@@ -9711,6 +9798,823 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof updateUIText === 'function') {
         updateUIText();
     }
+});
+</script>
+
+<script>
+function getCurrentTheme(callback) {
+    fetch("/luci-static/spectra/bgm/theme-switcher.php")
+        .then(response => response.json())
+        .then(data => {
+            callback(data.mode || 'dark');
+        })
+        .catch(error => {
+            callback('dark');
+        });
+}
+
+function getModeDisplayName(mode) {
+    const translations = languageTranslations[currentLang] || languageTranslations['en'];
+    const modeNames = {
+        'video': translations['mode_video'] || 'Video',
+        'image': translations['mode_image'] || 'Image', 
+        'solid': translations['mode_solid'] || 'Dark',
+        'auto': translations['mode_auto'] || 'Auto'
+    };
+    return modeNames[mode] || mode;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    getCurrentTheme(function(currentMode) {
+        if (currentMode === 'light') {
+            document.body.classList.remove('dark');
+        } else {
+            document.body.classList.add('dark');
+        }
+   
+        let isEnabled = localStorage.getItem('backgroundEnabled') === 'true';
+        
+        if (localStorage.getItem('backgroundEnabled') === null) {
+            localStorage.setItem('backgroundEnabled', 'false');
+            isEnabled = false;
+        }
+
+        if (localStorage.getItem('backgroundMode') === null) {
+            localStorage.setItem('backgroundMode', 'auto');
+        }
+
+        const isAnimationEnabled = localStorage.getItem('animationEnabled') !== 'false';
+        toggleAnimation(isAnimationEnabled);
+
+        const savedFont = localStorage.getItem('selectedFont') || 'default';
+        applyFont(savedFont);
+        
+        let videoTag, bgImages, bgIndex, availableImages, switchInterval;
+        const savedMode = localStorage.getItem('backgroundMode');
+        
+        if (isEnabled) {
+            initBackgroundSystem();
+        } else {
+            applyPHPBackground();
+        }
+
+        updateSwitchState();
+        updateThemeButton();
+        updateSoundToggle();
+        updateAnimationToggle();
+        updateFontToggle();
+        updateFitButton();
+        updateModeSelection(localStorage.getItem('backgroundMode') || 'auto');
+        updateModeSelection(savedMode);
+
+        bindControlPanelEvents();
+
+        function updateModeSelection(selectedMode) {
+            document.querySelectorAll('[data-mode]').forEach(btn => {
+                const mode = btn.getAttribute('data-mode');
+
+                if (mode === selectedMode) {
+                    btn.classList.add('selected');
+                    btn.classList.remove('uk-card-default');
+                } else {
+                    btn.classList.remove('selected');
+                    btn.classList.add('uk-card-default');
+                }
+
+                const disableModes = !isEnabled || localStorage.getItem('disableColorSettings') === 'true';
+                if (disableModes) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            });
+        }
+
+        function updateSwitchState() {
+            const translations = languageTranslations[currentLang] || languageTranslations['en'];
+            const switchText = document.getElementById('switch-text');
+            const masterSwitch = document.getElementById('master-switch');
+            const powerIcon = document.getElementById('power-icon');
+
+            if (switchText) {
+                switchText.textContent = isEnabled ? 
+                    (translations['status_enabled'] || 'Enabled') : 
+                    (translations['status_disabled'] || 'Disabled');
+            }
+
+            if (masterSwitch) {
+                if (isEnabled) {
+                    masterSwitch.classList.remove('uk-card-secondary');
+                    masterSwitch.classList.add('uk-card-success');
+                } else {
+                    masterSwitch.classList.remove('uk-card-success');
+                    masterSwitch.classList.add('uk-card-secondary');
+                }
+            }
+
+            if (powerIcon) {
+                powerIcon.className = isEnabled ? "bi bi-toggle-on" : "bi bi-toggle-off";
+            }
+        }
+
+        function updateThemeButton() {
+            const translations = languageTranslations[currentLang] || languageTranslations['en'];
+            getCurrentTheme(function(currentMode) {
+                const themeText = document.getElementById('theme-text');
+                const themeIcon = document.getElementById('theme-icon');
+                const themeToggle = document.getElementById('spectra-theme-toggle');
+
+                if (themeText) themeText.textContent = currentMode === 'dark' ? 
+                    (translations['theme_dark'] || 'Dark Mode') : 
+                    (translations['theme_light'] || 'Light Mode');
+                if (themeIcon) themeIcon.className = currentMode === 'dark' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+
+                if (themeToggle) {
+                    themeToggle.classList.toggle('uk-card-primary', currentMode !== 'dark');
+                    themeToggle.classList.toggle('uk-card-default', currentMode === 'dark');
+                }
+            });
+        }
+
+        function updateSoundToggle() {
+            const soundIcon = document.getElementById('sound-icon');
+            const soundMuted = localStorage.getItem('videoMuted') === 'true';
+
+            if (soundIcon) {
+                soundIcon.className = soundMuted ? "bi bi-volume-mute" : "bi bi-volume-up";
+            }
+        }
+
+        function updateAnimationToggle() {
+            const translations = languageTranslations[currentLang] || languageTranslations['en'];
+            const animationText = document.getElementById('animation-text');
+            const animationIcon = document.getElementById('animation-icon');
+            const isAnimationEnabled = localStorage.getItem('animationEnabled') !== 'false';
+
+            if (animationText) {
+                animationText.textContent = isAnimationEnabled ? 
+                    (translations['animation_disable'] || 'Disable Animation') : 
+                    (translations['animation_enable'] || 'Enable Animation');
+            }
+
+            if (animationIcon) {
+                animationIcon.className = isAnimationEnabled ? "bi bi-check-circle" : "bi bi-x-circle";
+            }
+        }
+
+        function updateFontToggle() {
+            const translations = languageTranslations[currentLang] || languageTranslations['en'];
+            const fontText = document.getElementById('font-text');
+            const currentFont = localStorage.getItem('selectedFont') || 'default';
+            let fontDisplayText = translations['font_default'] || 'Default Font';
+            
+            switch (currentFont) {
+                case 'fredoka': fontDisplayText = translations['font_rounded'] || 'Rounded Font'; break;
+                case 'dmserif': fontDisplayText = translations['font_serif'] || 'Serif Font'; break;
+                case 'notoserif': fontDisplayText = translations['font_notoserif'] || 'Noto Serif'; break;
+                case 'comicneue': fontDisplayText = translations['font_comic'] || 'Comic Font'; break;
+                case 'notosans': fontDisplayText = translations['font_notosans'] || 'Noto Sans'; break;
+                case 'cinzeldecorative': fontDisplayText = translations['font_cinzel'] || 'Cinzel Decorative'; break;
+            }
+            
+            if (fontText) {
+                fontText.textContent = fontDisplayText;
+            }
+        }
+
+        function updateFitButton() {
+            const translations = languageTranslations[currentLang] || languageTranslations['en'];
+            const fitText = document.getElementById('fit-text');
+            const savedFit = localStorage.getItem('videoObjectFit') || 'cover';
+            const fitTexts = {
+                'contain': translations['fit_contain'] || 'Normal Ratio',
+                'fill': translations['fit_fill'] || 'Stretch Fill', 
+                'none': translations['fit_none'] || 'Original Size',
+                'scale-down': translations['fit_scale_down'] || 'Smart Fit',
+                'cover': translations['fit_cover'] || 'Default Crop'
+            };
+            
+            if (fitText) {
+                fitText.textContent = fitTexts[savedFit] || translations['fit_cover'] || 'Default Crop';
+            }
+        }
+
+        function bindControlPanelEvents() {
+            document.getElementById('spectra-theme-toggle')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                getCurrentTheme(function(currentMode) {
+                    const switchingToLight = currentMode === 'dark';
+                    const themeText = document.getElementById('theme-text');
+                    const themeIcon = document.getElementById('theme-icon');
+                    const themeToggle = document.getElementById('spectra-theme-toggle');
+
+                    const message = switchingToLight ? 
+                        (translations['message_switch_to_light'] || 'Switching to light mode') : 
+                        (translations['message_switch_to_dark'] || 'Switching to dark mode');
+                    showLogMessage(message);
+                    speakMessage(message);
+
+                    if (themeText) themeText.textContent = switchingToLight ? 
+                        (translations['theme_light'] || 'Light Mode') : 
+                        (translations['theme_dark'] || 'Dark Mode');
+                    if (themeIcon) themeIcon.className = switchingToLight ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+                    if (themeToggle) {
+                        themeToggle.classList.toggle('uk-card-primary', switchingToLight);
+                        themeToggle.classList.toggle('uk-card-default', !switchingToLight);
+                    }
+
+                    fetch("/luci-static/spectra/bgm/theme-switcher.php", { method: "POST" })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.success) return;
+
+                            if (switchingToLight) {
+                                isEnabled = false;
+                                localStorage.setItem('backgroundEnabled', 'false');
+                                localStorage.setItem('disableColorSettings', 'true');
+                                clearBackgroundSystem();
+                                updateSwitchState();
+                                document.querySelectorAll('[data-mode]').forEach(btn => btn.classList.add('disabled'));
+                            } else {
+                                localStorage.removeItem('disableColorSettings');
+                                document.querySelectorAll('[data-mode]').forEach(btn => btn.classList.remove('disabled'));
+                            }
+
+                            setTimeout(() => location.reload(), 3000);
+                        })
+                        .catch(err => console.error('Theme switch failed', err));
+                });
+            });
+
+            document.querySelector('.theme-settings-btn')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const message = translations['message_open_theme_settings'] || 'Opening theme settings';
+                showLogMessage(message);
+                speakMessage(message);
+                updateUIText();
+                UIkit.modal('#theme-settings-modal').show();
+            });
+
+            document.getElementById('master-switch')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                isEnabled = !isEnabled;
+                localStorage.setItem('backgroundEnabled', isEnabled);
+                updateSwitchState();
+                updateModeSelection(localStorage.getItem('backgroundMode') || 'auto');
+                const message = isEnabled ? 
+                    (translations['message_background_on'] || 'Background on') : 
+                    (translations['message_background_off'] || 'Background off');
+                showLogMessage(message);
+                speakMessage(message);
+               
+                if (isEnabled) {
+                    initBackgroundSystem();
+                } else {
+                    clearBackgroundSystem();
+                }
+            });
+
+            document.querySelector('.sound-toggle')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const newMuted = localStorage.getItem('videoMuted') !== 'true';
+                localStorage.setItem('videoMuted', newMuted);
+                updateSoundToggle();
+
+                const message = newMuted ? 
+                    (translations['message_sound_off'] || 'Sound off') : 
+                    (translations['message_sound_on'] || 'Sound on');
+                showLogMessage(message);
+                speakMessage(message);
+                
+                if (videoTag) {
+                    videoTag.muted = newMuted;
+                }
+            });
+
+            document.querySelectorAll('[data-mode]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                    const mode = this.getAttribute('data-mode');
+                    setMode(mode);
+                    const modeName = getModeDisplayName(mode);
+                    const message = `${modeName}`;
+                    showLogMessage(message);
+                    speakMessage(message);
+                });
+            });
+
+            document.querySelector('.object-fit-btn')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const videos = document.querySelectorAll('video#background-video');
+                if (videos.length === 0) return;
+
+                const currentFit = videos[0].style.objectFit || localStorage.getItem('videoObjectFit') || 'cover';
+                const fitOrder = ['cover', 'contain', 'fill', 'none', 'scale-down'];
+                const newIndex = (fitOrder.indexOf(currentFit) + 1) % fitOrder.length;
+                const newFit = fitOrder[newIndex];
+
+                videos.forEach(video => {
+                    video.style.objectFit = newFit;
+                    if (newFit === 'none') {
+                        video.style.minWidth = 'auto';
+                        video.style.minHeight = 'auto';
+                        video.style.width = '100%';
+                        video.style.height = '100%';
+                    } else {
+                        video.style.minWidth = '100%';
+                        video.style.minHeight = '100%';
+                    }
+                });
+
+                localStorage.setItem('videoObjectFit', newFit);
+                updateFitButton();
+
+                const fitTexts = {
+                    'contain': translations['fit_contain'] || 'Normal Ratio',
+                    'fill': translations['fit_fill'] || 'Stretch Fill',
+                    'none': translations['fit_none'] || 'Original Size',
+                    'scale-down': translations['fit_scale_down'] || 'Smart Fit',
+                    'cover': translations['fit_cover'] || 'Default Crop'
+                };
+                const message = `${translations['message_fit_adjusted'] || 'Display ratio adjusted to'} ${fitTexts[newFit] || newFit}`;
+                showLogMessage(message);
+                speakMessage(message);
+            });
+
+            document.getElementById('animation-toggle')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const isAnimationEnabled = localStorage.getItem('animationEnabled') !== 'false';
+                const newState = !isAnimationEnabled;
+                localStorage.setItem('animationEnabled', newState);
+
+                updateAnimationToggle();
+                const message = newState ? 
+                    (translations['message_animation_on'] || 'Animation on') : 
+                    (translations['message_animation_off'] || 'Animation off');
+                showLogMessage(message);
+                speakMessage(message);
+                
+                toggleAnimation(newState);
+            });
+
+            document.getElementById('font-toggle')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const currentFont = localStorage.getItem('selectedFont') || 'default';
+                let nextFont;
+                
+                switch (currentFont) {
+                    case 'default': nextFont = 'fredoka'; break;
+                    case 'fredoka': nextFont = 'dmserif'; break;
+                    case 'dmserif': nextFont = 'notoserif'; break;
+                    case 'notoserif': nextFont = 'comicneue'; break;
+                    case 'comicneue': nextFont = 'notosans'; break;
+                    case 'notosans': nextFont = 'cinzeldecorative'; break;
+                    case 'cinzeldecorative': nextFont = 'default'; break;
+                    default: nextFont = 'default';
+                }
+                
+                localStorage.setItem('selectedFont', nextFont);
+                updateFontToggle();
+                applyFont(nextFont);
+                const fontNames = {
+                    'default': translations['font_default'] || 'Default Font',
+                    'fredoka': translations['font_rounded'] || 'Rounded Font',
+                    'dmserif': translations['font_serif'] || 'Serif Font',
+                    'notoserif': translations['font_notoserif'] || 'Noto Serif',
+                    'comicneue': translations['font_comic'] || 'Comic Font',
+                    'notosans': translations['font_notosans'] || 'Noto Sans',
+                    'cinzeldecorative': translations['font_cinzel'] || 'Cinzel Decorative'
+                };
+                const message = `${translations['message_font_changed'] || 'Font changed to'} ${fontNames[nextFont] || nextFont}`;
+                showLogMessage(message);
+                speakMessage(message);
+            });
+
+            document.querySelector('.info-btn')?.addEventListener('click', function() {
+                const translations = languageTranslations[currentLang] || languageTranslations['en'];
+                const message = translations['message_open_usage_guide'] || 'Opening usage guide';
+                showLogMessage(message);
+                speakMessage(message);
+                updateUIText();
+                UIkit.modal('#usage-guide-modal').show();
+            });
+        }
+
+        function initBackgroundSystem() {
+            bgImages = Array.from({length: 20}, (_, i) => `bg${i + 1}.jpg`);
+            bgIndex = 0;
+            availableImages = [];
+        
+            const savedMode = localStorage.getItem('backgroundMode') || 'auto';
+            const phpBackgroundSrc = localStorage.getItem('phpBackgroundSrc');
+            const phpBackgroundType = localStorage.getItem('phpBackgroundType');
+        
+            if (phpBackgroundSrc && phpBackgroundType) {
+                if (phpBackgroundType === 'image') {
+                    setImageBackground(phpBackgroundSrc);
+                } else if (phpBackgroundType === 'video') {
+                    setVideoBackground(phpBackgroundSrc);
+                }
+            } else {
+                setMode(savedMode);
+            }
+        
+            updateModeSelection(savedMode);
+        }
+
+        function clearBackgroundSystem() {
+            const currentMode = localStorage.getItem('backgroundMode') || 'auto';
+        
+            if (videoTag) {
+                videoTag.pause();
+                videoTag.remove();
+                videoTag = null;
+            }
+        
+            document.querySelectorAll('#dynamic-style, #video-style').forEach(e => e.remove());
+            clearInterval(switchInterval);
+            document.body.style.background = '';
+            document.body.style.backgroundImage = '';
+            document.body.style.display = 'none';
+            document.body.offsetHeight;
+            document.body.style.display = '';
+        
+            localStorage.setItem('backgroundMode', currentMode);
+        
+            updateModeSelection(currentMode);
+        }
+
+        function setMode(mode) {
+            if (!isEnabled && mode !== 'solid') return;
+        
+            localStorage.setItem('backgroundMode', mode);
+            localStorage.setItem('selectedMode', mode);
+        
+            clearExistingBackground();
+
+            updateModeSelection(mode);
+
+            switch (mode) {
+                case 'video':
+                    checkFileExists('bg.mp4', exists => exists ? initVideoBackground() : fallbackToAuto());
+                    break;
+                case 'image':
+                    checkImages(() => availableImages.length > 0 ? initImageBackground() : fallbackToAuto());
+                    break;
+                case 'solid':
+                    applyCSS(null);
+                    break;
+                case 'auto':
+                    initAutoBackground();
+                    break;
+            }
+        }
+
+        function clearExistingBackground() {
+            if (videoTag) {
+                videoTag.pause();
+                videoTag.remove();
+                videoTag = null;
+            }
+        
+            document.querySelectorAll('#dynamic-style, #video-style').forEach(e => e.remove());
+            clearInterval(switchInterval);
+        
+            const currentMode = localStorage.getItem('backgroundMode');
+            if (currentMode !== 'color') {
+                document.body.style.background = '';
+                document.body.style.backgroundImage = '';
+            }
+        
+            const existingVideoTag = document.getElementById("background-video");
+            if (existingVideoTag && existingVideoTag !== videoTag) {
+                existingVideoTag.remove();
+            }
+        }
+
+        function initVideoBackground() {
+            insertVideoBackground();
+            updateSoundToggle();
+        }
+
+        function initImageBackground() {
+            bgIndex = Math.floor(Math.random() * availableImages.length);
+            applyCSS(availableImages[bgIndex]);
+            switchInterval = setInterval(switchBackground, 120000);
+        }
+
+        function initAutoBackground() {
+            checkFileExists('bg.mp4', exists => {
+                if (exists) {
+                    initVideoBackground();
+                } else {
+                    checkImages(() => {
+                        availableImages.length > 0 ? initImageBackground() : applyCSS(null);
+                    });
+                }
+            });
+        }
+
+        function fallbackToAuto() {
+            localStorage.setItem('backgroundMode', 'auto');
+            initAutoBackground();
+        }
+
+        function checkImages(callback) {
+            availableImages = [];
+            let checked = 0;
+
+            const totalImages = bgImages.length;
+    
+            if (totalImages === 0) {
+                callback();
+                return;
+            }
+            bgImages.forEach(image => {
+                checkFileExists(image, exists => {
+                    checked++;
+                    if (exists) availableImages.push(image);
+                    if (checked === totalImages) callback();
+                });
+            });
+        }
+
+        function checkFileExists(file, callback) {
+            fetch(`/luci-static/spectra/bgm/file-checker.php?file=${file}`)
+                .then(response => response.json())
+                .then(data => callback(data.exists))
+                .catch(() => callback(false));
+        }
+
+        function applyCSS(image) {
+            let styleTag = document.querySelector("#dynamic-style");
+            if (!styleTag) {
+                styleTag = document.createElement("style");
+                styleTag.id = "dynamic-style";
+                document.head.appendChild(styleTag);
+            }
+
+            if (image) {
+                styleTag.innerHTML = `
+                    body {
+                        background: url('/luci-static/spectra/bgm/${image}') no-repeat center center fixed !important;
+                        background-size: cover !important;
+                        transition: background 1s ease-in-out;
+                    }
+                    .wrapper span {
+                        display: none !important;
+                    }
+                `;
+            } else {
+                styleTag.innerHTML = `
+                    body {
+                        background: #111 !important;
+                        background-image: none !important;
+                        background-size: auto !important;
+                    }
+                    .wrapper span {
+                        display: block !important;
+                    }
+                `;
+            }
+        }
+
+        function insertVideoBackground(src = 'bg.mp4') {
+            document.querySelectorAll('video#background-video').forEach(v => v.remove());
+            videoTag = document.createElement("video");
+            videoTag.className = "video-background";
+            videoTag.id = "background-video";
+            videoTag.autoplay = true;
+            videoTag.loop = true;
+            videoTag.muted = localStorage.getItem('videoMuted') === 'true';
+            videoTag.playsInline = true;
+            videoTag.innerHTML = `
+                <source src="/luci-static/spectra/bgm/bg.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            `;
+            const savedFit = localStorage.getItem('videoObjectFit') || 'cover';
+            videoTag.style.objectFit = savedFit;
+            document.body.prepend(videoTag);
+
+            let styleTag = document.querySelector("#video-style");
+            if (!styleTag) {
+                styleTag = document.createElement("style");
+                styleTag.id = "video-style";
+                document.head.appendChild(styleTag);
+            }
+            styleTag.innerHTML = `
+                body {
+                    background: transparent !important;
+                    margin: 0;
+                    padding: 0;
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                .video-background {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    width: auto;
+                    height: auto;
+                    min-width: 100%;
+                    min-height: 100%;
+                    transform: translate(-50%, -50%);
+                    z-index: -1;
+                }
+                .video-background + .wrapper span {
+                    display: none !important;
+                }
+            `;
+        }
+
+        function applyPHPBackground() {
+            const phpBackgroundSrc = localStorage.getItem('phpBackgroundSrc');
+            const phpBackgroundType = localStorage.getItem('phpBackgroundType');
+        
+            if (phpBackgroundSrc && phpBackgroundType) {
+                if (phpBackgroundType === 'image') {
+                    setImageBackground(phpBackgroundSrc);
+                } else if (phpBackgroundType === 'video') {
+                    setVideoBackground(phpBackgroundSrc);
+                }
+            } else {
+                const savedMode = localStorage.getItem('backgroundMode') || 'auto';
+                setMode(savedMode);
+            }
+        }
+
+        function setImageBackground(src) {
+            clearExistingBackground();
+            
+            document.body.style.background = '';
+            document.body.style.backgroundColor = '';
+            document.body.style.backgroundImage = '';
+            
+            document.body.classList.remove('default-background');
+            
+            let styleTag = document.querySelector("#dynamic-style");
+            if (!styleTag) {
+                styleTag = document.createElement("style");
+                styleTag.id = "dynamic-style";
+                document.head.appendChild(styleTag);
+            }
+            
+            styleTag.innerHTML = `
+                body {
+                    background: url('/luci-static/spectra/bgm/${src}') no-repeat center center fixed !important;
+                    background-size: cover !important;
+                    background-color: transparent !important;
+                    transition: background 1s ease-in-out;
+                }
+                body:before {
+                    display: none !important;
+                }
+                .wrapper span {
+                    display: none !important;
+                }
+            `;
+            
+            localStorage.setItem('phpBackgroundSrc', src);
+            localStorage.setItem('phpBackgroundType', 'image');
+            localStorage.setItem('backgroundMode', 'image');
+        }
+ 
+        function setVideoBackground(src, isPHP = false) {
+            const wasEnabled = isEnabled;
+            clearExistingBackground();
+            isEnabled = wasEnabled;
+            
+            document.body.style.background = '';
+            document.body.style.backgroundColor = '';
+            document.body.style.backgroundImage = '';
+            
+            const dynamicStyle = document.querySelector("#dynamic-style");
+            if (dynamicStyle) dynamicStyle.remove();
+            
+            let existingVideoTag = document.getElementById("background-video");
+            const savedFit = localStorage.getItem('videoObjectFit') || 'cover';
+
+            if (existingVideoTag) {
+                existingVideoTag.src = `/luci-static/spectra/bgm/${src}`;
+                existingVideoTag.muted = localStorage.getItem('videoMuted') === 'true';
+                existingVideoTag.style.objectFit = savedFit;
+            } else {
+                videoTag = document.createElement("video");
+                videoTag.className = "video-background";
+                videoTag.id = "background-video";
+                videoTag.autoplay = true;
+                videoTag.loop = true;
+                videoTag.muted = localStorage.getItem('videoMuted') === 'true';
+                videoTag.playsInline = true;
+                videoTag.style.objectFit = savedFit;
+                videoTag.innerHTML = `
+                    <source src="/luci-static/spectra/bgm/${src}" type="video/mp4">
+                    Your browser does not support the video tag.
+                `;
+                document.body.prepend(videoTag);
+            }
+
+            let styleTag = document.querySelector("#video-style");
+            if (!styleTag) {
+                styleTag = document.createElement("style");
+                styleTag.id = "video-style";
+                document.head.appendChild(styleTag);
+            }
+            
+            styleTag.innerHTML = `
+                body {
+                    background: transparent !important;
+                    background-image: none !important;
+                    background-color: transparent !important;
+                    margin: 0;
+                    padding: 0;
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                body:before {
+                    display: none !important;
+                }
+                .video-background {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    width: auto;
+                    height: auto;
+                    min-width: 100%;
+                    min-height: 100%;
+                    transform: translate(-50%, -50%);
+                    z-index: -1;
+                }
+                .video-background + .wrapper span {
+                    display: none !important;
+                }
+            `;
+
+            localStorage.setItem('phpBackgroundSrc', src);
+            localStorage.setItem('phpBackgroundType', 'video');
+            localStorage.setItem('backgroundMode', 'video');
+            updateSoundToggle();
+        }
+ 
+        function toggleAnimation(enabled) {
+            const wrapper = document.querySelector('.wrapper');
+            if (wrapper) {
+                wrapper.style.display = enabled ? 'block' : 'none';
+            }
+        }
+
+        function applyFont(font) {
+            const styleTag = document.querySelector("#font-style") || document.createElement("style");
+            styleTag.id = "font-style";
+        
+            let fontFamily;
+            switch (font) {
+                case 'fredoka': 
+                    fontFamily = "'Fredoka One', cursive";
+                    break;
+                case 'dmserif':
+                    fontFamily = "'DM Serif Display', serif";
+                    break;
+                case 'notoserif':
+                    fontFamily = "'Noto Serif SC', serif";
+                    break;
+                case 'comicneue':
+                    fontFamily = "'Comic Neue', cursive";
+                    break;
+                case 'notosans':
+                    fontFamily = "'Noto Sans', sans-serif";
+                    break;
+                case 'cinzeldecorative':
+                    fontFamily = "'Cinzel Decorative', cursive";
+                    break;
+                default:
+                    fontFamily = "-apple-system, BlinkMacSystemFont, sans-serif";
+            }
+
+            styleTag.textContent = `
+                body,
+                #control-panel-modal,
+                #usage-guide-modal,
+                #theme-settings-modal,
+                #control-panel-modal *,
+                #usage-guide-modal *,
+                #theme-settings-modal * {
+                    font-family: ${fontFamily} !important;
+                }
+            `;
+        
+            const oldStyle = document.getElementById('font-style');
+            if (oldStyle) oldStyle.remove();
+            document.head.appendChild(styleTag);
+        }
+
+        function switchBackground() {
+            if (availableImages.length > 0) {
+                bgIndex = (bgIndex + 1) % availableImages.length;
+                applyCSS(availableImages[bgIndex]);
+            }
+        }
+    });
 });
 </script>
 

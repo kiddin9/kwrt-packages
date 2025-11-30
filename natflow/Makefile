@@ -9,8 +9,8 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=natflow
-PKG_VERSION:=20250607
-PKG_RELEASE:=17
+PKG_VERSION:=20251024
+PKG_RELEASE:=18
 
 PKG_SOURCE:=$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/ptpt52/natflow.git
