@@ -8,8 +8,8 @@ include $(TOPDIR)/rules.mk
 
 
 PKG_NAME:=unishare
-PKG_VERSION:=1.1.0
-PKG_RELEASE:=6
+PKG_VERSION:=1.1.1
+PKG_RELEASE:=7
 PKG_MAINTAINER:=jjm2473 <jjm2473@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
