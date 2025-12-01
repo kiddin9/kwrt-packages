@@ -517,6 +517,14 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		multiplexing: cfg.mieru_multiplexing,
 		"handshake-mode": cfg.mieru_handshake_mode,
 
+		/* Sudoku */
+		key: cfg.sudoku_key,
+		"aead-method": replace(cfg.sudoku_aead_method || '', 'chacha20-ietf-poly1305', 'chacha20-poly1305') || null,
+		"padding-min": strToInt(cfg.sudoku_padding_min),
+		"padding-max": strToInt(cfg.sudoku_padding_max),
+		"table-type": cfg.sudoku_table_type,
+		"http-mask": (cfg.sudoku_http_mask === '0') ? false : true,
+
 		/* Snell */
 		psk: cfg.snell_psk,
 		version: cfg.snell_version,
