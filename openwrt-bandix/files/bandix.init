@@ -25,6 +25,18 @@ start_service() {
 	local dns_enabled
 	local dns_max_records
 	
+	# 这个逻辑在每次服务启动时执行，确保备份配置始终正确
+	if [ -f /etc/sysupgrade.conf ]; then
+		# 添加数据目录到备份列表
+		if ! grep -q "^/usr/share/bandix$" /etc/sysupgrade.conf; then
+			echo "/usr/share/bandix" >> /etc/sysupgrade.conf
+		fi
+		# 添加配置文件到备份列表
+		if ! grep -q "^/etc/config/bandix$" /etc/sysupgrade.conf; then
+			echo "/etc/config/bandix" >> /etc/sysupgrade.conf
+		fi
+	fi
+	
 	config_load 'bandix'
 	config_get iface 'general' 'iface'
 	config_get port 'general' 'port'
@@ -75,7 +87,7 @@ start_service() {
 	
 	procd_open_instance bandix
 	procd_set_param command $PROG $args
-	procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-5}
+	procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-10} ${respawn_retry:-10}
 	procd_set_param stderr 1
 	procd_set_param stdout 1
 	procd_set_param pidfile /var/run/bandix.pid
