@@ -291,17 +291,7 @@ return view.extend({
         }, _('Upload...'));
         
         container.appendChild(uploadBtn);
-        
-        container.appendChild(E('div', { 'style': 'text-align: right; font-style: italic;' }, [
-            E('span', {}, [
-                _('© github '),
-                E('a', { 
-                    'href': 'https://github.com/sirpdboy', 
-                    'target': '_blank',
-                    'style': 'text-decoration: none;'
-                }, 'by sirpdboy')
-            ])
-        ]));
+
 
         var files = data[2] || [];
         if (files.length > 0) {

@@ -70,22 +70,24 @@ return view.extend({
 		// Status Homekey settings
 		o = s.option( form.ListValue, 'gohome', _('Status Homekey settings'));
 		o.value('overview', _('Overview'));
+		o.value('routes', _('Routing'));
+		o.value('firewall', _('Firewall'));
+		o.value('logs', _('System Log'));
 		o.value('processes', _('Processes'));
-		o.value('realtime', _('Realtime_Graphs'));
+		o.value('realtime', _('Realtime Graphs'));
 		o.value('netdata', _('Netdata'));
 		o.default = 'overview';
 		o.rmempty = false;
 
 		// System Userkey settings
 		o = s.option( form.ListValue, 'gouser', _('System Userkey settings'));
-		o.value('kucat-config', _('KuCat Config'));
-		o.value('netwizard', _('Netwizard'));
 		o.value('system', _('System'));
 		o.value('admin', _('Administration'));
-		o.value('filemanager', _('File_Manager'));
+		o.value('filemanager', _('File Manager'));
+		o.value('kucat-config', _('KuCat Config'));
 		o.value('ttyd', _('Terminal'));
 		o.value('poweroffdevice', _('PowerOff'));
-		o.default = 'kucat';
+		o.default = 'kucat-config';
 		o.rmempty = false;
 
 		// Services Ssrkey settings
