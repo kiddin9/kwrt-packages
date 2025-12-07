@@ -271,92 +271,119 @@ methods.get_subroutes = {
 
 methods.setup_firewall = {
 	call: function() {
-		uci.load('network');
-		uci.load('firewall');
+		try {
+			uci.load('network');
+			uci.load('firewall');
 
-		let changed_network = false;
-		let changed_firewall = false;
+			let changed_network = false;
+			let changed_firewall = false;
 
-		if (uci.get('network', 'tailscale') == null) {
-			uci.set('network', 'tailscale', 'interface');
-			uci.set('network', 'tailscale', 'proto', 'none');
-			uci.set('network', 'tailscale', 'device', 'tailscale0');
-			changed_network = true;
-		} else if (uci.get('network', 'tailscale', 'device') == null) {
-			uci.set('network', 'tailscale', 'device', 'tailscale0');
-			changed_network = true;
-		}
-
-		function find_zone_idx() {
-			for (let i = 0; ; i++) {
-				let name = uci.get('firewall', '@zone[' + i + ']', 'name');
-				if (name == null) break;
-				if (name == 'tailscale') return i;
+			// 1. config Network Interface
+			let net_ts = uci.get('network', 'tailscale');
+			if (net_ts == null) {
+				uci.set('network', 'tailscale', 'interface');
+				uci.set('network', 'tailscale', 'proto', 'none');
+				uci.set('network', 'tailscale', 'device', 'tailscale0');
+				changed_network = true;
+			} else {
+				let current_dev = uci.get('network', 'tailscale', 'device');
+				if (current_dev != 'tailscale0') {
+					uci.set('network', 'tailscale', 'device', 'tailscale0');
+					changed_network = true;
+				}
 			}
-			return -1;
-		}
 
-		let zone_idx = find_zone_idx();
-		if (zone_idx == -1) {
-			let zid = uci.add('firewall', 'zone', 'tszone');
-			uci.set('firewall', zid, 'name', 'tailscale');
-			uci.set('firewall', zid, 'input', 'ACCEPT');
-			uci.set('firewall', zid, 'output', 'ACCEPT');
-			uci.set('firewall', zid, 'forward', 'ACCEPT');
-			uci.set('firewall', zid, 'masq', '1');
-			uci.set('firewall', zid, 'mtu_fix', '1');
-			uci.add_list('firewall', zid, 'network', 'tailscale');
-			changed_firewall = true;
-			zone_idx = find_zone_idx();
-		} else {
-			let nets = uci.get('firewall', '@zone[' + zone_idx + ']', 'network');
-			let nets_join = (nets == null) ? '' : (nets + '');
-			if (index(nets_join, 'tailscale') == -1) {
-				uci.add_list('firewall', '@zone[' + zone_idx + ']', 'network', 'tailscale');
+			// 2. config Firewall Zone
+			let fw_all = uci.get_all('firewall');
+			let ts_zone_section = null;
+			let fwd_lan_to_ts = false;
+			let fwd_ts_to_lan = false;
+
+			for (let sec_key in fw_all) {
+				let s = fw_all[sec_key];
+				if (s['.type'] == 'zone' && s['name'] == 'tailscale') {
+					ts_zone_section = sec_key;
+				}
+				if (s['.type'] == 'forwarding') {
+					if (s.src == 'lan' && s.dest == 'tailscale') fwd_lan_to_ts = true;
+					if (s.src == 'tailscale' && s.dest == 'lan') fwd_ts_to_lan = true;
+				}
+			}
+
+			if (ts_zone_section == null) {
+				let zid = uci.add('firewall', 'zone');
+				uci.set('firewall', zid, 'name', 'tailscale');
+				uci.set('firewall', zid, 'input', 'ACCEPT');
+				uci.set('firewall', zid, 'output', 'ACCEPT');
+				uci.set('firewall', zid, 'forward', 'ACCEPT');
+				uci.set('firewall', zid, 'masq', '1');
+				uci.set('firewall', zid, 'mtu_fix', '1');
+				uci.set('firewall', zid, 'network', ['tailscale']);
 				changed_firewall = true;
-			}
-		}
+			} else {
+				let nets = uci.get('firewall', ts_zone_section, 'network');
+				let net_list = [];
+				let has_ts_net = false;
 
-		function has_forward(src, dest) {
-			for (let i = 0; ; i++) {
-				let s = uci.get('firewall', '@forwarding[' + i + ']', 'src');
-				let d = uci.get('firewall', '@forwarding[' + i + ']', 'dest');
-				if (s == null && d == null) break;
-				if (s == src && d == dest) return true;
-			}
-			return false;
-		}
+				if (type(nets) == 'array') {
+					net_list = nets;
+				} else if (type(nets) == 'string') {
+					net_list = [nets];
+				}
 
-		function ensure_forward(src, dest) {
-			if (!has_forward(src, dest)) {
+				// check if 'tailscale' is already in the list
+				for (let n in net_list) {
+					if (net_list[n] == 'tailscale') {
+						has_ts_net = true;
+						break;
+					}
+				}
+
+				if (!has_ts_net) {
+					push(net_list, 'tailscale');
+					uci.set('firewall', ts_zone_section, 'network', net_list);
+					changed_firewall = true;
+				}
+			}
+
+			// 3. config Forwarding
+			if (!fwd_lan_to_ts) {
 				let fid = uci.add('firewall', 'forwarding');
-				uci.set('firewall', fid, 'src', src);
-				uci.set('firewall', fid, 'dest', dest);
+				uci.set('firewall', fid, 'src', 'lan');
+				uci.set('firewall', fid, 'dest', 'tailscale');
 				changed_firewall = true;
 			}
+
+			if (!fwd_ts_to_lan) {
+				let fid = uci.add('firewall', 'forwarding');
+				uci.set('firewall', fid, 'src', 'tailscale');
+				uci.set('firewall', fid, 'dest', 'lan');
+				changed_firewall = true;
+			}
+
+			// 4. save
+			if (changed_network) {
+				uci.save('network');
+				uci.commit('network');
+				exec('/etc/init.d/network reload');
+			}
+
+			if (changed_firewall) {
+				uci.save('firewall');
+				uci.commit('firewall');
+				exec('/etc/init.d/firewall reload');
+			}
+
+			return {
+				success: true,
+				changed_network: changed_network,
+				changed_firewall: changed_firewall,
+				message: (changed_network || changed_firewall) ? 'Tailscale firewall/interface configuration applied.' : 'Tailscale firewall/interface already configured.'
+			};
+
+		} catch (e) {
+			return { error: 'Exception in setup_firewall: ' + e + '\nStack: ' + (e.stacktrace || '') };
 		}
-
-		ensure_forward('tailscale', 'lan');
-		ensure_forward('lan', 'tailscale');
-
-		if (changed_network) {
-			uci.save('network');
-			uci.commit('network');
-			exec('/etc/init.d/network reload');
-		}
-
-		if (changed_firewall) {
-			uci.save('firewall');
-			uci.commit('firewall');
-			exec('/etc/init.d/firewall reload');
-		}
-
-		return {
-			success: true,
-			changed_network: changed_network,
-			changed_firewall: changed_firewall,
-			message: (changed_network || changed_firewall) ? 'Tailscale firewall/interface configuration applied.' : 'Tailscale firewall/interface already configured.'
-		};
 	}
 };
 
