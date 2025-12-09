@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bandix
 PKG_VERSION:=0.11.0
-PKG_RELEASE:=24
+PKG_RELEASE:=25
 
 PKG_LICENSE:=Apache-2.0
 PKG_MAINTAINER:=timsaya
@@ -56,9 +56,6 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_CONF) ./files/bandix.config $(1)/etc/config/bandix
 endef
 
-define Package/$(PKG_NAME)/conffiles
-/etc/config/bandix
-endef
 
 define Package/$(PKG_NAME)/postinst
 #!/bin/sh
