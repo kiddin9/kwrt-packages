@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-mwol.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-mwol.json << EEOF
+{
+    "config": "mwol",
+    "init": "mwol"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@mwol[-1]
+	add ucitrack mwol
+	set ucitrack.@mwol[-1].init=mwol
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

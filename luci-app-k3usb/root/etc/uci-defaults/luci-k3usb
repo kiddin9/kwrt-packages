@@ -1,0 +1,19 @@
+#!/bin/sh
+[ ! -f "/usr/share/ucitrack/luci-app-k3usb.json" ] && {
+    cat > /usr/share/ucitrack/luci-app-k3usb.json << EEOF
+{
+    "config": "k3usb",
+    "init": "k3usb"
+}
+EEOF
+}
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@k3usb[-1]
+	add ucitrack k3usb
+	set ucitrack.@k3usb[-1].init=k3usb
+	commit ucitrack
+EOF
+
+rm -rf /tmp/luci-*
+exit 0

@@ -8,10 +8,8 @@ include $(TOPDIR)/rules.mk
 LUCI_TITLE:=LuCI support for Verysync
 LUCI_DEPENDS:=+verysync
 LUCI_PKGARCH:=all
-
-PKG_NAME:=luci-app-verysync
 PKG_VERSION:=1.0
-PKG_RELEASE:=9
+PKG_RELEASE:=10
 
 include $(TOPDIR)/feeds/luci/luci.mk
 
