@@ -113,15 +113,4 @@
 -  killall rtorrent
 +  kill `pidof rtorrent | sed "s/$$//g"`
  }
- 
---- a/luci-app-mentohust/root/etc/init.d/mentohust
-+++ b/luci-app-mentohust/root/etc/init.d/mentohust
-@@ -73,7 +73,7 @@ start()
- 
- stop()
- {
--    killall mentohust
-+    kill `pidof mentohust | sed "s/$$//g"`
- }
- 
- restart()
+
