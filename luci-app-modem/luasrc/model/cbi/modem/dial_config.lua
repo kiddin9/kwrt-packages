@@ -118,7 +118,7 @@ dial_tool = s:taboption("advanced", ListValue, "dial_tool", translate("Dial Tool
 dial_tool.description = translate("After switching the dialing tool, it may be necessary to restart the module or restart the router to recognize the module.")
 dial_tool.rmempty = true
 dial_tool:value("", translate("Auto Choose"))
-if isPluginExist("quectel-CM-5G") then
+if isPluginExist("quectel-cm") then
 	dial_tool:value("quectel-CM", translate("quectel-CM"))
 end
 if isPluginExist("fibocom-dial") then

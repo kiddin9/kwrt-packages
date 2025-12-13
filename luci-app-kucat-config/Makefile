@@ -7,8 +7,8 @@
 include $(TOPDIR)/rules.mk
 NAME:=kucat-config
 PKG_NAME:=luci-app-$(NAME)
-PKG_VERSION:=2.1.1
-PKG_RELEASE:=3
+PKG_VERSION:=2.1.2
+PKG_RELEASE:=4
 
 PKG_MAINTAINER:=sirpdboy team <herboy2008@gmail.com>
 
@@ -16,14 +16,7 @@ LUCI_TITLE:=LuCI support for Kucat theme setting by sirpdboy
 LUCI_DEPENDS:=+curl
 LUCI_PKGARCH:=all
 
-
 define Build/Compile
-endef
-
-define Package/$(PKG_NAME)/postinst
-#!/bin/sh
-chmod +x /etc/init.d/kucat
-rm -f /tmp/luci-*
 endef
 
 define Package/$(PKG_NAME)/conffiles

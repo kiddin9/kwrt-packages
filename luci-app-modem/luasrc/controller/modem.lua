@@ -931,7 +931,7 @@ function getPluginInfo()
 	-- 获取拨号工具信息
 	local dial_tool_info={}
 	dial_tool_info["modemmanager"]="Not installed"
-	dial_tool_info["quectel-CM-5G"]="Not installed"
+	dial_tool_info["quectel-cm"]="Not installed"
 	dial_tool_info["fibocom-dial"]="Not installed"
 	dial_tool_info["meig-cm"]="Not installed"
 	setPluginVersionInfo(dial_tool_info)

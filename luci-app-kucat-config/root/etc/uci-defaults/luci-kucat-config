@@ -1,3 +1,8 @@
+#!/bin/sh
+chmod +x  /etc/init.d/kucat
+
+[ -s /etc/config/kucat ] || {
+cat <<-EOF > /etc/config/kucat
 
 config basic
 	option gouser 'kucat-config'
@@ -27,7 +32,7 @@ config basic
 config theme
 	option primary_rgbbody '33,45,60'
 	option primary_rgbs '76,157,69'
-	option remarks 'éš”æ ç»å…¸è“è‰²'
+	option remarks '¸ôÀ¸¾­µäÀ¶É«'
 	option primary_opacity '0'
 	option primary_rgbm_ts '0.9'
 	option bkuse '1'
@@ -42,7 +47,7 @@ config theme
 	option primary_rgbm_ts '0.9'
 	option primary_opacity '0'
 	option bkuse '0'
-	option remarks 'æ— éš”æ æ¸…çˆ½ç»¿'
+	option remarks 'ÎŞ¸ôÀ¸ÇåË¬ÂÌ'
 	option primary_rgbs_ts '0'
 	option mode 'auto'
 	option use '0'
@@ -53,7 +58,7 @@ config theme
 	option primary_rgbm '26,131,97'
 	option primary_rgbs '76 157 69'
 	option bkuse '0'
-	option remarks 'æ— éš”æ ç»¿æ¨¡ç³Š'
+	option remarks 'ÎŞ¸ôÀ¸ÂÌÄ£ºı'
 	option primary_rgbs_ts '0'
 	option primary_opacity '10'
 	option primary_rgbm_ts '0.5'
@@ -67,7 +72,7 @@ config theme
 	option primary_opacity '10'
 	option primary_rgbs_ts '0'
 	option primary_rgbm_ts '0.5'
-	option remarks 'æ— éš”æ è“æ¨¡ç³Š'
+	option remarks 'ÎŞ¸ôÀ¸À¶Ä£ºı'
 	option bkuse '1'
 	option use '1'
 
@@ -76,7 +81,7 @@ config theme
 	option primary_rgbs 'rgb(64, 68, 70)'
 	option primary_opacity '0'
 	option primary_rgbs_ts '0'
-	option remarks 'ç°æ— éš”æ æ— èƒŒæ™¯'
+	option remarks '»ÒÎŞ¸ôÀ¸ÎŞ±³¾°'
 	option bkuse '0'
 	option primary_rgbm_ts '0.9'
 	option mode 'auto'
@@ -87,7 +92,7 @@ config theme
 	option mode 'dark'
 	option primary_rgbm '50 66 77'
 	option primary_rgbs '55 80 90'
-	option remarks 'ç‚«ç°éš”æ æ¨¡ç³Š'
+	option remarks 'ìÅ»Ò¸ôÀ¸Ä£ºı'
 	option primary_rgbs_ts '0.1'
 	option use '0'
 	option primary_rgbm_ts '0.5'
@@ -98,9 +103,16 @@ config theme
 	option primary_rgbm '74,161,133'
 	option primary_rgbs '76 157 69'
 	option primary_rgbs_ts '0.1'
-	option remarks 'ç‚«ç»¿éš”æ æ¨¡ç³Š'
+	option remarks 'ìÅÂÌ¸ôÀ¸Ä£ºı'
 	option primary_rgbm_ts '0.7'
 	option bkuse '1'
 	option primary_opacity '10'
 	option use '0'
 
+EOF
+
+}
+
+
+rm -f /tmp/luci-indexcache
+exit 0
