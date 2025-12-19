@@ -1,33 +1,61 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=speedtest-cli
-PKG_VERSION:=2.1.3
-PKG_RELEASE:=5
+PKG_VERSION:=1.2.0
+PKG_RELEASE:=6
 
-PYPI_NAME:=speedtest-cli
-PKG_HASH:=skip
+ifeq ($(ARCH),aarch64)
+  PKG_HASH:=skip
+else ifeq ($(ARCH),arm)
+  ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
+  ifeq ($(ARM_CPU_FEATURES),)
+    ARCH:=armel
+    PKG_HASH:=skip
+  else
+    ARCH:=armhf
+    PKG_HASH:=skip
+  endif
+else ifeq ($(ARCH),i386)
+  PKG_HASH:=skip
+else ifeq ($(ARCH),x86_64)
+  PKG_HASH:=skip
+endif
 
-PKG_MAINTAINER:=Jaymin Patel <jem.patel@gmail.com>
-PKG_LICENSE:=Apache-2.0
-PKG_LICENSE_FILES:=LICENSE
+PKG_SOURCE:=ookla-speedtest-$(PKG_VERSION)-linux-$(ARCH).tgz
+PKG_SOURCE_URL:=https://install.speedtest.net/app/cli
 
-include $(TOPDIR)/feeds/packages/lang/python/pypi.mk
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+
+PKG_MAINTAINER:=sbwml <admin@cooluc.com>
+
 include $(INCLUDE_DIR)/package.mk
-include $(TOPDIR)/feeds/packages/lang/python/python3-package.mk
 
-define Package/speedtest-cli
-  SECTION:=net
-  CATEGORY:=Network
-  TITLE:=Command line interface for testing internet bandwidth using speedtest.net
-  URL:=https://github.com/sivel/speedtest-cli
-  DEPENDS:=+python3-light +python3-pkg-resources +python3-xml +python3-email \
-	  +python3-urllib +python3-codecs +python3-openssl
+define Package/$(PKG_NAME)
+	SECTION:=net
+	CATEGORY:=Network
+	TITLE:=Speedtest CLI by Ookla
+	DEPENDS:=@(aarch64||arm||i386||x86_64) +ca-certificates
+	URL:=https://www.speedtest.net/
 endef
 
-define Package/speedtest-cli/description
-  Command line interface for testing internet bandwidth using speedtest.net
+define Package/$(PKG_NAME)/description
+  The Global Broadband Speed Test
 endef
 
-$(eval $(call Py3Package,speedtest-cli))
-$(eval $(call BuildPackage,speedtest-cli))
-#$(eval $(call BuildPackage,speedtest-cli-src))
+define Build/Prepare
+	( \
+		pushd $(PKG_BUILD_DIR) ; \
+			$(TAR) -zxf $(DL_DIR)/ookla-speedtest-$(PKG_VERSION)-linux-$(ARCH).tgz -C . ; \
+		popd ; \
+	)
+endef
+
+define Build/Compile
+endef
+
+define Package/$(PKG_NAME)/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/speedtest $(1)/usr/bin
+endef
+
+$(eval $(call BuildPackage,$(PKG_NAME)))

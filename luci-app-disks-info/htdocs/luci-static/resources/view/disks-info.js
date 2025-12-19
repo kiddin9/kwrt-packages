@@ -1,5 +1,6 @@
 'use strict';
 'require fs';
+'require rpc';
 'require ui';
 'require view';
 
@@ -63,24 +64,38 @@ document.head.append(E('style', {'type': 'text/css'},
 `));
 
 return view.extend({
-	viewName           : 'disks-info',
+	viewName               : 'disks-info',
 
-	fsSpaceWarning     : 90,
+	fsSpaceWarning         : 90,
 
-	ssdEnduranceWarning: 95,
+	ssdEnduranceWarning    : 95,
 
-	smartCriticalAttrs : [ 5, 11, 183, 184, 187, 196, 197, 198, 200, 202, 220 ],
+	diskTempWarningDefault : 60,
 
-	smartTempAttrs     : [ 190, 194 ],
+	diskTempCriticalDefault: 80,
 
-	deviceRegExp       : new RegExp('^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$'),
+	smartCriticalAttrs     : [ 5, 11, 183, 184, 187, 196, 197, 198, 200, 202, 220 ],
 
-	availDeviceTypes   : [
+	smartTempAttrs         : [ 190, 194 ],
+
+	deviceRegExp           : new RegExp('^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$'),
+
+	availDeviceTypes       : [
 		{ name: 'auto', title: _('auto') },
 		{ name: 'sat', title: _('SAT (SCSI to ATA Translation)') },
 	],
 
-	deviceType         : {},
+	smartctl               : '/usr/sbin/smartctl',
+
+	deviceType             : {},
+
+	devices                : [],
+
+	callDevices : rpc.declare({
+		object: 'luci.disks-info',
+		method: 'getDevices',
+		expect: { '': {} },
+	}),
 
 	restoreSettingsFromLocalStorage() {
 		let deviceType = localStorage.getItem(`luci-app-${this.viewName}-deviceType`);
@@ -110,9 +125,8 @@ return view.extend({
 		let deviceType = this.deviceType[device] || this.availDeviceTypes[0].name;
 		return Promise.all([
 			device,
-			L.resolveDefault(fs.exec('/usr/sbin/fdisk', [ '-l', device ]), null),
 			L.resolveDefault(fs.exec_direct(
-				'/usr/sbin/smartctl',
+				this.smartctl,
 				[ '-d', deviceType, '-iAHl', 'scttemp', '-l', 'error', '-l', 'devstat', '--json=c', device ],
 				'json'), null),
 		]);
@@ -129,23 +143,20 @@ return view.extend({
 			return;
 		};
 
-		return fs.exec('/usr/sbin/smartctl',
+		return fs.exec(this.smartctl,
 			[ '-l', 'scttempint,' + (pSave ? num + ',p' : num), device ]
 		).then(res => {
 			window.location.reload();
 		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
 	},
 
-	async createDiskTable(text) {
-		let [ diskInfo, partitions ] = text.trim().split('\n\n').map(e => e.trim().split('\n'));
-		diskInfo = diskInfo.map(e => e.split(':'));
-
+	createDiskTable(fdiskData, dfData) {
 		let diskInfoTable = E('table', { 'class': 'table' });
-		for(let [k, v] of diskInfo) {
+		for(let i of fdiskData.diskInfo) {
 			diskInfoTable.append(
 				E('tr', { 'class': 'tr' }, [
-					E('td', { 'class': 'td left', 'style': 'width:33%' }, _(k) + ':'),
-					E('td', { 'class': 'td left' }, v.trim()),
+					E('td', { 'class': 'td left', 'style': 'width:33%' }, _(i[0]) + ':'),
+					E('td', { 'class': 'td left' }, i[1]),
 				])
 			);
 		};
@@ -167,7 +178,6 @@ return view.extend({
 			_('End'),
 			_('Sectors'),
 			_('Size'),
-			_('Id'),
 			_('Type'),
 		];
 		let partitionsTable = E('table', { 'class': 'table' },
@@ -179,7 +189,6 @@ return view.extend({
 				E('th', { 'class': 'th left' }, partitionsTableTitles[4]),
 				E('th', { 'class': 'th left' }, partitionsTableTitles[5]),
 				E('th', { 'class': 'th left' }, partitionsTableTitles[6]),
-				E('th', { 'class': 'th left' }, partitionsTableTitles[7]),
 			])
 		);
 		let dfTableTitles = [
@@ -203,64 +212,87 @@ return view.extend({
 			])
 		);
 
+		let partitions = fdiskData.partitions;
 		if(partitions) {
-			partitions = partitions.map(e => e.split(/\s+/));
-
-			for(let i = 1; i < partitions.length; i++) {
-				let device, boot, start, end, sectors, size, id, type;
-				if(partitions[i][1] === '*') {
-					[ device, boot, start, end, sectors, size, id, ...type ] = partitions[i];
-				} else {
-					[ device, start, end, sectors, size, id, ...type ] = partitions[i];
-				};
-
-				let tr = E('tr', { 'class': 'tr' });
-				[ device, boot || '&#160;', start, end, sectors, size, id, type.join(' ') ].forEach(
-					(elem, index, array) => {
-						tr.append(
-							E('td', {
-								'class'     : 'td left',
-								'data-title': partitionsTableTitles[index],
-							}, elem)
-						);
-					}
+			for(let i of partitions) {
+				partitionsTable.append(
+					E('tr', { 'class': 'tr' }, [
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[0],
+						}, i.device),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[1],
+						}, (i.boot) ? _('yes') : _('no')),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[2],
+						}, i.start),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[3],
+						}, i.end),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[4],
+						}, i.sectors),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[6],
+						}, i.size),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': partitionsTableTitles[7],
+						}, i.type),
+					])
 				);
-
-				partitionsTable.append(tr);
 			};
-
 			if(partitionsTable.children.length <= 1) {
 				partitionsTable.append(partitionsTablePlaceholder);
-			} else {
-				for(let partition of partitions.slice(1)) {
-					let tr = E('tr', { 'class': 'tr' });
-					await fs.exec('/bin/df', [ '-Th', partition[0] ]).then(stat => {
-						if(stat.code !== 0) return;
-						let fields = stat.stdout.trim().split('\n')[1].split(/\s+/);
-
-						for(let i = 0; i < fields.length; i++) {
-							tr.append(
-								E('td', {
-										'class': (i === 5 && parseInt(fields[i]) >= this.fsSpaceWarning) ?
-											'td left disks-info-warn' : 'td left',
-										'data-title': dfTableTitles[i],
-									},
-									(i === 5) ? E('div', {
-											'class': 'cbi-progressbar',
-											'title': fields[i],
-											'style': 'min-width:8em !important',
-										},
-										E('div', { 'style': 'width:' + fields[i] })
-									) :
-									fields[i]
+			} else if(dfData) {
+				for(let i of dfData) {
+					dfTable.append(
+						E('tr', { 'class': 'tr' }, [
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[0],
+							}, i.filesystem),
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[1],
+							}, i.type),
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[2],
+							}, i.size),
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[3],
+							}, i.used),
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[4],
+							}, i.available),
+							E('td', {
+								'class': (parseInt(i.use_perc) >= this.fsSpaceWarning) ?
+									'td left disks-info-warn' : 'td left',
+								'data-title': dfTableTitles[5],
+							}, E('div', {
+								'class': 'cbi-progressbar',
+								'title': i.use_perc,
+								'style': 'min-width:8em !important',
+								},
+									E('div', { 'style': 'width:' + i.use_perc })
 								)
-							);
-						};
-						dfTable.append(tr);
-
-					});
+							),
+							E('td', {
+								'class'     : 'td left',
+								'data-title': dfTableTitles[6],
+							}, i.mounted),
+						]),
+					);
 				};
-
 				if(dfTable.children.length <= 1) {
 					dfTable.append(dfTablePlaceholder);
 				};
@@ -277,7 +309,7 @@ return view.extend({
 				partitionsTable,
 			]),
 			E('div', { 'class': 'cbi-value' }, [
-				E('h3', {}, _('Filesystems') + ':'),
+				E('h3', {}, _('Mounted filesystems') + ':'),
 				dfTable,
 			]),
 		]);
@@ -447,7 +479,7 @@ return view.extend({
 
 		let i = dataSize - 1;
 		while(i >= 0) {
-			if(deviceTime % intervalSec === 0) {
+			if(deviceTime % intervalSec == 0) {
 				dataUnits.push([i, tempData[i], new Date(deviceTime * 1000)]);
 				i--;
 			};
@@ -549,7 +581,7 @@ return view.extend({
 				text.setAttribute('x', 0);
 				text.setAttribute('y', i - 3);
 				text.setAttribute('style', 'fill:#eee; font-family:monospace; font-size:14px; text-shadow:1px 1px 1px #000');
-				if(c % 2 === 0) {
+				if(c % 2 == 0) {
 					text.appendChild(document.createTextNode(((svgHeight - i) / tempValueMul) + tempMinimalValue + ' °C'));
 				};
 			svg.appendChild(text);
@@ -579,7 +611,9 @@ return view.extend({
 		);
 
 		for(let [num, temp, date] of dataUnits) {
-			if(temp === null) continue;
+			if(temp === null) {
+				continue;
+			};
 			sctTempTable.append(
 				E('tr', {
 					'class': (temp >= this.diskTempCritical) ? 'tr disks-info-err' :
@@ -647,7 +681,7 @@ return view.extend({
 			]),
 			E('div', { 'class': 'cbi-value' }, [
 				E('label', { 'class': 'cbi-value-title', 'for': 'apply_interval_value' + deviceNormalized },
-					_('Write to device memory')
+					_('Write to disk device memory')
 				),
 				E('div', { 'class': 'cbi-value-field' }, [
 					E('div', {}, E('button', {
@@ -670,7 +704,9 @@ return view.extend({
 			E('h3', {}, _('Device statistics') + ':')
 		);
 		for(let page of statObject.pages) {
-			if(!page || !Array.isArray(page.table) || page.table.length === 0) continue;
+			if(!page || !Array.isArray(page.table) || page.table.length == 0) {
+				continue;
+			};
 			let pageTableTitle = E('h5',
 				{ 'style': 'width:100% !important; text-align:left !important' },
 				_(page.name)
@@ -680,7 +716,7 @@ return view.extend({
 				pageTable.append(
 					E('tr', { 'class': 'tr' }, [
 						E('td', { 'class': 'td left', 'style': 'width:50%' }, _(entry.name) + ':'),
-						(page.number === 7 && entry.offset === 8) ?
+						(page.number == 7 && entry.offset == 8) ?
 							E('td', {
 									'class': (entry.value >= this.ssdEnduranceWarning) ?
 										'td left disks-info-warn' : 'td left',
@@ -744,7 +780,7 @@ return view.extend({
 				]),
 				E('tr', { 'class': 'tr' }, [
 					E('td', { 'class': 'td left', 'style': 'width:33%' }, _('Rotation Rate') + ':'),
-					E('td', { 'class': 'td left' }, (smartObject.rotation_rate === 0) ?
+					E('td', { 'class': 'td left' }, (smartObject.rotation_rate == 0) ?
 						_('Solid State Device') : smartObject.rotation_rate),
 				]),
 				E('tr', { 'class': 'tr' }, [
@@ -779,19 +815,12 @@ return view.extend({
 
 	load() {
 		this.restoreSettingsFromLocalStorage();
-		return fs.list('/dev').then(stat => {
-			let devices = [];
-			stat.forEach(e => {
-				let fname = e.name;
-				if(this.deviceRegExp.test(fname)) {
-					devices.push('/dev/' + fname);
-				};
-			});
-			return devices.sort();
-		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
+		return L.resolveDefault(this.callDevices(), []);
 	},
 
-	render(devices) {
+	render(devicesData) {
+		this.devices = devicesData.devices;
+
 		let devicesNode = E('div', { 'class': 'cbi-section fade-in' },
 			E('div', { 'class': 'cbi-section-node' },
 				E('div', { 'class': 'cbi-value' },
@@ -800,7 +829,7 @@ return view.extend({
 			)
 		);
 
-		if(devices && devices.length > 0) {
+		if(this.devices && this.devices.length > 0) {
 			devicesNode = E('div', { 'class': 'cbi-section fade-in' },
 				E('div', { 'class': 'cbi-section-node' },
 					E('div', { 'class': 'cbi-value' },
@@ -810,8 +839,8 @@ return view.extend({
 			);
 
 			Promise.all(
-				devices.map(device => this.getDeviceData(device))
-			).then(async data => {
+				this.devices.map(device => this.getDeviceData(device))
+			).then(data => {
 				let devicesTabs = E('div', { 'class': 'cbi-section fade-in' },
 					E('div', { 'class': 'cbi-section-node' },
 						E('div', { 'class': 'cbi-value' }, [
@@ -830,9 +859,9 @@ return view.extend({
 
 				for(let i = 0; i < data.length; i++) {
 					let deviceName = data[i][0];
-					let fdisk      = (data[i][1] && data[i][1].code === 0) ? data[i][1].stdout : null;
-					let smart      = data[i][2];
-
+					let smart      = data[i][1];
+					let fdisk      = devicesData.fdisk[deviceName];
+					let df         = devicesData.df[deviceName];
 					let deviceTab  = E('div', {
 						'data-tab'      : i,
 						'data-tab-title': deviceName,
@@ -865,8 +894,8 @@ return view.extend({
 						]),
 					);
 
-					if(fdisk) {
-						await this.createDiskTable(fdisk).then(elem => deviceTab.append(elem));
+					if(fdisk && df) {
+						deviceTab.append(this.createDiskTable(fdisk, df));
 					};
 
 					if(smart) {
@@ -876,8 +905,10 @@ return view.extend({
 							smartObject = JSON.parse(smart);
 						} catch(err) {};
 
-						this.diskTempWarning  = smartObject.temperature && smartObject.temperature.op_limit_max || 60;
-						this.diskTempCritical = smartObject.temperature && smartObject.temperature.limit_max || 80;
+						this.diskTempWarning  = (
+							smartObject.temperature && smartObject.temperature.op_limit_max || this.diskTempWarningDefault);
+						this.diskTempCritical = (
+							smartObject.temperature && smartObject.temperature.limit_max || this.diskTempCriticalDefault);
 
 						if('smart_status' in smartObject && 'ata_smart_attributes' in smartObject &&
 								Array.isArray(smartObject.ata_smart_attributes.table) &&

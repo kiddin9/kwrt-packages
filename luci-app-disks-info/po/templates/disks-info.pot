@@ -61,9 +61,6 @@ msgstr ""
 msgid "Estimated time"
 msgstr ""
 
-msgid "File systems"
-msgstr ""
-
 msgid "Filesystem"
 msgstr ""
 
@@ -119,6 +116,9 @@ msgid "May not be supported by some devices..."
 msgstr ""
 
 msgid "Model Family"
+msgstr ""
+
+msgid "Mounted filesystems"
 msgstr ""
 
 msgid "Mounted on"
@@ -241,7 +241,7 @@ msgstr ""
 msgid "WORST"
 msgstr ""
 
-msgid "Write to device memory"
+msgid "Write to disk device memory"
 msgstr ""
 
 msgid "auto"
@@ -265,5 +265,11 @@ msgstr ""
 msgid "min"
 msgstr ""
 
+msgid "no"
+msgstr ""
+
 msgid "passed"
+msgstr ""
+
+msgid "yes"
 msgstr ""

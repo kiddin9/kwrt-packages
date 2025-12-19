@@ -71,9 +71,6 @@ msgstr "Номер ошибки"
 msgid "Estimated time"
 msgstr "Расчётное время"
 
-msgid "Filesystems"
-msgstr "Файловые системы"
-
 msgid "Filesystem"
 msgstr "Файловая система"
 
@@ -130,6 +127,9 @@ msgstr "Может не поддерживаться некоторыми уст
 
 msgid "Model Family"
 msgstr "Семейство моделей"
+
+msgid "Mounted filesystems"
+msgstr "Смонтированные файловые системы"
 
 msgid "Mounted on"
 msgstr "Смонтировано"
@@ -251,8 +251,8 @@ msgstr ""
 msgid "WORST"
 msgstr ""
 
-msgid "Write to device memory"
-msgstr "Записать в память устройства"
+msgid "Write to disk device memory"
+msgstr "Записать в память дискового устройства"
 
 msgid "auto"
 msgstr "авто"
@@ -275,5 +275,11 @@ msgstr "логический/физический"
 msgid "min"
 msgstr "мин"
 
+msgid "no"
+msgstr "нет"
+
 msgid "passed"
 msgstr "пройден"
+
+msgid "да"
+msgstr ""

@@ -1,0 +1,138 @@
+
+'use strict';
+
+import { lsdir, popen } from 'fs';
+
+const fdiskPattern = '/usr/sbin/fdisk -lo Device,Start,End,Sectors,Size,Type %s 2> /dev/null';
+const dfPattern    = '/bin/df -Th %s 2> /dev/null';
+const deviceRegexp = /^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$/;
+const devicesDir   = '/dev';
+
+function getCmdOutput(cmd) {
+	let ret  = '';
+	const fp = popen(cmd, 'r');
+	if(fp) {
+		let c = fp.read('all');
+		fp.close();
+		if(c) {
+			ret = trim(c);
+		}
+	}
+	return ret;
+}
+
+function getDiskDevices() {
+	let devices = lsdir(devicesDir);
+	if(devices) {
+		devices = map(
+			filter(devices, e => match(e, deviceRegexp)),
+			e => devicesDir + '/' + e
+		);
+	}
+	return devices ?? [];
+}
+
+function getFdiskData(device) {
+	let diskDict   = {};
+	let diskInfo   = [];
+	let partitions = [];
+	let output     = getCmdOutput(sprintf(fdiskPattern, device));
+	let diskData   = map(
+		split(trim(output), '\n\n', 3),
+		e => trim(e)
+	);
+	if(length(diskData) > 0) {
+		diskInfo = map(
+			map(split(diskData[0], '\n'), e => trim(e)),
+			e => map(split(e, ':', 2), e => trim(e))
+		);
+		if(diskData[1]) {
+			let partitionsRaw = map(split(diskData[1], '\n'), e => split(e, /\s+/));
+			for(let i = 1; i < length(partitionsRaw); i++) {
+				let device, boot = false, start, end, sectors, size;
+				let lastField = 5;
+				if(partitionsRaw[i][1] == '*') {
+					lastField = 6;
+					device    = partitionsRaw[i][0];
+					boot      = true;
+					start     = partitionsRaw[i][2];
+					end       = partitionsRaw[i][3];
+					sectors   = partitionsRaw[i][4];
+					size      = partitionsRaw[i][5];
+				} else {
+					device  = partitionsRaw[i][0];
+					start   = partitionsRaw[i][1];
+					end     = partitionsRaw[i][2];
+					sectors = partitionsRaw[i][3];
+					size    = partitionsRaw[i][4];
+				}
+				let type = [];
+				for(let j = lastField; j < length(partitionsRaw[i]); j++) {
+					push(type, partitionsRaw[i][j]);
+				}
+				push(partitions, { device, boot, start, end, sectors, size, type: join(' ', type) });
+			}
+		}
+	}
+	diskDict['diskInfo']   = diskInfo;
+	diskDict['partitions'] = partitions;
+	return diskDict;
+}
+
+function getDfData(partition) {
+	let fsDict = {};
+	let output = getCmdOutput(sprintf(dfPattern, partition));
+	let fsData = map(
+		split(trim(output), '\n'),
+		e => trim(e)
+	);
+	if(fsData[1]) {
+		let dataRaw = split(fsData[1], /\s+/);
+		fsDict['filesystem'] = dataRaw[0];
+		fsDict['type']       = dataRaw[1];
+		fsDict['size']       = dataRaw[2];
+		fsDict['used']       = dataRaw[3];
+		fsDict['available']  = dataRaw[4];
+		fsDict['use_perc']   = dataRaw[5];
+		fsDict['mounted']    = dataRaw[6];
+	}
+	return fsDict;
+}
+
+const methods = {
+	getDevices: {
+		call: function() {
+			let data      = {};
+			const devices = getDiskDevices();
+			if(length(devices) > 0) {
+				let fdiskData = {};
+				for(let i in devices) {
+					fdiskData[i] = getFdiskData(i);
+				}
+				let dfData = {};
+				for(let k, v in fdiskData) {
+					let filesystems = [];
+					for(let j in v.partitions) {
+						let res = getDfData(j.device);
+						if(length(res) > 0) {
+							push(filesystems, res);
+						}
+					}
+					dfData[k] = filesystems;
+				}
+				data['devices'] = () => {
+					let d = [];
+					for(let k in fdiskData) {
+						push(d, k);
+					}
+					return d;
+				}();
+				data['fdisk'] = fdiskData;
+				data['df']    = dfData;
+			}
+			return data;
+		}
+	}
+};
+
+return { 'luci.disks-info': methods };

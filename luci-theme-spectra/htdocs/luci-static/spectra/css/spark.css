@@ -4367,7 +4367,7 @@ div>div[style*="display:grid"] {
 
 .custom-tooltip {
     position: fixed;
-    z-index: 999999;
+    z-index: 2147483647 !important;
     padding: 6px 12px;
     font-size: 0.8rem;
     line-height: 1.4;
@@ -4708,16 +4708,95 @@ div[style*="position: absolute"][style*="z-index: 9999999"] {
     border: none !important;
 }
 
+#add_link_div, #reassign_group_div,
 #set_node_div {
-    background: color-mix(in oklch, var(--bg-container), transparent 70%) !important;
+    background: var(--bg-container) !important;
     border-radius: var(--radius-mini);
-    backdrop-filter: var(--glass-blur-mini);
-    -webkit-backdrop-filter: var(--glass-blur-mini);
+    border: var(--border-strong) !important;
+}
+
+.dropdown-list,
+.custom-dropdown {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.lv-dropdown-panel .lv-item-label,
+.cbi-dropdown-value,
+.cbi-value-field span {
+    font-family: "NotoColorEmojiFlags" !important;
+}
+
+.lv-arrow-down-small {
+    border-top: 5px solid var(--text-primary) !important;
+}
+
+.lv-arrow-right {
+    border-left: 5px solid var(--text-primary) !important;
+}
+
+.cbi-listvalue-panel li[data-key]:hover,
+.custom-dropdown .dropdown-item:hover {
+    background-color: var(--accent-color) !important;
+    color: var(--color-white-strong) !important;
+}
+
+[id*="passwall"][id*="node"] .lv-group-title {
+    border: var(--border-strong) !important;
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+[id*="tcp_node.panel"],
+[id*="udp_node.panel"] {
+    background: var(--bg-container) !important;
+    color: var(--text-primary) !important;
+}
+
+[id*="tcp_node.display"],
+[id*="udp_node.display"] {
+    border: var(--border-strong) !important;
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.lv-dropdown-display .lv-arrow-down {
+    display: none;
+}
+
+.cbi-listvalue-panel li[data-key],
+.lv-dropdown-search {
+    border: var(--border-strong) !important;
+    border-radius: var(--radius-mini);
+}
+
+.custom-dropdown:hover .selected-display {
+    background-color: var(--card-bg) !important;
 }
 
 #cbi-openclash-groups {
     background: color-mix(in oklch, var(--bg-container), transparent 20%) !important;
     border-radius: var(--radius-mini);
+}
+
+.lv-dropdown-panel::-webkit-scrollbar {
+    width: 12px;
+}
+
+.lv-dropdown-panel::-webkit-scrollbar-track {
+    background-color: color-mix(in oklch, var(--header-bg), transparent 20%);
+    border-radius: 6px;
+}
+
+.lv-dropdown-panel::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 6px;
+    background-color: var(--accent-color);
+}
+
+.lv-dropdown-panel::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-tertiary);
 }
 
 #tab-header-openclash-rule_providers,
@@ -4728,18 +4807,6 @@ div[style*="position: absolute"][style*="z-index: 9999999"] {
 #tab-header-openclash-proxy-provider,
 #tab-header-openclash-groups {
     background: color-mix(in oklch, var(--bg-container), transparent 20%) !important;
-}
-
-.sub_setting img {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
-}
-
-.sub_setting img:hover {
-    opacity: 0.8;
-    transform: scale(1.1);
 }
 
 .cbi-input-file::file-selector-button {
@@ -4815,4 +4882,214 @@ ul:has(> li:only-child):has(.checkbox_switch):has(.app-update-menu-item) {
 @keyframes fall {
     0% { transform: translateY(0) rotate(0deg); }
     100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+#packages .tr.cbi-section-table-titles .th:first-child {
+    border-top-left-radius: 10px;
+}
+
+#packages .tr.cbi-section-table-titles .th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.tr.cbi-section-table-titles .th {
+    background-color: var(--header-bg) !important;
+    color: var(--text-primary);
+}
+
+.cbi-section-table-descr {
+    display: none
+}
+
+[id^="tab-header-openclash-"] ul li a {
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    color: var(--text-color) !important;
+    text-decoration: none !important;
+}
+
+[id^="tab-header-openclash-"] ul li a:hover {
+    text-decoration: none !important;
+}
+
+
+[id^="tab-header-openclash-"] ul {
+    background-color: transparent !important;
+}
+
+.progress_bar_bg,
+[id^="tab-header-openclash-"] ul li.cbi-tab-disabled {
+    background-color: var(--header-bg) !important;
+    color: var(--text-color) !important;
+    border: var(--border-strong) !important;
+}
+
+.text_show {
+    color: var(--text-color) !important;
+}
+
+.sub_setting img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: filter 0.2s ease, transform 0.2s ease !important;
+}
+
+#icon_arrow {
+    filter: invert(39%) sepia(95%) saturate(746%)
+            hue-rotate(185deg) brightness(94%) contrast(92%) !important;
+}
+
+#icon_wrench {
+    filter: invert(62%) sepia(85%) saturate(524%)
+            hue-rotate(5deg) brightness(101%) contrast(97%) !important;
+}
+
+.sub_setting img:hover {
+    filter: invert(48%) sepia(98%) saturate(2130%)
+            hue-rotate(345deg) brightness(95%) contrast(101%) !important;
+    transform: scale(1.15);
+}
+
+.sub_setting img:active {
+    filter: brightness(85%);
+    transform: scale(1.05);
+}
+
+.sub_setting img.disabled {
+    filter: grayscale(100%) opacity(50%);
+    cursor: default;
+}
+
+#tab-header ul.cbi-tabmenu {
+    background-color: transparent !important;
+}
+
+#tab:has(textarea[id="cbid.openclash.config.clog"]) {
+    border: var(--border-strong) !important;
+    background-color: var(--bg-container) !important;
+    box-shadow: none !important;
+}
+
+#tab:has(textarea[id="cbid.openclash.config.clog"]) #tab-content,
+#tab:has(textarea[id="cbid.openclash.config.clog"]) #tab-header {
+    background-color: var(--header-bg) !important;
+    color: var(--text-color) !important;
+}
+
+.CodeMirror {
+    background: var(--bg-container) !important;
+    color: var(--text-color) !important;
+}
+
+.CodeMirror-linenumber,
+.cm-s-material .CodeMirror-guttermarker, .cm-s-material .CodeMirror-guttermarker-subtle, .cm-s-material .CodeMirror-linenumber {
+    color: var(--text-color) !important;
+}
+
+.CodeMirror-activeline-background {
+    background: color-mix(in oklch, var(--color-blue), transparent 20%) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+}
+
+.CodeMirror-activeline .CodeMirror-line {
+    color: var(--color-white-strong) !important;
+}
+
+.CodeMirror-activeline .CodeMirror-line * {
+    color: inherit !important;
+}
+
+.CodeMirror-gutters {
+    background-color: var(--header-bg) !important;
+    color: var(--text-color) !important;
+    border: none !important;
+}
+
+.cm-s-material .cm-comment {
+    color: var(--text-color) !important;
+}
+
+.cm-s-material .cm-string,
+.cm-s-idea span.cm-variable  {
+    color: var(--color-pink) !important;
+}
+
+.cm-s-idea span.cm-number,
+.cm-s-material-log .cm-number {
+    color: var(--color-orange) !important;
+}
+
+#tab-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+#tab-content::-webkit-scrollbar-track {
+    background: color-mix(in oklch, var(--header-bg), transparent 20%) !important;
+    border-radius: 5px;
+}
+
+#tab-content::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 5px;
+    border: var(--border-strong) !important;
+}
+
+#tab-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-pink);
+}
+
+#tab-content {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--header-bg);
+}
+
+#tab-header-openclash-dns_servers ul li.cbi-tab::after,
+#tab-header .cbi-tabmenu li::after,
+#tab-header .cbi-tabmenu li:hover::after,
+#tab-header .cbi-tabmenu li.cbi-tab::after,
+#tab-header .cbi-tabmenu li.cbi-tab-disabled::after,
+[id^="tab-header-openclash-"] ul li::after,
+[id^="tab-header-openclash-"] ul li:hover::after,
+[id^="tab-header-openclash-"] ul li[class~="cbi-tab"]::after,
+[id^="tab-header-openclash-"] ul li.cbi-tab::after,
+[id^="tab-header-openclash-"] ul li.cbi-tab-disabled::after,
+[id^="tab-header-openclash-"] ul li.cbi-tab-active::after {
+    border: var(--border-strong) !important;
+    display: none !important;
+    content: none !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] #tab-header ul.cbi-tabmenu li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-game_config ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-rule_providers ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-rule_provider_config ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-game_config ul li.cbi-tab-disabled,
+[data-theme="dark"] #tab-header-openclash-servers ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-proxy-provider ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-groups ul li.cbi-tab-disabled a,
+[data-theme="dark"] #tab-header-openclash-dns_servers ul li.cbi-tab-disabled a {
+    color: var(--color-white-strong) !important;
+}
+
+#tab-header ul.cbi-tabmenu li.cbi-tab,
+[id^="tab-header"][id*="openclash"] ul li.cbi-tab {
+    background-color: var(--accent-color) !important;
+    border: var(--border-strong) !important;
+    color: var(--color-white-strong) !important;
+}
+
+#tab-header ul.cbi-tabmenu li.cbi-tab-disabled  {
+    background: var(--bg-body) !important;
+    color: var(--color-white-strong) !important;
+}
+
+#tab-header ul.cbi-tabmenu li.cbi-tab-disabled:hover  {
+    background: var(--header-bg) !important;
+    color: var(--color-white-strong) !important;
 }
