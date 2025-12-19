@@ -26,7 +26,7 @@ include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
 PKG_NAME:=nanohatoled
 PKG_VERSION:=1.0.4
-PKG_RELEASE:=24
+PKG_RELEASE:=26
 PKG_DATE:=20200528
 
 PKG_LICENSE:=MIT

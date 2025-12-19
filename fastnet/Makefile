@@ -7,15 +7,14 @@ include $(TOPDIR)/rules.mk
 PKG_ARCH_FASTNET:=$(ARCH)
 
 PKG_NAME:=fastnet
-# use PKG_SOURCE_DATE instead of PKG_VERSION for compatible
-PKG_SOURCE_DATE:=0.7.2
-PKG_RELEASE:=1
+PKG_VERSION:=0.7.5
+PKG_RELEASE:=2
 
-PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_SOURCE_DATE).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-binary-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dl.istoreos.com/binary/fastnet/
 PKG_HASH:=skip
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-binary-$(PKG_SOURCE_DATE)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-binary-$(PKG_VERSION)
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -28,7 +27,6 @@ define Package/$(PKG_NAME)
 	SUBMENU:=Web Servers/Proxies
 	TITLE:=FastNet - network test Web UI
 	DEPENDS:=@(arm||x86_64||aarch64)
-	PKGARCH:=all
 endef
 
 define Package/$(PKG_NAME)/description

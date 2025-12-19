@@ -8,11 +8,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=speedtestc
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=https://github.com/mobrembski/SpeedTestC.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=5bd807bc32269321e500a7e7d36b8ec3fefa5f47
+PKG_SOURCE_VERSION:=
 PKG_MAINTAINER:=Ycarus (Yannick Chabanois) <ycarus@zugaina.org>
 PKG_LICENSE:=GPL-2.0
 PKG_BUILD_PARALLEL:=0
