@@ -1,5 +1,8 @@
 <?php
 ini_set('memory_limit', '256M');
+$timezone = trim(shell_exec("uci get system.@system[0].zonename 2>/dev/null"));
+
+date_default_timezone_set($timezone ?: 'UTC');
 ob_start();
 $root_dir = "/";
 $current_dir = isset($_GET['dir']) ? $_GET['dir'] : '';
@@ -285,7 +288,7 @@ function downloadFile($file) {
     }
 }
 
-function getDirectoryContents($dir) {
+function getDirectoryContents($dir, $sort_by_type = true) {
     $contents = array();
     foreach (scandir($dir) as $item) {
         if ($item != "." && $item != "..") {
@@ -314,6 +317,19 @@ function getDirectoryContents($dir) {
             );
         }
     }
+    
+    if ($sort_by_type) {
+        usort($contents, function($a, $b) {
+            if ($a['is_dir'] && !$b['is_dir']) {
+                return -1;
+            }
+            if (!$a['is_dir'] && $b['is_dir']) {
+                return 1;
+            }
+            return strcasecmp($a['name'], $b['name']);
+        });
+    }
+    
     return $contents;
 }
 
@@ -375,6 +391,19 @@ function searchFiles($dir, $term) {
 
     return $results;
 }
+
+function getDiskUsage() {
+    $total = disk_total_space('/');
+    $free = disk_free_space('/');
+    $used = $total - $free;
+    
+    return [
+        'total' => formatSize($total),
+        'used' => formatSize($used),
+        'free' => formatSize($free),
+        'percent' => round(($used / $total) * 100, 2)
+    ];
+}
 ?>
 
 <title>Monaco - Spectra</title>
@@ -416,7 +445,7 @@ function searchFiles($dir, $term) {
     top: 0;
     z-index: 1101;
     box-sizing: border-box;
-    border-bottom: 1px solid #ccc;
+    border: var(--border-strong);
 }
 
 #fontSize, #editorTheme {
@@ -759,6 +788,10 @@ table.table tbody tr:nth-child(even) td {
     box-shadow: 1px 0 3px -2px color-mix(in oklch, var(--bg-container), black 30%) !important;
 }
 
+#pageTitle {
+    padding-top: 40px !important;
+}
+
 body {
     color: var(--text-primary);
     font-family: var(--font-family, -apple-system, BlinkMacSystemFont, sans-serif);
@@ -769,16 +802,18 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-container);
+    background: color-mix(in oklch, var(--header-bg), transparent 20%) !important;
+    border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border-radius: 4px;
+    background-color: var(--accent-color);
+    border-radius: 5px;
+    border: var(--border-strong) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-color-hover, var(--accent-color));
+    background-color: var(--color-pink);
 }
 
 .table tbody tr:hover {
@@ -794,7 +829,7 @@ body {
 
 .form-control {
     background: var(--bg-body) !important;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     border: var(--border-strong) !important;
 }
 
@@ -995,6 +1030,10 @@ table.table tbody tr td.file-icon {
     100% {
         transform: scale(1);
     }
+}
+
+.bg-warning  {
+    color: #fff !important;
 }
 
 .table td i.folder-icon {
@@ -1230,23 +1269,8 @@ label {
 }
 
 #pageTitle {
-    padding-top: 40px !important;
     color: var(--accent-color) !important;
 }
-
-*::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-}
-
-* {
-    scrollbar-width: none !important;
-}
-
-* {
-    -ms-overflow-style: none !important;
-} 
 
 .btn .fas {
     color: var(--text-primary) !important;
@@ -1293,19 +1317,64 @@ a {
 .action-grid .btn:hover i {
     color: #ffffff !important;
 }
+
+.status-bar {
+    padding: 8px 12px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+nav[aria-label="breadcrumb"] {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.breadcrumb {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: var(--border-strong);
+    padding: 10px 15px;
+}
+        
+.breadcrumb-item a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+        
+.breadcrumb-item.active {
+    color: var(--accent-color);
+}
+
+thead.table-light th {
+	font-weight: 600;
+	padding: 0.85rem 1.25rem;
+	background: var(--accent-color) !important;
+	color: #fff !important;
+	text-align: left;
+	font-size: 0.925rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--accent-color) !important;
+}
 </style>
 
 <div class="container-sm container-bg px-2 px-sm-4 mt-4">
-    <div class="row align-items-center p-0 mb-0">
-        <div class="col-12 text-center">
-            <h2 class="mb-0" id="pageTitle" data-translate="pageTitle">File Assistant</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4 position-relative" style="height: 60px;">
+        <h2 class="mb-0 text-primary position-absolute start-50 translate-middle-x"
+            id="pageTitle">
+            <i class="fas fa-folder-open me-2"></i><span data-translate="pageTitle">File Assistant</span>
+        </h2>
+        <div class="text-muted small ms-auto d-none d-sm-block">
+            <i class="fas fa-hdd me-1"></i>
+            <span data-translate="disk">Disk</span>: <?php $disk = getDiskUsage(); echo "{$disk['used']} / {$disk['total']} ({$disk['percent']}%)"; ?>
         </div>
-        <div class="col-md-3"></div>
     </div>
-
-    <div class="row mb-3 px-2 mt-0">
+    <div class="row mt-3 mb-3 px-2 mt-0">
         <div class="col-12">
-            <div class="btn-toolbar justify-content-between">
+            <div class="btn-toolbar justify-content-between px-1">
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline-secondary" onclick="goToParentDirectory()" title="Go Back" data-translate-title="goToParentDirectoryTitle">
                         <i class="fas fa-arrow-left"></i>
@@ -1335,9 +1404,9 @@ a {
             </div>
         </div>
     </div>
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="mb-3">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="?dir=">root</a></li>
+    <li class="breadcrumb-item"><a href="?dir="><i class="fas fa-hdd me-1"></i><span data-translate="root">root</span></a></li>
     <?php
     $path = '';
     $breadcrumbs = explode('/', trim($current_dir, '/'));
@@ -1393,254 +1462,271 @@ a {
 
 <form id="batchDeleteForm" method="post" action="?dir=<?php echo urlencode($current_dir); ?>" style="display: none;"></form>
 
-<div class="container-fluid text-center"  style="min-height: 70vh;">
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col">
-                        <input type="checkbox" id="selectAllCheckbox">
-                    </th>
-                    <th scope="col" data-translate="fileName">Name</th>
-                    <th scope="col" data-translate="fileType">Type</th>
-                    <th scope="col" data-translate="fileSize">Size</th>
-                    <th scope="col" data-translate="modifiedTime">Modified Time</th>
-                    <th scope="col" data-translate="permissions">Permissions</th>
-                    <th scope="col" data-translate="owner">Owner</th>
-                    <th scope="col" data-translate="actions">Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php if ($current_dir != ''): ?>
+<div class="container-fluid text-center">
+    <div class="table-scroll-area" style="min-height: 62vh; max-height: 72vh; overflow-y: auto;">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle">
+                <thead class="table-light">
                     <tr>
-                        <td></td>
-                        <td class="folder-icon">
-                            <a href="?dir=<?php echo urlencode(dirname($current_dir)); ?>">..</a>
-                        </td>
-                        <td data-translate="directory">Directory</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td></td>
+                        <th scope="col">
+                            <input type="checkbox" id="selectAllCheckbox">
+                        </th>
+                        <th scope="col" data-translate="fileName">Name</th>
+                        <th scope="col" data-translate="fileType">Type</th>
+                        <th scope="col" data-translate="fileSize">Size</th>
+                        <th scope="col" data-translate="modifiedTime">Modified Time</th>
+                        <th scope="col" data-translate="permissions">Permissions</th>
+                        <th scope="col" data-translate="owner">Owner</th>
+                        <th scope="col" data-translate="actions">Actions</th>
                     </tr>
-                <?php endif; ?>
+                </thead>
 
-                <?php foreach ($contents as $item): ?>
-                    <?php
-                        $full_path = $current_path . $item['path'];
-                        $file_size = $item['is_dir']
-                            ? 0
-                            : (file_exists($full_path) ? filesize($full_path) : 0);
-                    ?>
+                <tbody>
+                    <?php if ($current_dir != ''): ?>
+                        <tr>
+                            <td></td>
+                            <td class="text-center">
+                                <a href="?dir=<?php echo urlencode(dirname($current_dir)); ?>" class="text-decoration-none"><i class="fas fa-level-up-alt me-2"></i> ..</a>
+                            </td>
+                            <td><span class="badge bg-warning" data-translate="directory">Directory</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td></td>
+                        </tr>
+                    <?php endif; ?>
 
-                    <tr>
-                        <td>
-                            <input type="checkbox"
-                                   class="file-checkbox"
-                                   data-path="<?php echo htmlspecialchars($item['path']); ?>"
-                                   data-size="<?php echo $file_size; ?>">
-                        </td>
-
+                    <?php foreach ($contents as $item): ?>
                         <?php
-                            if ($item['is_dir']) {
-                                $icon_class = 'fas fa-folder';
-                            } else {
-                                $ext = strtolower(pathinfo($item['name'], PATHINFO_EXTENSION));
-                                switch ($ext) {
-                                    case 'pdf': $icon_class = 'fas fa-file-pdf'; break;
-                                    case 'doc':
-                                    case 'docx': $icon_class = 'fas fa-file-word'; break;
-                                    case 'xls':
-                                    case 'xlsx': $icon_class = 'fas fa-file-excel'; break;
-                                    case 'ppt':
-                                    case 'pptx': $icon_class = 'fas fa-file-powerpoint'; break;
-                                    case 'txt': $icon_class = 'fas fa-file-alt'; break;
-                                    case 'rtf': $icon_class = 'fas fa-file-word'; break;
-                                    case 'md':
-                                    case 'markdown': $icon_class = 'fas fa-file-code'; break;
-
-                                    case 'zip':
-                                    case 'rar':
-                                    case '7z':
-                                    case 'tar':
-                                    case 'gz': $icon_class = 'fas fa-file-archive'; break;
-
-                                    case 'mp3':
-                                    case 'wav':
-                                    case 'ogg':
-                                    case 'flac':
-                                    case 'aac': $icon_class = 'fas fa-music'; break;
-
-                                    case 'mp4':
-                                    case 'avi':
-                                    case 'mov':
-                                    case 'wmv':
-                                    case 'flv':
-                                    case 'mkv':
-                                    case 'webm': $icon_class = 'fas fa-file-video'; break;
-
-                                    case 'jpg':
-                                    case 'jpeg':
-                                    case 'png':
-                                    case 'gif':
-                                    case 'bmp':
-                                    case 'tiff':
-                                    case 'webp':
-                                    case 'svg':
-                                    case 'ico': $icon_class = 'fas fa-file-image'; break;
-
-                                    case 'exe':
-                                    case 'msi': $icon_class = 'fas fa-cogs'; break;
-                                    case 'sh':
-                                    case 'bash':
-                                    case 'zsh': $icon_class = 'fas fa-terminal'; break;
-
-                                    case 'bat':
-                                    case 'cmd': $icon_class = 'fas fa-list-alt'; break;
-
-                                    case 'ps1': $icon_class = 'fab fa-microsoft'; break;
-                                    case 'dll':
-                                    case 'so': $icon_class = 'fas fa-cube'; break;
-                                    case 'apk': $icon_class = 'fab fa-android'; break;
-                                    case 'ipa': $icon_class = 'fab fa-apple'; break;
-
-                                    case 'iso':
-                                    case 'img':
-                                    case 'dmg': $icon_class = 'fas fa-compact-disc'; break;
-
-                                    case 'sql':
-                                    case 'db':
-                                    case 'dbf':
-                                    case 'sqlite': $icon_class = 'fas fa-database'; break;
-
-                                    case 'ttf':
-                                    case 'otf':
-                                    case 'woff':
-                                    case 'woff2': $icon_class = 'fas fa-font'; break;
-
-                                    case 'cfg':
-                                    case 'conf':
-                                    case 'ini':
-                                    case 'yaml':
-                                    case 'yml': $icon_class = 'fas fa-cog'; break;
-
-                                    case 'psd':
-                                    case 'ai':
-                                    case 'eps': $icon_class = 'fas fa-paint-brush'; break;
-                                    case 'css': $icon_class = 'fab fa-css3-alt'; break;
-                                    case 'js': $icon_class = 'fab fa-js'; break;
-                                    case 'php': $icon_class = 'fab fa-php'; break;
-                                    case 'html':
-                                    case 'htm': $icon_class = 'fab fa-html5'; break;
-                                    case 'json': $icon_class = 'fas fa-file-code'; break;
-                                    case 'xml': $icon_class = 'fas fa-file-code'; break;
-                                    case 'py': $icon_class = 'fab fa-python'; break;
-                                    case 'java': $icon_class = 'fab fa-java'; break;
-                                    case 'c':
-                                    case 'cpp':
-                                    case 'h': $icon_class = 'fas fa-file-code'; break;
-
-                                    case 'bin': $icon_class = 'fas fa-microchip'; break;
-                                    case 'log': $icon_class = 'fas fa-scroll'; break;
-                                    case 'csv': $icon_class = 'fas fa-file-csv'; break;
-                                    case 'torrent': $icon_class = 'fas fa-magnet'; break;
-                                    case 'bak': $icon_class = 'fas fa-history'; break;
-
-                                    default: $icon_class = 'fas fa-file'; break;
-                                }
-                            }
-
+                            $full_path = $current_path . $item['path'];
+                            $file_size = $item['is_dir']
+                                ? 0
+                                : (file_exists($full_path) ? filesize($full_path) : 0);
                         ?>
 
-                        <td>
-                            <?php if ($item['is_dir']): ?>
-                                <i class="<?php echo $icon_class; ?> folder-icon me-2"></i>
-                                <a href="?dir=<?php echo urlencode($current_dir . $item['path']); ?>">
-                                    <?php echo htmlspecialchars($item['name']); ?>
-                                </a>
-                            <?php else: ?>
-                                <?php
+                        <tr>
+                            <td>
+                                <input type="checkbox"
+                                       class="file-checkbox"
+                                       data-path="<?php echo htmlspecialchars($item['path']); ?>"
+                                       data-size="<?php echo $file_size; ?>">
+                            </td>
+
+                            <?php
+                                if ($item['is_dir']) {
+                                    $icon_class = 'fas fa-folder';
+                                } else {
                                     $ext = strtolower(pathinfo($item['name'], PATHINFO_EXTENSION));
-                                    $clean_path = ltrim(str_replace('//', '/', $item['path']), '/');
-                                ?>
-                                <i class="<?php echo $icon_class; ?> file-icon me-2"></i>
-                                <?php if (in_array($ext, ['jpg','jpeg','png','gif','svg','bmp','webp','mp3','wav','ogg','flac','mp4','webm','avi','mkv'])): ?>
-                                    <a href="#"
-                                       onclick="previewFile('<?php echo htmlspecialchars($clean_path); ?>', '<?php echo $ext; ?>')">
+                                    switch ($ext) {
+                                        case 'pdf': $icon_class = 'fas fa-file-pdf'; break;
+                                        case 'doc':
+                                        case 'docx': $icon_class = 'fas fa-file-word'; break;
+                                        case 'xls':
+                                        case 'xlsx': $icon_class = 'fas fa-file-excel'; break;
+                                        case 'ppt':
+                                        case 'pptx': $icon_class = 'fas fa-file-powerpoint'; break;
+                                        case 'txt': $icon_class = 'fas fa-file-alt'; break;
+                                        case 'rtf': $icon_class = 'fas fa-file-word'; break;
+                                        case 'md':
+                                        case 'markdown': $icon_class = 'fas fa-file-code'; break;
+
+                                        case 'zip':
+                                        case 'rar':
+                                        case '7z':
+                                        case 'tar':
+                                        case 'gz': $icon_class = 'fas fa-file-archive'; break;
+
+                                        case 'mp3':
+                                        case 'wav':
+                                        case 'ogg':
+                                        case 'flac':
+                                        case 'aac': $icon_class = 'fas fa-music'; break;
+
+                                        case 'mp4':
+                                        case 'avi':
+                                        case 'mov':
+                                        case 'wmv':
+                                        case 'flv':
+                                        case 'mkv':
+                                        case 'webm': $icon_class = 'fas fa-file-video'; break;
+
+                                        case 'jpg':
+                                        case 'jpeg':
+                                        case 'png':
+                                        case 'gif':
+                                        case 'bmp':
+                                        case 'tiff':
+                                        case 'webp':
+                                        case 'svg':
+                                        case 'ico': $icon_class = 'fas fa-file-image'; break;
+
+                                        case 'exe':
+                                        case 'msi': $icon_class = 'fas fa-cogs'; break;
+                                        case 'sh':
+                                        case 'bash':
+                                        case 'zsh': $icon_class = 'fas fa-terminal'; break;
+
+                                        case 'bat':
+                                        case 'cmd': $icon_class = 'fas fa-list-alt'; break;
+
+                                        case 'ps1': $icon_class = 'fab fa-microsoft'; break;
+                                        case 'dll':
+                                        case 'so': $icon_class = 'fas fa-cube'; break;
+                                        case 'apk': $icon_class = 'fab fa-android'; break;
+                                        case 'ipa': $icon_class = 'fab fa-apple'; break;
+
+                                        case 'iso':
+                                        case 'img':
+                                        case 'dmg': $icon_class = 'fas fa-compact-disc'; break;
+
+                                        case 'sql':
+                                        case 'db':
+                                        case 'dbf':
+                                        case 'sqlite': $icon_class = 'fas fa-database'; break;
+
+                                        case 'ttf':
+                                        case 'otf':
+                                        case 'woff':
+                                        case 'woff2': $icon_class = 'fas fa-font'; break;
+
+                                        case 'cfg':
+                                        case 'conf':
+                                        case 'ini':
+                                        case 'yaml':
+                                        case 'yml': $icon_class = 'fas fa-cog'; break;
+
+                                        case 'psd':
+                                        case 'ai':
+                                        case 'eps': $icon_class = 'fas fa-paint-brush'; break;
+                                        case 'css': $icon_class = 'fab fa-css3-alt'; break;
+                                        case 'js': $icon_class = 'fab fa-js'; break;
+                                        case 'php': $icon_class = 'fab fa-php'; break;
+                                        case 'html':
+                                        case 'htm': $icon_class = 'fab fa-html5'; break;
+                                        case 'json': $icon_class = 'fas fa-file-code'; break;
+                                        case 'xml': $icon_class = 'fas fa-file-code'; break;
+                                        case 'py': $icon_class = 'fab fa-python'; break;
+                                        case 'java': $icon_class = 'fab fa-java'; break;
+                                        case 'c':
+                                        case 'cpp':
+                                        case 'h': $icon_class = 'fas fa-file-code'; break;
+
+                                        case 'bin': $icon_class = 'fas fa-microchip'; break;
+                                        case 'log': $icon_class = 'fas fa-scroll'; break;
+                                        case 'csv': $icon_class = 'fas fa-file-csv'; break;
+                                        case 'torrent': $icon_class = 'fas fa-magnet'; break;
+                                        case 'bak': $icon_class = 'fas fa-history'; break;
+
+                                        default: $icon_class = 'fas fa-file'; break;
+                                    }
+                                }
+
+                            ?>
+
+                            <td>
+                                <?php if ($item['is_dir']): ?>
+                                    <i class="<?php echo $icon_class; ?> folder-icon me-2"></i>
+                                    <a href="?dir=<?php echo urlencode($current_dir . $item['path']); ?>">
                                         <?php echo htmlspecialchars($item['name']); ?>
                                     </a>
                                 <?php else: ?>
-                                    <a href="#"
-                                       onclick="openEditDialog('<?php echo urlencode($item['path']); ?>')">
-                                        <?php echo htmlspecialchars($item['name']); ?>
-                                    </a>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </td>
-
-                        <td data-translate="<?php echo $item['is_dir'] ? 'directory' : 'file'; ?>">
-                            <?php echo $item['is_dir'] ? 'Directory' : 'File'; ?>
-                        </td>
-                        <td><?php echo $item['size']; ?></td>
-                        <td><?php echo $item['mtime']; ?></td>
-                        <td><?php echo $item['permissions']; ?></td>
-                        <td><?php echo htmlspecialchars($item['owner']); ?></td>
-
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Actions">
-                                <div class="action-grid mt-3">
-                                    <button type="button"
-                                            class="btn btn-outline-primary btn-sm action-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#renameModal"
-                                            onclick="showRenameModal('<?php echo htmlspecialchars($item['name']); ?>',
-                                                                     '<?php echo htmlspecialchars($item['path']); ?>')"
-                                            data-translate-title="rename">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-
-                                    <?php if (!$item['is_dir']): ?>
-                                        <a href="?dir=<?php echo urlencode($current_dir); ?>&download=<?php echo urlencode($item['path']); ?>"
-                                           class="btn btn-outline-info btn-sm action-btn"
-                                           data-translate-title="download">
-                                            <i class="fas fa-download"></i>
+                                    <?php
+                                        $ext = strtolower(pathinfo($item['name'], PATHINFO_EXTENSION));
+                                        $clean_path = ltrim(str_replace('//', '/', $item['path']), '/');
+                                    ?>
+                                    <i class="<?php echo $icon_class; ?> file-icon me-2"></i>
+                                    <?php if (in_array($ext, ['jpg','jpeg','png','gif','svg','bmp','webp','mp3','wav','ogg','flac','mp4','webm','avi','mkv'])): ?>
+                                        <a href="#"
+                                           onclick="previewFile('<?php echo htmlspecialchars($clean_path); ?>', '<?php echo $ext; ?>')">
+                                            <?php echo htmlspecialchars($item['name']); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="#"
+                                           onclick="openEditDialog('<?php echo urlencode($item['path']); ?>')">
+                                            <?php echo htmlspecialchars($item['name']); ?>
                                         </a>
                                     <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
 
-                                    <button type="button"
-                                            onclick="showChmodModal('<?php echo htmlspecialchars($item['path']); ?>',
-                                                                    '<?php echo $item['permissions']; ?>')"
-                                            class="btn btn-outline-warning btn-sm action-btn"
-                                            data-translate-title="setPermissions">
-                                        <i class="fas fa-lock"></i>
-                                    </button>
+                            <td>
+                                <span class="badge <?php echo $item['is_dir'] ? 'bg-warning text-dark' : 'bg-info text-white'; ?>"
+                                    data-translate="<?php echo $item['is_dir'] ? 'directory' : 'file'; ?>">
+                                    <?php echo $item['is_dir'] ? 'Directory' : 'File'; ?>
+                                </span>
+                            </td>
+                            <td><?php echo $item['size']; ?></td>
+                            <td><?php echo $item['mtime']; ?></td>
+                            <td><?php echo $item['permissions']; ?></td>
+                            <td><?php echo htmlspecialchars($item['owner']); ?></td>
 
-                                    <form method="post"
-                                          style="display:inline;"
-                                          onsubmit="return uniqueConfirmDelete(event, '<?= addslashes(htmlspecialchars($item['name'])) ?>')"
-                                          class="no-loader">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="path" value="<?= htmlspecialchars($item['path']) ?>">
-                                        <button type="submit"
-                                                class="btn btn-outline-danger btn-sm action-btn"
-                                                data-translate-title="delete">
-                                            <i class="fas fa-trash-alt"></i>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Actions">
+                                    <div class="action-grid mt-3">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm action-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#renameModal"
+                                                onclick="showRenameModal('<?php echo htmlspecialchars($item['name']); ?>',
+                                                                         '<?php echo htmlspecialchars($item['path']); ?>')"
+                                                data-translate-title="rename">
+                                            <i class="fas fa-edit"></i>
                                         </button>
-                                    </form>
+
+                                        <?php if (!$item['is_dir']): ?>
+                                            <a href="?dir=<?php echo urlencode($current_dir); ?>&download=<?php echo urlencode($item['path']); ?>"
+                                               class="btn btn-outline-info btn-sm action-btn"
+                                               data-translate-title="download">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <button type="button"
+                                                onclick="showChmodModal('<?php echo htmlspecialchars($item['path']); ?>',
+                                                                        '<?php echo $item['permissions']; ?>')"
+                                                class="btn btn-outline-warning btn-sm action-btn"
+                                                data-translate-title="setPermissions">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+
+                                        <form method="post"
+                                              style="display:inline;"
+                                              onsubmit="return uniqueConfirmDelete(event, '<?= addslashes(htmlspecialchars($item['name'])) ?>')"
+                                              class="no-loader">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="path" value="<?= htmlspecialchars($item['path']) ?>">
+                                            <button type="submit"
+                                                    class="btn btn-outline-danger btn-sm action-btn"
+                                                    data-translate-title="delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div>
+            <span data-translate="total_items">Total</span> <?php echo count($contents); ?> <span data-translate="items">items</span>
+            <?php if ($current_dir != ''): ?>
+                | <span data-translate="current_path">Path:</span> <?php echo htmlspecialchars(preg_replace('/\/+/', '/', $current_path)); ?>
+            <?php endif; ?>
+        </div>
+        <div>
+            <span id="system-time"><?php echo date('Y-m-d H:i:s'); ?></span>
+        </div>
     </div>
 </div>
 
 <div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form method="post" class="modal-content" onsubmit="return validateRename()">
       <div class="modal-header">
         <h5 class="modal-title" id="renameModalLabel" data-translate="rename">✏️ Rename</h5>
@@ -1664,19 +1750,25 @@ a {
 </div>
 
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" data-translate="create">Create</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body d-flex gap-2">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newFolderModal" data-bs-dismiss="modal" data-translate="newFolder">
-          <i class="fas fa-folder-plus"></i> New Folder
-        </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newFileModal" data-bs-dismiss="modal" data-translate="newFile">
-          <i class="fas fa-file-plus"></i> New File
-        </button>
+      <div class="modal-body">
+        <div class="d-flex gap-3 justify-content-center">
+          <button type="button" class="btn  btn-primary px-4 py-2"
+                  data-bs-toggle="modal" data-bs-target="#newFolderModal" data-bs-dismiss="modal"
+                  data-translate="newFolder">
+            New Folder
+          </button>
+          <button type="button" class="btn btn-success px-4 py-2"
+                  data-bs-toggle="modal" data-bs-target="#newFileModal" data-bs-dismiss="modal"
+                  data-translate="newFile">
+            New File
+          </button>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="close">Close</button>
@@ -1686,7 +1778,7 @@ a {
 </div>
 
 <div class="modal fade" id="newFolderModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form method="post" class="modal-content" onsubmit="return createNewFolder()">
       <div class="modal-header">
         <h5 class="modal-title" data-translate="newFolder">New Folder</h5>
@@ -1708,7 +1800,7 @@ a {
 </div>
 
 <div class="modal fade" id="newFileModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form method="post" class="modal-content" onsubmit="return createNewFile()">
       <div class="modal-header">
         <h5 class="modal-title" data-translate="newFile">New File</h5>
@@ -1824,7 +1916,7 @@ a {
 </div>
        
 <div class="modal fade" id="chmodModal" tabindex="-1" aria-labelledby="chmodModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <form method="post" onsubmit="return validateChmod()" class="modal-content no-loader">
       <div class="modal-header">
         <h5 class="modal-title" id="chmodModalLabel" data-translate="setPermissions">🔒 Set Permissions</h5>
@@ -2545,7 +2637,12 @@ function openMonacoEditor() {
             multiCursorModifier: 'alt',
             minimap: {
                 enabled: true
-            }
+            },
+            padding: {
+                top: 15,
+                bottom: 15
+            },
+            scrollBeyondLastLine: false
         });
 
         const ext = path.split('.').pop().toLowerCase();
@@ -3054,4 +3151,16 @@ function uniqueConfirmDelete(event, name) {
     });
     return false;
 }
+
+setInterval(() => {
+    const now = new Date();
+    const timeStr = now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + ' ' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0') + ':' +
+        String(now.getSeconds()).padStart(2, '0');
+    
+    document.getElementById('system-time').textContent = timeStr;
+}, 1000);
 </script>

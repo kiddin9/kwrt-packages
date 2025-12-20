@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-wechatpush
 PKG_VERSION:=3.6.10
-PKG_RELEASE:=40
+PKG_RELEASE:=41
 
 PKG_MAINTAINER:=tty228 <tty228@yeah.net>
 PKG_CONFIG_DEPENDS:= \
