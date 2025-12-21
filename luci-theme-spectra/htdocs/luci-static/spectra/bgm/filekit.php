@@ -70,10 +70,30 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete_selected') {
     }
 }
 
+function readFileUtf8($path) {
+    $content = file_get_contents($path);
+    if ($content === false) return '';
+
+    if (preg_match('//u', $content)) {
+        return $content;
+    }
+
+    $encodings = ['GBK', 'GB2312', 'BIG5', 'ISO-8859-1'];
+
+    foreach ($encodings as $enc) {
+        $converted = @iconv($enc, 'UTF-8//IGNORE', $content);
+        if ($converted !== false && preg_match('//u', $converted)) {
+            return $converted;
+        }
+    }
+
+    return $content;
+}
+
 if (isset($_GET['action']) && $_GET['action'] === 'get_content' && isset($_GET['path'])) {
     $file_path = $current_path . $_GET['path'];
     if (file_exists($file_path) && is_readable($file_path)) {
-        $content = file_get_contents($file_path);
+        $content = readFileUtf8($file_path);
         header('Content-Type: text/plain; charset=utf-8');
         echo $content;
         exit;
@@ -164,15 +184,6 @@ function deleteDirectory($dir) {
     return @rmdir($dir);
 }
 
-function readFileWithEncoding($path) {
-    $content = file_get_contents($path);
-    $encoding = mb_detect_encoding($content, ['UTF-8', 'ASCII', 'ISO-8859-1', 'Windows-1252', 'GBK', 'Big5', 'Shift_JIS', 'EUC-KR'], true);
-    return json_encode([
-        'content' => mb_convert_encoding($content, 'UTF-8', $encoding),
-        'encoding' => $encoding
-    ]);
-}
-
 function renameItem($old_path, $new_path) {
     $old_path = rtrim(str_replace('//', '/', $old_path), '/');
     $new_path = rtrim(str_replace('//', '/', $new_path), '/');
@@ -216,11 +227,19 @@ function renameItem($old_path, $new_path) {
 }
 
 function editFile($path, $content, $encoding) {
-    if (file_exists($path) && is_writable($path)) {
-        return file_put_contents($path, $content) !== false;
+    if (!is_writable($path)) return false;
+
+    if (substr($content, 0, 3) === "\xEF\xBB\xBF") {
+        $content = substr($content, 3);
     }
-    return false;
+
+    if (!preg_match('//u', $content)) {
+        $content = @iconv('UTF-8', 'UTF-8//IGNORE', $content);
+    }
+
+    return file_put_contents($path, $content, LOCK_EX) !== false;
 }
+
 
 function chmodItem($path, $permissions) {
     chmod($path, octdec($permissions));
@@ -305,6 +324,21 @@ function getDirectoryContents($dir, $sort_by_type = true) {
                 $mtime = date("Y-m-d H:i:s", filemtime($path));
                 $owner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path))['name'] : fileowner($path);
             }
+            $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+            
+            $file_type = 0;
+            $image_exts = ['jpg','jpeg','png','gif','bmp','webp','svg'];
+            $audio_exts = ['mp3','wav','ogg','flac','aac','m4a'];
+            $video_exts = ['mp4','webm','avi','mkv','mov','wmv','flv','m4v'];
+            
+            if (in_array($extension, $image_exts)) {
+                $file_type = 1;
+            } elseif (in_array($extension, $audio_exts)) {
+                $file_type = 2;
+            } elseif (in_array($extension, $video_exts)) {
+                $file_type = 3;
+            }
+            
             $contents[] = array(
                 'name' => $item,
                 'path' => str_replace($dir, '', $path),
@@ -313,7 +347,8 @@ function getDirectoryContents($dir, $sort_by_type = true) {
                 'size' => $size,
                 'mtime' => $mtime,
                 'owner' => $owner,
-                'extension' => pathinfo($path, PATHINFO_EXTENSION)
+                'extension' => $extension,
+                'file_type' => $file_type
             );
         }
     }
@@ -326,6 +361,17 @@ function getDirectoryContents($dir, $sort_by_type = true) {
             if (!$a['is_dir'] && $b['is_dir']) {
                 return 1;
             }
+            
+            if (!$a['is_dir'] && !$b['is_dir']) {
+                if ($a['file_type'] !== $b['file_type']) {
+                    return $a['file_type'] - $b['file_type'];
+                }
+                
+                if ($a['extension'] !== $b['extension']) {
+                    return strcmp($a['extension'], $b['extension']);
+                }
+            }
+            
             return strcasecmp($a['name'], $b['name']);
         });
     }
@@ -405,11 +451,12 @@ function getDiskUsage() {
     ];
 }
 ?>
-
+<head>
+<meta charset="UTF-8">
 <title>Monaco - Spectra</title>
 <?php include './spectra.php'; ?>
 <script src="/luci-static/spectra/js/js-yaml.min.js"></script>
-
+</head>
 <style>
 #monacoEditor {
     position: fixed;
@@ -499,8 +546,11 @@ function getDiskUsage() {
     order: 3 !important;
     display: flex !important;
     gap: 6px !important;
-    margin-top: 4px !important;
     flex-wrap: wrap !important;
+}
+
+.monaco-editor .find-widget>.button.codicon-widget-close {
+    transform: translateY(5px) !important;
 }
 
 .editor-widget.find-widget .find-actions {
@@ -908,7 +958,7 @@ table.table tbody tr td.file-icon {
 
 #previewModal .modal-body img {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 65vh;
     display: block;
     margin: 0 auto;
 }
@@ -916,7 +966,7 @@ table.table tbody tr td.file-icon {
 #previewModal .modal-body video {
     width: 100%;
     height: auto;
-    max-height: 80vh;
+    max-height: 65vh;
     margin: 0;
     padding: 0;
     border: none;
@@ -1359,6 +1409,33 @@ thead.table-light th {
 .breadcrumb-item + .breadcrumb-item::before {
     color: var(--accent-color) !important;
 }
+
+.preview-popup {
+    position: fixed;
+    z-index: 9999;
+    background: black;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 0;
+    margin: 0;
+    max-width: 500px;
+    max-height: 500px;
+    display: none;
+    pointer-events: none;
+}
+
+.preview-popup img {
+    max-width: 480px;
+    max-height: 480px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.preview-popup video,
+.preview-popup audio {
+    width: 480px;
+    height: 200px;
+}
 </style>
 
 <div class="container-sm container-bg px-2 px-sm-4 mt-4">
@@ -1455,7 +1532,7 @@ thead.table-light th {
         <button class="btn btn-outline-primary btn-sm me-2" id="selectAllBtn" data-translate="select_all">Deselect All</button>
         <span id="selectedInfo" class="text-muted small" data-translate="selected_info">{0} item(s) selected</span>
       </div>
-      <button class="btn btn-danger btn-sm" id="batchDeleteBtn"><i class="fas fa-trash-alt me-1"></i><span data-translate="batch_delete">Batch Delete</span></button>
+      <button class="btn btn-danger btn-sm" id="batchDeleteBtn"><i class="fas fa-trash-alt me-1" style="color: white !important;"></i><span data-translate="batch_delete">Batch Delete</span></button>
     </div>
   </div>
 </div>
@@ -1634,11 +1711,18 @@ thead.table-light th {
                                     <?php
                                         $ext = strtolower(pathinfo($item['name'], PATHINFO_EXTENSION));
                                         $clean_path = ltrim(str_replace('//', '/', $item['path']), '/');
+                                        $preview_exts = ['jpg','jpeg','png','gif','svg','bmp','webp','mp3','wav','ogg','flac','mp4','webm','avi','mkv'];
                                     ?>
                                     <i class="<?php echo $icon_class; ?> file-icon me-2"></i>
-                                    <?php if (in_array($ext, ['jpg','jpeg','png','gif','svg','bmp','webp','mp3','wav','ogg','flac','mp4','webm','avi','mkv'])): ?>
+                                    <?php if (in_array($ext, $preview_exts)): ?>
                                         <a href="#"
-                                           onclick="previewFile('<?php echo htmlspecialchars($clean_path); ?>', '<?php echo $ext; ?>')">
+                                            class="preview-trigger"
+                                            data-path="<?php echo htmlspecialchars($clean_path); ?>" 
+                                            data-type="<?php echo htmlspecialchars($ext); ?>"
+                                            onmouseover="showPreview(event, this)"
+                                            onmouseout="hidePreview()"
+                                            onclick="previewFile('<?php echo htmlspecialchars($clean_path); ?>', '<?php echo $ext; ?>'); return false;"
+                                            style="cursor: pointer;">
                                             <?php echo htmlspecialchars($item['name']); ?>
                                         </a>
                                     <?php else: ?>
@@ -1957,7 +2041,7 @@ thead.table-light th {
 </div>
 
 <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="previewModalLabel" data-translate="filePreview">File Preview</h5>
@@ -2398,9 +2482,19 @@ function searchFiles(event) {
             const tbody = document.createElement('tbody');
             
             results.forEach(file => {
-                const tr = document.createElement('tr');               
+                const tr = document.createElement('tr');
+                
                 const tdName = document.createElement('td');
-                tdName.textContent = file.name;
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const previewExts = ['jpg','jpeg','png','gif','svg','bmp','webp','mp3','wav','ogg','flac','mp4','webm','avi','mkv'];
+                
+                if (previewExts.includes(ext)) {
+                    tdName.innerHTML = `<a href="#" onclick="previewFile('${file.path.replace(/'/g, "\\'")}', '${ext}'); return false;">${file.name}</a>`;
+                } else {
+                    tdName.innerHTML = `<a href="#" onclick="openEditDialog('${encodeURIComponent(file.path)}'); return false;">${file.name}</a>`;
+                }
+                
                 tr.appendChild(tdName);
 
                 const tdPath = document.createElement('td');
@@ -2410,7 +2504,7 @@ function searchFiles(event) {
                 const tdAction = document.createElement('td');
                 const moveBtn = document.createElement('button');
                 moveBtn.className = 'btn btn-sm btn-primary';
-                moveBtn.innerHTML = `<i class="fas fa-folder-open"></i> ${translations['search_move_to'] || 'Move To'}`;
+                moveBtn.innerHTML = `<i class="fas fa-folder-open" style="color: white !important;"></i> ${translations['search_move_to'] || 'Move To'}`;
                 moveBtn.onclick = function() {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('searchModal'));
                     if (modal) modal.hide();
@@ -2470,53 +2564,30 @@ function openEditDialog(path) {
 }
 
 function saveEdit() {
-    const content = document.getElementById('editContent').value;
-    const path = document.getElementById('editPath').value;
-    const encoding = document.getElementById('editEncoding').value;
-    
-    const formData = new FormData();
-    formData.append('action', 'edit');
-    formData.append('path', path);
-    formData.append('content', content);
-    formData.append('encoding', encoding);
-    
-    fetch(window.location.href, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.text();
-        }
-        throw new Error('Save failed');
-    })
-    .then(() => {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
-        modal.hide();
-        let successMessage = translations['save_file_success'] || 'File saved successfully';
-        speakMessage(successMessage);
-        showLogMessage(successMessage);
-        setTimeout(() => {
-            location.reload();
-        }, 3000);
-    })
-    .catch(error => {
-        console.error('Error saving file:', error);
-        let errorMessage = translations['save_file_error'] || 'Error saving file: {message}';
-        errorMessage = errorMessage.replace('{message}', error.message);
-        //speakMessage(errorMessage);
-       // showLogMessage(errorMessage);
-    });
-    
-    return false;
+    var contentField = document.getElementById('editContent');
+    if (!contentField) {
+        alert('Content field missing');
+        return false;
+    }
+
+    if (window.monacoEditorInstance && typeof window.monacoEditorInstance.getValue === 'function') {
+        contentField.value = window.monacoEditorInstance.getValue();
+    }
+
+    var encField = document.getElementById('editEncoding');
+    if (encField) {
+        encField.value = 'UTF-8';
+    }
+
+    return true;
 }
 
 const monacoScript = document.createElement('script');
-monacoScript.src = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.min.js';
+monacoScript.src = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs/loader.min.js';
 document.head.appendChild(monacoScript);
 
 monacoScript.onload = function() {
-    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs' } });
 };
 
 function openMonacoEditor() {
@@ -3100,7 +3171,106 @@ function toggleFullscreen() {
     }
 }
 
+let previewTimer = null;
+const previewPopup = document.createElement('div');
+previewPopup.className = 'preview-popup';
+previewPopup.id = 'preview-popup';
+document.body.appendChild(previewPopup);
+
+let currentMediaElement = null;
+let userInteracted = false;
+
+document.addEventListener('click', () => {
+    userInteracted = true;
+}, { once: true });
+
+function showPreview(event, element) {
+    if (previewTimer) clearTimeout(previewTimer);
+    
+    previewTimer = setTimeout(() => {
+        const path = element.getAttribute('data-path');
+        const type = element.getAttribute('data-type');
+        const currentDir = decodeURIComponent(new URLSearchParams(window.location.search).get('dir') || '');
+        const fullPath = currentDir + (currentDir.endsWith('/') ? '' : '/') + path;
+        
+        stopCurrentMedia();
+        
+        let previewContent = '';
+        
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(type)) {
+            previewContent = `<img src="?preview=1&path=${encodeURIComponent(fullPath)}" style="max-width: 480px; max-height: 480px;" onerror="this.alt='Failed to load image.'">`;
+        } else if (type === 'mp3' || type === 'wav' || type === 'ogg' || type === 'flac') {
+            const autoplayAttr = userInteracted ? 'autoplay' : '';
+            previewContent = `
+                <audio id="hover-audio" 
+                       style="width: 480px; height: 150px;" 
+                       controls
+                       ${autoplayAttr}>
+                    <source src="?preview=1&path=${encodeURIComponent(fullPath)}" type="${getAudioMimeType(type)}">
+                </audio>
+            `;
+        } else if (type === 'mp4' || type === 'webm' || type === 'avi' || type === 'mkv') {
+            const autoplayAttr = userInteracted ? 'autoplay' : '';
+            previewContent = `
+                <video id="hover-video" 
+                       style="width: 480px; height: 300px;" 
+                       controls
+                       ${autoplayAttr}
+                       playsinline>
+                    <source src="?preview=1&path=${encodeURIComponent(fullPath)}" type="${getVideoMimeType(type)}">
+                </video>
+            `;
+        } else {
+            return;
+        }
+        
+        previewPopup.innerHTML = previewContent;
+        previewPopup.style.display = 'block';
+        
+        const rect = element.getBoundingClientRect();
+        let left = rect.right + 10;
+        let top = rect.top;
+        
+        if (left + 400 > window.innerWidth) {
+            left = rect.left - 410;
+        }
+        
+        if (top + 400 > window.innerHeight) {
+            top = window.innerHeight - 410;
+        }
+        
+        previewPopup.style.left = Math.max(10, left) + 'px';
+        previewPopup.style.top = Math.max(10, top) + 'px';
+        
+        setTimeout(() => {
+            currentMediaElement = document.getElementById('hover-audio') || document.getElementById('hover-video');
+            if (currentMediaElement && userInteracted) {
+                currentMediaElement.play().catch(e => {
+                    //console.log('Auto-play prevented:', e.message);
+                });
+            }
+        }, 100);
+    }, 300);
+}
+
+function hidePreview() {
+    if (previewTimer) clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => {
+        previewPopup.style.display = 'none';
+        stopCurrentMedia();
+    }, 200);
+}
+
+function stopCurrentMedia() {
+    if (currentMediaElement) {
+        currentMediaElement.pause();
+        currentMediaElement.currentTime = 0;
+        currentMediaElement = null;
+    }
+}
+
 function previewFile(path, type) {
+    previewPopup.style.display = 'none';
     const currentDir = decodeURIComponent(new URLSearchParams(window.location.search).get('dir') || '');
     const fullPath = currentDir + (currentDir.endsWith('/') ? '' : '/') + path;
 
