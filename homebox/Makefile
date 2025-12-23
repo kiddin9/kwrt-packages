@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=homebox
 PKG_VERSION:=0.0.0-dev.2024101306
-PKG_RELEASE:=24
+PKG_RELEASE:=25
 
 ifeq ($(ARCH),aarch64)
 	H_ARCH:=arm64
