@@ -359,7 +359,7 @@ jobs:
         ) &
         (
         git_sparse_clone develop "https://github.com/Ysurac/openmptcprouter-feeds" \
-        dsvpn glorytun-udp glorytun grpcurl ipcalc luci-app-dsvpn luci-app-glorytun-tcp luci-app-glorytun-udp luci-app-mail luci-app-mlvpn luci-app-mptcp luci-app-nginx-ha luci-app-sqm-autorate luci-app-packet-capture luci-app-iperf luci-theme-openmptcprouter sqm-autorate speedtestc mlvpn mptcp systemtap tcptraceroute tracebox tsping atinout z8102
+        dsvpn glorytun-udp glorytun grpcurl ipcalc luci-app-dsvpn luci-app-glorytun-tcp luci-app-glorytun-udp luci-app-mail luci-app-mlvpn luci-app-mptcp luci-app-nginx-ha luci-app-sqm-autorate luci-app-packet-capture luci-app-iperf luci-theme-openmptcprouter sqm-autorate speedtestc mlvpn mptcp tcptraceroute tracebox tsping atinout z8102
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/luci" applications/luci-app-yt-dlp applications/luci-app-apfree-wifidog applications/luci-app-ss-redir
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/packages" net/ss-redir
         ) &
@@ -437,7 +437,7 @@ jobs:
              -H "Authorization: Bearer ${{ secrets.TOKEN_KIDDIN9 }}" \
              -X POST -d '{ "query": "query {repository(owner: \"'"$1"'\", name: \"'"$2"'\"){latestRelease{tagName tagCommit{oid}}refs(refPrefix:\"refs/tags/\",last:1,orderBy:{field:TAG_COMMIT_DATE,direction:ASC}){edges{node{name target{oid}}}}defaultBranchRef{target{...on Commit {oid}}}}}"}' https://api.github.com/graphql)
         }
-        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|glorytun|spotifyd|openwrt-Toolkit|systemtap|mtproxy|libdouble-conversion|wxbase|3proxy|ucode|mergerfs|openwrt-nezhav1|homebox|sub-web|tcptraceroute|systemtap|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|rustdesk-server|shadowsocksr-libev|tuic-server|joker|ps3netsrv|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
+        for pkg in $(ls !(luci-*|nikki|openwrt-einat-ebpf|glorytun|spotifyd|openwrt-Toolkit|mtproxy|libdouble-conversion|wxbase|3proxy|ucode|mergerfs|openwrt-nezhav1|homebox|sub-web|tcptraceroute|frp|openwrt-caddy|mentohust|brlaser|rapidjson|smartdns|hysteria|gecoosac|hickory-dns|libcryptopp|naiveproxy|rustdesk-server|shadowsocksr-libev|tuic-server|joker|ps3netsrv|natter|netmaker|openwrt-ympd|subconverter|sms-tool)/Makefile); do
           repo="$(grep ^PKG_SOURCE_URL $pkg | grep github | cut -f 4-5 -d '/' | sed -e 's/.git//' | grep -E '[0-9a-zA-Z_-]+$')" || true
           if [ "$repo" ]; then
             owner="$(echo $repo | cut -f 1 -d '/')"
