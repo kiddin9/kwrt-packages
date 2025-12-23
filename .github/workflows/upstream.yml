@@ -307,7 +307,7 @@ jobs:
         git_clone https://github.com/DRAWCORE/luci-app-qos-emong
         # git_clone https://github.com/wintbiit/luci-app-sakurafrp
         git_clone https://github.com/ykxVK8yL5L/luci-app-taskschedule taskschedule && mvdir taskschedule
-        git_clone https://github.com/douo/luci-app-tinyfecvpn
+        #git_clone https://github.com/douo/luci-app-tinyfecvpn
         ) &
         (
         git_clone https://github.com/ttimasdf/luci-app-jederproxy
@@ -367,7 +367,7 @@ jobs:
         net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
         net/go-nats net/go-wol net/bitsrunlogin-go net/transfer net/daed net/udp2raw net/msd_lite \
         net/subconverter net/ngrokc net/scutclient net/gost net/ua2f net/dufs net/qBittorrent-Enhanced-Edition \
-        net/tinyportmapper net/tinyfecvpn net/nexttrace net/rustdesk-server net/tuic-server \
+        net/tinyportmapper net/nexttrace net/rustdesk-server net/tuic-server \
         net/ipset-lists net/ShadowVPN net/nps net/vlmcsd net/dnsforwarder \
         net/ps3netsrv net/brook net/q net/speedtest-cli \
         net/vsftpd net/smartdns net/miniupnpd net/p910nd \
