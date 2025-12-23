@@ -1,0 +1,13 @@
+{
+	"admin/services/mentohust": {
+		"title": "MentoHUST",
+		"action": {
+			"type": "view",
+			"path": "mentohust"
+		},
+		"depends": {
+			"acl": [ "luci-app-mentohust" ],
+			"uci": { "mentohust": true }
+		}
+	}
+}

@@ -1,6 +1,0 @@
-config natpierce 'natpierce'
-	option enabled '0'
-	option port '33272'
-config version_info 'status'
-    option current_version 'N/A'
-    option latest_version 'N/A'

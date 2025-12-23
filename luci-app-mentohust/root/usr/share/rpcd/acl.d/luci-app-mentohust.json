@@ -1,0 +1,14 @@
+{
+	"luci-app-mentohust": {
+		"description": "Grant UCI access for luci-app-mentohust",
+		"read": {
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"uci": [ "mentohust" ]
+		},
+		"write": {
+			"uci": [ "mentohust" ]
+		}
+	}
+}

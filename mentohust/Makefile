@@ -9,46 +9,50 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mentohust
 PKG_VERSION:=0.3.1
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk.git
-PKG_SOURCE_VERSION:=557cffca8032b6d8ac948be8a79255dc64a1915d
-PKG_MIRROR_HASH:=skip
+PKG_FIXUP:=autoreconf
 
-MAKE_PATH:=src
+PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/mentohust
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=A Ruijie Client Daemon
-  URL:=https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
   DEPENDS:=+libpcap
+  TITLE:=A Ruijie Client Daemon
+  URL:=https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk.git
+  SUBMENU:=Ruijie
 endef
 
 define Package/mentohust/description
-  A Ruijie Client Daemon, most usually used in China collages.
+A Ruijie Client Daemon,
+Most usually used in Chinese universities.
 endef
 
+define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+	$(CP) ./src/* $(PKG_BUILD_DIR)/
+	$(SED) 's/dhclient/udhcpc -i/g' $(PKG_BUILD_DIR)/myconfig.c
+endef
+
+TARGET_CFLAGS += -Wno-incompatible-pointer-types
+
 define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR)/src \
+	#$(Build/Compile/$(PKG_NAME))
+	$(MAKE) -C $(PKG_BUILD_DIR)/ \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="$(TARGET_CPPFLAGS)"  \
 		LDFLAGS="$(TARGET_LDFLAGS) -ldl"
 endef
 
-define Package/mentohust/conffiles
-/etc/mentohust.conf
-endef
-
 define Package/mentohust/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mentohust $(1)/usr/sbin/mentohust
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/src/mentohust.conf $(1)/etc/mentohust.conf
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/config $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/mentohust.init $(1)/etc/init.d/mentohust
+	$(INSTALL_CONF) ./files/mentohust.config $(1)/etc/config/mentohust
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mentohust $(1)/usr/sbin/
 endef
 
-$(eval $(call BuildPackage,mentohust))
+$(eval $(call BuildPackage,$(PKG_NAME)))
