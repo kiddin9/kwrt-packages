@@ -1,34 +1,17 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
 <style>
-:root {
-	--bg:#ffffff; --card:#f6f8fa; --text:#222; --border:#ddd; --muted:#666;
-}
-@media (prefers-color-scheme: dark) {
-	:root { --bg:#0f1115; --card:#1b1e24; --text:#e5e7eb; --border:#333; --muted:#9ca3af; }
-	.modal-content { background:#1b1e24 !important; color:#e5e7eb !important; }
-}
+:root { --bg:#ffffff; --card:#f6f8fa; --text:#222; --border:#ddd; --muted:#666; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#1b1e24; --text:#e5e7eb; --border:#333; --muted:#9ca3af; } }
 body { background:var(--bg); color:var(--text); margin:0; }
 
 #app { all: unset; display:block; width:100%; padding:12px; font-family:system-ui,-apple-system; text-align:left; }
 .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 .toolbar select { margin-left:4px; }
 
-button {
-	border-radius:6px;
-	padding:6px 10px;
-	border:1px solid var(--border);
-	background:transparent;
-	color:var(--text);
-	cursor:pointer;
-	transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-}
-button:active {
-	transform: scale(0.95);
-	box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-	background: rgba(0,0,0,0.05);
-}
-button.toggle-btn { background:#4ade80; color:#fff; border:none; }
+button { border-radius:6px; padding:6px 10px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; }
+button:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); background: rgba(0,0,0,0.05); }
+button.toggle-btn { background:#d0a026; color:#fff; border:none; }
 button.clear-log { background:#e74c3c; color:#fff; border:none; }
 button.view-json { background:#60a5fa; color:#fff; border:none; }
 
@@ -42,17 +25,32 @@ button.view-json { background:#60a5fa; color:#fff; border:none; }
 .log-row .label { all: unset; flex-shrink:0; color:var(--muted); margin-right:8px; }
 .log-row a { color:#2563eb; text-decoration:underline; font-size:13px; }
 
-.modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+.modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); justify-content:center; align-items:center; overflow:auto; }
 .modal.show { display:flex; }
-.modal-content { background:#fff; padding:20px; border-radius:6px; max-width:700px; width:80%; max-height:70vh; overflow:auto; white-space: pre; position:relative; }
+.modal-content { background:#fff; border-radius:6px; max-width:700px; width:80%; max-height:70vh; overflow:auto; white-space: pre; position:relative; display:flex; flex-direction:column; }
 
-.modal-close { display:none; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid #ccc; background:#f3f3f3; border-top-left-radius:6px; border-top-right-radius:6px; flex-shrink:0; }
+.modal-header h3 { margin:0; font-size:16px; }
+.modal-close { padding:4px 8px; border:none; border-radius:6px; background:#393fec; color:#fff; cursor:pointer; }
 
-#toTop { position:fixed; right:18px; bottom:120px; padding:8px 14px; border-radius:20px; background:#273cf3; color:#fff; display:none; z-index:9999; cursor:pointer; transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; }
+.modal-body { padding:12px; overflow:auto; flex:1; }
+
+#toTop { position:fixed; right:18px; bottom:120px; padding:8px 14px; border-radius:20px; background:#8644f1; color:#fff; display:none; z-index:9999; cursor:pointer; transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; }
 #toTop.show { display:block; }
 #toTop:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); background: rgba(0,0,0,0.05); }
 
 @media (max-width:600px){ .log-row{font-size:12px;} }
+
+@media (prefers-color-scheme: dark){
+	body { background:#0f1115; color:#e5e7eb; }
+	.log-card { background:#1b1e24; border-color:#333; color:#e5e7eb; }
+	.modal-content { background:#1b1e24; color:#e5e7eb; }
+	.modal-header { background:#2b2e36; border-bottom-color:#444; }
+	button.toggle-btn { background:#d0a026; color:#fff; }
+	button.clear-log { background:#b91c1c; color:#fff; }
+	button.view-json { background:#2563eb; color:#fff; }
+	.modal-close { background:#393fec; color:#fff; }
+}
 </style>
 
 <div id="app">
@@ -91,7 +89,13 @@ button.view-json { background:#60a5fa; color:#fff; border:none; }
 
 	<div class="modal" :class="{show: modalLog}" @click.self="closeModal">
 		<div class="modal-content">
-			<pre>{{ modalLog ? JSON.stringify(modalLog,null,2) : '' }}</pre>
+			<div class="modal-header">
+				<h3>完整日志</h3>
+				<button class="modal-close" @click.prevent="closeModal">关闭</button>
+			</div>
+			<div class="modal-body">
+				<pre>{{ modalLog ? JSON.stringify(modalLog,null,2) : '' }}</pre>
+			</div>
 		</div>
 	</div>
 </div>
@@ -100,12 +104,9 @@ button.view-json { background:#60a5fa; color:#fff; border:none; }
 
 <script>
 const { createApp } = Vue;
-
 createApp({
 	data(){ return { logs: [], paused:false, filterType:'all', modalLog:null }; },
-	computed:{
-		filteredLogs(){ if(this.filterType==='all') return this.logs; return this.logs.filter(l=>this.statusClass(l.status)===this.filterType); }
-	},
+	computed:{ filteredLogs(){ if(this.filterType==='all') return this.logs; return this.logs.filter(l=>this.statusClass(l.status)===this.filterType); }},
 	methods:{
 		fetch(){ if(this.paused) return; XHR.get('<%=url([[admin]], [[nas]], [[caddy]], [[get_log]])%>', null, x=>{ if(x && x.status===200){ this.logs = x.responseText.split('\n').filter(Boolean).map((l,i)=>{ try{ let obj=JSON.parse(l); obj.id=i; return obj; }catch{return null;} }).filter(Boolean).reverse(); } }); },
 		toggle(){ this.paused = !this.paused; },
@@ -115,8 +116,8 @@ createApp({
 		realIp(l){ const h=l.request.headers||{}; return h['Cf-Connecting-Ip']?h['Cf-Connecting-Ip'][0]:l.request.client_ip; },
 		userAgent(l){ const h=l.request.headers||{}; return h['User-Agent']?h['User-Agent'][0]:'未知'; },
 		statusClass(c){ if(c>=500) return 'err'; if(c>=400) return 'warn'; return 'ok'; },
-		showModal(log){ this.modalLog = log; },
-		closeModal(){ this.modalLog = null; }
+		showModal(log){ this.modalLog = log; document.body.style.overflow = 'hidden'; },
+		closeModal(){ this.modalLog = null; document.body.style.overflow = ''; }
 	},
 	mounted(){ this.fetch(); setInterval(this.fetch,2000); const btn=document.getElementById('toTop'); btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); window.addEventListener('scroll',()=>btn.classList.toggle('show',window.scrollY>400)); }
 }).mount('#app');
