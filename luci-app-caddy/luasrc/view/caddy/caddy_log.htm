@@ -1,34 +1,123 @@
-<script type="text/javascript">
-	//<![CDATA[
-	function clear_log(btn) {
-		XHR.get('<%=url([[admin]], [[nas]], [[caddy]], [[clear_log]])%>', null,
-			function(x, data) {
-				if(x && x.status == 200) {
-					var log_textarea = document.getElementById('log_textarea');
-					log_textarea.innerHTML = "";
-					log_textarea.scrollTop = log_textarea.scrollHeight;
-				}
-				location.reload();
-			}
-		);
-	}
-	var scrolled = false;
-	XHR.poll(2, '<%=url([[admin]], [[nas]], [[caddy]], [[get_log]])%>', null,
-		function(x, data) {
-			if(x && x.status == 200) {
-				var log_textarea = document.getElementById('log_textarea');
-				var str = x.responseText;
-				log_textarea.innerHTML = str;
-				if (!scrolled) {
-					log_textarea.scrollTop = log_textarea.scrollHeight;
-					scrolled = true;
-				}
-			}
-		}
-	);
-	//]]>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+<style>
+:root {
+	--bg:#ffffff; --card:#f6f8fa; --text:#222; --border:#ddd; --muted:#666;
+}
+@media (prefers-color-scheme: dark) {
+	:root { --bg:#0f1115; --card:#1b1e24; --text:#e5e7eb; --border:#333; --muted:#9ca3af; }
+	.modal-content { background:#1b1e24 !important; color:#e5e7eb !important; }
+}
+body { background:var(--bg); color:var(--text); margin:0; }
+
+#app { all: unset; display:block; width:100%; padding:12px; font-family:system-ui,-apple-system; text-align:left; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.toolbar select { margin-left:4px; }
+
+button {
+	border-radius:6px;
+	padding:6px 10px;
+	border:1px solid var(--border);
+	background:transparent;
+	color:var(--text);
+	cursor:pointer;
+	transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+button:active {
+	transform: scale(0.95);
+	box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+	background: rgba(0,0,0,0.05);
+}
+button.toggle-btn { background:#4ade80; color:#fff; border:none; }
+button.clear-log { background:#e74c3c; color:#fff; border:none; }
+button.view-json { background:#60a5fa; color:#fff; border:none; }
+
+.log-card { all: unset; display:block; width:100%; padding:12px; margin-bottom:12px; background:var(--card); border-radius:10px; text-align:left; box-sizing:border-box; overflow:hidden; border-width:2px; border-style:solid; border-left-color:#888; }
+.log-card.ok { border-color:#2ecc71; }
+.log-card.warn { border-color:#f39c12; }
+.log-card.err { border-color:#e74c3c; }
+
+.log-inner { all: unset; display:block; width:100%; text-align:left; overflow-wrap:break-word; word-break:break-word; }
+.log-row { all: unset; display:flex; width:100%; font-size:13px; line-height:1.8; word-break:break-all; margin-bottom:2px; text-align:left; align-items:flex-start; }
+.log-row .label { all: unset; flex-shrink:0; color:var(--muted); margin-right:8px; }
+.log-row a { color:#2563eb; text-decoration:underline; font-size:13px; }
+
+.modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+.modal.show { display:flex; }
+.modal-content { background:#fff; padding:20px; border-radius:6px; max-width:700px; width:80%; max-height:70vh; overflow:auto; white-space: pre; position:relative; }
+
+.modal-close { display:none; }
+
+#toTop { position:fixed; right:18px; bottom:120px; padding:8px 14px; border-radius:20px; background:#273cf3; color:#fff; display:none; z-index:9999; cursor:pointer; transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease; }
+#toTop.show { display:block; }
+#toTop:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); background: rgba(0,0,0,0.05); }
+
+@media (max-width:600px){ .log-row{font-size:12px;} }
+</style>
+
+<div id="app">
+	<div class="toolbar">
+		<div>
+			<button type="button" class="toggle-btn" @click="toggle">{{ paused ? '继续刷新' : '暂停刷新' }}</button>
+			<button type="button" class="clear-log" @click="clear">清空日志</button>
+		</div>
+		<div style="display:flex;align-items:center;gap:12px;">
+			<label>
+				<select v-model="filterType">
+					<option value="all">全部</option>
+					<option value="warn">警告</option>
+					<option value="err">错误</option>
+				</select>
+			</label>
+			<span>共 {{ filteredLogs.length }} 条日志</span>
+		</div>
+	</div>
+
+	<div v-for="log in filteredLogs" :key="log.id" class="log-card" :class="statusClass(log.status)">
+		<div class="log-inner">
+			<div class="log-row" v-if="log.ts"><span class="label">时间：</span>{{ time(log.ts) }}</div>
+			<div class="log-row" v-if="log.request"><span class="label">访问：</span>{{ fullUrl(log) }}</div>
+			<div class="log-row" v-if="log.request && log.request.method"><span class="label">方法：</span>{{ log.request.method }}</div>
+			<div class="log-row" v-if="log.status"><span class="label">状态：</span>{{ log.status }}</div>
+			<div class="log-row" v-if="realIp(log)"><span class="label">IP：</span>{{ realIp(log) }}</div>
+			<div class="log-row" v-if="userAgent(log)"><span class="label">标识：</span>{{ userAgent(log) }}</div>
+			<div class="log-row" v-if="log.duration"><span class="label">耗时：</span>{{ (log.duration*1000).toFixed(2) }} ms</div>
+
+			<div class="log-row">
+				<button type="button" class="view-json" @click.prevent="showModal(log)">查看原始 JSON 日志</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" :class="{show: modalLog}" @click.self="closeModal">
+		<div class="modal-content">
+			<pre>{{ modalLog ? JSON.stringify(modalLog,null,2) : '' }}</pre>
+		</div>
+	</div>
+</div>
+
+<div id="toTop">返回顶部</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+	data(){ return { logs: [], paused:false, filterType:'all', modalLog:null }; },
+	computed:{
+		filteredLogs(){ if(this.filterType==='all') return this.logs; return this.logs.filter(l=>this.statusClass(l.status)===this.filterType); }
+	},
+	methods:{
+		fetch(){ if(this.paused) return; XHR.get('<%=url([[admin]], [[nas]], [[caddy]], [[get_log]])%>', null, x=>{ if(x && x.status===200){ this.logs = x.responseText.split('\n').filter(Boolean).map((l,i)=>{ try{ let obj=JSON.parse(l); obj.id=i; return obj; }catch{return null;} }).filter(Boolean).reverse(); } }); },
+		toggle(){ this.paused = !this.paused; },
+		clear(){ XHR.get('<%=url([[admin]], [[nas]], [[caddy]], [[clear_log]])%>'); this.logs=[]; },
+		time(ts){ return new Date(ts*1000).toLocaleString(); },
+		fullUrl(l){ const h=l.request.headers||{}; const p=h['X-Forwarded-Proto']?h['X-Forwarded-Proto'][0]:'http'; return p+'://'+l.request.host+l.request.uri; },
+		realIp(l){ const h=l.request.headers||{}; return h['Cf-Connecting-Ip']?h['Cf-Connecting-Ip'][0]:l.request.client_ip; },
+		userAgent(l){ const h=l.request.headers||{}; return h['User-Agent']?h['User-Agent'][0]:'未知'; },
+		statusClass(c){ if(c>=500) return 'err'; if(c>=400) return 'warn'; return 'ok'; },
+		showModal(log){ this.modalLog = log; },
+		closeModal(){ this.modalLog = null; }
+	},
+	mounted(){ this.fetch(); setInterval(this.fetch,2000); const btn=document.getElementById('toTop'); btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); window.addEventListener('scroll',()=>btn.classList.toggle('show',window.scrollY>400)); }
+}).mount('#app');
 </script>
-<fieldset class="cbi-section" id="_log_fieldset">
-	<input class="cbi-button cbi-input-remove" type="button" onclick="clear_log()" value="<%:清空日志%>" style="margin-left: 10px; margin-top: 10px;">
-	<textarea id="log_textarea" class="cbi-input-textarea" style="width: calc(100% - 20px); height: 500px; margin: 10px;" data-update="change" rows="5" wrap="off" readonly="readonly"></textarea>
-</fieldset>

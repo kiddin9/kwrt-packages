@@ -10,7 +10,7 @@ PKG_NAME:=luci-app-caddy
 LUCI_TITLE:=LuCI support for caddy
 LUCI_DEPENDS:=
 PKG_VERSION:=1.0
-PKG_RELEASE:=15
+PKG_RELEASE:=16
 
 define Package/$(PKG_NAME)/conffiles
 /etc/caddy
