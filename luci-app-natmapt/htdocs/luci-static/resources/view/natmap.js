@@ -177,7 +177,7 @@ return view.extend({
 		o.default = 15;
 		o.rmempty = false;
 
-		o = s.option(form.Value, 'def_udp_stun_cycle', _('Default ') + _('UDP ') + _('STUN check cycle'));
+		o = s.option(form.Value, 'def_udp_stun_cycle', _('Default ') + _('UDP ') + _('STUN check cycle (once every n intervals)'));
 		o.datatype = 'uinteger';
 		o.default = 5;
 		o.rmempty = false;
@@ -312,7 +312,7 @@ return view.extend({
 		o.rmempty = true;
 		o.modalonly = true;
 
-		o = s.taboption('general', form.Value, 'stun_cycle', _('STUN check cycle'), _('For UDP mode'));
+		o = s.taboption('general', form.Value, 'stun_cycle', _('STUN check cycle (once every n intervals)'), _('For UDP mode'));
 		o.datatype = 'uinteger';
 		o.rmempty = true;
 		o.modalonly = true;

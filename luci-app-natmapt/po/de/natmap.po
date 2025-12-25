@@ -312,7 +312,7 @@ msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:180
 #: htdocs/luci-static/resources/view/natmap.js:315
-msgid "STUN check cycle"
+msgid "STUN check cycle (once every n intervals)"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:320

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hickory-dns
 PKG_VERSION:=2025.12.24
-PKG_RELEASE:=56
+PKG_RELEASE:=57
 
 HICKORY_COMMIT:=6b1a15eb9d87ef97f940a40ea7d9f446be579d19
 
@@ -16,7 +16,7 @@ PKG_BUILD_DEPENDS:=rust/host
 PKG_BUILD_PARALLEL:=1
 
 RUST_PKG_LOCKED:=0
-RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,prometheus-metrics,webpki-roots
+RUST_PKG_FEATURES:=resolver,tls-ring,https-ring,quic-ring,h3-ring,rustls-platform-verifier,sqlite,prometheus-metrics
 
 include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/packages/lang/rust/rust-package.mk

@@ -312,8 +312,8 @@ msgstr "SRV 记录"
 
 #: htdocs/luci-static/resources/view/natmap.js:180
 #: htdocs/luci-static/resources/view/natmap.js:315
-msgid "STUN check cycle"
-msgstr "STUN 检查周期"
+msgid "STUN check cycle (once every n intervals)"
+msgstr "STUN 检查周期 (每 n 个间隔一次)"
 
 #: htdocs/luci-static/resources/view/natmap.js:320
 msgid "STUN server"
