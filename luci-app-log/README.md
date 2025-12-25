@@ -9,14 +9,29 @@ Supported LuCI themes: luci-theme-bootstrap, luci-theme-material, luci-theme-ope
 
 ## Installation notes
 
-    wget --no-check-certificate -O /tmp/luci-app-log-viewer_1.5.0-r2_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-log-viewer_1.5.0-r2_all.ipk
+**OpenWrt >= 25.12:**
+
+    wget --no-check-certificate -O /tmp/luci-app-log-viewer-1.5.0-r2.apk https://github.com/gSpotx2f/packages-openwrt/raw/master/25.12/luci-app-log-viewer-1.5.0-r2.apk
+    apk --allow-untrusted add /tmp/luci-app-log-viewer-1.5.0-r2.apk
+    rm /tmp/luci-app-log-viewer-1.5.0-r2.apk
+    service rpcd restart
+
+i18n-ru:
+
+    wget --no-check-certificate -O /tmp/luci-i18n-log-viewer-ru-1.5.0-r2.apk https://github.com/gSpotx2f/packages-openwrt/raw/master/25.12/luci-i18n-log-viewer-ru-1.5.0-r2.apk
+    apk --allow-untrusted add /tmp/luci-i18n-log-viewer-ru-1.5.0-r2.apk
+    rm /tmp/luci-i18n-log-viewer-ru-1.5.0-r2.apk
+
+**OpenWrt <= 24.10:**
+
+    wget --no-check-certificate -O /tmp/luci-app-log-viewer_1.5.0-r2_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/24.10/luci-app-log-viewer_1.5.0-r2_all.ipk
     opkg install /tmp/luci-app-log-viewer_1.5.0-r2_all.ipk
     rm /tmp/luci-app-log-viewer_1.5.0-r2_all.ipk
     service rpcd restart
 
 i18n-ru:
 
-    wget --no-check-certificate -O /tmp/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk
+    wget --no-check-certificate -O /tmp/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/24.10/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk
     opkg install /tmp/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk
     rm /tmp/luci-i18n-log-viewer-ru_1.5.0-r2_all.ipk
 

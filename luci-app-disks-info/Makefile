@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-disks-info
 PKG_VERSION:=0.6.1
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 LUCI_TITLE:=Information about connected disk devices (partitions, filesystems, SMART).
 LUCI_DEPENDS:=+ucode +ucode-mod-fs +fdisk +smartmontools +smartmontools-drivedb
 LUCI_PKGARCH:=all

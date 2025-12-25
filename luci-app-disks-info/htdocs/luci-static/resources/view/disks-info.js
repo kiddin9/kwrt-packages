@@ -185,6 +185,7 @@ return view.extend({
 		} else {
 			return;
 		};
+
 		return fs.exec(this.smartctl,
 			[ '-l', 'scttempint,' + (pSave ? num + ',p' : num), device ]
 		).then(res => {
@@ -903,7 +904,6 @@ return view.extend({
 					let smart      = data[i][1];
 					let fdisk      = devicesData.fdisk[deviceName];
 					let df         = devicesData.df[deviceName];
-
 					let deviceTab  = E('div', {
 						'data-tab'      : i,
 						'data-tab-title': deviceName,

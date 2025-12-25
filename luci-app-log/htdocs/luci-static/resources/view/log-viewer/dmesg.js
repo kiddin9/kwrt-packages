@@ -88,7 +88,7 @@ return widget.view.extend({
 		if(!this.convertTimestampValue || !this.localtime || !this.uptime) {
 			return t;
 		};
-		let date = new Date((this.localtime - this.uptime + Number(t)) * 1000);
+		let date = new Date((this.localtime - this.uptime + Math.round(Number(t))) * 1000);
 		return '%s %s %2d %02d:%02d:%02d %d'.format(
 			this.days[ date.getUTCDay() ],
 			this.months[ date.getUTCMonth() + 1 ],
