@@ -114,3 +114,13 @@
 +  kill `pidof rtorrent | sed "s/$$//g"`
  }
 
+--- a/luci-nginx/Makefile
++++ b/luci-nginx/Makefile
+@@ -15,7 +15,6 @@ LUCI_DEPENDS:= \
+ 	+IPV6:luci-proto-ipv6 \
+ 	+luci-app-firewall \
+ 	+luci-app-package-manager \
+-	+luci-app-attendedsysupgrade \
+ 	+luci-mod-admin-full \
+ 	+luci-proto-ppp \
+ 	+luci-theme-bootstrap \
