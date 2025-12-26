@@ -216,7 +216,7 @@ checkln() {
 gethome
 
 # clean up old symlink
-ls -l /www|grep "\-> $MNTPKGS"|grep -v " $home_url -> $MNTPKGS"|sed -En "s,.+ ('.+'|\S+) -> ${MNTPKGS}$,'/www/\1',p" | xargs rm -f 
+ls -l /www|grep "\-> $MNTPKGS"|grep -v " $home_url -> $MNTPKGS"|sed -En "s,.+ ('.+'|\S+) -> ${MNTPKGS}$,'/www/\1',p" | xargs rm -f
 # show occupied
 find /www/* ! -type l -maxdepth 0|sed "s|.*/||g"
 }
@@ -278,7 +278,7 @@ find $home_path/$URLHREF_RELEASES/* -type d -o -type l -maxdepth 3|grep -Ev "$ta
 |grep -E "(/\d+\.\d+[^/]*/($URLHREF_VERS_PACKAGES|$URLHREF_VERS_TARGETS/[^/]+/[^/]+)\$|/${URLHREF_PACKAGES_PREFIX}\d+\.\d+/[^/]+\$)"\
 )"
 sed "s|^/|rm '/|g;s|$|'|g" <<< "$rm_path"
-[ -z "$autorm" ] && return 0 || echo "$rm_path" | xargs rm -rf 
+[ -z "$autorm" ] && return 0 || echo "$rm_path" | xargs rm -rf
 
 }
 
@@ -288,7 +288,19 @@ restart() {
 
 boot() {
 	mkdir -p "$RESULTPATH" 2>/dev/null
-    return 0
+	gethome
+	if [ -e "$home_path" ]; then
+		if [ -L "$home_path" -a "$(readlink "$home_path")" = "$MNTPKGS" ]; then
+			sleep 0
+		else
+			uci set $CONFIG_NAME.$SCONFIG.home_url="$DEF_HOMEURL"
+			uci commit $CONFIG_NAME
+			ln -s "$MNTPKGS" "$DEF_HOMEPATH"
+		fi
+	else
+		ln -s "$MNTPKGS" "$home_path"
+	fi
+	return 0
 }
 
 service_triggers() {

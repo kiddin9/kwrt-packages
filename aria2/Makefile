@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aria2
 PKG_VERSION:=1.37.0
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/aria2/aria2/releases/download/release-$(PKG_VERSION)/
@@ -43,6 +43,15 @@ PKG_CONFIG_DEPENDS := \
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
+define Package/aria2-openssl
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=File Transfer
+  TITLE:=lightweight download utility (OpenSSL dependencies)
+  DEPENDS:=+libopenssl +libopenssl-legacy
+  HIDDEN:=1
+endef
+
 define Package/aria2/config
   source "$(SOURCE)/Config.in"
 endef
@@ -53,7 +62,7 @@ define Package/aria2
   SUBMENU:=File Transfer
   TITLE:=lightweight download utility
   URL:=https://aria2.github.io/
-  DEPENDS:=+zlib +libstdcpp +ARIA2_OPENSSL:libopenssl +ARIA2_OPENSSL:libopenssl-legacy +ARIA2_GNUTLS:libgnutls \
+  DEPENDS:=+zlib +libstdcpp +ARIA2_OPENSSL:aria2-openssl +ARIA2_GNUTLS:libgnutls \
 	+ARIA2_NETTLE:libnettle +ARIA2_LIBGCRYPT:libgcrypt +ARIA2_GMP:libgmp \
 	+ARIA2_LIBXML2:libxml2 +ARIA2_EXPAT:libexpat +ARIA2_SFTP:libssh2 \
 	+ARIA2_ASYNC_DNS:libcares +ARIA2_COOKIE:libsqlite3
@@ -116,5 +125,10 @@ define Package/aria2/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/aria2.conf-master/* $(1)/usr/share/aria2/
 endef
 
+define Package/aria2-openssl/install
+	true
+endef
+
 $(eval $(call Download,aria2.conf))
 $(eval $(call BuildPackage,aria2))
+$(eval $(call BuildPackage,aria2-openssl))
