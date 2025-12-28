@@ -234,5 +234,5 @@ index 000000000000..a00fff9c79b3
 +grep -q ip-api.com /etc/ssrplus/black.list ||
 +	sed -i '$a ip-api.com' /etc/ssrplus/black.list
 +
- rm -rf /tmp/luci-modulecache /tmp/luci-indexcache
- exit 0
+ rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
+ rm -rf /tmp/luci-modulecache/
