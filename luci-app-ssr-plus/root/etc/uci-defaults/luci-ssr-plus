@@ -79,5 +79,6 @@ fi
 grep -q ip-api.com /etc/ssrplus/black.list ||
 	sed -i '$a ip-api.com' /etc/ssrplus/black.list
 
-rm -rf /tmp/luci-modulecache /tmp/luci-indexcache
+rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
+rm -rf /tmp/luci-modulecache/
 exit 0
