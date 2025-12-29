@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nikki
 PKG_VERSION:=2025.12.21
-PKG_RELEASE:=67
+PKG_RELEASE:=68
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
@@ -33,7 +33,7 @@ define Package/nikki
   TITLE:=A rule based proxy in Go.
   URL:=https://wiki.metacubex.one
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle +curl +yq firewall4 +ip-full +kmod-inet-diag +kmod-nft-socket +kmod-nft-tproxy +kmod-tun
-  PROVIDES:=nikki mihomo
+  PROVIDES:=mihomo
 endef
 
 define Package/nikki/description
