@@ -1,0 +1,10 @@
+# Node & package manager
+node_modules
+package-lock.json
+yarn.lock
+
+# Env files
+.env
+
+# System Configuration File
+.DS_Store

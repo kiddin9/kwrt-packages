@@ -1,0 +1,21 @@
+{
+	"name": "luci-theme-aurora",
+	"description": "Modern OpenWrt LuCI theme built with Vite and TailwindCSS",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "npm run clean && vite build",
+		"clean": "node scripts/clean.js"
+	},
+	"devDependencies": {
+		"@tailwindcss/vite": "^4.1.11",
+		"@types/node": "^22.10.5",
+		"prettier": "^3.6.2",
+		"prettier-plugin-tailwindcss": "^0.6.14",
+		"tailwind-scrollbar": "^4.0.2",
+		"tailwindcss": "^4.1.11",
+		"terser": "^5.43.1",
+		"vite": "^7.1.1"
+	},
+	"packageManager": "pnpm@10.18.0+sha512.e804f889f1cecc40d572db084eec3e4881739f8dec69c0ff10d2d1beff9a4e309383ba27b5b750059d7f4c149535b6cd0d2cb1ed3aeb739239a4284a68f40cfa"
+}

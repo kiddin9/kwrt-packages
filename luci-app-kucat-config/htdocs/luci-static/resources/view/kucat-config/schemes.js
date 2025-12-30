@@ -25,8 +25,8 @@ return view.extend({
 			_('Pre set 6 color schemes, enable wallpaper as desktop wallpaper, theme RGB values such as 255,0,0 (representing red), dark mode with wallpaper blur for better effect. No matter how many schemes are enabled, only the first scheme should be used'));
 		var s = m.section(form.TableSection, 'theme', '');
 		s.addremove = true;
-		s.anonymous = false;
-		s.sortable = true;
+		s.anonymous = true;
+		s.sortable = false;
 
 		o = s.option(form.Value, 'remarks', _('Remarks'),
 			_('Give a descriptive name for this color scheme'));
