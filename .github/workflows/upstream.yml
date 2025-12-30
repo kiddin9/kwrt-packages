@@ -321,6 +321,7 @@ jobs:
         git_clone https://github.com/hequan2017/luci-app-forcedata
         git_clone https://github.com/sbwml/luci-app-openlist2 oplist && mvdir oplist
         git_clone https://github.com/AngelaCooljx/luci-theme-material3
+        git_clone https://github.com/eamonxg/luci-theme-aurora
         ) &
         (
         #git_clone https://github.com/bobbyunknown/luci-app-insomclash
