@@ -55,7 +55,7 @@ uci -q set passwall2.@global_forwarding[0].use_nft=1
 uci -q commit passwall2
 }
 
-rm -f /tmp/luci-indexcache
+rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
 rm -rf /tmp/luci-modulecache/
 killall -HUP rpcd 2>/dev/null
 
