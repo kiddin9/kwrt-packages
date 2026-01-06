@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 #
-# Copyright (C) 2023-2025 Anya Lin <hukk1996@gmail.com>
+# Copyright (C) 2023-2026 Anya Lin <hukk1996@gmail.com>
 
 include $(TOPDIR)/rules.mk
 
@@ -9,7 +9,7 @@ PKG_NAME:=natmapt
 PKG_UPSTREAM_VERSION:=20250924
 PKG_UPSTREAM_GITHASH:=
 PKG_VERSION:=$(PKG_UPSTREAM_VERSION)$(if $(PKG_UPSTREAM_GITHASH),~$(call version_abbrev,$(PKG_UPSTREAM_GITHASH)))
-PKG_RELEASE:=70
+PKG_RELEASE:=71
 SCRIPTS_VERSION:=0.2025.11.16
 
 PKG_SOURCE_SUBDIR:=$(PKG_UPSTREAM_NAME)-$(PKG_UPSTREAM_VERSION)
@@ -86,7 +86,7 @@ define Package/natmapt-scripts/Default
 	CATEGORY:=Network
 	TITLE:=NATMap $(1) scripts ($(2))
 	DEPENDS:=+natmapt
-	PROVIDES:=natmapt-$(1)-scripts
+	PROVIDES:=@natmapt-$(1)-scripts-$(2)
 	VERSION:=$(SCRIPTS_VERSION)
 	PKGARCH:=all
 endef
