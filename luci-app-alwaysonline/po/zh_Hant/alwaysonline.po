@@ -12,60 +12,66 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.12.1-dev\n"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:60
+#: htdocs/luci-static/resources/view/alwaysonline.js:60
 msgid ""
-"<a href=\"%s\" target=\"_blank\"><b>AlwaysOnline</b></a> is a HTTP server which mocks a lot "
-"network/internet/portal detection servers."
+"<a href=\"%s\" target=\"_blank\"><b>AlwaysOnline</b></a> is a HTTP server "
+"which mocks a lot network/internet/portal detection servers."
 msgstr ""
-"<a href=\"%s\" target=\"_blank\"><b>AlwaysOnline</b></a> 是一個 HTTP 伺服器，用它可以模擬很多網"
-"際網路檢測伺服器"
+"<a href=\"%s\" target=\"_blank\"><b>AlwaysOnline</b></a> 是一個 HTTP 伺服器，"
+"用它可以模擬很多網際網路檢測伺服器"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:94
+#: htdocs/luci-static/resources/view/alwaysonline.js:95
 msgid "Address family"
 msgstr "網際協定版本"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:101
+#: htdocs/luci-static/resources/view/alwaysonline.js:102
 msgid "Address overwrite"
 msgstr "位址覆蓋"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:59
-#: applications/luci-app-alwaysonline/root/usr/share/luci/menu.d/luci-app-alwaysonline.json:3
+#: htdocs/luci-static/resources/view/alwaysonline.js:59
+#: root/usr/share/luci/menu.d/luci-app-alwaysonline.json:3
 msgid "AlwaysOnline"
 msgstr "保持在線"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:76
+#: htdocs/luci-static/resources/view/alwaysonline.js:77
 msgid "Apply to Domains"
 msgstr "應用的域名"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:97
+#: htdocs/luci-static/resources/view/alwaysonline.js:98
 msgid "Both"
 msgstr "兩者"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:66
+#: htdocs/luci-static/resources/view/alwaysonline.js:67
 msgid "Collecting data ..."
 msgstr "正在收集數據..."
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:86
+#: htdocs/luci-static/resources/view/alwaysonline.js:87
 msgid "Domain"
 msgstr "域名"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:73
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:81
+#: htdocs/luci-static/resources/view/alwaysonline.js:74
+#: htdocs/luci-static/resources/view/alwaysonline.js:82
 msgid "Enable"
 msgstr "啟用"
 
-#: applications/luci-app-alwaysonline/root/usr/share/rpcd/acl.d/luci-app-alwaysonline.json:3
+#: root/usr/share/rpcd/acl.d/luci-app-alwaysonline.json:3
 msgid "Grant access to alwaysonline procedures"
 msgstr "授予訪問 LuCI 應用 alwaysonline 的權限"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:90
+#: htdocs/luci-static/resources/view/alwaysonline.js:91
 msgid "Group"
 msgstr "分類組"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:49
+#: htdocs/luci-static/resources/view/alwaysonline.js:49
 msgid "SERVER NOT RUNNING"
 msgstr "伺服器未運行"
 
-#: applications/luci-app-alwaysonline/htdocs/luci-static/resources/view/alwaysonline.js:47
+#: htdocs/luci-static/resources/view/alwaysonline.js:47
 msgid "SERVER RUNNING"
 msgstr "伺服器運行中"
+
+#: htdocs/luci-static/resources/view/alwaysonline.js:61
+msgid ""
+"This only applies to domains using HTTP. it will cause connection failures "
+"for domains using HTTPS."
+msgstr "這僅適用於使用 HTTP 協定的網域。對於使用 HTTPS 協定的網域，將會導致連線失敗。"

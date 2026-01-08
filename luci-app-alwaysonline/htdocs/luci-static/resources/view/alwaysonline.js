@@ -57,7 +57,8 @@ return view.extend({
 		let m, s, o;
 
 		m = new form.Map('alwaysonline', _('AlwaysOnline'),
-			_('<a href="%s" target="_blank"><b>AlwaysOnline</b></a> is a HTTP server which mocks a lot network/internet/portal detection servers.').format('https://github.com/Jamesits/alwaysonline'));
+			_('<a href="%s" target="_blank"><b>AlwaysOnline</b></a> is a HTTP server which mocks a lot network/internet/portal detection servers.').format('https://github.com/Jamesits/alwaysonline') + '</br>' +
+			_('This only applies to domains using HTTP. it will cause connection failures for domains using HTTPS.'));
 
 		s = m.section(form.NamedSection, '_status');
 		s.anonymous = true;
