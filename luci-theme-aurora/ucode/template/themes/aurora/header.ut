@@ -17,6 +17,23 @@
 	const uci = cursor();
 	const tokens = uci.get_all('aurora', 'theme') || {};
 	const nav_submenu_type = tokens.nav_submenu_type || 'mega-menu';
+	
+	let toolbar_items = [];
+	let toolbar_items_json = tokens.toolbar_items || '[]';
+	try {
+		toolbar_items = eval(`(${toolbar_items_json})`);
+	} catch (e) {
+		toolbar_items = [];
+		toolbar_items_json = '[]';
+	}
+	
+	if (length(toolbar_items) == 0) {
+		toolbar_items = [
+			{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
+			{ url: '/cgi-bin/luci/admin/system/system', icon: 'system.svg', title: 'System' },
+			{ url: '/cgi-bin/luci/admin/network/network', icon: 'network.svg', title: 'Network' }
+		];
+	}
 
 	http.prepare_content('text/html; charset=UTF-8');
 -%}
@@ -56,6 +73,14 @@
 				document.querySelectorAll('.theme-switcher .theme-option').forEach(opt => {
 					opt.addEventListener('click', () => (setTheme(opt.dataset.theme), syncSwitchers()));
 				});
+
+				const floatingButtonToggle = document.getElementById('floating-button-group-toggle');
+				const floatingButtonGroup = document.getElementById('floating-button-group');
+				if (floatingButtonToggle && floatingButtonGroup) {
+					floatingButtonToggle.addEventListener('click', () => {
+						floatingButtonGroup.classList.toggle('collapsed');
+					});
+				}
 			});
 		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -157,6 +182,24 @@
 			</nav>
 		</div>
 
+		<div id="floating-button-group" class="floating-button-group">
+			<div class="button-group-items">
+				{% for (let i = 0; i < length(toolbar_items); i++): %}
+					{% let item = toolbar_items[i]; %}
+					<a href="{{ item.url }}" class="button-group-item" title="{{ item.title }}">
+						<img src="{{ media }}/images/{{ item.icon }}" class="button-group-icon" alt="{{ item.title }}"/>
+					</a>
+				{% endfor %}
+			</div>
+			<button class="button-group-toggle" id="floating-button-group-toggle" title="{{ _('Toggle floating buttons') }}" aria-label="{{ _('Toggle floating buttons') }}">
+				<span class="button-group-toggle-icon">
+					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M6 18L18 6M6 6l12 12"/>
+					</svg>
+				</span>
+			</button>
+		</div>
+		
 		<div id="maincontent">
 			{% if (getuid() == 0 && getspnam('root')?.pwdp === ''): %}
 				<div class="alert-message warning">

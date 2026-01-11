@@ -553,6 +553,42 @@
     }
   }
 
+  @layer floatButton {
+    .floating-button-group {
+      @apply fixed right-4 bottom-4 z-50 flex flex-col items-center max-md:right-3 max-md:bottom-3;
+
+      & .button-group-items {
+        @apply mb-2 flex flex-col items-center gap-2 rounded-full border border-slate-200/40 bg-white/90 p-2 shadow-lg backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 ease-out max-md:mb-1.5 max-md:gap-1.5 max-md:p-1.5 dark:border-slate-700/30 dark:bg-slate-900/90;
+      }
+
+      & .button-group-item {
+        @apply flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full p-2 no-underline opacity-90 transition-all duration-200 ease-out hover:scale-110 hover:bg-slate-100/70 hover:opacity-100 active:scale-95 max-md:h-9 max-md:w-9 max-md:p-1.5 dark:hover:bg-slate-800/70;
+
+        & .button-group-icon {
+          @apply h-5 w-5 flex-shrink-0 object-contain brightness-15 transition-all duration-200 ease-out max-md:h-4 max-md:w-4 dark:brightness-100 dark:invert;
+        }
+      }
+
+      & .button-group-toggle {
+        @apply flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-white/90 p-2 transition-all duration-200 ease-out active:scale-95 max-md:h-9 max-md:w-9 max-md:p-1.5 dark:bg-slate-900/90;
+
+        & .button-group-toggle-icon {
+          @apply h-5 w-5 text-slate-600 transition-transform duration-300 ease-in-out max-md:h-4 max-md:w-4 dark:text-slate-300;
+        }
+      }
+
+      &.collapsed {
+        & .button-group-items {
+          @apply pointer-events-none max-h-0 gap-0 overflow-hidden border-0 bg-transparent p-0 opacity-0 shadow-none;
+        }
+
+        & .button-group-toggle .button-group-toggle-icon {
+          @apply rotate-45;
+        }
+      }
+    }
+  }
+
   @layer switcher {
     .theme-switcher {
       @apply relative inline-flex items-center gap-0 rounded-full bg-slate-200/80 shadow-sm backdrop-blur-sm transition-all duration-300 max-md:py-0.5 dark:bg-slate-800/90 dark:shadow-black/30;
