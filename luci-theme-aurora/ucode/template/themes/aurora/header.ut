@@ -17,16 +17,18 @@
 	const uci = cursor();
 	const tokens = uci.get_all('aurora', 'theme') || {};
 	const nav_submenu_type = tokens.nav_submenu_type || 'mega-menu';
-	
+
 	let toolbar_items = [];
-	let toolbar_items_json = tokens.toolbar_items || '[]';
-	try {
-		toolbar_items = eval(`(${toolbar_items_json})`);
-	} catch (e) {
-		toolbar_items = [];
-		toolbar_items_json = '[]';
-	}
-	
+	uci.foreach('aurora', 'toolbar_item', (section) => {
+		if (section.enabled == '1') {
+			push(toolbar_items, {
+				title: section.title || '',
+				url: section.url || '',
+				icon: section.icon || ''
+			});
+		}
+	});
+
 	if (length(toolbar_items) == 0) {
 		toolbar_items = [
 			{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
