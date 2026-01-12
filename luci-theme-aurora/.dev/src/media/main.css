@@ -21,59 +21,30 @@
 
   --primary: oklch(0.68 0.11 233);
   --primary-text: oklch(0.6656 0.1055 234.61);
-  --primary-hover: oklch(0.64 0.1055 234.61);
 
   --muted: oklch(0.97 0 0);
   --muted-text: oklch(0.35 0 0);
-  --muted-hover: oklch(0.94 0 0);
 
   --destructive: oklch(0.94 0.05 25);
   --destructive-text: oklch(0.35 0.12 25);
-  --destructive-hover: oklch(0.92 0.06 25);
 
   --accent: oklch(0.62 0.22 25);
   --accent-text: oklch(0.97 0.02 25);
 
   --success: oklch(0.94 0.05 160);
   --success-text: oklch(0.32 0.09 165);
-  --success-border: oklch(0.65 0.17 165/0.4);
-  --success-shadow: oklch(0.65 0.17 165/0.1);
-  --success-start: oklch(0.97 0.02 160);
-  --success-mid: oklch(0.94 0.05 160);
-  --success-end: oklch(0.97 0.02 160);
 
   --info: oklch(0.94 0.05 230);
   --info-text: oklch(0.35 0.08 240);
-  --info-border: oklch(0.62 0.19 240/0.4);
-  --info-shadow: oklch(0.62 0.19 240/0.1);
-  --info-start: oklch(0.97 0.02 230);
-  --info-mid: oklch(0.94 0.05 230);
-  --info-end: oklch(0.97 0.02 230);
 
   --warning: oklch(0.95 0.05 90);
   --warning-text: oklch(0.35 0.08 60);
-  --warning-border: oklch(0.68 0.18 75/0.4);
-  --warning-shadow: oklch(0.68 0.18 75/0.1);
-  --warning-start: oklch(0.98 0.02 90);
-  --warning-mid: oklch(0.95 0.05 90);
-  --warning-end: oklch(0.98 0.02 90);
 
   --error: oklch(0.94 0.05 25);
   --error-text: oklch(0.35 0.12 25);
-  --error-border: oklch(0.62 0.22 25/0.3);
-  --error-ring: oklch(0.62 0.22 25/0.4);
-  --error-shadow: oklch(0.62 0.22 25/0.1);
-  --error-start: oklch(0.97 0.02 25);
-  --error-mid: oklch(0.94 0.05 25);
-  --error-end: oklch(0.97 0.02 25);
 
   --default: oklch(0.97 0 0);
   --default-text: oklch(0.205 0 0);
-  --default-border: oklch(0.922 0 0/0.3);
-  --default-shadow: oklch(0 0 0/0.1);
-  --default-start: oklch(0.98 0 0);
-  --default-mid: oklch(0.96 0 0);
-  --default-end: oklch(0.98 0 0);
 
   --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
@@ -89,61 +60,32 @@
   --progress-start: oklch(0.4318 0.0865 166.91);
   --progress-end: oklch(62.1% 0.145 189.632);
 
-  --primary: oklch(0.534 0.118 190.485);
-  --primary-text: oklch(0.779 0.168 188.745);
-  --primary-hover: oklch(0.58 0.13 189.632);
+  --primary: oklch(0.48 0.118 190.485);
+  --primary-text: oklch(0.73 0.168 188.745);
 
   --muted: oklch(0.373 0.026 259.733);
-  --muted-text: oklch(0.92 0.01 259.733);
-  --muted-hover: oklch(0.395 0.026 259.733);
+  --muted-text: oklch(0.82 0.035 259.733);
 
-  --destructive: oklch(0.28 0.12 25/0.3);
-  --destructive-text: oklch(0.88 0.14 25);
-  --destructive-hover: oklch(0.32 0.14 25/0.4);
+  --destructive: oklch(0.258 0.092 26.042);
+  --destructive-text: oklch(0.88 0.14 26.042);
 
   --accent: oklch(0.35 0.12 25);
   --accent-text: oklch(0.88 0.14 25);
 
-  --success: oklch(0.28 0.09 165/0.3);
+  --success: oklch(0.378 0.077 168.94/0.5);
   --success-text: oklch(0.92 0.09 160);
-  --success-border: oklch(0.65 0.17 165/0.3);
-  --success-shadow: oklch(0.65 0.17 165/0.1);
-  --success-start: oklch(0.32 0.09 165/0.4);
-  --success-mid: oklch(0.28 0.09 165/0.3);
-  --success-end: oklch(0.32 0.09 165/0.4);
 
-  --info: oklch(0.28 0.08 240/0.3);
+  --info: oklch(0.391 0.09 240.876/0.5);
   --info-text: oklch(0.88 0.06 230);
-  --info-border: oklch(0.62 0.19 240/0.3);
-  --info-shadow: oklch(0.62 0.19 240/0.1);
-  --info-start: oklch(0.35 0.08 240/0.4);
-  --info-mid: oklch(0.28 0.08 240/0.3);
-  --info-end: oklch(0.35 0.08 240/0.4);
 
-  --warning: oklch(0.28 0.08 60/0.3);
-  --warning-text: oklch(0.9 0.12 90);
-  --warning-border: oklch(0.68 0.18 75/0.3);
-  --warning-shadow: oklch(0.68 0.18 75/0.1);
-  --warning-start: oklch(0.35 0.08 60/0.4);
-  --warning-mid: oklch(0.28 0.08 60/0.3);
-  --warning-end: oklch(0.35 0.08 60/0.4);
+  --warning: oklch(0.414 0.112 45.904/0.5);
+  --warning-text: oklch(0.924 0.12 95.746);
 
-  --error: oklch(0.28 0.12 25/0.3);
+  --error: oklch(0.41 0.159 10.272/0.5);
   --error-text: oklch(0.88 0.14 25);
-  --error-border: oklch(0.62 0.22 25/0.3);
-  --error-ring: oklch(0.62 0.22 25/0.4);
-  --error-shadow: oklch(0.62 0.22 25/0.1);
-  --error-start: oklch(0.35 0.12 25/0.4);
-  --error-mid: oklch(0.28 0.12 25/0.3);
-  --error-end: oklch(0.35 0.12 25/0.4);
 
-  --default: oklch(0.372 0.044 257.287);
-  --default-text: oklch(0.985 0.01 257.287);
-  --default-border: oklch(0.39 0.044 257.287 / 0.3);
-  --default-shadow: oklch(0 0 0 / 0.3);
-  --default-start: oklch(0.39 0.044 257.287 / 0.8);
-  --default-mid: oklch(0.355 0.044 257.287 / 0.6);
-  --default-end: oklch(0.39 0.044 257.287 / 0.8);
+  --default: oklch(0.274 0.006 286.033/0.5);
+  --default-text: oklch(0.985 0.01 285.805);
 }
 
 @theme inline {
@@ -156,59 +98,30 @@
 
   --color-primary: var(--primary);
   --color-primary-text: var(--primary-text);
-  --color-primary-hover: var(--primary-hover);
 
   --color-muted: var(--muted);
   --color-muted-text: var(--muted-text);
-  --color-muted-hover: var(--muted-hover);
 
   --color-destructive: var(--destructive);
   --color-destructive-text: var(--destructive-text);
-  --color-destructive-hover: var(--destructive-hover);
 
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
 
   --color-success: var(--success);
   --color-success-text: var(--success-text);
-  --color-success-border: var(--success-border);
-  --color-success-shadow: var(--success-shadow);
-  --color-success-start: var(--success-start);
-  --color-success-mid: var(--success-mid);
-  --color-success-end: var(--success-end);
 
   --color-info: var(--info);
   --color-info-text: var(--info-text);
-  --color-info-border: var(--info-border);
-  --color-info-shadow: var(--info-shadow);
-  --color-info-start: var(--info-start);
-  --color-info-mid: var(--info-mid);
-  --color-info-end: var(--info-end);
 
   --color-warning: var(--warning);
   --color-warning-text: var(--warning-text);
-  --color-warning-border: var(--warning-border);
-  --color-warning-shadow: var(--warning-shadow);
-  --color-warning-start: var(--warning-start);
-  --color-warning-mid: var(--warning-mid);
-  --color-warning-end: var(--warning-end);
 
   --color-error: var(--error);
   --color-error-text: var(--error-text);
-  --color-error-border: var(--error-border);
-  --color-error-ring: var(--error-ring);
-  --color-error-shadow: var(--error-shadow);
-  --color-error-start: var(--error-start);
-  --color-error-mid: var(--error-mid);
-  --color-error-end: var(--error-end);
 
   --color-default: var(--default);
   --color-default-text: var(--default-text);
-  --color-default-border: var(--default-border);
-  --color-default-shadow: var(--default-shadow);
-  --color-default-start: var(--default-start);
-  --color-default-mid: var(--default-mid);
-  --color-default-end: var(--default-end);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -678,7 +591,7 @@
     .cbi-button-up,
     .cbi-button-down,
     .drag-handle {
-      @apply border-muted bg-muted text-muted-text hover:bg-muted-hover;
+      @apply border-muted bg-muted text-muted-text hover:bg-muted/90;
     }
 
     .btn.primary,
@@ -687,20 +600,20 @@
     .cbi-button-reload,
     .cbi-button-add,
     .cbi-button-edit {
-      @apply border-primary bg-primary hover:bg-primary-hover text-white;
+      @apply border-primary bg-primary hover:bg-primary/90 text-white;
     }
 
     .cbi-button-positive,
     .cbi-button-fieldadd,
     .cbi-button-save {
-      @apply border-primary/15 bg-primary/15 text-primary-text hover:bg-primary-hover/20;
+      @apply border-primary/25 bg-primary/25 text-primary-text hover:bg-primary/30;
     }
 
     .cbi-button-negative,
     .cbi-section-remove .cbi-button,
     .cbi-button-reset,
     .cbi-button-remove {
-      @apply border-destructive bg-destructive text-destructive-text hover:bg-destructive-hover;
+      @apply border-destructive bg-destructive text-destructive-text hover:bg-destructive/90;
     }
   }
 
@@ -906,18 +819,18 @@
 
   @layer tooltip {
     .cbi-tooltip {
-      @apply border-default-border bg-default text-default-text shadow-default-shadow absolute z-110 max-w-xs scale-95 transform rounded-xl px-3 py-2 text-xs break-normal whitespace-normal opacity-0 backdrop-blur-xl transition-all duration-300 ease-out;
+      @apply bg-default text-default-text border-default/40 absolute z-110 max-w-xs scale-95 transform rounded-xl border px-3 py-2 text-xs break-normal whitespace-normal opacity-0 shadow-lg backdrop-blur-xl transition-all duration-300 ease-out;
       &.error {
-        @apply border-error-border from-error-start via-error-mid to-error-end text-error-text shadow-error-shadow bg-gradient-to-br;
+        @apply border-error/40 bg-error text-error-text;
       }
       &.success {
-        @apply border-success-border from-success-start via-success-mid to-success-end text-success-text shadow-success-shadow bg-gradient-to-br;
+        @apply border-success/40 bg-success text-success-text;
       }
       &.info {
-        @apply border-info-border from-info-start via-info-mid to-info-end text-info-text shadow-info-shadow bg-gradient-to-br;
+        @apply border-info/40 bg-info text-info-text;
       }
       &.notice {
-        @apply border-warning-border from-warning-start via-warning-mid to-warning-end text-warning-text shadow-warning-shadow bg-gradient-to-br;
+        @apply border-warning/40 bg-warning text-warning-text;
       }
     }
 
@@ -937,7 +850,7 @@
 
   @layer message {
     .alert-message {
-      @apply border-default-border from-default-start via-default-mid to-default-end text-default-text shadow-default-shadow sticky top-14 z-40 mb-4 rounded-4xl bg-gradient-to-br p-6 max-md:mx-0 max-md:mb-3 max-md:rounded-3xl max-md:p-4;
+      @apply bg-default text-default-text border-default/30 sticky top-14 z-40 mb-4 rounded-4xl border p-6 max-md:mx-0 max-md:mb-3 max-md:rounded-3xl max-md:p-4;
 
       &.modal {
         @apply static top-auto;
@@ -952,21 +865,21 @@
       }
 
       &.success {
-        @apply border-success-border from-success-start via-success-mid to-success-end text-success-text shadow-success-shadow bg-gradient-to-br;
+        @apply border-success/30 bg-success text-success-text;
       }
 
       &.info {
-        @apply border-info-border from-info-start via-info-mid to-info-end text-info-text shadow-info-shadow bg-gradient-to-br;
+        @apply border-info/30 bg-info text-info-text;
       }
 
       &.warning,
       &.notice {
-        @apply border-warning-border from-warning-start via-warning-mid to-warning-end text-warning-text shadow-warning-shadow bg-gradient-to-br;
+        @apply border-warning/30 bg-warning text-warning-text;
       }
 
       &.error,
       &.danger {
-        @apply border-error-border from-error-start via-error-mid to-error-end text-error-text shadow-error-shadow bg-gradient-to-br;
+        @apply border-error/30 bg-error text-error-text;
       }
 
       h4,
@@ -1340,15 +1253,15 @@
           }
 
           & ins {
-            @apply border-success-border bg-success text-success-text border;
+            @apply border-success bg-success/80 text-success-text border;
           }
 
           & del {
-            @apply border-error-border bg-error text-error-text border;
+            @apply border-error bg-error/80 text-error-text border;
           }
 
           & var {
-            @apply border-info-border bg-info text-info-text border;
+            @apply border-info bg-info/80 text-info-text border;
           }
 
           & .uci-change-legend {
@@ -1497,7 +1410,7 @@
 
       & tr,
       & .tr {
-        @apply transition-colors duration-200 hover:bg-gray-50 max-md:flex max-md:flex-wrap max-md:border-b max-md:border-gray-200 max-md:px-2 max-md:py-2 dark:hover:bg-gray-700/50 dark:max-md:border-gray-600/40;
+        @apply transition-colors duration-200 hover:bg-gray-50 max-md:flex max-md:flex-wrap max-md:border-b max-md:border-gray-200 max-md:px-2 max-md:py-2 dark:hover:bg-gray-700/60 dark:max-md:border-gray-600/40;
         @apply has-[.cbi-progressbar]:max-md:flex has-[.cbi-progressbar]:max-md:items-center has-[.cbi-progressbar]:max-md:justify-center;
 
         &:first-child {
@@ -1696,7 +1609,7 @@
   @layer form {
     .cbi-input-invalid,
     .cbi-value-error {
-      @apply !border-error-border focus:!ring-error-ring;
+      @apply !border-error/70 focus:!ring-error/40;
     }
 
     .cbi-value {
@@ -1782,7 +1695,7 @@
           @apply after:bg-accent after:text-accent-text after:absolute after:-top-0.5 after:-right-1.5 after:z-20 after:inline-flex after:min-h-4 after:min-w-4 after:items-center after:justify-center after:rounded-full after:px-1.5 after:py-0.5 after:text-xs after:font-semibold after:content-[attr(data-errors)];
 
           & > a {
-            @apply border-error-border border;
+            @apply border-error/50 border;
           }
         }
         & > a {
