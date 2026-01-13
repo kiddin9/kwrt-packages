@@ -76,14 +76,14 @@
 					opt.addEventListener('click', () => (setTheme(opt.dataset.theme), syncSwitchers()));
 				});
 
-				const floatingButtonToggle = document.getElementById('floating-button-group-toggle');
-				const floatingButtonGroup = document.getElementById('floating-button-group');
-				if (floatingButtonToggle && floatingButtonGroup) {
+				const toolbarToggle = document.getElementById('toolbar-toggle');
+				const floatingToolbar = document.getElementById('floating-toolbar');
+				if (toolbarToggle && floatingToolbar) {
 					const isCollapsed = localStorage.getItem('aurora.toolbarCollapsed') === 'true';
-					isCollapsed && floatingButtonGroup.classList.add('collapsed');
+					isCollapsed && floatingToolbar.classList.add('collapsed');
 
-					floatingButtonToggle.addEventListener('click', () => {
-						const collapsed = floatingButtonGroup.classList.toggle('collapsed');
+					toolbarToggle.addEventListener('click', () => {
+						const collapsed = floatingToolbar.classList.toggle('collapsed');
 						localStorage.setItem('aurora.toolbarCollapsed', collapsed);
 					});
 				}
@@ -188,17 +188,17 @@
 			</nav>
 		</div>
 
-		<div id="floating-button-group" class="floating-button-group">
-			<div class="button-group-items">
+		<div id="floating-toolbar" class="floating-toolbar">
+			<div class="toolbar-list">
 				{% for (let i = 0; i < length(toolbar_items); i++): %}
 					{% let item = toolbar_items[i]; %}
-					<a href="{{ item.url }}" class="button-group-item" title="{{ item.title }}">
-						<img src="{{ media }}/images/{{ item.icon }}" class="button-group-icon" alt="{{ item.title }}"/>
+					<a href="{{ item.url }}" class="toolbar-btn" title="{{ item.title }}">
+						<img src="{{ media }}/images/{{ item.icon }}" class="icon" alt="{{ item.title }}"/>
 					</a>
 				{% endfor %}
 			</div>
-			<button class="button-group-toggle" id="floating-button-group-toggle" title="{{ _('Toggle floating buttons') }}" aria-label="{{ _('Toggle floating buttons') }}">
-				<span class="button-group-toggle-icon">
+			<button class="toolbar-btn toggle" id="toolbar-toggle" title="{{ _('Toggle floating buttons') }}" aria-label="{{ _('Toggle floating buttons') }}">
+				<span class="icon">
 					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M6 18L18 6M6 6l12 12"/>
 					</svg>
