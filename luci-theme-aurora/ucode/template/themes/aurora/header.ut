@@ -79,8 +79,12 @@
 				const floatingButtonToggle = document.getElementById('floating-button-group-toggle');
 				const floatingButtonGroup = document.getElementById('floating-button-group');
 				if (floatingButtonToggle && floatingButtonGroup) {
+					const isCollapsed = localStorage.getItem('aurora.toolbarCollapsed') === 'true';
+					isCollapsed && floatingButtonGroup.classList.add('collapsed');
+
 					floatingButtonToggle.addEventListener('click', () => {
-						floatingButtonGroup.classList.toggle('collapsed');
+						const collapsed = floatingButtonGroup.classList.toggle('collapsed');
+						localStorage.setItem('aurora.toolbarCollapsed', collapsed);
 					});
 				}
 			});
