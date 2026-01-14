@@ -44,6 +44,16 @@ return view.extend({
 		o.value('1', _('Normal font'));
 		o.value('2', _('Large font'));
 		o.default = '0';
+		
+		// font3d
+		o = s.option( form.Flag, 'font3d', _('3D font'));
+		o.rmempty = false;
+		o.default = '0';
+
+		// box-shadow
+		o = s.option( form.Flag, 'boxshadow', _('Shadow layering effect'));
+		o.rmempty = false;
+		o.default = '0';
 
 		// Wallpaper synchronization
 		o = s.option( form.Flag, 'bklock', _('Wallpaper synchronization'),
