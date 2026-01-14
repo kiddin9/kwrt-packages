@@ -1,9 +1,12 @@
 --- a/luci-app-passwall/root/etc/uci-defaults/luci-passwall
 +++ b/luci-app-passwall/root/etc/uci-defaults/luci-passwall
-@@ -1,5 +1,7 @@
+@@ -1,5 +1,10 @@
  #!/bin/sh
  
 +[ "`which nft`" ] && uci -q set passwall.@global_forwarding[0].use_nft=1
++
++grep -q ip-api.com /usr/share/passwall/rules/proxy_host ||
++	sed -i '$a ip-api.com' /usr/share/passwall/rules/proxy_host
 +
  if [ -e "/etc/config/ucitrack" ]; then
      uci -q batch <<-EOF
@@ -343,19 +346,6 @@ index 000000000000..a00fff9c79b3
 +
 +window.addEventListener('resize', resize);
 +</script>
-diff --git a/luci-app-passwall/root/etc/uci-defaults/luci-passwall b/luci-app-passwall/root/etc/uci-defaults/luci-passwall
-index cc39c00a21..079c9723b3 100755
---- a/luci-app-passwall/root/etc/uci-defaults/luci-passwall
-+++ b/luci-app-passwall/root/etc/uci-defaults/luci-passwall
-@@ -1,5 +1,8 @@
- #!/bin/sh
- 
-+grep -q ip-api.com /usr/share/passwall/rules/proxy_host ||
-+	sed -i '$a ip-api.com' /usr/share/passwall/rules/proxy_host
-+
- uci -q batch <<-EOF >/dev/null
- 	set dhcp.@dnsmasq[0].localuse=1
- 	commit dhcp
 
 --- a/luci-app-passwall/root/usr/share/passwall/0_default_config
 +++ b/luci-app-passwall/root/usr/share/passwall/0_default_config
