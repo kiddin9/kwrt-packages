@@ -19,8 +19,14 @@
 - Development time: December 2021
 - Release time: February 2023
 - Open source date: April 2023
-- Main supports LEDE18.06 and official 18.06 branch open source time: April 2023 version: 1.2.6
-- JS supports official website 19.07-24.10 branch latest version: May 2025 version: 2.5.9 compatible with OPENWRT 24.10 branch.
+
+###  Main supports LEDE18.06 and official 18.06 branch open source time: April 2023 version: 1.2.6
+
+### JS supports official website 19.07-25.12 branch latest version: 2026.1.14 version: 2.1.5 compatible with OPENWRT 25.12 branch.
+- Completely developed and remastered JavaScript for OEPNwRT 19.07-25.12.
+- Add a switch for setting fonts with a three-dimensional effect.
+- Add a switch for setting shadow layer effects.
+- Add a preview function for uploaded wallpapers.
 
 # Function Introduction
 - Being cool is beauty, born from movement.

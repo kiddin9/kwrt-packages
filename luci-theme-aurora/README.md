@@ -4,7 +4,7 @@
 </p>
 <h1 align="center">Aurora Theme</h1>
 <p align="center"><strong>A modern OpenWrt LuCI theme built with Vite and Tailwind CSS.</strong></p>
-<h4 align=center>☁️ Pure | 🦢 Elegant | 📱 Responsive | 🌗 Dark/Light Mode | ⚙️ Settable </h4>
+<h4 align=center>🏔️ Pure | 🦢 Elegant | 📱 Responsive | 🌗 Dark/Light Mode | ⚙️ Settable </h4>
 <div align="center">
   <a href="https://openwrt.org"><img alt="OpenWrt" src="https://img.shields.io/badge/OpenWrt-%E2%89%A523.05-00B5E2"></a>
   <a href="https://www.google.com/chrome/"><img alt="Chrome" src="https://img.shields.io/badge/Chrome-%E2%89%A5111-4285F4?logo=googlechrome&logoColor=white"></a>
@@ -12,7 +12,7 @@
   <a href="https://www.mozilla.org/firefox/"><img alt="Firefox" src="https://img.shields.io/badge/Firefox-%E2%89%A5128-FF7139?logo=firefoxbrowser&logoColor=white"></a>
   <a href="https://github.com/eamonxg/luci-theme-aurora/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/eamonxg/luci-theme-aurora"></a>
   <a href="https://github.com/eamonxg/luci-theme-aurora/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/eamonxg/luci-theme-aurora/total"></a>
-  <a href="https://discord.gg/8R9s2C2a"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white"></a>
+  <a href="https://discord.gg/EBncRrzfTw"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white"></a>
 </div>
 
 ## Features
@@ -24,10 +24,10 @@
 
 ## Preview
 
-| Mode       | Screenshot                                        |
-|------------|---------------------------------------------------|
+| Mode  | Screenshot                                                                                              |
+| ----- | ------------------------------------------------------------------------------------------------------- |
 | Light | ![Light Mode](https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/preview-light.png) |
-| Dark | ![Dark Mode](https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/preview-dark.png) |
+| Dark  | ![Dark Mode](https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/preview-dark.png)   |
 
 ## Compatibility
 
@@ -43,16 +43,16 @@ OpenWrt 25.12+ and snapshots use `apk`; other versions use `opkg`:
 
 > **Tip**: You can confirm your package manager by running `opkg --version` or `apk --version`. If it returns output (not "not found"), that's your package manager.
 
-- **opkg** (OpenWrt < 25.12):  
+- **opkg** (OpenWrt < 25.12):
+
   ```sh
   cd /tmp && wget -O luci-theme-aurora.ipk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora_0.9.0_beta-r20251206_all.ipk && opkg install luci-theme-aurora.ipk
   ```
 
-- **apk** (OpenWrt 25.12+ and snapshots):  
+- **apk** (OpenWrt 25.12+ and snapshots):
   ```sh
   cd /tmp && wget -O luci-theme-aurora.apk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora-0.9.0_beta-r20251206.apk && apk add --allow-untrusted luci-theme-aurora.apk
   ```
-
 
 ## Contributing
 
@@ -76,7 +76,7 @@ Embracing the modern frontend ecosystem is therefore the core philosophy of the 
 
 <h4>Community</h4>
 
-<p>I've got a Discord server going - come hang out and chat! 👋 <a href="https://discord.gg/8R9s2C2a">Join Discord</a></p>
+<p>I've got a Discord server going - come hang out and chat! 👋 <a href="https://discord.gg/EBncRrzfTw">Join Discord</a></p>
 
 ## License & Credits
 

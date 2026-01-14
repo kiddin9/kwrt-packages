@@ -275,7 +275,7 @@
           & .desktop-nav {
             @apply pointer-events-none left-0 z-40 px-0 pt-0 opacity-0 transition-all duration-150;
             [data-nav-type="mega-menu"] & {
-              @apply fixed top-14 pb-6;
+              @apply fixed top-14 left-1/2 -translate-x-1/2 pb-6;
             }
             [data-nav-type="boxed-dropdown"] & {
               @apply absolute top-full mt-2 min-w-48;
