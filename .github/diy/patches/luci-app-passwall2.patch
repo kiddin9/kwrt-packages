@@ -1,17 +1,16 @@
 --- a/luci-app-passwall2/root/etc/uci-defaults/luci-passwall2
 +++ b/luci-app-passwall2/root/etc/uci-defaults/luci-passwall2
-@@ -42,6 +42,11 @@ uci -q commit passwall2
- 
- sed -i "s#add_from#group#g" /etc/config/passwall2 2>/dev/null
+@@ -1,5 +1,10 @@
+ #!/bin/sh
  
 +[ "`which nft`" ] && {
 +uci -q set passwall2.@global_forwarding[0].use_nft=1
 +uci -q commit passwall2
 +}
 +
- rm -f /tmp/luci-indexcache /tmp/luci-indexcache.*
- rm -rf /tmp/luci-modulecache/
- killall -HUP rpcd 2>/dev/null
+ if [ -e "/etc/config/ucitrack" ]; then
+     uci -q batch <<-EOF
+  		delete ucitrack.@passwall2[-1]
 
 --- a/luci-app-passwall2/Makefile
 +++ b/luci-app-passwall2/Makefile
