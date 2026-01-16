@@ -2051,11 +2051,6 @@ div>div[style*="display:grid"] {
 }
 
 @media (max-width: 768px) {
-    .cbi-value-field input {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
     #add_link_div {
         width: 95%;
         padding: 15px;
@@ -5777,6 +5772,19 @@ div#maincontent > div.alert-message.fade-in.warning[style*="display:flex"] {
 
 .cbi-input-select[id*="sing-box-"][id*="_logview"] {
     font-size: 13px !important;
+}
+
+.cbi-map > .cbi-section > #log_textarea,
+.cbi-map > .cbi-section > div:last-child {
+    margin-right: 15px !important;
+}
+
+.cbi-map > .cbi-section > #log_textarea > pre[wrap="pre"] {
+    padding-right: 3px !important;
+}
+
+:where(body) :where(.cbi-map) :where(h3[name="content"]) {
+    margin-left: -20px !important;
 }
 
 
