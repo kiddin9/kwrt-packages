@@ -6,18 +6,52 @@ zone_type = "External"
 
 [[zones.stores]]
 type = "forward"
-options = { edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 1, server_ordering_strategy = "RoundRobin" }
+options = { edns0 = false, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 2, server_ordering_strategy = "RoundRobin" }
 
 [[zones.stores.name_servers]]
 ip = "2400:3200:baba::1"
-trust_negative_responses = false
+trust_negative_responses = true
 connections = [
-    { protocol = { type = "quic", server_name = "dns.alidns.com" } }
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } },
+    { protocol = { type = "h3", server_name = "dns.alidns.com", path = "/dns-query", disable_grease = false } }
+]
+
+[[zones.stores.name_servers]]
+ip = "1.12.12.12"
+trust_negative_responses = true
+connections = [
+    { protocol = { type = "tls", server_name = "dot.pub" } },
+    { protocol = { type = "https", server_name = "doh.pub", path = "/dns-query" } }
+]
+
+[[zones.stores.name_servers]]
+ip = "223.6.6.6"
+trust_negative_responses = true
+connections = [
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } },
+    { protocol = { type = "h3", server_name = "dns.alidns.com", path = "/dns-query", disable_grease = false } }
+]
+
+[[zones.stores.name_servers]]
+ip = "120.53.53.53"
+trust_negative_responses = true
+connections = [
+    { protocol = { type = "tls", server_name = "dot.pub" } },
+    { protocol = { type = "https", server_name = "doh.pub", path = "/dns-query" } }
 ]
 
 [[zones.stores.name_servers]]
 ip = "2400:3200::1"
-trust_negative_responses = false
+trust_negative_responses = true
 connections = [
-    { protocol = { type = "quic", server_name = "dns.alidns.com" } }
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } },
+    { protocol = { type = "h3", server_name = "dns.alidns.com", path = "/dns-query", disable_grease = false } }
+]
+
+[[zones.stores.name_servers]]
+ip = "223.5.5.5"
+trust_negative_responses = true
+connections = [
+    { protocol = { type = "quic", server_name = "dns.alidns.com" } },
+    { protocol = { type = "h3", server_name = "dns.alidns.com", path = "/dns-query", disable_grease = false } }
 ]

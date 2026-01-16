@@ -62,6 +62,9 @@ msgstr "立体感字体"
 msgid "Shadow layering effect"
 msgstr "阴影层次效果"
 
+msgid "RGB color values"
+msgstr "RGB颜色取值"
+
 msgid "Wallpaper synchronization"
 msgstr "壁纸同步"
 
