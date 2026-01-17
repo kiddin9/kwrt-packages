@@ -33,6 +33,7 @@
 		toolbar_items = [
 			{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
 			{ url: '/cgi-bin/luci/admin/system/system', icon: 'system.svg', title: 'System' },
+			{ url: '/cgi-bin/luci/admin/system/package-manager', icon: 'software.svg', title: 'Software' },
 			{ url: '/cgi-bin/luci/admin/network/network', icon: 'network.svg', title: 'Network' }
 		];
 	}
