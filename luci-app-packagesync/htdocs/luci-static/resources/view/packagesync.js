@@ -144,6 +144,16 @@ return view.extend({
 				.catch((e) => { ui.addNotification(null, E('p', e.message), 'error') });
 		};
 
+		o = s.option(form.Value, 'download_url', _('Download URL'));
+		o.placeholder = 'https://downloads.openwrt.org';
+		o.rmempty = false;
+
+		o = s.option(form.Value, 'rsync_url', _('Rsync URL'),
+			_('<a href="%s" target="_blank">%s</a>')
+				.format('https://openwrt.org/mirrors', _('Available Mirrors')));
+		o.placeholder = 'rsync://rsync.openwrt.org/downloads';
+		o.rmempty = false;
+
 		o = s.option(form.ListValue, 'bwlimit', _('Bandwidth Limit'));
 		o.value('0', _('Unlimited'));
 		o.value('100', _('100 KB/s'));

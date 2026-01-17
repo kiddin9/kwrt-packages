@@ -15,7 +15,6 @@ JSON=''
 RESULTPATH='/var/packagesync/results'
 PIDFILE='/var/run/packagesync.pid'
 # url path
-DOWNLOAD_URL="https://downloads.openwrt.org"
 RSYNC_URL="rsync://rsync.openwrt.org/downloads"
 URLHREF_RELEASES='releases'
 #URLHREF_SNAPSHOTS='snapshots'
@@ -32,7 +31,7 @@ BWLIMIT='8000'
 
 
 # Get parameters
-GETOPT=$(getopt -n $(basename $0) -o d:n:s:t:k:m:e:o:l:x:V -l homedir:,name:,version:,target:,arch:,model:,extra:,orders:,bwlimit:,proxy:,downloadurl:,rsyncurl:,Version,help -- "$@")
+GETOPT=$(getopt -n $(basename $0) -o d:n:s:t:k:m:e:o:l:x:V -l homedir:,name:,version:,target:,arch:,model:,extra:,orders:,bwlimit:,proxy:,rsyncurl:,Version,help -- "$@")
 [ $? -ne 0 ] && >&2 echo -e "\tUse the --help option get help" && exit 1
 eval set -- "$GETOPT"
 OPTIONS=$(sed -E "s|'[^']*'||g; s| --( .*)?$||" <<< "$GETOPT")
@@ -82,7 +81,6 @@ Options:\n\
   -o, --orders <orders>               -- Required option. Sync multi-versions at once\n\
   -l, --bwlimit <n>[(K|M|G)]          -- Bandwidth limit\n\
   -x, --proxy <protocol://ip:port>    -- Connect using proxy\n\
-  --downloadurl <url>                 -- Optional option. Download url\n\
   --rsyncurl <url>                    -- Optional option. Rsync url\n\
   -V, --Version                       -- Returns version\n\
   --help                              -- Returns help info\n\
@@ -109,11 +107,11 @@ verify_path() {
 verify_order() {
   local version="$1" target="$2" arch="$3"
 
-  local HTTPCODE ERROR=0
-  HTTPCODE="$(curl --connect-timeout 10 --retry 3 -sSIL -w "%{http_code}" -o /dev/null "$DOWNLOAD_URL/$URLHREF_RELEASES/${version:-null}/$URLHREF_VERS_TARGETS/${target:-null}")"
-  [ -n "$(sed -n '/^2\d\d$/p' <<< "$HTTPCODE")" ] || { >&2 echo -e "$(basename $0): Get '$DOWNLOAD_URL/$URLHREF_RELEASES/${version:-<null>}/$URLHREF_VERS_TARGETS/${target:-<null>}' failed. Code '$HTTPCODE'"; ((ERROR++)); }
-  HTTPCODE="$(curl --connect-timeout 10 --retry 3 -sSIL -w "%{http_code}" -o /dev/null "$DOWNLOAD_URL/$URLHREF_RELEASES/${version:-null}/$URLHREF_VERS_PACKAGES/${arch:-null}")"
-  [ -n "$(sed -n '/^2\d\d$/p' <<< "$HTTPCODE")" ] || { >&2 echo -e "$(basename $0): Get '$DOWNLOAD_URL/$URLHREF_RELEASES/${version:-<null>}/$URLHREF_VERS_PACKAGES/${arch:-<null>}' failed. Code '$HTTPCODE'"; ((ERROR++)); }
+  local ERRORCODE ERROR=0
+  rsync --quiet --list-only        "$RSYNC_URL/$URLHREF_RELEASES/${version:-null}/$URLHREF_VERS_TARGETS/${target:-null}" 2>/dev/null || { ERRORCODE=$?;
+  >&2 echo -e "$(basename $0): Get '$RSYNC_URL/$URLHREF_RELEASES/${version:-<null>}/$URLHREF_VERS_TARGETS/${target:-<null>}' failed. Code '$ERRORCODE'"; ((ERROR++)); }
+  rsync --quiet --list-only        "$RSYNC_URL/$URLHREF_RELEASES/${version:-null}/$URLHREF_VERS_PACKAGES/${arch:-null}" 2>/dev/null || { ERRORCODE=$?;
+  >&2 echo -e "$(basename $0): Get '$RSYNC_URL/$URLHREF_RELEASES/${version:-<null>}/$URLHREF_VERS_PACKAGES/${arch:-<null>}' failed. Code '$ERRORCODE'"; ((ERROR++)); }
 
   [ "$ERROR" -gt 0 ] && return 1
   return 0
@@ -246,11 +244,15 @@ sync_extra() {
 
   mkdir -p "$home/${VER}/$URLHREF_VERS_TARGETS/$target" 2>/dev/null
   #supplementary
-  local table="$(curl --connect-timeout 10 --retry 3 -sSL "$DOWNLOAD_URL/${VER}/$URLHREF_VERS_TARGETS/$target" | sed -n '/Supplementary Files/,$p' | sed -n '/<table>/,/<\/table>/p')"
+  local table="$(rsync --list-only "$RSYNC_URL/${VER}/$URLHREF_VERS_TARGETS/$target/" | awk '{print $NF}' \
+    | grep -Ev '^\.{0,2}/?$' \
+    | grep -Ev '^(kmods|packages)/?$' \
+    | grep -Ev "^.*-${ver}-${target/\//-}-.*$" \
+  )"
   if [ -n "$table" ]; then
-    local expr="{$(echo "$table" | sed -En "s|.+\bhref=\"([^\"/]+)\".+|'\1'|gp" | tr '\n' ',' | sed 's|,$||')}"
+    local expr="{$(echo "$table" | sed "s|^|'|;s|$|'|" | tr '\n' ',' | sed 's|,$||')}"
     eval "rsync \$ARCHIVE\$INFO \$COMPAC \$PRUNE \$PROGR --bwlimit=\$BWLIMIT --include=$expr --exclude='*' \"\$RSYNC_URL/\${VER}/\$URLHREF_VERS_TARGETS/\$target/\" \"\$home/\${VER}/\$URLHREF_VERS_TARGETS/\$target/\"" || ((ERROR++))
-    #for v in $(echo "$table" | sed -En "s|.+\bhref=\"([^\"/]+)\".+|'\1'|gp"); do
+    #for v in $(echo "$table" | sed "s|^|'|;s|$|'|"); do
     #  rsync $ARCHIVE$INFO $COMPAC $PRUNE $PROGR --bwlimit=$BWLIMIT "$RSYNC_URL/${VER}/$URLHREF_VERS_TARGETS/$target/${v:1:-1}" "$home/${VER}/$URLHREF_VERS_TARGETS/$target/" || ((ERROR++))
     #done
   else
@@ -342,10 +344,6 @@ fe80:(:[[:xdigit:]]{0,4}){0,4}%\w+|\
     -l|--bwlimit)
       [ -n "$(echo "${2^^}"|sed -En '/^(\d|[1-9]\d*(K|M|G)?)$/p')" ] && BWLIMIT="${2^^}" || { >&2 echo -e "$(basename $0): Option '$1' requires a valid argument\n\tUse the --help option get help"; exit 1; }
       #[ -n "$(echo "$2"|sed -En '/^(\d|[1-9]\d*(K|M|G)?)$/lp')" ]
-      shift
-    ;;
-    --downloadurl)
-      DOWNLOAD_URL="$2"
       shift
     ;;
     --rsyncurl)

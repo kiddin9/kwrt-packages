@@ -1,259 +1,262 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:157
+#: htdocs/luci-static/resources/view/packagesync.js:164
 msgid "1 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:162
+#: htdocs/luci-static/resources/view/packagesync.js:169
 msgid "10 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:152
+#: htdocs/luci-static/resources/view/packagesync.js:159
 msgid "100 KB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:167
+#: htdocs/luci-static/resources/view/packagesync.js:174
 msgid "100 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:158
+#: htdocs/luci-static/resources/view/packagesync.js:165
 msgid "2 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:163
+#: htdocs/luci-static/resources/view/packagesync.js:170
 msgid "20 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:153
+#: htdocs/luci-static/resources/view/packagesync.js:160
 msgid "200 KB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:159
+#: htdocs/luci-static/resources/view/packagesync.js:166
 msgid "3 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:164
+#: htdocs/luci-static/resources/view/packagesync.js:171
 msgid "30 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:154
+#: htdocs/luci-static/resources/view/packagesync.js:161
 msgid "300 KB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:160
+#: htdocs/luci-static/resources/view/packagesync.js:167
 msgid "5 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:165
+#: htdocs/luci-static/resources/view/packagesync.js:172
 msgid "50 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:155
+#: htdocs/luci-static/resources/view/packagesync.js:162
 msgid "500 KB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:161
+#: htdocs/luci-static/resources/view/packagesync.js:168
 msgid "8 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:166
+#: htdocs/luci-static/resources/view/packagesync.js:173
 msgid "80 MB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:156
+#: htdocs/luci-static/resources/view/packagesync.js:163
 msgid "800 KB/s"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:262
+#: htdocs/luci-static/resources/view/packagesync.js:152
+msgid "<a href=\"%s\" target=\"_blank\">%s</a>"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/packagesync.js:269
 msgid ""
 "<span style='color:red;font-weight:bold'>Device not exist or mount point in "
 "the wrong location<span/>"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:354
+#: htdocs/luci-static/resources/view/packagesync.js:331
 msgid "Arch"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:171
+#: htdocs/luci-static/resources/view/packagesync.js:178
 msgid "Auto Exec"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:247
+#: htdocs/luci-static/resources/view/packagesync.js:254
 msgid "Available"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:150
+#: htdocs/luci-static/resources/view/packagesync.js:153
+msgid "Available Mirrors"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/packagesync.js:157
 msgid "Bandwidth Limit"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:381
+#: htdocs/luci-static/resources/view/packagesync.js:353
 msgid "Click to view"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:183
+#: htdocs/luci-static/resources/view/packagesync.js:190
 msgid "Cron expression"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:291
+#: htdocs/luci-static/resources/view/packagesync.js:147
+msgid "Download URL"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/packagesync.js:295
 msgid "Enable"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:199
+#: htdocs/luci-static/resources/view/packagesync.js:206
 msgid "Enable proxy"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:136
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:137
+#: htdocs/luci-static/resources/view/packagesync.js:133
+#: htdocs/luci-static/resources/view/packagesync.js:134
 msgid "Execute"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:122
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:277
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:312
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:325
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:345
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:358
-msgid "Expecting: non-empty value"
-msgstr ""
-
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:243
+#: htdocs/luci-static/resources/view/packagesync.js:250
 msgid "Filesystem"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:296
+#: htdocs/luci-static/resources/view/packagesync.js:300
 msgid "Get Option Info"
 msgstr ""
 
-#: applications/luci-app-packagesync/root/usr/share/rpcd/acl.d/luci-app-packagesync.json:3
+#: root/usr/share/rpcd/acl.d/luci-app-packagesync.json:3
 msgid "Grant access to packagesync procedures"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:116
+#: htdocs/luci-static/resources/view/packagesync.js:116
 msgid "Home URL"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:373
+#: htdocs/luci-static/resources/view/packagesync.js:345
 msgid "Last Error log"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:370
+#: htdocs/luci-static/resources/view/packagesync.js:342
 msgid "Last exec result"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:220
+#: htdocs/luci-static/resources/view/packagesync.js:227
 msgid "List"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:219
+#: htdocs/luci-static/resources/view/packagesync.js:226
 msgid "List removable versions"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:88
-#: applications/luci-app-packagesync/root/usr/share/luci/menu.d/luci-app-packagesync.json:3
+#: htdocs/luci-static/resources/view/packagesync.js:88
+#: root/usr/share/luci/menu.d/luci-app-packagesync.json:3
 msgid "Local software source"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:267
+#: htdocs/luci-static/resources/view/packagesync.js:274
 msgid "Mirror Releases"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:249
+#: htdocs/luci-static/resources/view/packagesync.js:256
 msgid "Mount point"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:272
+#: htdocs/luci-static/resources/view/packagesync.js:279
 msgid "Nick name"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:117
+#: htdocs/luci-static/resources/view/packagesync.js:117
 msgid "Open <a href=\"/%s\" target=\"_blank\">URL</a>"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:367
+#: htdocs/luci-static/resources/view/packagesync.js:339
 msgid "Product model"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:202
+#: htdocs/luci-static/resources/view/packagesync.js:209
 msgid "Proxy Protocol"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:212
+#: htdocs/luci-static/resources/view/packagesync.js:219
 msgid "Proxy Server"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:95
+#: htdocs/luci-static/resources/view/packagesync.js:151
+msgid "Rsync URL"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/packagesync.js:95
 msgid "Running Status"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:58
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:102
+#: htdocs/luci-static/resources/view/packagesync.js:58
+#: htdocs/luci-static/resources/view/packagesync.js:102
 msgid "SYNC IN PROGRESS"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:60
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:110
+#: htdocs/luci-static/resources/view/packagesync.js:60
+#: htdocs/luci-static/resources/view/packagesync.js:110
 msgid "SYNC NOT IN PROGRESS"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:245
+#: htdocs/luci-static/resources/view/packagesync.js:252
 msgid "Size"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:264
+#: htdocs/luci-static/resources/view/packagesync.js:271
 msgid "Storage Device"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:334
-msgid "SubTarget"
-msgstr ""
-
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:349
+#: htdocs/luci-static/resources/view/packagesync.js:326
 msgid "Supplementary Files"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:321
+#: htdocs/luci-static/resources/view/packagesync.js:317
 msgid "Target"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:127
+#: htdocs/luci-static/resources/view/packagesync.js:124
 msgid "The Name %h is already used"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:285
+#: htdocs/luci-static/resources/view/packagesync.js:289
 msgid "The Nick name is already used"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:184
+#: htdocs/luci-static/resources/view/packagesync.js:191
 msgid "The default value is 0:00 every day"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:244
+#: htdocs/luci-static/resources/view/packagesync.js:251
 msgid "Type"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:151
+#: htdocs/luci-static/resources/view/packagesync.js:158
 msgid "Unlimited"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:246
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:248
+#: htdocs/luci-static/resources/view/packagesync.js:253
+#: htdocs/luci-static/resources/view/packagesync.js:255
 msgid "Used"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:308
+#: htdocs/luci-static/resources/view/packagesync.js:309
 msgid "Version"
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:228
+#: htdocs/luci-static/resources/view/packagesync.js:235
 msgid "no objects need to remove."
 msgstr ""
 
-#: applications/luci-app-packagesync/htdocs/luci-static/resources/view/packagesync.js:89
+#: htdocs/luci-static/resources/view/packagesync.js:89
 msgid ""
 "packagesync used to build a local mirror feeds source on the router<br/> To "
 "use packagesync, you need to prepare a storage device with a size of at "
-"least <b>16G</b> and connect it to the router<br/> then open <a href=\"%s"
-"\"><b>Mount Points</b></a>, find the connected device and set its mount "
-"point to <b>%s</b>, check <b>Enabled</b> and click <b>Save&Apple</b>"
+"least <b>16G</b> and connect it to the router<br/> then open <a "
+"href=\"%s\"><b>Mount Points</b></a>, find the connected device and set its "
+"mount point to <b>%s</b>, check <b>Enabled</b> and click <b>Save&Apple</b>"
 msgstr ""
