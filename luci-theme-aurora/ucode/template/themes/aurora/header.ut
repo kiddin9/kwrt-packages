@@ -19,6 +19,8 @@
 	const nav_submenu_type = tokens.nav_submenu_type || 'mega-menu';
 	const toolbar_enabled = tokens.toolbar_enabled ? tokens.toolbar_enabled == '1' : true;
 	const icon_cache_version = tokens.icon_cache_version || '0';
+	const logo_svg = tokens.logo_svg || 'logo.svg';
+	const logo_png = tokens.logo_png || 'logo_32.png';
 
 	let toolbar_items = [
 		{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
@@ -104,8 +106,8 @@
 		<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
 		<meta name="color-scheme" content="light dark">
 		<link rel="stylesheet" href="{{ media }}/main.css">
-		<link rel="icon" href="{{ media }}/images/logo_48.png?v={{ icon_cache_version }}" sizes="48x48">
-		<link rel="icon" href="{{ media }}/images/logo.svg?v={{ icon_cache_version }}" sizes="any">
+		<link rel="icon" href="{{ media }}/images/{{ logo_png }}?v={{ icon_cache_version }}" sizes="32x32">
+		<link rel="icon" href="{{ media }}/images/{{ logo_svg }}?v={{ icon_cache_version }}" sizes="any">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
