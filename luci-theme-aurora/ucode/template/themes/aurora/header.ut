@@ -17,25 +17,33 @@
 	const uci = cursor();
 	const tokens = uci.get_all('aurora', 'theme') || {};
 	const nav_submenu_type = tokens.nav_submenu_type || 'mega-menu';
+	const toolbar_enabled = tokens.toolbar_enabled ? tokens.toolbar_enabled == '1' : true;
 
-	let toolbar_items = [];
-	uci.foreach('aurora', 'toolbar_item', (section) => {
-		if (section.enabled == '1') {
-			push(toolbar_items, {
-				title: section.title || '',
-				url: section.url || '',
-				icon: section.icon || ''
-			});
+	let toolbar_items = [
+		{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
+		{ url: '/cgi-bin/luci/admin/system/system', icon: 'system.svg', title: 'System' },
+		{ url: '/cgi-bin/luci/admin/system/package-manager', icon: 'software.svg', title: 'Software' },
+		{ url: '/cgi-bin/luci/admin/network/network', icon: 'network.svg', title: 'Network' }
+	];
+
+	if (toolbar_enabled) {
+		let has_config = false;
+		const custom_items = [];
+
+		uci.foreach('aurora', 'toolbar_item', (section) => {
+			has_config = true;
+			if (section.enabled == '1') {
+				push(custom_items, {
+					title: section.title || '',
+					url: section.url || '',
+					icon: section.icon || ''
+				});
+			}
+		});
+
+		if (has_config) {
+			toolbar_items = custom_items;
 		}
-	});
-
-	if (length(toolbar_items) == 0) {
-		toolbar_items = [
-			{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
-			{ url: '/cgi-bin/luci/admin/system/system', icon: 'system.svg', title: 'System' },
-			{ url: '/cgi-bin/luci/admin/system/package-manager', icon: 'software.svg', title: 'Software' },
-			{ url: '/cgi-bin/luci/admin/network/network', icon: 'network.svg', title: 'Network' }
-		];
 	}
 
 	http.prepare_content('text/html; charset=UTF-8');
@@ -189,6 +197,7 @@
 			</nav>
 		</div>
 
+		{% if (toolbar_enabled): %}
 		<div id="floating-toolbar" class="floating-toolbar">
 			<div class="toolbar-list">
 				{% for (let i = 0; i < length(toolbar_items); i++): %}
@@ -206,7 +215,8 @@
 				</span>
 			</button>
 		</div>
-		
+		{% endif %}
+
 		<div id="maincontent">
 			{% if (getuid() == 0 && getspnam('root')?.pwdp === ''): %}
 				<div class="alert-message warning">
