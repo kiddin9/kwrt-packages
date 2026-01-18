@@ -18,6 +18,7 @@
 	const tokens = uci.get_all('aurora', 'theme') || {};
 	const nav_submenu_type = tokens.nav_submenu_type || 'mega-menu';
 	const toolbar_enabled = tokens.toolbar_enabled ? tokens.toolbar_enabled == '1' : true;
+	const icon_cache_version = tokens.icon_cache_version || '0';
 
 	let toolbar_items = [
 		{ url: '/cgi-bin/luci/admin/status/overview', icon: 'overview.svg', title: 'Overview' },
@@ -103,8 +104,8 @@
 		<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
 		<meta name="color-scheme" content="light dark">
 		<link rel="stylesheet" href="{{ media }}/main.css">
-		<link rel="icon" href="{{ media }}/images/logo_48.png" sizes="48x48">
-		<link rel="icon" href="{{ media }}/images/logo.svg" sizes="any">
+		<link rel="icon" href="{{ media }}/images/logo_48.png?v={{ icon_cache_version }}" sizes="48x48">
+		<link rel="icon" href="{{ media }}/images/logo.svg?v={{ icon_cache_version }}" sizes="any">
 		{% if (node?.css): %}
 		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
 		{% endif %}
@@ -203,7 +204,7 @@
 				{% for (let i = 0; i < length(toolbar_items); i++): %}
 					{% let item = toolbar_items[i]; %}
 					<a href="{{ item.url }}" class="toolbar-btn" title="{{ item.title }}">
-						<img src="{{ media }}/images/{{ item.icon }}" class="icon" alt="{{ item.title }}"/>
+						<img src="{{ media }}/images/{{ item.icon }}?v={{ icon_cache_version }}" class="icon" alt="{{ item.title }}"/>
 					</a>
 				{% endfor %}
 			</div>
