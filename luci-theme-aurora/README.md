@@ -1,12 +1,12 @@
 <h4 align="right"><strong>English</strong> | <a href="README_zh.md">简体中文</a></h4>
 <p align="center">
-    <img src=https://raw.githubusercontent.com/eamonxg/assets/master/aurora/logo/logo-circular.png width=152/>
+    <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/logo/logo-circular.png" width="152"/>
 </p>
 <h1 align="center">Aurora Theme</h1>
 <p align="center"><strong>A modern OpenWrt LuCI theme built with Vite and Tailwind CSS.</strong></p>
-<h4 align=center>🏔️ Pure | 🦢 Elegant | 📱 Responsive | 🌗 Dark/Light Mode | ⚙️ Settable </h4>
+<h4 align="center">🏔️ Pure | 🦢 Elegant | 📱 Responsive | 🌗 Dark/Light Mode | ⚙️ Settable </h4>
 <div align="center">
-  <a href="https://openwrt.org"><img alt="OpenWrt" src="https://img.shields.io/badge/OpenWrt-%E2%89%A523.05-00B5E2"></a>
+  <a href="https://openwrt.org"><img alt="OpenWrt" src="https://img.shields.io/badge/OpenWrt-%E2%89%A523.05-00B5E2?logo=openwrt&logoColor=white"></a>
   <a href="https://www.google.com/chrome/"><img alt="Chrome" src="https://img.shields.io/badge/Chrome-%E2%89%A5111-4285F4?logo=googlechrome&logoColor=white"></a>
   <a href="https://www.apple.com/safari/"><img alt="Safari" src="https://img.shields.io/badge/Safari-%E2%89%A516.4-000000?logo=safari&logoColor=white"></a>
   <a href="https://www.mozilla.org/firefox/"><img alt="Firefox" src="https://img.shields.io/badge/Firefox-%E2%89%A5128-FF7139?logo=firefoxbrowser&logoColor=white"></a>
@@ -17,17 +17,34 @@
 
 ## Features
 
-- **Modern**: Modern UI design, built with the latest web technologies for a cutting-edge experience.
-- **Mobile-friendly**: Display and interaction optimized for smartphones and tablets, ensuring smoother usability.
-- **Theme Switcher**: Supports device, light, and dark modes with seamless switching.
-- **Customizable**: Provides the [luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) plugin for custom theme configuration.
+- **Modern**: Modern, content-first UI design with a clean layout and elegant animations.
+- **Mobile-friendly**: Optimized for mobile interactions and display, supporting both smartphones and tablets.
+- **Theme Switcher**: Built-in theme switcher with seamless switching between Auto (system), Light, and Dark modes.
+- **Floating Toolbar**: Clickable button icons for quick access to frequently used pages
+- **Customizable**: Allows customizing colors, navigation submenu styles, theme logo, and adding or editing frequently used pages in the floating toolbar via the [luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) plugin.
 
 ## Preview
 
-| Mode  | Screenshot                                                                                              |
-| ----- | ------------------------------------------------------------------------------------------------------- |
-| Light | ![Light Mode](https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/preview-light.png) |
-| Dark  | ![Dark Mode](https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/preview-dark.png)   |
+<div align="center">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-demo.gif" alt="Theme Demo" width="100%">
+  <br>
+  <sub><strong>✨ Overview</strong>— Modern UI & Elegant Animations</sub>
+</div>
+
+<br>
+
+### 🖥️ Desktop
+
+|                                                                   Light Mode                                                                   |                                                                  Dark Mode                                                                   |
+| :--------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-light.png" alt="PC Light Mode" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-dark.png" alt="PC Dark Mode" width="100%"> |
+
+### 📱 Mobile & Tablet
+
+|            Device            |                                                             Overview <br><sub>Menu Collapsed</sub>                                                              |                                                             Overview <br><sub>Menu Expanded</sub>                                                             |
+| :--------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **Mobile**<br>_(Light Mode)_ | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-collapsed.png" alt="Mobile Collapsed" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-expanded.png" alt="Mobile Expanded" width="100%"> |
+| **Tablet**<br>_(Dark Mode)_  | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-collapsed.png" alt="Tablet Collapsed" width="100%">  | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-expanded.png" alt="Tablet Expanded" width="100%">  |
 
 ## Compatibility
 
@@ -46,12 +63,12 @@ OpenWrt 25.12+ and snapshots use `apk`; other versions use `opkg`:
 - **opkg** (OpenWrt < 25.12):
 
   ```sh
-  cd /tmp && wget -O luci-theme-aurora.ipk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora_0.9.0_beta-r20251206_all.ipk && opkg install luci-theme-aurora.ipk
+  cd /tmp && wget -O luci-theme-aurora.ipk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora_0.10.0-r20260119_all.ipk && opkg install luci-theme-aurora.ipk
   ```
 
 - **apk** (OpenWrt 25.12+ and snapshots):
   ```sh
-  cd /tmp && wget -O luci-theme-aurora.apk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora-0.9.0_beta-r20251206.apk && apk add --allow-untrusted luci-theme-aurora.apk
+  cd /tmp && wget -O luci-theme-aurora.apk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora-0.10.0-r20260119.apk && apk add --allow-untrusted luci-theme-aurora.apk
   ```
 
 ## Contributing
@@ -59,8 +76,7 @@ OpenWrt 25.12+ and snapshots use `apk`; other versions use `opkg`:
 <details>
 <summary><b>Development</b></summary>
 
-<p>As we step into 2025, the development of OpenWrt themes in the market remains fairly primitive, while the frontend toolchain has already become mature and advanced.
-Embracing the modern frontend ecosystem is therefore the core philosophy of the Aurora theme.</p>
+<p>As we step into 2026, front-end toolchains have become mature and advanced, and modern browsers now support a wide range of exciting new features. Fully embracing the modern front-end ecosystem is at the core of the Aurora theme.</p>
 
 <p>Aurora uses <strong>Vite</strong> as the build tool.</p>
 

@@ -163,7 +163,7 @@ parse_doh() {
 }
 
 host_from_url(){
-	local f=${1}
+	local f="${1}"
 
 	## Remove protocol part of url  ##
 	f="${f##http://}"
@@ -433,4 +433,16 @@ is_socks_wrap() {
 
 kill_all() {
 	kill -9 $(pidof "$@") >/dev/null 2>&1
+}
+
+get_direct_subscribe_host(){
+	local line
+	uci show "${CONFIG}" | grep "=subscribe_list" | while read -r line; do
+		local section="$(echo "$line" | cut -d '.' -sf 2 | cut -d '=' -sf 1)"
+		local url="$(config_n_get $section url)"
+		local up="$(config_n_get $section access_mode)"
+		[ -n "$url" ] && [ "$up" = "direct" ] || continue
+		url="$(host_from_url "$url")"
+		echo "$url"
+	done
 }
