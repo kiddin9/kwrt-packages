@@ -6,18 +6,6 @@ local jsonc = api.jsonc
 local appname = "passwall"
 local fs = api.fs
 
-local new_port
-
-local function get_new_port()
-	local cmd_format = ". /usr/share/passwall/utils.sh ; echo -n $(get_new_port %s tcp)"
-	local set_port = 0
-	if new_port and tonumber(new_port) then
-		set_port = tonumber(new_port) + 1
-	end
-	new_port = tonumber(sys.exec(string.format(cmd_format, set_port == 0 and "auto" or set_port)))
-	return new_port
-end
-
 local function get_noise_packets()
 	local noises = {}
 	uci:foreach(appname, "xray_noise_packets", function(n)
@@ -73,7 +61,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 				node.transport = "tcp"
 			else
 				local relay_port = node.port
-				new_port = get_new_port()
+				local new_port = api.get_new_port()
 				local config_file = string.format("%s_%s_%s.json", flag, tag, new_port)
 				if tag and node_id and not tag:find(node_id) then
 					config_file = string.format("%s_%s_%s_%s.json", flag, tag, node_id, new_port)
@@ -1047,7 +1035,7 @@ function gen_config(var)
 					end
 					--new outbound
 					if use_proxy and _node.type ~= "Xray" then
-						new_port = get_new_port()
+						local new_port = api.get_new_port()
 						table.insert(inbounds, {
 							tag = "proxy_" .. rule_name,
 							listen = "127.0.0.1",
@@ -1197,6 +1185,7 @@ function gen_config(var)
 						domains = {}
 						string.gsub(e.domain_list, '[^' .. "\r\n" .. ']+', function(w)
 							if w:find("#") == 1 then return end
+							if w:find("rule-set:", 1, true) == 1 or w:find("rs:") == 1 then return end
 							table.insert(domains, w)
 							table.insert(domain_table.domain, w)
 						end)
@@ -1210,6 +1199,7 @@ function gen_config(var)
 						ip = {}
 						string.gsub(e.ip_list, '[^' .. "\r\n" .. ']+', function(w)
 							if w:find("#") == 1 then return end
+							if w:find("rule-set:", 1, true) == 1 or w:find("rs:") == 1 then return end
 							table.insert(ip, w)
 						end)
 						if #ip == 0 then ip = nil end

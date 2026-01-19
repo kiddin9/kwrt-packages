@@ -471,18 +471,18 @@
       @apply fixed right-4 bottom-4 z-40 flex flex-col items-center max-md:right-3 max-md:bottom-3;
 
       .toolbar-list {
-        @apply mb-2 flex flex-col items-center gap-2 rounded-full border border-slate-200/40 bg-white/90 p-1 shadow-sm transition-all duration-300 ease-out max-md:mb-1.5 max-md:gap-1.5 max-md:p-0.5 dark:border-slate-700/30 dark:bg-slate-900/90;
+        @apply mb-2 flex origin-bottom flex-col items-center gap-2 rounded-full border border-white bg-white p-1 shadow-sm transition-all duration-400 ease-in-out max-md:mb-1.5 max-md:gap-1.5 max-md:p-0.5 dark:border-slate-900 dark:bg-slate-900;
       }
 
       .toolbar-btn {
-        @apply flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-200 ease-out active:scale-95 max-md:h-9 max-md:w-9 max-md:p-1.5;
+        @apply flex h-10 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-300 ease-in-out active:scale-95 max-md:h-9 max-md:w-9 max-md:p-1.5;
 
         .icon {
-          @apply h-5 w-5 flex-shrink-0 transition-all duration-200 ease-in-out max-md:h-4 max-md:w-4;
+          @apply h-5 w-5 flex-shrink-0 transition-all duration-300 ease-in-out max-md:h-4 max-md:w-4;
         }
 
         &:not(.toggle) {
-          @apply no-underline opacity-90 hover:scale-110 hover:bg-slate-100/70 hover:opacity-100 dark:hover:bg-slate-800/70;
+          @apply no-underline opacity-90 hover:scale-110 hover:bg-slate-100 hover:opacity-100 dark:hover:bg-slate-800;
 
           .icon {
             @apply object-contain dark:invert;
@@ -490,17 +490,27 @@
         }
 
         &.toggle {
-          @apply border-0 bg-white/90 dark:bg-slate-900/90;
+          @apply border-0 bg-white dark:bg-slate-900;
+
+          .icon {
+            @apply transition-transform duration-400 ease-out;
+          }
         }
       }
 
       &.collapsed {
         .toolbar-list {
-          @apply pointer-events-none gap-0 overflow-hidden border-0 bg-transparent p-0 opacity-0 shadow-none;
+          @apply pointer-events-none translate-y-2 scale-90 gap-0 overflow-hidden border-0 bg-transparent p-0 opacity-0 shadow-none;
         }
 
-        .toolbar-btn.toggle .icon {
-          @apply rotate-45;
+        .toolbar-btn {
+          &:not(.toggle) {
+            @apply scale-50 opacity-0;
+          }
+
+          &.toggle .icon {
+            @apply rotate-45;
+          }
         }
       }
     }
