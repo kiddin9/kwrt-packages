@@ -75,7 +75,9 @@ function get_containers()
 			local ip = require "luci.ip"
 			for _,v2 in ipairs(v.Ports) do
 				-- display ipv4 only
-				if ip.new(v2.IP or "0.0.0.0"):is4() then
+				local ip_str = v2.IP or "0.0.0.0"
+				local success, ip_obj = pcall(ip.new, ip_str or "0.0.0.0")
+				if success and ip_obj and ip_obj:is4() then
 					local port_string = ""
 
 					-- Add clickable link for TCP ports
