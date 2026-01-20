@@ -708,49 +708,6 @@ function gen_config(var)
 		table.insert(inbounds, inbound)
 	end
 
-	if redir_port then
-		local inbound = {
-			port = tonumber(redir_port),
-			protocol = "dokodemo-door",
-			settings = {network = "tcp,udp", followRedirect = true},
-			streamSettings = {sockopt = {tproxy = "tproxy"}},
-			sniffing = {
-				enabled = xray_settings.sniffing_override_dest == "1" or node.protocol == "_shunt"
-			}
-		}
-		if inbound.sniffing.enabled == true then
-			inbound.sniffing.destOverride = {"http", "tls", "quic"}
-			inbound.sniffing.metadataOnly = false
-			inbound.sniffing.routeOnly = xray_settings.sniffing_override_dest ~= "1" or nil
-			inbound.sniffing.domainsExcluded = xray_settings.sniffing_override_dest == "1" and get_domain_excluded() or nil
-		end
-		if remote_dns_fake then
-			inbound.sniffing.enabled = true
-			if not inbound.sniffing.destOverride then
-				inbound.sniffing.destOverride = {"fakedns"}
-				inbound.sniffing.metadataOnly = true
-			else
-				table.insert(inbound.sniffing.destOverride, "fakedns")
-				inbound.sniffing.metadataOnly = false
-			end
-		end
-
-		local tcp_inbound = api.clone(inbound)
-		tcp_inbound.tag = "tcp_redir"
-		tcp_inbound.settings.network = "tcp"
-		tcp_inbound.streamSettings.sockopt.tproxy = tcp_proxy_way
-		table.insert(inbounds, tcp_inbound)
-
-		local udp_inbound = api.clone(inbound)
-		udp_inbound.tag = "udp_redir"
-		udp_inbound.settings.network = "udp"
-		table.insert(inbounds, udp_inbound)
-	end
-
-	local function get_balancer_tag(_node_id)
-		return "balancer-" .. _node_id
-	end
-
 	local function gen_loopback(outboundTag, dst_node_id)
 		if not outboundTag then return nil end
 		local inboundTag = dst_node_id and "loop-in-" .. dst_node_id or outboundTag .. "-lo"
@@ -974,6 +931,8 @@ function gen_config(var)
 			local preproxy_outbound_tag, preproxy_balancer_tag
 			local preproxy_nodes
 
+			inner_fakedns = node.fakedns or "0"
+
 			local function gen_shunt_node(rule_name, _node_id)
 				if not rule_name then return nil, nil end
 				if not _node_id then _node_id = node[rule_name] end
@@ -1173,6 +1132,7 @@ function gen_config(var)
 							outboundTag = outboundTag,
 							balancerTag = balancerTag,
 							domain = {},
+							fakedns = nil,
 						}
 						domains = {}
 						string.gsub(e.domain_list, '[^' .. "\r\n" .. ']+', function(w)
@@ -1181,10 +1141,15 @@ function gen_config(var)
 							table.insert(domains, w)
 							table.insert(domain_table.domain, w)
 						end)
+						if inner_fakedns == "1" and node[e[".name"] .. "_fakedns"] == "1" and #domains > 0 then
+							domain_table.fakedns = true
+						end
 						if outboundTag or balancerTag then
 							table.insert(dns_domain_rules, api.clone(domain_table))
 						end
-						if #domains == 0 then domains = nil end
+						if #domains == 0 then
+							domains = nil
+						end
 					end
 					local ip = nil
 					if e.ip_list then
@@ -1210,7 +1175,7 @@ function gen_config(var)
 						balancerTag = balancerTag,
 						network = e["network"] or "tcp,udp",
 						source = source,
-						sourcePort = e["sourcePort"] ~= "" and e["sourcePort"] or nil,
+						--sourcePort = e["sourcePort"] ~= "" and e["sourcePort"] or nil,
 						port = e["port"] ~= "" and e["port"] or nil,
 						protocol = protocols
 					}
@@ -1391,7 +1356,7 @@ function gen_config(var)
 		end
 
 		local _remote_fakedns = nil
-		if remote_dns_fake then
+		if remote_dns_fake or inner_fakedns then
 			fakedns = {}
 			local fakedns4 = {
 				ipPool = "198.18.0.0/16",
@@ -1532,7 +1497,7 @@ function gen_config(var)
 						if value.outboundTag == "direct" then
 							dns_server = api.clone(_direct_dns)
 						else
-							if remote_dns_fake then
+							if value.fakedns then
 								dns_server = api.clone(_remote_fakedns)
 							else
 								dns_server = api.clone(_remote_dns)
@@ -1634,6 +1599,45 @@ function gen_config(var)
 				end)
 			end
 		end
+	end
+
+	if redir_port then
+		local inbound = {
+			port = tonumber(redir_port),
+			protocol = "dokodemo-door",
+			settings = {network = "tcp,udp", followRedirect = true},
+			streamSettings = {sockopt = {tproxy = "tproxy"}},
+			sniffing = {
+				enabled = xray_settings.sniffing_override_dest == "1" or node.protocol == "_shunt"
+			}
+		}
+		if inbound.sniffing.enabled == true then
+			inbound.sniffing.destOverride = {"http", "tls", "quic"}
+			inbound.sniffing.metadataOnly = false
+			inbound.sniffing.routeOnly = xray_settings.sniffing_override_dest ~= "1" or nil
+			inbound.sniffing.domainsExcluded = xray_settings.sniffing_override_dest == "1" and get_domain_excluded() or nil
+		end
+		if remote_dns_fake or inner_fakedns then
+			inbound.sniffing.enabled = true
+			if not inbound.sniffing.destOverride then
+				inbound.sniffing.destOverride = {"fakedns"}
+				inbound.sniffing.metadataOnly = true
+			else
+				table.insert(inbound.sniffing.destOverride, "fakedns")
+				inbound.sniffing.metadataOnly = false
+			end
+		end
+
+		local tcp_inbound = api.clone(inbound)
+		tcp_inbound.tag = "tcp_redir"
+		tcp_inbound.settings.network = "tcp"
+		tcp_inbound.streamSettings.sockopt.tproxy = tcp_proxy_way
+		table.insert(inbounds, tcp_inbound)
+
+		local udp_inbound = api.clone(inbound)
+		udp_inbound.tag = "udp_redir"
+		udp_inbound.settings.network = "udp"
+		table.insert(inbounds, udp_inbound)
 	end
 	
 	if inbounds or outbounds then

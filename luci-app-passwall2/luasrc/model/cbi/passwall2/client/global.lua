@@ -161,6 +161,12 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 			o.cfgvalue = get_cfgvalue(v.id, "main_node")
 			o.write = get_write(v.id, "main_node")
 
+			o = s:taboption("Main", Flag, vid .. "-fakedns", "FakeDNS")
+			o:depends("node", v.id)
+			o.cfgvalue = get_cfgvalue(v.id, "fakedns")
+			o.write = get_write(v.id, "fakedns")
+			o.remove = get_remove(v.id, "fakedns")
+
 			if (has_singbox and has_xray) or (v.type == "sing-box" and not has_singbox) or (v.type == "Xray" and not has_xray) then
 				type:depends("node", v.id)
 			else
@@ -189,9 +195,16 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 					pt.remove = get_remove(v.id, id .. "_proxy_tag")
 					pt:value("", translate("Close"))
 					pt:value("main", translate("Preproxy Node"))
+
+					local fakedns_tag = s:taboption("Main", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"), translate("Use FakeDNS work in the domain that proxy."))
+					fakedns_tag.cfgvalue = get_cfgvalue(v.id, id .. "_fakedns")
+					fakedns_tag.write = get_write(v.id, id .. "_fakedns")
+					fakedns_tag.remove = get_remove(v.id, id .. "_fakedns")
+
 					for k1, v1 in pairs(socks_list) do
 						o:value(v1.id, v1.remark)
 						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
 					end
 					for k1, v1 in pairs(balancing_list) do
 						o:value(v1.id, v1.remark)
@@ -209,6 +222,10 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 						o:value(v1.id, v1.remark)
 						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
 						pt:depends({ [node_option] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
+						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
+					end
+					if v.default_node ~= "_direct" or v.default_node ~= "_blackhole" then
+						fakedns_tag:depends({ [node_option] = "_default", [vid .. "-fakedns"] = "1" })
 					end
 				end
 			end)
@@ -508,6 +525,10 @@ for k, v in pairs(nodes_table) do
 	o_socks.group[#o_socks.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	if v.type == "Xray" then
 		s.fields["_xray_node"]:depends({ node = v.id })
+	end
+	if v.node_type == "normal" or v.protocol == "_balancing" or v.protocol == "_urltest" then
+		--Shunt node has its own separate options.
+		s.fields["remote_fakedns"]:depends({ node = v.id })
 	end
 end
 

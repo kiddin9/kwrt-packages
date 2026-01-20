@@ -1221,6 +1221,8 @@ function gen_config(var)
 			local preproxy_tag = preproxy_rule_name
 			local preproxy_node_id = preproxy_rule_name and node["main_node"] or nil
 
+			inner_fakedns = node.fakedns or "0"
+
 			local function gen_shunt_node(rule_name, _node_id)
 				if not rule_name then return nil end
 				if not _node_id then _node_id = node[rule_name] end
@@ -1408,6 +1410,8 @@ function gen_config(var)
 						rule.source_ip_is_private = source_is_private and true or nil
 					end
 
+					--[[
+					-- Too low usage rate, hidden
 					if e.sourcePort then
 						local source_port = {}
 						local source_port_range = {}
@@ -1421,6 +1425,7 @@ function gen_config(var)
 						rule.source_port = #source_port > 0 and source_port or nil
 						rule.source_port_range = #source_port_range > 0 and source_port_range or nil
 					end
+					]]--
 
 					if e.port then
 						local port = {}
@@ -1446,6 +1451,7 @@ function gen_config(var)
 							domain_keyword = {},
 							domain_regex = {},
 							rule_set = {},
+							fakedns = nil,
 							invert = e.invert == "1" and true or nil
 						}
 						string.gsub(e.domain_list, '[^' .. "\r\n" .. ']+', function(w)
@@ -1482,6 +1488,9 @@ function gen_config(var)
 						rule.domain_keyword = #domain_table.domain_keyword > 0 and domain_table.domain_keyword or nil
 						rule.domain_regex = #domain_table.domain_regex > 0 and domain_table.domain_regex or nil
 						rule.rule_set = #domain_table.rule_set > 0 and domain_table.rule_set or nil
+						if inner_fakedns == "1" and node[e[".name"] .. "_fakedns"] == "1" then
+							domain_table.fakedns = true
+						end
 
 						if outboundTag then
 							table.insert(dns_domain_rules, api.clone(domain_table))
@@ -1618,7 +1627,7 @@ function gen_config(var)
 		end
 
 		local fakedns_tag = "remote_fakeip"
-		if remote_dns_fake then
+		if remote_dns_fake or inner_fakedns then
 			dns.fakeip = {
 				enabled = true,
 				inet4_range = "198.18.0.0/16",
@@ -1708,7 +1717,7 @@ function gen_config(var)
 							table.insert(dns.servers, remote_dns_server)
 							dns_rule.server = remote_dns_server.tag
 						end
-						if remote_dns_fake then
+						if value.fakedns then
 							local fakedns_dns_rule = api.clone(dns_rule)
 							fakedns_dns_rule.query_type = {
 								"A", "AAAA"
