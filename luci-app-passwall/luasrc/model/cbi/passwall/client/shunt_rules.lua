@@ -138,7 +138,10 @@ end
 
 source.write = dynamicList_write
 
+--[[
+-- Too low usage rate, hidden
 sourcePort = s:option(Value, "sourcePort", translate("Source port"))
+]]--
 
 port = s:option(Value, "port", translate("port"))
 

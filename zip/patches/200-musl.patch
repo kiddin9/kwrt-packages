@@ -1,0 +1,19 @@
+--- a/tailor.h
++++ b/tailor.h
+@@ -134,6 +134,8 @@
+ #   define _FILE_OFFSET_BITS 64 /* select default interface as 64 bit */
+ #   define _LARGE_FILES         /* some OSes need this for 64-bit off_t */
+ 
++#include <unistd.h>
++
+     typedef off_t zoff_t;
+     typedef unsigned long long uzoff_t;  /* unsigned zoff_t (12/29/04 EG) */
+ 
+@@ -315,6 +317,7 @@ IZ_IMP char *mktemp();
+    typedef size_t extent;
+ #endif
+ 
++#include <time.h>
+ #ifdef NO_TIME_T
+    typedef long time_t;
+ #endif

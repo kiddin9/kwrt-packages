@@ -161,7 +161,7 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 			o.cfgvalue = get_cfgvalue(v.id, "preproxy_enabled")
 			o.write = get_write(v.id, "preproxy_enabled")
 
-			o = s:taboption("Main", ListValue, vid .. "-main_node", string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
+			o = s:taboption("Main", ListValue, vid .. "-main_node", string.format('<a style="color:#FF8C00">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
 			o:depends(vid .. "-preproxy_enabled", "1")
 			o.template = appname .. "/cbi/nodes_listvalue"
 			o.group = {}
@@ -188,6 +188,12 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 			o.cfgvalue = get_cfgvalue(v.id, "main_node")
 			o.write = get_write(v.id, "main_node")
 
+			o = s:taboption("Main", Flag, vid .. "-fakedns", "FakeDNS", translate("Use FakeDNS work in the shunt domain that proxy."))
+			o:depends("tcp_node", v.id)
+			o.cfgvalue = get_cfgvalue(v.id, "fakedns")
+			o.write = get_write(v.id, "fakedns")
+			o.remove = get_remove(v.id, "fakedns")
+
 			m.uci:foreach(appname, "shunt_rules", function(e)
 				local id = e[".name"]
 				local node_option = vid .. "-" .. id .. "_node"
@@ -204,16 +210,23 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 					o.template = appname .. "/cbi/nodes_listvalue"
 					o.group = {"","","",""}
 
-					local pt = s:taboption("Main", ListValue, vid .. "-".. id .. "_proxy_tag", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
+					local pt = s:taboption("Main", ListValue, vid .. "-".. id .. "_proxy_tag", string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. translate("Preproxy")))
 					pt.cfgvalue = get_cfgvalue(v.id, id .. "_proxy_tag")
 					pt.write = get_write(v.id, id .. "_proxy_tag")
 					pt.remove = get_remove(v.id, id .. "_proxy_tag")
 					pt:value("", translate("Close"))
 					pt:value("main", translate("Preproxy Node"))
 					pt:depends("__hide__", "1")
+
+					local fakedns_tag = s:taboption("Main", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. "FakeDNS"))
+					fakedns_tag.cfgvalue = get_cfgvalue(v.id, id .. "_fakedns")
+					fakedns_tag.write = get_write(v.id, id .. "_fakedns")
+					fakedns_tag.remove = get_remove(v.id, id .. "_fakedns")
+
 					for k1, v1 in pairs(socks_list) do
 						o:value(v1.id, v1.remark)
 						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
 					end
 					for k1, v1 in pairs(balancing_list) do
 						o:value(v1.id, v1.remark)
@@ -233,6 +246,10 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 						if not api.is_local_ip(v1.address) then  --本地节点禁止使用前置
 							pt:depends({ [node_option] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
 						end
+						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
+					end
+					if v.default_node ~= "_direct" or v.default_node ~= "_blackhole" then
+						fakedns_tag:depends({ [node_option] = "_default", [vid .. "-fakedns"] = "1" })
 					end
 				end
 			end)
@@ -269,7 +286,7 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 			end
 
 			local id = "default_proxy_tag"
-			o = s:taboption("Main", ListValue, vid .. "-" .. id, string.format('* <a style="color:red">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
+			o = s:taboption("Main", ListValue, vid .. "-" .. id, string.format('* <a style="color:#FF8C00">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
 			o.cfgvalue = get_cfgvalue(v.id, id)
 			o.write = get_write(v.id, id)
 			o.remove = get_remove(v.id, id)
@@ -559,7 +576,7 @@ o:depends({singbox_dns_mode = "doh"})
 
 o = s:taboption("DNS", Value, "remote_dns_client_ip", translate("EDNS Client Subnet"))
 o.description = translate("Notify the DNS server when the DNS query is notified, the location of the client (cannot be a private IP address).") .. "<br />" ..
-				translate("This feature requires the DNS server to support the Edns Client Subnet (RFC7871).")
+		translate("This feature requires the DNS server to support the Edns Client Subnet (RFC7871).")
 o.datatype = "ipaddr"
 o:depends({dns_mode = "sing-box"})
 o:depends({dns_mode = "xray"})
@@ -574,7 +591,7 @@ o:depends({smartdns_dns_mode = "sing-box", dns_shunt = "smartdns"})
 o:depends({dns_mode = "xray", dns_shunt = "dnsmasq"})
 o:depends({dns_mode = "xray", dns_shunt = "chinadns-ng"})
 o:depends({smartdns_dns_mode = "xray", dns_shunt = "smartdns"})
-o:depends("_node_sel_shunt", "1")
+--o:depends("_node_sel_shunt", "1")
 o.validate = function(self, value, t)
 	if value and value == "1" then
 		local _dns_mode = s.fields["dns_mode"]:formvalue(t)

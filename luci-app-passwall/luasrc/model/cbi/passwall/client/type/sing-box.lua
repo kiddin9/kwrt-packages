@@ -187,12 +187,13 @@ o:depends({ [_n("protocol")] = "_urltest" })
 o.default = "0"
 o.description = translate("Interrupt existing connections when the selected outbound has changed.") 
 
+local default_node = m.uci:get(appname, arg[1], "default_node") or "_direct"
 -- [[ 分流模块 ]]
 if #nodes_table > 0 then
 	o = s:option(Flag, _n("preproxy_enabled"), translate("Preproxy"))
 	o:depends({ [_n("protocol")] = "_shunt" })
 
-	o = s:option(ListValue, _n("main_node"), string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
+	o = s:option(ListValue, _n("main_node"), string.format('<a style="color:#FF8C00">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
 	o:depends({ [_n("protocol")] = "_shunt", [_n("preproxy_enabled")] = true })
 	o.template = appname .. "/cbi/nodes_listvalue"
 	o.group = {}
@@ -212,6 +213,9 @@ if #nodes_table > 0 then
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
+
+	o = s:option(Flag, _n("fakedns"), "FakeDNS", translate("Use FakeDNS work in the shunt domain that proxy."))
+	o:depends({ [_n("protocol")] = "_shunt" })
 end
 m.uci:foreach(appname, "shunt_rules", function(e)
 	if e[".name"] and e.remarks then
@@ -225,9 +229,17 @@ m.uci:foreach(appname, "shunt_rules", function(e)
 		o.group = {"","","",""}
 
 		if #nodes_table > 0 then
+			local pt = s:option(ListValue, _n(e[".name"] .. "_proxy_tag"), string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. translate("Preproxy")))
+			pt:value("", translate("Close"))
+			pt:value("main", translate("Preproxy Node"))
+			pt:depends("__hide__", "1")
+
+			local fakedns_tag = s:option(Flag, _n(e[".name"] .. "_fakedns"), string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. "FakeDNS"))
+
 			for k, v in pairs(socks_list) do
 				o:value(v.id, v.remark)
 				o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+				fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
 			end
 			for k, v in pairs(urltest_table) do
 				o:value(v.id, v.remark)
@@ -237,16 +249,16 @@ m.uci:foreach(appname, "shunt_rules", function(e)
 				o:value(v.id, v.remark)
 				o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 			end
-			local pt = s:option(ListValue, _n(e[".name"] .. "_proxy_tag"), string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
-			pt:value("", translate("Close"))
-			pt:value("main", translate("Preproxy Node"))
-			pt:depends("__hide__", "1")
 			for k, v in pairs(nodes_table) do
 				o:value(v.id, v.remark)
 				o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 				if not api.is_local_ip(v.address) then  --本地节点禁止使用前置
 					pt:depends({ [_n("protocol")] = "_shunt", [_n("preproxy_enabled")] = true, [_n(e[".name"])] = v.id })
 				end
+				fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
+			end
+			if default_node ~= "_direct" or default_node ~= "_blackhole" then
+				fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = "_default" })
 			end
 		end
 	end
