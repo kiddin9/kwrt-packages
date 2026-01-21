@@ -6,7 +6,7 @@ zone_type = "External"
 
 [[zones.stores]]
 type = "forward"
-options = { edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 1
+options = { edns0 = true, ip_strategy = "Ipv4AndIpv6", cache_size = 0, use_hosts_file = "Never", num_concurrent_reqs = 1, server_ordering_strategy = "RoundRobin" }
 
 [[zones.stores.name_servers]]
 ip = "2400:3200:baba::1"
