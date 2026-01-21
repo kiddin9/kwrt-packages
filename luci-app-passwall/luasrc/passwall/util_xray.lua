@@ -1288,7 +1288,7 @@ function gen_config(var)
 				inbound.sniffing.routeOnly = xray_settings.sniffing_override_dest ~= "1" or nil
 				inbound.sniffing.domainsExcluded = xray_settings.sniffing_override_dest == "1" and get_domain_excluded() or nil
 			end
-			if remote_dns_fake or inner_fakedns then
+			if remote_dns_fake or inner_fakedns == "1" then
 				inbound.sniffing.enabled = true
 				if not inbound.sniffing.destOverride then
 					inbound.sniffing.destOverride = {"fakedns"}
@@ -1398,7 +1398,7 @@ function gen_config(var)
 			address = "fakedns",
 		}
 
-		if remote_dns_fake or inner_fakedns then
+		if remote_dns_fake or inner_fakedns == "1" then
 			fakedns = {}
 			local fakedns4 = {
 				ipPool = "198.18.0.0/15",
@@ -1416,7 +1416,9 @@ function gen_config(var)
 			elseif remote_dns_query_strategy == "UseIPv6" then
 				table.insert(fakedns, fakedns6)
 			end
-			table.insert(dns.servers, 1, _remote_fakedns)
+			if remote_dns_fake and inner_fakedns == "0" then
+				table.insert(dns.servers, 1, _remote_fakedns)
+			end
 		end
 
 		local dns_outbound_tag = "direct"

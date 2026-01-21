@@ -1639,7 +1639,6 @@ acl_app() {
 								if [ -n "${type}" ] && ([ "${type}" = "sing-box" ] || [ "${type}" = "xray" ]); then
 									config_file="acl/${tcp_node}_TCP_${redir_port}.json"
 									_extra_param="socks_address=127.0.0.1 socks_port=$socks_port"
-									_extra_param="${_extra_param} tcp_proxy_way=$TCP_PROXY_WAY"
 									if [ "$dns_mode" = "sing-box" ] || [ "$dns_mode" = "xray" ]; then
 										dns_port=$(get_new_port $(expr $dns_port + 1))
 										_dns_port=$dns_port
@@ -1651,6 +1650,7 @@ acl_app() {
 										[ "$dns_mode" = "xray" ] && [ "$v2ray_dns_mode" = "tcp+doh" ] && remote_dns_doh=${remote_dns_doh:-https://1.1.1.1/dns-query}
 										_extra_param="dns_listen_port=${_dns_port} remote_dns_protocol=${v2ray_dns_mode} remote_dns_udp_server=${remote_dns} remote_dns_tcp_server=${remote_dns} remote_dns_doh=${remote_dns_doh} remote_dns_query_strategy=${remote_dns_query_strategy} remote_dns_client_ip=${remote_dns_client_ip}"
 									fi
+									_extra_param="${_extra_param} tcp_proxy_way=$TCP_PROXY_WAY"
 									[ -n "$udp_node" ] && ([ "$udp_node" = "tcp" ] || [ "$udp_node" = "$tcp_node" ]) && {
 										config_file="${config_file//TCP_/TCP_UDP_}"
 										_extra_param="${_extra_param} udp_redir_port=$redir_port"

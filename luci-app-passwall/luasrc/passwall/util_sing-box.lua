@@ -1640,7 +1640,7 @@ function gen_config(var)
 				table.insert(dns.servers, remote_server)
 			end
 
-			if remote_dns_fake or inner_fakedns then
+			if remote_dns_fake or inner_fakedns == "1" then
 				dns.fakeip = {
 					enabled = true,
 					inet4_range = "198.18.0.0/15",
@@ -1706,7 +1706,7 @@ function gen_config(var)
 				table.insert(dns.servers, remote_server)
 			end
 
-			if remote_dns_fake or inner_fakedns then		
+			if remote_dns_fake or inner_fakedns == "1" then		
 				table.insert(dns.servers, {
 					tag = fakedns_tag,
 					type = "fakeip",

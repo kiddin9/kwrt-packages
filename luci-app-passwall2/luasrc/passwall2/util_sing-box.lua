@@ -1627,7 +1627,7 @@ function gen_config(var)
 		end
 
 		local fakedns_tag = "remote_fakeip"
-		if remote_dns_fake or inner_fakedns then
+		if remote_dns_fake or inner_fakedns == "1" then
 			dns.fakeip = {
 				enabled = true,
 				inet4_range = "198.18.0.0/16",
