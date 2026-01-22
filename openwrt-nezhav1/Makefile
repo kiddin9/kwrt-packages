@@ -4,14 +4,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nezha-agentv1
 PKG_VERSION:=30.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=Nezha Agent is the client of the Nezha panel
+	TITLE:=Nezha Agent is the client version 2 of the Nezha Panel.
 	URL:=https://github.com/naiba/nezha/
 endef
 
