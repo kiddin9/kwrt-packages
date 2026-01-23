@@ -10,6 +10,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.15.1-dev\n"
 
+#: htdocs/luci-static/resources/view/natmap.js:517
+msgid "%s set 0 will rewrite client listen port"
+msgstr "%s 設為 0 將重寫用戶端監聽埠"
+
 #: htdocs/luci-static/resources/view/natmap.js:598
 #: htdocs/luci-static/resources/view/natmap.js:634
 msgid "<code># All external tokens required</code> Field"
@@ -145,6 +149,7 @@ msgid "Forward target"
 msgstr "轉發目標"
 
 #: htdocs/luci-static/resources/view/natmap.js:494
+#: htdocs/luci-static/resources/view/natmap.js:517
 msgid "Forward target port"
 msgstr "轉發目標埠"
 
@@ -294,8 +299,8 @@ msgid "Refresh Scripts"
 msgstr "用戶端更新腳本"
 
 #: htdocs/luci-static/resources/view/natmap.js:517
-msgid "Refresh client listen port"
-msgstr "更新用戶端監聽埠"
+msgid "Refresh client"
+msgstr "更新用戶端"
 
 #: htdocs/luci-static/resources/view/natmap.js:138
 #: htdocs/luci-static/resources/view/natmap.js:139
@@ -467,3 +472,6 @@ msgstr "luci 檢查可能無法檢測到所有衝突"
 #: htdocs/luci-static/resources/view/natmap.js:760
 msgid "⭮"
 msgstr ""
+
+#~ msgid "Refresh client listen port"
+#~ msgstr "更新用戶端監聽埠"

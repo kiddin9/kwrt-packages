@@ -202,8 +202,10 @@ natmap_instance() {
 
 	procd_set_param env "SECTIONID=$1"
 	procd_append_param env "COMMENT=$comment"
-	if [ "$forward" = 1 -a "$forward_port" = 0 ]; then
-		[ "$forward_mode" = "dnat" ] && procd_append_param env "RWFW=1"
+	if [ "$forward" = 1 ]; then
+		# Rewrite the dest_port(forward port) using a public port
+		[ "$forward_port" = 0 -a "$forward_mode" = "dnat" ] && procd_append_param env "RWFW=1"
+
 		if [ "$refresh" = 1 ]; then
 			procd_append_param env "REFRESH=$clt_script"
 			json_init

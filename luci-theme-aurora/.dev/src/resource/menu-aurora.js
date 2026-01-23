@@ -302,26 +302,20 @@ return baseclass.extend({
 
             menuLink.classList.add("menu-active");
             header.classList.add("has-desktop-nav");
+            const navHeight = nav.scrollHeight;
+            const headerHeight =
+              header.querySelector(".header-content")?.offsetHeight || 56;
+            const totalHeight = headerHeight + navHeight;
 
-            requestAnimationFrame(() => {
-              const navHeight = nav.scrollHeight;
-              const headerHeight =
-                header.querySelector(".header-content")?.offsetHeight || 56;
-              const totalHeight = headerHeight + navHeight;
-
-              if (container) {
-                container.style.height = `${totalHeight}px`;
-              }
-
-              requestAnimationFrame(() => {
-                nav.classList.add("active");
-                overlay.classList.add("active");
-
-                if (container) {
-                  container.classList.add("active");
-                }
-              });
-            });
+            if (container) {
+              container.style.setProperty(
+                "--mega-menu-height",
+                `${totalHeight}px`,
+              );
+              container.classList.add("active");
+              overlay.classList.add("active");
+            }
+            nav.classList.add("active");
           }, 100);
         });
 
@@ -450,7 +444,6 @@ return baseclass.extend({
       const container = document.querySelector(".desktop-menu-container");
       if (container) {
         container.classList.remove("active");
-        container.style.height = "";
       }
 
       document

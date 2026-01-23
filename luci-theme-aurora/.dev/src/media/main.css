@@ -12,12 +12,23 @@
 }
 
 :root {
-  --background-start: oklch(0.984 0.003 247.858);
+  --background-start: oklch(0.968 0.007 247.896);
   --background-mid: oklch(0.968 0.007 247.896);
-  --background-end: oklch(0.929 0.013 255.508);
+  --background-end: oklch(0.968 0.007 247.896);
+  --base-text: oklch(0.208 0.042 265.755);
 
   --progress-start: oklch(0.68 0.11 233);
   --progress-end: oklch(0.7535 0.1034 198.37);
+
+  --header-bg: oklch(0.968 0.007 247.896);
+  --header-border: oklch(from var(--header-bg) calc(l - 0.1) c h);
+  --header-interactive: oklch(from var(--header-bg) calc(l - 0.04) c h);
+
+  --view-bg: oklch(1 0 0);
+  --view-border: oklch(from var(--view-bg) calc(l - 0.13) c h);
+
+  --card-bg: oklch(1 0 0);
+  --card-border: oklch(from var(--card-bg) calc(l - 0.07) c h);
 
   --primary: oklch(0.68 0.11 233);
   --primary-text: oklch(0.6656 0.1055 234.61);
@@ -56,9 +67,22 @@
   --background-start: oklch(0.2077 0.0398 265.75);
   --background-mid: oklch(0.3861 0.059 188.42);
   --background-end: oklch(0.4318 0.0865 166.91);
+  --base-text: oklch(0.968 0.007 247.896);
 
   --progress-start: oklch(0.4318 0.0865 166.91);
   --progress-end: oklch(62.1% 0.145 189.632);
+
+  --header-bg: oklch(0.21 0.034 264.665);
+  --header-border: oklch(from var(--header-bg) calc(l + 0.16) c h);
+  --header-interactive: oklch(
+    from var(--header-bg) calc(l + 0.16) calc(c + 0.01) h
+  );
+
+  --view-bg: oklch(0.21 0.034 264.665);
+  --view-border: oklch(from var(--view-bg) calc(l + 0.24) c h);
+
+  --card-bg: oklch(0.279 0.041 260.031);
+  --card-border: oklch(from var(--card-bg) calc(l + 0.17) c h);
 
   --primary: oklch(0.48 0.118 190.485);
   --primary-text: oklch(0.73 0.168 188.745);
@@ -123,6 +147,17 @@
   --color-default: var(--default);
   --color-default-text: var(--default-text);
 
+  --color-header-bg: var(--header-bg);
+  --color-base-text: var(--base-text);
+  --color-header-border: var(--header-border);
+  --color-header-interactive: var(--header-interactive);
+
+  --color-view-bg: var(--view-bg);
+  --color-view-border: var(--view-border);
+
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
@@ -148,7 +183,7 @@
     @apply md:before:from-aurora-start md:before:via-aurora-mid md:before:to-aurora-end max-md:bg-aurora-mid md:before:bg-gradient-to-br;
 
     body {
-      @apply flex flex-col bg-transparent text-sm leading-relaxed font-normal text-slate-900 transition-all duration-300 dark:text-slate-100;
+      @apply text-base-text flex flex-col bg-transparent text-sm leading-relaxed font-normal transition-all duration-300;
       &.modal-overlay-active {
         @apply h-screen overflow-hidden;
       }
@@ -161,7 +196,7 @@
   h4,
   h5,
   h6 {
-    @apply font-sans leading-tight font-semibold tracking-tight text-slate-900 dark:text-slate-100;
+    @apply text-base-text font-sans leading-tight font-semibold tracking-tight;
   }
 
   h1 {
@@ -232,7 +267,7 @@
 @layer components {
   @layer layout {
     header {
-      @apply sticky top-0 z-60 mb-2 transition-all duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-white/20 before:backdrop-blur-xl before:backdrop-saturate-150 before:transition-all before:duration-300 dark:before:bg-gray-900/90;
+      @apply bg-header-bg sticky top-0 z-60 mb-2;
 
       & .header-content {
         @apply relative flex h-14 items-center justify-between px-6 py-3 max-md:px-4 max-md:py-2;
@@ -240,16 +275,16 @@
 
       [data-nav-type="mega-menu"] & {
         & .desktop-menu-container {
-          @apply pointer-events-none absolute inset-x-0 top-0 z-30 h-0 w-full overflow-hidden opacity-0 transition-all duration-150 ease-in-out before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-full before:min-h-full before:bg-white/40 before:backdrop-blur-xl before:backdrop-saturate-150 max-md:hidden dark:before:bg-gray-900/90;
+          @apply bg-header-bg/40 dark:bg-header-bg/90 pointer-events-none absolute inset-x-0 top-0 z-30 h-0 w-full overflow-hidden opacity-0 backdrop-blur-xl transition-all duration-150 ease-in-out max-md:hidden;
 
           &.active {
-            @apply pointer-events-auto opacity-100;
+            @apply pointer-events-auto h-[var(--mega-menu-height,0)] opacity-100;
           }
         }
       }
 
       .brand {
-        @apply hover:text-primary inline-block flex-shrink-0 text-xl font-semibold tracking-tight text-slate-900 no-underline transition-all duration-200 hover:-translate-y-0.5 max-md:order-1 max-md:flex-1 max-md:text-lg dark:text-slate-100;
+        @apply hover:text-primary text-base-text inline-block flex-shrink-0 text-xl font-semibold tracking-tight no-underline transition-all duration-200 hover:-translate-y-0.5 max-md:order-1 max-md:flex-1 max-md:text-lg;
       }
 
       .nav {
@@ -259,15 +294,15 @@
           @apply relative;
 
           .menu {
-            @apply block rounded-xl px-3.5 py-1.5 font-medium text-slate-700 no-underline transition-all duration-150 dark:text-slate-200;
+            @apply text-base-text block rounded-xl px-3.5 py-1.5 font-medium no-underline transition-all duration-150;
 
             &.menu-active {
-              @apply text-slate-900 dark:text-slate-100;
+              @apply text-base-text;
               [data-nav-type="mega-menu"] & {
                 @apply underline decoration-2 underline-offset-4;
               }
               [data-nav-type="boxed-dropdown"] & {
-                @apply bg-slate-200/90 dark:bg-slate-700;
+                @apply bg-header-interactive;
               }
             }
           }
@@ -290,19 +325,19 @@
               }
 
               [data-nav-type="boxed-dropdown"] & {
-                @apply flex flex-col gap-y-1 rounded-3xl border border-slate-200/70 bg-white/80 py-2 shadow-lg backdrop-blur-md backdrop-saturate-150 transition-all duration-200 dark:border-gray-700/70 dark:bg-gray-900/90;
+                @apply border-header-border bg-header-bg/90 flex flex-col gap-y-1 rounded-3xl border py-2 shadow-lg backdrop-blur-md backdrop-saturate-150 transition-all duration-200;
               }
               & > li {
                 @apply m-0 list-none;
 
                 & > a {
-                  @apply block px-4 whitespace-nowrap text-slate-700 no-underline hover:text-slate-900 dark:text-slate-300 hover:dark:text-slate-100;
+                  @apply text-base-text block px-4 whitespace-nowrap no-underline;
 
                   [data-nav-type="mega-menu"] & {
                     @apply py-3 hover:underline hover:decoration-2 hover:underline-offset-4;
                   }
                   [data-nav-type="boxed-dropdown"] & {
-                    @apply mx-2 rounded-2xl py-2 hover:bg-slate-200/60 dark:hover:bg-slate-700/70;
+                    @apply hover:bg-header-interactive mx-2 rounded-xl py-2;
                   }
                 }
               }
@@ -318,7 +353,7 @@
           @apply max-md:ml-5 max-md:cursor-pointer max-md:transition-all max-md:duration-200 max-md:hover:scale-105 max-md:active:scale-95;
 
           & svg {
-            @apply size-5 max-md:text-slate-900 max-md:transition-transform max-md:duration-200 max-md:dark:text-slate-100;
+            @apply max-md:text-base-text size-5 max-md:transition-transform max-md:duration-200;
           }
 
           &.active {
@@ -333,7 +368,7 @@
         @apply flex shrink-0 flex-row-reverse gap-5 max-md:order-2 max-md:shrink-0 md:gap-8;
 
         & span[data-indicator] {
-          @apply size-5 cursor-pointer text-[0px] before:absolute before:size-5 before:bg-current before:text-slate-900 dark:before:text-slate-100;
+          @apply before:text-base-text size-5 cursor-pointer text-[0px] before:absolute before:size-5 before:bg-current;
 
           &[data-indicator="media_error"] {
             @apply before:[mask:url('@assets/icons/error.svg')_center/cover_no-repeat];
@@ -364,7 +399,7 @@
       @apply mx-auto min-h-[calc(100vh-4rem)] w-23/24 max-w-7xl px-4 max-md:w-full max-md:px-3;
 
       #view {
-        @apply mx-0 w-full p-0 shadow-none transition-all duration-300 empty:hidden md:rounded-4xl md:border md:border-slate-400/20 md:bg-white/90 md:p-6 md:shadow-xl md:hover:border-slate-400/30 md:hover:shadow-2xl md:hover:shadow-slate-400/30 md:dark:border-gray-600/30 md:dark:bg-gray-900/90 md:dark:shadow-black/50 md:dark:hover:border-gray-500/40 md:dark:hover:shadow-black/60;
+        @apply md:border-view-border/30 md:bg-view-bg md:hover:border-view-border/50 mx-0 w-full p-0 shadow-none transition-all duration-300 empty:hidden md:rounded-4xl md:border md:p-6 md:shadow-xl md:hover:shadow-2xl;
 
         .cbi-title-section {
           @apply mb-6 leading-relaxed max-md:mx-2 max-md:mb-3;
@@ -640,7 +675,7 @@
     input[type="password"],
     .cbi-input-text,
     .cbi-input {
-      @apply focus:border-primary focus:ring-primary/20 relative rounded-2xl border border-slate-300/70 bg-white px-3 py-1.5 text-sm font-normal text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400;
+      @apply focus:border-primary focus:ring-primary/20 text-base-text relative rounded-2xl border border-slate-300/70 bg-white px-3 py-1.5 text-sm font-normal placeholder-slate-400 shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900 dark:placeholder-slate-400;
 
       .table.cbi-section-table & {
         @apply w-full;
@@ -675,7 +710,7 @@
 
   @layer textarea {
     textarea {
-      @apply focus:border-primary focus:ring-primary/20 min-h-24 w-full resize-y rounded-2xl border border-slate-300/70 bg-white px-3 py-2 text-sm font-normal text-slate-900 placeholder-slate-400 shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-400;
+      @apply focus:border-primary focus:ring-primary/20 text-base-text min-h-24 w-full resize-y rounded-2xl border border-slate-300/70 bg-white px-3 py-2 text-sm font-normal placeholder-slate-400 shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900 dark:placeholder-slate-400;
       &[disabled] {
         @apply cursor-not-allowed opacity-40 dark:opacity-30;
       }
@@ -684,7 +719,7 @@
 
   @layer select {
     select {
-      @apply focus:border-primary focus:ring-primary/20 appearance-none rounded-2xl border border-slate-300/70 bg-white px-3 py-1.5 pr-10 text-sm font-normal text-slate-900 shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900 dark:text-slate-100;
+      @apply focus:border-primary focus:ring-primary/20 text-base-text appearance-none rounded-2xl border border-slate-300/70 bg-white px-3 py-1.5 pr-10 text-sm font-normal shadow-sm transition-all duration-200 focus:ring-2 focus:outline-none dark:border-slate-600/60 dark:bg-slate-900;
       @apply bg-[url('@assets/icons/arrow-down.svg')] bg-[length:16px] bg-[right_0.75rem_center] bg-no-repeat dark:bg-[url('@assets/icons/arrow-down-dark.svg')];
       &[disabled] {
         @apply cursor-not-allowed opacity-40 dark:opacity-30;
@@ -921,7 +956,7 @@
 
   @layer progress {
     .cbi-progressbar {
-      @apply relative h-3.5 w-full cursor-help overflow-hidden rounded-full bg-slate-300 before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-2xl before:text-xs/normal before:whitespace-nowrap before:text-slate-900 before:content-[attr(title)] max-md:h-4 max-md:rounded-2xl max-md:before:text-xs max-md:before:leading-normal dark:bg-slate-700 before:dark:border-slate-600 before:dark:text-slate-100 dark:before:text-slate-100;
+      @apply before:text-base-text relative h-3.5 w-full cursor-help overflow-hidden rounded-full bg-slate-300 before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-2xl before:text-xs/normal before:whitespace-nowrap before:content-[attr(title)] max-md:h-4 max-md:rounded-2xl max-md:before:text-xs max-md:before:leading-normal dark:bg-slate-700 before:dark:border-slate-600;
       [data-page="admin-system-package-manager"] & {
         @apply max-sm:before:text-[10px];
       }
@@ -1006,7 +1041,7 @@
       @apply mb-3 overflow-visible rounded-2xl p-6 transition-all duration-300 empty:hidden max-md:p-3;
 
       #maincontent & {
-        @apply border border-slate-200/40 bg-white/95 shadow-lg hover:border-slate-300/50 hover:shadow-xl max-md:border max-md:border-slate-200/20 max-md:bg-white/98 dark:border-slate-600/30 dark:bg-slate-800/95 dark:hover:border-slate-500/40 dark:hover:shadow-black/25 max-md:dark:border-slate-700/15 max-md:dark:bg-slate-800/98;
+        @apply border-card-border/30 bg-card-bg hover:border-card-border/50 border shadow-lg hover:shadow-xl;
       }
 
       & > .cbi-title {
@@ -1020,7 +1055,7 @@
           @apply ml-auto flex flex-shrink-0 items-center;
 
           & .label[data-clickable] {
-            @apply bg-slate-100/40 text-slate-900 dark:bg-slate-900/30 dark:text-slate-100;
+            @apply text-base-text bg-slate-100/40 dark:bg-slate-900/30;
             @apply inline-flex size-7 cursor-pointer items-center justify-center p-0 before:size-4 before:bg-current before:transition-transform before:duration-300 hover:shadow-md active:scale-95 max-md:size-6;
           }
 
@@ -1043,7 +1078,7 @@
       }
 
       & h3 {
-        @apply border-b border-slate-200/50 pb-4 text-slate-900 max-md:mx-0 max-md:pb-2 dark:border-slate-600/40 dark:text-slate-100;
+        @apply text-base-text border-b border-slate-200/50 pb-4 max-md:mx-0 max-md:pb-2 dark:border-slate-600/40;
       }
 
       & div[style*="display:grid"] {
@@ -1348,14 +1383,14 @@
           @apply max-md:flex max-md:items-center max-md:justify-between max-md:p-6 max-md:pb-4;
 
           & .mobile-nav-title {
-            @apply max-md:m-0 max-md:text-lg max-md:font-semibold max-md:text-slate-900 max-md:dark:text-slate-100;
+            @apply max-md:text-base-text max-md:m-0 max-md:text-lg max-md:font-semibold;
           }
 
           & .mobile-nav-close {
             @apply max-md:cursor-pointer max-md:transition-all max-md:duration-200 max-md:hover:scale-105 max-md:active:scale-95;
 
             & svg {
-              @apply size-5 max-md:text-slate-900 max-md:transition-transform max-md:duration-200 max-md:dark:text-slate-100;
+              @apply max-md:text-base-text size-5 max-md:transition-transform max-md:duration-200;
             }
           }
         }
@@ -1742,9 +1777,9 @@
       }
 
       & > li.active {
-        @apply border-b-2 border-slate-900 dark:border-slate-100;
+        @apply border-base-text border-b-2;
         & > a {
-          @apply font-semibold text-slate-900 dark:text-slate-100;
+          @apply text-base-text font-semibold;
         }
       }
     }
@@ -1885,7 +1920,7 @@
             }
           }
           h3 {
-            @apply border-0 pb-4 text-slate-900 max-md:mx-0 max-md:pb-2 dark:text-slate-100;
+            @apply text-base-text border-0 pb-4 max-md:mx-0 max-md:pb-2;
           }
         }
 

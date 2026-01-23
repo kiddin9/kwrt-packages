@@ -10,6 +10,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.15.1-dev\n"
 
+#: htdocs/luci-static/resources/view/natmap.js:517
+msgid "%s set 0 will rewrite client listen port"
+msgstr ""
+
 #: htdocs/luci-static/resources/view/natmap.js:598
 #: htdocs/luci-static/resources/view/natmap.js:634
 msgid "<code># All external tokens required</code> Field"
@@ -145,6 +149,7 @@ msgid "Forward target"
 msgstr "Videresendelses mål"
 
 #: htdocs/luci-static/resources/view/natmap.js:494
+#: htdocs/luci-static/resources/view/natmap.js:517
 msgid "Forward target port"
 msgstr "Videresendelses målport"
 
@@ -294,7 +299,7 @@ msgid "Refresh Scripts"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:517
-msgid "Refresh client listen port"
+msgid "Refresh client"
 msgstr ""
 
 #: htdocs/luci-static/resources/view/natmap.js:138
