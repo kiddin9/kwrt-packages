@@ -177,23 +177,20 @@ msgstr "读取缓存的 DERP 区域地图时出错: %s"
 msgid "Error saving settings: %s"
 msgstr "保存设置时出错: %s"
 
+#: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:409
+msgid ""
+"Essential configuration for Subnet Routing (Site-to-Site) and Exit Node "
+"features. It automatically creates the tailscale interface, sets up firewall "
+"zones for LAN <-> Tailscale forwarding, and enables Masquerading and MSS "
+"Clamping (MTU fix) to ensure stable connections."
+msgstr ""
+"子网路由和出口节点的基本配置。会自动创建tailscale接口，设置防火墙区域"
+"LAN <-> Tailscale 并启用地址伪装和 MSS钳制以确保连接稳定。"
+
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:278
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:376
 msgid "Exit Node"
 msgstr "出口节点"
-
-#: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:409
-msgid ""
-"Experimental: applies minimal firewall and interface setup for Tailscale. It "
-"will create/patch network.tailscale (proto none, device tailscale0), add a "
-"firewall zone \"tailscale\" with ACCEPT/ACCEPT/ACCEPT, masq, mtu_fix, and "
-"ensure forwarding tailscale<->lan. It reloads network/firewall only if "
-"changes are made."
-msgstr ""
-"实验性功能:为Tailscale应用所必须最小的防火墙设置。它将创建/修补network."
-"tailscale (proto none，device tailscale0)，添加ACCEPT/ACCEPT/ACCEPT、masq、"
-"mtu_fix的防火墙区域“tailscale”，并转发tailscale<->lan。反正总之如果你不知道这"
-"个是干什么的，而且你tailscale网络又有问题，说明你需要点这个。"
 
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:23
 msgid ""
@@ -237,7 +234,7 @@ msgid "Hostname"
 msgstr "主机名"
 
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:425
-msgid "How to enable Site-to-Site (Subnet Routes)?"
+msgid "How to enable Site-to-Site?"
 msgstr ""
 
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:444
@@ -498,8 +495,20 @@ msgstr "使用出口节点时，允许访问本地局域网。"
 msgid ""
 "[Important] Log in to the Tailscale admin console and manually enable "
 "\"Subnet Routes\" for this device."
-msgstr "'【重要】 登录 Tailscale 控制平面，在设备设置中手动授权子网路由。"
+msgstr "【重要】 登录 Tailscale 控制平面，在设备设置中手动授权子网路由。"
 
 #: applications/luci-app-tailscale-community/htdocs/luci-static/resources/view/tailscale.js:96
 msgid "ago"
 msgstr "前"
+
+#~ msgid ""
+#~ "Experimental: applies minimal firewall and interface setup for Tailscale. "
+#~ "It will create/patch network.tailscale (proto none, device tailscale0), "
+#~ "add a firewall zone \"tailscale\" with ACCEPT/ACCEPT/ACCEPT, masq, "
+#~ "mtu_fix, and ensure forwarding tailscale<->lan. It reloads network/"
+#~ "firewall only if changes are made."
+#~ msgstr ""
+#~ "实验性功能:为Tailscale应用所必须最小的防火墙设置。它将创建/修补network."
+#~ "tailscale (proto none，device tailscale0)，添加ACCEPT/ACCEPT/ACCEPT、"
+#~ "masq、mtu_fix的防火墙区域“tailscale”，并转发tailscale<->lan。反正总之如果"
+#~ "你不知道这个是干什么的，而且你tailscale网络又有问题，说明你需要点这个。"
