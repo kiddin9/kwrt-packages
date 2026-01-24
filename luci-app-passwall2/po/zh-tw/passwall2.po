@@ -346,6 +346,9 @@ msgstr "拖曳以重排"
 msgid "Type"
 msgstr "類型"
 
+msgid "Switch Type"
+msgstr "切換類型"
+
 msgid "_balancing"
 msgstr "負載均衡"
 
@@ -403,11 +406,20 @@ msgstr "前置代理節點"
 msgid "Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."
 msgstr "設置用作前置代理的節點。每条規則（包括<code>默認</code>）都有独立開關控制本規則是否使用前置代理。"
 
+msgid "Close (Not use)"
+msgstr "關閉 (不使用)"
+
+msgid "Use default node"
+msgstr "使用默認節點"
+
 msgid "Direct Connection"
 msgstr "直連"
 
-msgid "Blackhole"
-msgstr "黑洞"
+msgid "Blackhole (Block)"
+msgstr "黑洞（屏蔽）"
+
+msgid "Use preproxy node"
+msgstr "使用前置代理節點"
 
 msgid "Default Preproxy"
 msgstr "默認前置代理"

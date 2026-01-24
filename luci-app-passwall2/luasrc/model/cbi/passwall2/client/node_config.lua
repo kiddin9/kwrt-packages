@@ -57,6 +57,8 @@ end
 
 local fs = require "nixio.fs"
 local types_dir = "/usr/lib/lua/luci/model/cbi/passwall2/client/type/"
+s.val = {}
+s.val["type"] = m.uci:get(appname, arg[1], "type")
 
 o = s:option(ListValue, "type", translate("Type"))
 
@@ -69,6 +71,15 @@ table.sort(type_table)
 for index, value in ipairs(type_table) do
 	local p_func = loadfile(types_dir .. value)
 	setfenv(p_func, getfenv(1))(m, s)
+end
+
+o = s:option(DummyValue, "switch_type", " ")
+o.template = appname .. "/node_config/switch_type"
+o:depends("___hide", true)
+for _, v in ipairs(s.fields["type"].keylist or {}) do
+	if s.val["type"] ~= v then
+		o:depends("type", v)
+	end
 end
 
 return m

@@ -8,14 +8,20 @@ if not singbox_bin then
 	return
 end
 
-local local_version = api.get_app_version("sing-box")
-local version_ge_1_12_0 = api.compare_versions(local_version:match("[^v]+"), ">=", "1.12.0")
-
-local singbox_tags = luci.sys.exec(singbox_bin .. " version  | grep 'Tags:' | awk '{print $2}'")
-
 local appname = api.appname
 
 local type_name = "sing-box"
+
+-- [[ sing-box ]]
+
+s.fields["type"]:value(type_name, "Sing-Box")
+if not s.fields["type"].default then
+	s.fields["type"].default = type_name
+end
+
+if s.val["type"] ~= type_name then
+	return
+end
 
 local option_prefix = "singbox_"
 
@@ -33,12 +39,10 @@ local ss_method_old_list = {
 
 local security_list = { "none", "auto", "aes-128-gcm", "chacha20-poly1305", "zero" }
 
--- [[ sing-box ]]
+local local_version = api.get_app_version("sing-box")
+local version_ge_1_12_0 = api.compare_versions(local_version:match("[^v]+"), ">=", "1.12.0")
 
-s.fields["type"]:value(type_name, translate("Sing-Box"))
-if not s.fields["type"].default then
-	s.fields["type"].default = type_name
-end
+local singbox_tags = luci.sys.exec(singbox_bin .. " version  | grep 'Tags:' | awk '{print $2}'")
 
 o = s:option(ListValue, _n("protocol"), translate("Protocol"))
 o:value("socks", "Socks")
@@ -228,18 +232,19 @@ end
 m.uci:foreach(appname, "shunt_rules", function(e)
 	if e[".name"] and e.remarks then
 		o = s:option(ListValue, _n(e[".name"]), string.format('* <a href="%s" target="_blank">%s</a>', api.url("shunt_rules", e[".name"]), e.remarks))
-		o:value("", translate("Close"))
-		o:value("_default", translate("Default"))
+		--o.optional = true
+		o:value("", translate("Close (Not use)"))
+		o:value("_default", translate("Use default node"))
 		o:value("_direct", translate("Direct Connection"))
-		o:value("_blackhole", translate("Blackhole"))
+		o:value("_blackhole", translate("Blackhole (Block)"))
 		o:depends({ [_n("protocol")] = "_shunt" })
 		o.template = appname .. "/cbi/nodes_listvalue"
 		o.group = {"","","",""}
 
 		if #nodes_table > 0 then
 			local pt = s:option(ListValue, _n(e[".name"] .. "_proxy_tag"), string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
-			pt:value("", translate("Close"))
-			pt:value("main", translate("Preproxy Node"))
+			pt:value("", translate("Close (Not use)"))
+			pt:value("main", translate("Use preproxy node"))
 
 			local fakedns_tag = s:option(Flag, _n(e[".name"] .. "_fakedns"), string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"), translate("Use FakeDNS work in the domain that proxy."))
 
@@ -280,7 +285,7 @@ o:depends({ [_n("protocol")] = "_shunt" })
 local o = s:option(ListValue, _n("default_node"), string.format('* <a style="color:red">%s</a>', translate("Default")))
 o:depends({ [_n("protocol")] = "_shunt" })
 o:value("_direct", translate("Direct Connection"))
-o:value("_blackhole", translate("Blackhole"))
+o:value("_blackhole", translate("Blackhole (Block)"))
 o.template = appname .. "/cbi/nodes_listvalue"
 o.group = {"",""}
 
@@ -298,8 +303,8 @@ if #nodes_table > 0 then
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
 	local dpt = s:option(ListValue, _n("default_proxy_tag"), string.format('* <a style="color:red">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
-	dpt:value("", translate("Close"))
-	dpt:value("main", translate("Preproxy Node"))
+	dpt:value("", translate("Close (Not use)"))
+	dpt:value("main", translate("Use preproxy node"))
 	for k, v in pairs(nodes_table) do
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
