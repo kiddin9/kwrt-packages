@@ -95,6 +95,8 @@ end
 
 m:append(Template(appname .. "/global/status"))
 
+local global_cfgid = m:get("@global[0]")[".name"]
+
 s = m:section(TypedSection, "global")
 s.anonymous = true
 s.addremove = false
@@ -118,29 +120,34 @@ o:value("", translate("Close"))
 o:value("tcp", translate("Same as the tcp node"))
 o.group = {"",""}
 
+local tcp_node_id = m.uci:get(appname, global_cfgid, "tcp_node")
+local tcp_node = tcp_node_id and m.uci:get_all(appname, tcp_node_id) or {}
+
 -- 分流
 if (has_singbox or has_xray) and #nodes_table > 0 then
-	local function get_cfgvalue(shunt_node_id, option)
-		return function(self, section)
-			return m:get(shunt_node_id, option)
-		end
-	end
-	local function get_write(shunt_node_id, option)
-		return function(self, section, value)
-			if s.fields["tcp_node"]:formvalue(section) == shunt_node_id then
-				m:set(shunt_node_id, option, value)
+	if #normal_list > 0 and tcp_node.protocol == "_shunt" then
+		local v = tcp_node
+		if v then
+			local function get_cfgvalue(shunt_node_id, option)
+				return function(self, section)
+					return m:get(shunt_node_id, option)
+				end
 			end
-		end
-	end
-	local function get_remove(shunt_node_id, option)
-		return function(self, section)
-			if s.fields["tcp_node"]:formvalue(section) == shunt_node_id then
-				m:del(shunt_node_id, option)
+			local function get_write(shunt_node_id, option)
+				return function(self, section, value)
+					if s.fields["tcp_node"]:formvalue(section) == shunt_node_id then
+						m:set(shunt_node_id, option, value)
+					end
+				end
 			end
-		end
-	end
-	if #normal_list > 0 then
-		for k, v in pairs(shunt_list) do
+			local function get_remove(shunt_node_id, option)
+				return function(self, section)
+					if s.fields["tcp_node"]:formvalue(section) == shunt_node_id then
+						m:del(shunt_node_id, option)
+					end
+				end
+			end
+			v.id = v[".name"]
 			local vid = v.id
 			-- shunt node type, Sing-Box or Xray
 			o = s:taboption("Main", ListValue, vid .. "-type", translate("Type"))
@@ -941,7 +948,11 @@ for k, v in pairs(nodes_table) do
 	end
 end
 
+local footer = Template(appname .. "/global/footer")
+footer.api = api
+footer.global_cfgid = global_cfgid
+footer.shunt_list = api.jsonc.stringify(shunt_list)
+m:append(footer)
 m:append(Template(appname .. "/global/status_bottom"))
-m:append(Template(appname .. "/global/footer"))
 
 return m

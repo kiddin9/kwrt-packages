@@ -73,6 +73,7 @@ end
 m:append(Template(appname .. "/global/status"))
 
 local global_cfgid = m:get("@global[0]")[".name"]
+
 s = m:section(TypedSection, "global")
 s.anonymous = true
 s.addremove = false
@@ -89,29 +90,34 @@ o.template = appname .. "/cbi/nodes_listvalue"
 o:value("", translate("Close"))
 o.group = {""}
 
--- Shunt
+local node_id = m.uci:get(appname, global_cfgid, "node")
+local node = node_id and m.uci:get_all(appname, node_id) or {}
+
+-- Shunt Start
 if (has_singbox or has_xray) and #nodes_table > 0 then
-	local function get_cfgvalue(shunt_node_id, option)
-		return function(self, section)
-			return m:get(shunt_node_id, option)
-		end
-	end
-	local function get_write(shunt_node_id, option)
-		return function(self, section, value)
-			if s.fields["node"]:formvalue(section) == shunt_node_id then
-				m:set(shunt_node_id, option, value)
+	if #normal_list > 0 and node.protocol == "_shunt" then
+		local v = node
+		if v then
+			local function get_cfgvalue(shunt_node_id, option)
+				return function(self, section)
+					return m:get(shunt_node_id, option)
+				end
 			end
-		end
-	end
-	local function get_remove(shunt_node_id, option)
-		return function(self, section)
-			if s.fields["node"]:formvalue(section) == shunt_node_id then
-				m:del(shunt_node_id, option)
+			local function get_write(shunt_node_id, option)
+				return function(self, section, value)
+					if s.fields["node"]:formvalue(section) == shunt_node_id then
+						m:set(shunt_node_id, option, value)
+					end
+				end
 			end
-		end
-	end
-	if #normal_list > 0 then
-		for k, v in pairs(shunt_list) do
+			local function get_remove(shunt_node_id, option)
+				return function(self, section)
+					if s.fields["node"]:formvalue(section) == shunt_node_id then
+						m:del(shunt_node_id, option)
+					end
+				end
+			end
+			v.id = v[".name"]
 			local vid = v.id
 			-- shunt node type, Sing-Box or Xray
 			local type = s:taboption("Main", ListValue, vid .. "-type", translate("Type"))
@@ -532,7 +538,12 @@ for k, v in pairs(nodes_table) do
 	end
 end
 
-m:append(Template(appname .. "/global/footer"))
+local footer = Template(appname .. "/global/footer")
+footer.api = api
+footer.global_cfgid = global_cfgid
+footer.shunt_list = api.jsonc.stringify(shunt_list)
+
+m:append(footer)
 m:append(Template(appname .. "/global/status_bottom"))
 
 return m

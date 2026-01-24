@@ -5,7 +5,7 @@ This guide covers the complete development workflow for the Aurora theme, from e
 ## Prerequisites
 
 - **[Node.js v20.19+](https://nodejs.org/en/download)** - JavaScript runtime
-- **pnpm** - Package manager (managed via Corepack)
+- **pnpm** - Package manager (managed via [Corepack](https://github.com/nodejs/corepack))
 - **Tailwind CSS knowledge** - Required for styling. See [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - **Network access** - Development machine must be on the same network as your OpenWrt router
 
@@ -54,19 +54,16 @@ The development server will start at `http://127.0.0.1:5173` and proxy requests 
 
 **How Vite Proxy Works:**
 
-The Vite development server intercepts network requests and replaces CSS/JS resources with local versions. This enables live editing without deploying to the router. For detailed implementation, see `vite.config.ts`.
+The Vite development server uses middleware to rewrite local requests to serve CSS/JS resources from your development environment instead of the router. This enables live editing without deploying to the router. For detailed implementation, see `vite.config.ts`.
 
 **Key proxy behaviors:**
 
 1. Proxies `/cgi-bin` and `/luci-static` requests to OpenWrt device
-2. Intercepts HTML responses to inject Vite HMR client
-3. Rewrites CSS requests to serve from `.dev/src/media/main.css`
-4. Serves JS files directly from `.dev/src/resource/`
-5. Redirects `/` to `/cgi-bin/luci` for proper routing
-
-**Network Requirements:**
-
-- Development machine and OpenWrt router **must be on the same network segment**
+2. Uses middleware (`createLocalServePlugin`) to rewrite request paths for CSS and JS files
+3. CSS requests to `/luci-static/aurora/main.css` are rewritten to serve from `.dev/src/media/main.css`
+4. JS file requests are served directly from `.dev/src/resource/` with middleware reading and returning file content
+5. Injects Vite HMR client into proxied HTML responses for live reload support
+6. Redirects `/` to `/cgi-bin/luci` for proper routing
 
 ### Code Style and Formatting
 
@@ -190,10 +187,10 @@ luci-theme-aurora/
 
 ## Tools and Technologies
 
-- **[Vite](https://vitejs.dev/)** - Build tool and development server
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[Prettier](https://prettier.io/)** - Code formatter
-- **[prettier-plugin-tailwindcss](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)** - Tailwind class sorting
+- **[Vite](https://vitejs.dev/)** - Build tool and development server
+  **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
 - **[lightningcss](https://lightningcss.dev/)** - CSS minifier
 - **[Terser](https://terser.org/)** - JavaScript minifier
-- **[pnpm](https://pnpm.io/)** - Fast, disk space efficient package manager
+- **[Prettier](https://prettier.io/)** - Code formatter
+- **[prettier-plugin-tailwindcss](https://github.com/tailwindlabs/prettier-plugin-tailwindcss)** - Tailwind class sorting

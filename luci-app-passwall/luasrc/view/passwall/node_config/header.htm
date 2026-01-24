@@ -1,21 +1,24 @@
 <%
-local api = require "luci.passwall2.api"
+local api = self.api
 -%>
-<div class="cbi-value" id="cbi-<%=self.config.."-"..section.."-"..self.option%>" data-index="<%=self.index%>" data-depends="<%=pcdata(self:deplist2json(section))%>">
-	<label class="cbi-value-title">
-		<%:Switch Type%>
-	</label>
-	<div class="cbi-value-field">
-		<div>
-			<input class="btn cbi-button cbi-button-apply" type="button" onclick="switch_type()" value="<%:Switch Type%>" />
-		</div>
-	</div>
-</div>
+<script type="text/javascript">
+	//<![CDATA[
+	function waitForElement(selector, callback) {
+		const el = document.querySelector(selector);
+		if (el) return callback(el);
+		const observer = new MutationObserver(() => {
+			const el = document.querySelector(selector);
+			if (el) {
+				observer.disconnect();
+				callback(el);
+			}
+		});
+		observer.observe(document.body, { childList: true, subtree: true });
+	}
 
-<script>
 	function getOption(opt) {
 		var obj;
-		var id = 'cbid.passwall2.<%=section%>.' + opt;
+		var id = 'cbid.<%=api.appname%>.<%=self.section%>.' + opt;
 		obj = document.getElementsByName(id)[0] || document.getElementById(id);
 		if (obj) {
 			var combobox = document.getElementById('cbi.combobox.' + id);
@@ -31,12 +34,11 @@ local api = require "luci.passwall2.api"
 			return null;
 		}
 	}
-	function switch_type() {
+	
+	function update_node(data) {
 		XHR.get('<%=api.url("update_node")%>', {
-			id: "<%=section%>",
-			data: JSON.stringify({
-				type: getOption("type").value
-			})
+			id: "<%=self.section%>",
+			data: JSON.stringify(data)
 		},
 		function(x, data) {
 			if (x && x.status == 200 && data.code == 1) {
@@ -47,4 +49,5 @@ local api = require "luci.passwall2.api"
 			}
 		});
 	}
+	//]]>
 </script>

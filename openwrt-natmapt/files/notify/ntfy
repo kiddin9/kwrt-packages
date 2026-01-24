@@ -38,7 +38,7 @@ start() {
 				json_add_string action "view"
 				json_add_string label "Open page"
 				json_add_string url "http${HTTPS:+s}://${ip}:${port}"
-				json_add_boolean clear true
+				json_add_boolean clear 0
 			json_close_object
 		json_close_array
 	}

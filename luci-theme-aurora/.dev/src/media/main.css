@@ -15,6 +15,7 @@
   --background-start: oklch(0.968 0.007 247.896);
   --background-mid: oklch(0.968 0.007 247.896);
   --background-end: oklch(0.968 0.007 247.896);
+
   --base-text: oklch(0.208 0.042 265.755);
 
   --progress-start: oklch(0.68 0.11 233);
@@ -61,12 +62,14 @@
   --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
 
   --spacing: 0.25rem;
+  --container-max-width: 80rem;
 }
 
 [data-darkmode="true"] {
   --background-start: oklch(0.2077 0.0398 265.75);
   --background-mid: oklch(0.3861 0.059 188.42);
   --background-end: oklch(0.4318 0.0865 166.91);
+
   --base-text: oklch(0.968 0.007 247.896);
 
   --progress-start: oklch(0.4318 0.0865 166.91);
@@ -117,6 +120,8 @@
   --color-aurora-mid: var(--background-mid);
   --color-aurora-end: var(--background-end);
 
+  --color-base-text: var(--base-text);
+
   --color-progress-start: var(--progress-start);
   --color-progress-end: var(--progress-end);
 
@@ -148,7 +153,6 @@
   --color-default-text: var(--default-text);
 
   --color-header-bg: var(--header-bg);
-  --color-base-text: var(--base-text);
   --color-header-border: var(--header-border);
   --color-header-interactive: var(--header-interactive);
 
@@ -162,6 +166,7 @@
   --font-mono: var(--font-mono);
 
   --spacing: var(--spacing);
+  --container-max-width: var(--container-max-width);
 }
 
 @layer base {
@@ -396,7 +401,7 @@
     }
 
     #maincontent {
-      @apply mx-auto min-h-[calc(100vh-4rem)] w-23/24 max-w-7xl px-4 max-md:w-full max-md:px-3;
+      @apply max-w-max-width mx-auto min-h-[calc(100vh-4rem)] w-23/24 px-4 max-md:w-full max-md:px-3;
 
       #view {
         @apply md:border-view-border/30 md:bg-view-bg md:hover:border-view-border/50 mx-0 w-full p-0 shadow-none transition-all duration-300 empty:hidden md:rounded-4xl md:border md:p-6 md:shadow-xl md:hover:shadow-2xl;

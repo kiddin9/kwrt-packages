@@ -47,7 +47,7 @@ start() {
 		json_add_string name "${host}"
 		json_add_string content "${ip}"
 		json_add_int ttl 1
-		json_add_boolean proxied false
+		json_add_boolean proxied 0
 		http_request "$(json_dump)" "$(jsonfilter -s "$the_record" -qe '@.id')"
 	fi
 
@@ -63,7 +63,7 @@ start() {
 			json_add_string target "${srv_target}"
 		json_close_object
 		json_add_int ttl 1
-		json_add_boolean proxied false
+		json_add_boolean proxied 0
 		http_request "$(json_dump)" "$(jsonfilter -s "$the_record" -qe '@.id')"
 	fi
 
@@ -78,7 +78,7 @@ start() {
 			json_add_string value "${https_svcparams}"
 		json_close_object
 		json_add_int ttl 1
-		json_add_boolean proxied false
+		json_add_boolean proxied 0
 		http_request "$(json_dump)" "$(jsonfilter -s "$the_record" -qe '@.id')"
 	fi
 }
