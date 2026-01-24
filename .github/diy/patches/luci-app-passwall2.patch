@@ -167,10 +167,10 @@
 
 --- a/luci-app-passwall2/luasrc/model/cbi/passwall2/client/global.lua
 +++ b/luci-app-passwall2/luasrc/model/cbi/passwall2/client/global.lua
-@@ -411,5 +411,6 @@ for k, v in pairs(nodes_table) do
- end
+@@ -544,5 +544,6 @@ footer.global_cfgid = global_cfgid
+ footer.shunt_list = api.jsonc.stringify(shunt_list)
  
- m:append(Template(appname .. "/global/footer"))
+ m:append(footer)
 +m:append(Template(appname .. "/global/status_bottom"))
  
  return m
