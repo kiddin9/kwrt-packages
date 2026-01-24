@@ -204,12 +204,11 @@ diff --git a/luci-app-passwall/luasrc/model/cbi/passwall/client/global.lua b/luc
 index 0c33ccd90f..258da6a551 100644
 --- a/luci-app-passwall/luasrc/model/cbi/passwall/client/global.lua
 +++ b/luci-app-passwall/luasrc/model/cbi/passwall/client/global.lua
-@@ -431,6 +431,7 @@ for k, v in pairs(nodes_table) do
-     end
- end
- 
+@@ -953,5 +953,6 @@ footer.api = api
+ footer.global_cfgid = global_cfgid
+ footer.shunt_list = api.jsonc.stringify(shunt_list)
+ m:append(footer)
 +m:append(Template(appname .. "/global/status_bottom"))
- m:append(Template(appname .. "/global/footer"))
  
  return m
 diff --git a/luci-app-passwall/luasrc/view/passwall/global/status_bottom.htm b/luci-app-passwall/luasrc/view/passwall/global/status_bottom.htm
