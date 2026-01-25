@@ -1,40 +1,31 @@
-From 449e688b189b9f7ded36d733e0fcde374e42557e Mon Sep 17 00:00:00 2001
-From: Chen Minqiang <ptpt52@gmail.com>
-Date: Sun, 5 Jul 2020 10:42:52 +0800
-Subject: [PATCH] options: force_forwarding support
-
-This make the port forwarding force to work even
-when the router is behind NAT
-
-Signed-off-by: Chen Minqiang <ptpt52@gmail.com>
----
- miniupnpd.c      | 12 ++++++++----
- miniupnpd.conf   |  2 ++
- natpmp.c         |  2 +-
- options.c        |  1 +
- options.h        |  1 +
- testgetifaddr.c  |  2 ++
- testportinuse.c  |  2 ++
- upnpdescgen.c    |  2 +-
- upnpglobalvars.h |  2 ++
- upnpredirect.c   |  2 +-
- upnpsoap.c       |  6 +++++-
- 11 files changed, 26 insertions(+), 8 deletions(-)
-
 --- a/miniupnpd.c
 +++ b/miniupnpd.c
-@@ -1018,7 +1018,7 @@ parselanaddr(struct lan_addr_s * lan_add
+@@ -1051,7 +1051,7 @@ parselanaddr(struct lan_addr_s * lan_addr, const char * str, int debug_flag)
  				INIT_PRINT_ERR("Error parsing address : %s\n", lan_addr->ext_ip_str);
  				return -1;
  			}
 -			if(addr_is_reserved(&lan_addr->ext_ip_addr)) {
 +			if(addr_is_reserved(&lan_addr->ext_ip_addr) && !GETFLAG(FORCEFORWARDINGMASK)) {
- 				/* error */
- 				INIT_PRINT_ERR("Error: option ext_ip address contains reserved / private address : %s\n", lan_addr->ext_ip_str);
- 				return -1;
-@@ -1260,6 +1260,10 @@ init(int argc, char * * argv, struct run
- 			case UPNPEXT_IP:
- 				use_ext_ip_addr = ary_options[i].value;
+ 				if (GETFLAG(ALLOWPRIVATEIPV4MASK)) {
+ 					syslog(LOG_WARNING, "IGNORED : option ext_ip address contains reserved / private address : %s", lan_addr->ext_ip_str);
+ 				} else {
+@@ -1190,11 +1190,11 @@ static void update_disable_port_forwarding(void)
+ 		}
+ 		disable_port_forwarding = 1;
+ 	} else {
+-		int reserved = addr_is_reserved(&addr);
++		int reserved = addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK);
+ 		if (!disable_port_forwarding && reserved) {
+ 			if (GETFLAG(ALLOWPRIVATEIPV4MASK)) {
+ 				syslog(LOG_WARNING, "IGNORED : Reserved / private IP address %s on ext interface %s", if_addr, ext_if_name);
+-			} else {
++			} else if (!GETFLAG(FORCEFORWARDINGMASK)) {
+ 				syslog(LOG_WARNING, "Reserved / private IP address %s on ext interface %s: Port forwarding is impossible", if_addr, ext_if_name);
+ 				syslog(LOG_INFO, "You are probably behind NAT, enable option ext_perform_stun=yes to detect public IP address");
+ 				syslog(LOG_INFO, "Or use ext_ip= / -o option to declare public IP address");
+@@ -1357,6 +1357,10 @@ init(int argc, char * * argv, struct runtime_vars * v)
+ 				if(strcmp(ary_options[i].value, "yes") == 0)
+ 					SETFLAG(ALLOWPRIVATEIPV4MASK);
  				break;
 +			case UPNP_FORCE_FORWARDING:
 +				if(strcmp(ary_options[i].value, "yes") == 0)
@@ -43,122 +34,100 @@ Signed-off-by: Chen Minqiang <ptpt52@gmail.com>
  			case UPNPEXT_PERFORM_STUN:
  				if(strcmp(ary_options[i].value, "yes") == 0)
  					SETFLAG(PERFORMSTUNMASK);
-@@ -1867,7 +1871,7 @@ init(int argc, char * * argv, struct run
+@@ -1973,7 +1977,7 @@ init(int argc, char * * argv, struct runtime_vars * v)
  			INIT_PRINT_ERR("Error: option ext_ip contains invalid address %s\n", use_ext_ip_addr);
  			return 1;
  		}
 -		if (addr_is_reserved(&addr)) {
 +		if (addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK)) {
- 			INIT_PRINT_ERR("Error: option ext_ip contains reserved / private address %s, not public routable\n", use_ext_ip_addr);
- 			return 1;
- 		}
-@@ -2315,7 +2319,7 @@ main(int argc, char * * argv)
- 		if (getifaddr(ext_if_name, if_addr, INET_ADDRSTRLEN, &addr, NULL) < 0) {
- 			syslog(LOG_WARNING, "Cannot get IP address for ext interface %s. Network is down", ext_if_name);
- 			disable_port_forwarding = 1;
--		} else if (addr_is_reserved(&addr)) {
-+		} else if (addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK)) {
- 			syslog(LOG_INFO, "Reserved / private IP address %s on ext interface %s: Port forwarding is impossible", if_addr, ext_if_name);
- 			syslog(LOG_INFO, "You are probably behind NAT, enable option ext_perform_stun=yes to detect public IP address");
- 			syslog(LOG_INFO, "Or use ext_ip= / -o option to declare public IP address");
-@@ -2628,7 +2632,7 @@ main(int argc, char * * argv)
- 					syslog(LOG_WARNING, "Cannot get IP address for ext interface %s. Network is down", ext_if_name);
- 					disable_port_forwarding = 1;
- 				} else {
--					int reserved = addr_is_reserved(&addr);
-+					int reserved = addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK);
- 					if (!disable_port_forwarding && reserved) {
- 						syslog(LOG_INFO, "Reserved / private IP address %s on ext interface %s: Port forwarding is impossible", if_addr, ext_if_name);
- 						syslog(LOG_INFO, "You are probably behind NAT, enable option ext_perform_stun=yes to detect public IP address");
---- a/miniupnpd.conf
-+++ b/miniupnpd.conf
-@@ -18,6 +18,8 @@
- # the public IP address.
- #ext_ip=
- 
-+#force forwarding enable for upnp: default is no
-+#force_forwarding=yes
- # The WAN interface must have a public IP address. Otherwise it is behind NAT
- # and port forwarding is impossible. In some cases WAN interface can be
- # behind unrestricted full-cone NAT 1:1 when all incoming traffic is NAT-ed and
+ 			if (GETFLAG(ALLOWPRIVATEIPV4MASK)) {
+ 				syslog(LOG_WARNING, "IGNORED : option ext_ip contains reserved / private address %s, not public routable", use_ext_ip_addr);
+ 			} else {
+
 --- a/natpmp.c
 +++ b/natpmp.c
-@@ -109,7 +109,7 @@ static void FillPublicAddressResponse(un
+@@ -109,7 +109,7 @@ static void FillPublicAddressResponse(unsigned char * resp, in_addr_t senderaddr
  			syslog(LOG_ERR, "Failed to get IP for interface %s", ext_if_name);
  			resp[3] = 3;	/* Network Failure (e.g. NAT box itself
  			                 * has not obtained a DHCP lease) */
--		} else if (addr_is_reserved(&addr)) {
-+		} else if (addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK)) {
+-		} else if (!GETFLAG(ALLOWPRIVATEIPV4MASK) && addr_is_reserved(&addr)) {
++		} else if (!GETFLAG(ALLOWPRIVATEIPV4MASK) && addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK)) {
  			resp[3] = 3;	/* Network Failure, box has not obtained
  			                   public IP address */
  		} else {
+
 --- a/options.c
 +++ b/options.c
-@@ -35,6 +35,7 @@ static const struct {
- 	{ UPNPEXT_IFNAME6, "ext_ifname6" },
+@@ -36,6 +36,7 @@ static const struct {
  #endif
  	{ UPNPEXT_IP,	"ext_ip" },
+ 	{ UPNPEXT_ALLOW_PRIVATE_IPV4, "ext_allow_private_ipv4" },
 +	{ UPNP_FORCE_FORWARDING, "force_forwarding" },
  	{ UPNPEXT_PERFORM_STUN, "ext_perform_stun" },
  	{ UPNPEXT_STUN_HOST, "ext_stun_host" },
  	{ UPNPEXT_STUN_PORT, "ext_stun_port" },
+
 --- a/options.h
 +++ b/options.h
-@@ -21,6 +21,7 @@ enum upnpconfigoptions {
- 	UPNPEXT_IFNAME6,		/* ext_ifname6 */
+@@ -26,6 +26,7 @@ enum upnpconfigoptions {
  #endif
- 	UPNPEXT_IP,				/* ext_ip */
-+	UPNP_FORCE_FORWARDING, /* force forwarding enable for upnp */
- 	UPNPEXT_PERFORM_STUN,		/* ext_perform_stun */
- 	UPNPEXT_STUN_HOST,		/* ext_stun_host */
- 	UPNPEXT_STUN_PORT,		/* ext_stun_port */
+ 	UPNPEXT_IP,				/*!< ext_ip */
+ 	UPNPEXT_ALLOW_PRIVATE_IPV4,	/*!< ext_allow_private_ipv4 */
++	UPNP_FORCE_FORWARDING, /*!< force forwarding enable for upnp */
+ 	UPNPEXT_PERFORM_STUN,		/*!< ext_perform_stun */
+ 	UPNPEXT_STUN_HOST,		/*!< ext_stun_host */
+ 	UPNPEXT_STUN_PORT,		/*!< ext_stun_port */
+
 --- a/testgetifaddr.c
 +++ b/testgetifaddr.c
-@@ -13,6 +13,8 @@
- #include "config.h"
+@@ -14,6 +14,8 @@
  #include "getifaddr.h"
+ #include "getconnstatus.h"
  
 +int runtime_flags = 0;
 +
  #if defined(__sun)
  /* solaris 10 does not define LOG_PERROR */
  #define LOG_PERROR 0
+
 --- a/testportinuse.c
 +++ b/testportinuse.c
-@@ -14,6 +14,8 @@
- #include "config.h"
+@@ -15,6 +15,8 @@
  #include "portinuse.h"
+ #include "upnpglobalvars.h"
  
 +int runtime_flags = 0;
 +
- int main(int argc, char * * argv)
- {
- #ifndef CHECK_PORTINUSE
+ struct lan_addr_list lan_addrs;
+ int runtime_flags = 0;
+ time_t startup_time = 0;
+
 --- a/upnpdescgen.c
 +++ b/upnpdescgen.c
-@@ -1322,7 +1322,7 @@ genEventVars(int * len, const struct ser
+@@ -1311,7 +1311,7 @@ genEventVars(int * len, const struct serviceDesc * s)
  				else {
  					struct in_addr addr;
  					char ext_ip_addr[INET_ADDRSTRLEN];
--					if(getifaddr(ext_if_name, ext_ip_addr, INET_ADDRSTRLEN, &addr, NULL) < 0 || addr_is_reserved(&addr)) {
-+					if(getifaddr(ext_if_name, ext_ip_addr, INET_ADDRSTRLEN, &addr, NULL) < 0 || (addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK))) {
+-					if(getifaddr(ext_if_name, ext_ip_addr, INET_ADDRSTRLEN, &addr, NULL) < 0 || (!GETFLAG(ALLOWPRIVATEIPV4MASK) && addr_is_reserved(&addr))) {
++					if(getifaddr(ext_if_name, ext_ip_addr, INET_ADDRSTRLEN, &addr, NULL) < 0 || (!GETFLAG(ALLOWPRIVATEIPV4MASK) && addr_is_reserved(&addr) && !GETFLAG(FORCEFORWARDINGMASK))) {
  						str = strcat_str(str, len, &tmplen, "0.0.0.0");
  					} else {
  						str = strcat_str(str, len, &tmplen, ext_ip_addr);
+
 --- a/upnpglobalvars.h
 +++ b/upnpglobalvars.h
-@@ -87,6 +87,8 @@ extern int runtime_flags;
+@@ -100,6 +100,7 @@ extern int runtime_flags;
  
+ /*! \brief perform STUN */
  #define PERFORMSTUNMASK    0x1000
- 
 +#define FORCEFORWARDINGMASK 0x2000
-+
- #define SETFLAG(mask)	runtime_flags |= mask
- #define GETFLAG(mask)	(runtime_flags & mask)
- #define CLEARFLAG(mask)	runtime_flags &= ~mask
+ 
+ /*! \brief Allow the external IPv4 to be private */
+ #define ALLOWPRIVATEIPV4MASK 0x2000
+
 --- a/upnpredirect.c
 +++ b/upnpredirect.c
-@@ -444,7 +444,7 @@ upnp_redirect_internal(const char * rhos
+@@ -406,7 +406,7 @@ upnp_redirect_internal(const char * rhost, unsigned short eport,
  {
  	/*syslog(LOG_INFO, "redirecting port %hu to %s:%hu protocol %s for: %s",
  		eport, iaddr, iport, protocol, desc);			*/
@@ -167,18 +136,30 @@ Signed-off-by: Chen Minqiang <ptpt52@gmail.com>
  		return -1;
  	if(add_redirect_rule2(ext_if_name, rhost, eport, iaddr, iport, proto,
  	                      desc, timestamp) < 0) {
+
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -348,7 +348,11 @@ GetExternalIPAddress(struct upnphttp * h
- 			ext_ip_addr[0] = '\0';
- 		} else if (addr_is_reserved(&addr)) {
- 			syslog(LOG_NOTICE, "private/reserved address %s is not suitable for external IP", ext_ip_addr);
--			ext_ip_addr[0] = '\0';
-+			if (!GETFLAG(FORCEFORWARDINGMASK)) {
-+				ext_ip_addr[0] = '\0';
+@@ -374,7 +374,11 @@ GetExternalIPAddress(struct upnphttp * h, const char * action, const char * ns)
+ 				syslog(LOG_WARNING, "IGNORED : private/reserved address %s is not suitable for external IP", ext_ip_addr);
+ 			} else {
+ 				syslog(LOG_NOTICE, "private/reserved address %s is not suitable for external IP", ext_ip_addr);
++				if (!GETFLAG(FORCEFORWARDINGMASK)) {
+ 				ext_ip_addr[0] = '\0';
 +			} else {
 +				syslog(LOG_NOTICE, "force_forwarding enable, private/reserved address %s used as external IP", ext_ip_addr);
 +			}
+ 			}
  		}
  	}
- #else
+
+--- a/miniupnpd.conf
++++ b/miniupnpd.conf
+@@ -23,6 +23,8 @@
+ # This option is disabled by default.
+ #ext_allow_private_ipv4=yes
+ 
++#force forwarding enable for upnp: default is no
++#force_forwarding=yes
+ # The WAN interface must have a public IP address. Otherwise it is behind NAT
+ # and port forwarding is impossible. In some cases WAN interface can be
+ # behind unrestricted full-cone NAT 1:1 when all incoming traffic is NAT-ed and
