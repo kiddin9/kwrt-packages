@@ -29,6 +29,13 @@ local function _n(name)
 	return option_prefix .. name
 end
 
+local formvalue_key = "cbid." .. appname .. "." .. arg[1] .. "."
+local formvalue_proto = luci.http.formvalue(formvalue_key .. _n("protocol"))
+
+if formvalue_proto then s.val["protocol"] = formvalue_proto end
+
+local arg_select_proto = luci.http.formvalue("select_proto") or ""
+
 local ss_method_new_list = {
 	"none", "aes-128-gcm", "aes-192-gcm", "aes-256-gcm", "chacha20-ietf-poly1305", "xchacha20-ietf-poly1305", "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305"
 }
@@ -73,6 +80,24 @@ o:value("ssh", "SSH")
 o:value("_urltest", translate("URLTest"))
 o:value("_shunt", translate("Shunt"))
 o:value("_iface", translate("Custom Interface"))
+function o.custom_cfgvalue(self, section)
+	if arg_select_proto ~= "" then
+		return arg_select_proto
+	else
+		return m:get(section, self.option:sub(1 + #option_prefix))
+	end
+end
+
+local load_urltest_options = s.val["protocol"] == "_urltest" or arg_select_proto == "_urltest"
+local load_shunt_options = s.val["protocol"] == "_shunt" or arg_select_proto == "_shunt"
+local load_iface_options = s.val["protocol"] == "_iface" or arg_select_proto == "_iface"
+local load_normal_options = true
+if load_urltest_options or load_shunt_options or load_iface_options then
+	load_normal_options = nil
+end
+if not arg_select_proto:find("_") then
+	load_normal_options = true
+end
 
 local nodes_table = {}
 local iface_table = {}
@@ -114,7 +139,7 @@ m.uci:foreach(appname, "socks", function(s)
 	end
 end)
 
-if s.val["protocol"] == "_urltest" then -- [[ URLTest Start ]]
+if load_urltest_options then -- [[ URLTest Start ]]
 	o = s:option(MultiValue, _n("urltest_node"), translate("URLTest node list"), translate("List of nodes to test, <a target='_blank' href='https://sing-box.sagernet.org/configuration/outbound/urltest'>document</a>"))
 	o:depends({ [_n("protocol")] = "_urltest" })
 	o.widget = "checkbox"
@@ -193,7 +218,8 @@ if s.val["protocol"] == "_urltest" then -- [[ URLTest Start ]]
 	o.description = translate("Interrupt existing connections when the selected outbound has changed.")
 end -- [[ URLTest End ]]
 
-if s.val["protocol"] == "_shunt" then -- [[ Shunt Start ]]
+
+if load_shunt_options then -- [[ Shunt Start ]]
 	local default_node = m.uci:get(appname, arg[1], "default_node") or "_direct"
 	if #nodes_table > 0 then
 		o = s:option(Flag, _n("preproxy_enabled"), translate("Preproxy"))
@@ -310,7 +336,7 @@ if s.val["protocol"] == "_shunt" then -- [[ Shunt Start ]]
 	end
 end -- [[ Shunt End ]]
 
-if s.val["protocol"] == "_iface" then -- [[ Custom Interface Start ]]
+if load_iface_options then -- [[ Custom Interface Start ]]
 	o = s:option(Value, _n("iface"), translate("Interface"))
 	o.default = "eth1"
 	o:depends({ [_n("protocol")] = "_iface" })
@@ -318,7 +344,7 @@ end -- [[ Custom Interface End ]]
 
 
 -- [[ Normal single node Start ]]
-if not s.val["protocol"] or not s.val["protocol"]:find("_") then
+if load_normal_options then
 
 o = s:option(Value, _n("address"), translate("Address (Support Domain Name)"))
 

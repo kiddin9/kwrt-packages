@@ -90,194 +90,197 @@ o.template = appname .. "/cbi/nodes_listvalue"
 o:value("", translate("Close"))
 o.group = {""}
 
-local node_id = m.uci:get(appname, global_cfgid, "node")
-local node = node_id and m.uci:get_all(appname, node_id) or {}
-
 -- Shunt Start
 if (has_singbox or has_xray) and #nodes_table > 0 then
-	if #normal_list > 0 and node.protocol == "_shunt" then
-		local v = node
-		if v then
-			local function get_cfgvalue(shunt_node_id, option)
-				return function(self, section)
-					return m:get(shunt_node_id, option)
-				end
-			end
-			local function get_write(shunt_node_id, option)
-				return function(self, section, value)
-					if s.fields["node"]:formvalue(section) == shunt_node_id then
-						m:set(shunt_node_id, option, value)
+	if #normal_list > 0 then
+		local node_id = m.uci:get(appname, global_cfgid, "node")
+		local node = node_id and m.uci:get_all(appname, node_id) or {}
+		if node.protocol == "_shunt" then
+			local v = node
+			if v then
+				local function get_cfgvalue(shunt_node_id, option)
+					return function(self, section)
+						return m:get(shunt_node_id, option)
 					end
 				end
-			end
-			local function get_remove(shunt_node_id, option)
-				return function(self, section)
-					if s.fields["node"]:formvalue(section) == shunt_node_id then
-						m:del(shunt_node_id, option)
+				local function get_write(shunt_node_id, option)
+					return function(self, section, value)
+						if s.fields["node"]:formvalue(section) == shunt_node_id then
+							m:set(shunt_node_id, option, value)
+						end
 					end
 				end
-			end
-			v.id = v[".name"]
-			local vid = v.id
-			-- shunt node type, Sing-Box or Xray
-			local type = s:taboption("Main", ListValue, vid .. "-type", translate("Type"))
-			if has_singbox then
-				type:value("sing-box", translate("Sing-Box"))
-			end
-			if has_xray then
-				type:value("Xray", translate("Xray"))
-			end
-			type.cfgvalue = get_cfgvalue(v.id, "type")
-			type.write = get_write(v.id, "type")
-			
-			-- pre-proxy
-			o = s:taboption("Main", Flag, vid .. "-preproxy_enabled", translate("Preproxy"))
-			o:depends("node", v.id)
-			o.rmempty = false
-			o.cfgvalue = get_cfgvalue(v.id, "preproxy_enabled")
-			o.write = get_write(v.id, "preproxy_enabled")
-
-			o = s:taboption("Main", ListValue, vid .. "-main_node", string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
-			o:depends(vid .. "-preproxy_enabled", "1")
-			o.template = appname .. "/cbi/nodes_listvalue"
-			o.group = {}
-			for k1, v1 in pairs(socks_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(balancing_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(urltest_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(iface_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(normal_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			if #o.keylist > 0 then
-				o.default = o.keylist[1]
-			end
-			o.cfgvalue = get_cfgvalue(v.id, "main_node")
-			o.write = get_write(v.id, "main_node")
-
-			o = s:taboption("Main", Flag, vid .. "-fakedns", "FakeDNS")
-			o:depends("node", v.id)
-			o.cfgvalue = get_cfgvalue(v.id, "fakedns")
-			o.write = get_write(v.id, "fakedns")
-			o.remove = get_remove(v.id, "fakedns")
-
-			if (has_singbox and has_xray) or (v.type == "sing-box" and not has_singbox) or (v.type == "Xray" and not has_xray) then
-				type:depends("node", v.id)
-			else
-				type:depends({ __hide = true }) -- Always hidden.
-			end
-
-			m.uci:foreach(appname, "shunt_rules", function(e)
-				local id = e[".name"]
-				local node_option = vid .. "-" .. id .. "_node"
-				if id and e.remarks then
-					o = s:taboption("Main", ListValue, node_option, string.format('* <a href="%s" target="_blank">%s</a>', api.url("shunt_rules", id), e.remarks))
-					o.cfgvalue = get_cfgvalue(v.id, id)
-					o.write = get_write(v.id, id)
-					o.remove = get_remove(v.id, id)
-					o:depends("node", v.id)
-					o:value("", translate("Close (Not use)"))
-					o:value("_default", translate("Use default node"))
-					o:value("_direct", translate("Direct Connection"))
-					o:value("_blackhole", translate("Blackhole (Block)"))
-					o.template = appname .. "/cbi/nodes_listvalue"
-					o.group = {"","","",""}
-
-					local pt = s:taboption("Main", ListValue, vid .. "-".. id .. "_proxy_tag", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
-					pt.cfgvalue = get_cfgvalue(v.id, id .. "_proxy_tag")
-					pt.write = get_write(v.id, id .. "_proxy_tag")
-					pt.remove = get_remove(v.id, id .. "_proxy_tag")
-					o:value("", translate("Close (Not use)"))
-					pt:value("main", translate("Use preproxy node"))
-
-					local fakedns_tag = s:taboption("Main", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"), translate("Use FakeDNS work in the domain that proxy."))
-					fakedns_tag.cfgvalue = get_cfgvalue(v.id, id .. "_fakedns")
-					fakedns_tag.write = get_write(v.id, id .. "_fakedns")
-					fakedns_tag.remove = get_remove(v.id, id .. "_fakedns")
-
-					for k1, v1 in pairs(socks_list) do
-						o:value(v1.id, v1.remark)
-						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
-					end
-					for k1, v1 in pairs(balancing_list) do
-						o:value(v1.id, v1.remark)
-						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-					end
-					for k1, v1 in pairs(urltest_list) do
-						o:value(v1.id, v1.remark)
-						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-					end
-					for k1, v1 in pairs(iface_list) do
-						o:value(v1.id, v1.remark)
-						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-					end
-					for k1, v1 in pairs(normal_list) do
-						o:value(v1.id, v1.remark)
-						o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-						pt:depends({ [node_option] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
-						fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
-					end
-					if v.default_node ~= "_direct" or v.default_node ~= "_blackhole" then
-						fakedns_tag:depends({ [node_option] = "_default", [vid .. "-fakedns"] = "1" })
+				local function get_remove(shunt_node_id, option)
+					return function(self, section)
+						if s.fields["node"]:formvalue(section) == shunt_node_id then
+							m:del(shunt_node_id, option)
+						end
 					end
 				end
-			end)
+				v.id = v[".name"]
+				local vid = v.id
+				s:tab("Shunt", translate("Shunt Rule"))
+				s:tab("ShuntDNS", translate("Shunt Rule") .. " DNS")
+				-- shunt node type, Sing-Box or Xray
+				local type = s:taboption("Shunt", ListValue, vid .. "-type", translate("Type"))
+				if has_singbox then
+					type:value("sing-box", translate("Sing-Box"))
+				end
+				if has_xray then
+					type:value("Xray", translate("Xray"))
+				end
+				type.cfgvalue = get_cfgvalue(v.id, "type")
+				type.write = get_write(v.id, "type")
+				
+				-- pre-proxy
+				o = s:taboption("Shunt", Flag, vid .. "-preproxy_enabled", translate("Preproxy"))
+				o:depends("node", v.id)
+				o.rmempty = false
+				o.cfgvalue = get_cfgvalue(v.id, "preproxy_enabled")
+				o.write = get_write(v.id, "preproxy_enabled")
 
-			local id = "default_node"
-			o = s:taboption("Main", ListValue, vid .. "-" .. id, string.format('* <a style="color:red">%s</a>', translate("Default")))
-			o.cfgvalue = get_cfgvalue(v.id, id)
-			o.write = get_write(v.id, id)
-			o.remove = get_remove(v.id, id)
-			o:depends("node", v.id)
-			o.default = "_direct"
-			o:value("_direct", translate("Direct Connection"))
-			o:value("_blackhole", translate("Blackhole (Block)"))
-			o.template = appname .. "/cbi/nodes_listvalue"
-			o.group = {"",""}
-			for k1, v1 in pairs(socks_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(balancing_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(urltest_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(iface_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
-			for k1, v1 in pairs(normal_list) do
-				o:value(v1.id, v1.remark)
-				o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
-			end
+				o = s:taboption("Shunt", ListValue, vid .. "-main_node", string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
+				o:depends(vid .. "-preproxy_enabled", "1")
+				o.template = appname .. "/cbi/nodes_listvalue"
+				o.group = {}
+				for k1, v1 in pairs(socks_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(balancing_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(urltest_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(iface_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(normal_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				if #o.keylist > 0 then
+					o.default = o.keylist[1]
+				end
+				o.cfgvalue = get_cfgvalue(v.id, "main_node")
+				o.write = get_write(v.id, "main_node")
 
-			local id = "default_proxy_tag"
-			o = s:taboption("Main", ListValue, vid .. "-" .. id, string.format('* <a style="color:red">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
-			o.cfgvalue = get_cfgvalue(v.id, id)
-			o.write = get_write(v.id, id)
-			o.remove = get_remove(v.id, id)
-			o:value("", translate("Close (Not use)"))
-			o:value("main", translate("Use preproxy node"))
-			for k1, v1 in pairs(normal_list) do
-				if v1.protocol ~= "_balancing" and v1.protocol ~= "_urltest" then
-					o:depends({ [vid .. "-default_node"] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
+				o = s:taboption("ShuntDNS", Flag, vid .. "-fakedns", "FakeDNS")
+				o:depends("node", v.id)
+				o.cfgvalue = get_cfgvalue(v.id, "fakedns")
+				o.write = get_write(v.id, "fakedns")
+				o.remove = get_remove(v.id, "fakedns")
+
+				if (has_singbox and has_xray) or (v.type == "sing-box" and not has_singbox) or (v.type == "Xray" and not has_xray) then
+					type:depends("node", v.id)
+				else
+					type:depends({ __hide = true }) -- Always hidden.
+				end
+
+				m.uci:foreach(appname, "shunt_rules", function(e)
+					local id = e[".name"]
+					local node_option = vid .. "-" .. id .. "_node"
+					if id and e.remarks then
+						o = s:taboption("Shunt", ListValue, node_option, string.format('* <a href="%s" target="_blank">%s</a>', api.url("shunt_rules", id), e.remarks))
+						o.cfgvalue = get_cfgvalue(v.id, id)
+						o.write = get_write(v.id, id)
+						o.remove = get_remove(v.id, id)
+						o:depends("node", v.id)
+						o:value("", translate("Close (Not use)"))
+						o:value("_default", translate("Use default node"))
+						o:value("_direct", translate("Direct Connection"))
+						o:value("_blackhole", translate("Blackhole (Block)"))
+						o.template = appname .. "/cbi/nodes_listvalue"
+						o.group = {"","","",""}
+
+						local pt = s:taboption("Shunt", ListValue, vid .. "-".. id .. "_proxy_tag", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
+						pt.cfgvalue = get_cfgvalue(v.id, id .. "_proxy_tag")
+						pt.write = get_write(v.id, id .. "_proxy_tag")
+						pt.remove = get_remove(v.id, id .. "_proxy_tag")
+						o:value("", translate("Close (Not use)"))
+						pt:value("main", translate("Use preproxy node"))
+
+						local fakedns_tag = s:taboption("ShuntDNS", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"))
+						fakedns_tag.cfgvalue = get_cfgvalue(v.id, id .. "_fakedns")
+						fakedns_tag.write = get_write(v.id, id .. "_fakedns")
+						fakedns_tag.remove = get_remove(v.id, id .. "_fakedns")
+
+						for k1, v1 in pairs(socks_list) do
+							o:value(v1.id, v1.remark)
+							o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+							fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
+						end
+						for k1, v1 in pairs(balancing_list) do
+							o:value(v1.id, v1.remark)
+							o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+						end
+						for k1, v1 in pairs(urltest_list) do
+							o:value(v1.id, v1.remark)
+							o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+						end
+						for k1, v1 in pairs(iface_list) do
+							o:value(v1.id, v1.remark)
+							o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+						end
+						for k1, v1 in pairs(normal_list) do
+							o:value(v1.id, v1.remark)
+							o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+							pt:depends({ [node_option] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
+							fakedns_tag:depends({ [node_option] = v1.id, [vid .. "-fakedns"] = "1" })
+						end
+						if v.default_node ~= "_direct" or v.default_node ~= "_blackhole" then
+							fakedns_tag:depends({ [node_option] = "_default", [vid .. "-fakedns"] = "1" })
+						end
+					end
+				end)
+
+				local id = "default_node"
+				o = s:taboption("Shunt", ListValue, vid .. "-" .. id, string.format('* <a style="color:red">%s</a>', translate("Default")))
+				o.cfgvalue = get_cfgvalue(v.id, id)
+				o.write = get_write(v.id, id)
+				o.remove = get_remove(v.id, id)
+				o:depends("node", v.id)
+				o.default = "_direct"
+				o:value("_direct", translate("Direct Connection"))
+				o:value("_blackhole", translate("Blackhole (Block)"))
+				o.template = appname .. "/cbi/nodes_listvalue"
+				o.group = {"",""}
+				for k1, v1 in pairs(socks_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(balancing_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(urltest_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(iface_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+				for k1, v1 in pairs(normal_list) do
+					o:value(v1.id, v1.remark)
+					o.group[#o.group+1] = (v1.group and v1.group ~= "") and v1.group or translate("default")
+				end
+
+				local id = "default_proxy_tag"
+				o = s:taboption("Shunt", ListValue, vid .. "-" .. id, string.format('* <a style="color:red">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
+				o.cfgvalue = get_cfgvalue(v.id, id)
+				o.write = get_write(v.id, id)
+				o.remove = get_remove(v.id, id)
+				o:value("", translate("Close (Not use)"))
+				o:value("main", translate("Use preproxy node"))
+				for k1, v1 in pairs(normal_list) do
+					if v1.protocol ~= "_balancing" and v1.protocol ~= "_urltest" then
+						o:depends({ [vid .. "-default_node"] = v1.id, [vid .. "-preproxy_enabled"] = "1" })
+					end
 				end
 			end
 		end
