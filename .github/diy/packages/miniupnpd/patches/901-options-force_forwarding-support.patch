@@ -71,12 +71,12 @@
 +++ b/options.h
 @@ -26,6 +26,7 @@ enum upnpconfigoptions {
  #endif
- 	UPNPEXT_IP,				/*!< ext_ip */
- 	UPNPEXT_ALLOW_PRIVATE_IPV4,	/*!< ext_allow_private_ipv4 */
-+	UPNP_FORCE_FORWARDING, /*!< force forwarding enable for upnp */
- 	UPNPEXT_PERFORM_STUN,		/*!< ext_perform_stun */
- 	UPNPEXT_STUN_HOST,		/*!< ext_stun_host */
- 	UPNPEXT_STUN_PORT,		/*!< ext_stun_port */
+ 	UPNPEXT_IP,				/* ext_ip */
+ 	UPNPEXT_ALLOW_PRIVATE_IPV4,	/* ext_allow_private_ipv4 */
++	UPNP_FORCE_FORWARDING, /* force forwarding enable for upnp */
+ 	UPNPEXT_PERFORM_STUN,		/* ext_perform_stun */
+ 	UPNPEXT_STUN_HOST,		/* ext_stun_host */
+ 	UPNPEXT_STUN_PORT,		/* ext_stun_port */
 
 --- a/testgetifaddr.c
 +++ b/testgetifaddr.c
