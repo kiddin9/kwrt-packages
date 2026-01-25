@@ -2,10 +2,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ssd1306
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_DATE:=2024-10-11
-PKG_SOURCE_VERSION:=19128ed4b6108408fea05b9d0551236b6d638dbc
+PKG_SOURCE_VERSION:=7ea348e41accda62c9d5febb74812ac90e5e44cf
 PKG_SOURCE:=ssd1306_linux-$(PKG_SOURCE_DATE).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/armlabs/ssd1306_linux/tar.gz/$(PKG_SOURCE_VERSION)?
 PKG_HASH:=skip

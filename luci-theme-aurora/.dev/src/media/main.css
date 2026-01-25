@@ -1043,7 +1043,19 @@
 
   @layer card {
     .cbi-section {
-      @apply mb-3 overflow-visible rounded-2xl p-6 transition-all duration-300 empty:hidden max-md:p-3;
+      @apply mb-3 overflow-visible rounded-2xl p-5 max-md:p-3;
+
+      /**
+       * Fix tab switching layout issue where `h-0` + invisible still leaves box spacing.
+       * If you wonder why this exists, ask the stupid LuCI `channel_analysis.js`.
+       */
+
+      &[data-tab-title] {
+        @apply m-0 p-0;
+      }
+      &[data-tab-active="true"] {
+        @apply mb-3 p-5 max-md:p-3;
+      }
 
       #maincontent & {
         @apply border-card-border/30 bg-card-bg hover:border-card-border/50 border shadow-lg hover:shadow-xl;
@@ -1762,10 +1774,10 @@
     }
 
     [data-tab-title] {
-      @apply hidden h-0 overflow-hidden transition-all duration-300 ease-in;
+      @apply invisible h-0 overflow-hidden;
     }
     [data-tab-active="true"] {
-      @apply block h-auto overflow-visible;
+      @apply visible h-auto overflow-visible;
     }
   }
 
