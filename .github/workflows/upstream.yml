@@ -364,6 +364,7 @@ jobs:
         dsvpn glorytun-udp glorytun grpcurl ipcalc luci-app-dsvpn luci-app-glorytun-tcp luci-app-glorytun-udp luci-app-mail luci-app-mlvpn luci-app-mptcp luci-app-nginx-ha luci-app-sqm-autorate luci-app-packet-capture luci-app-iperf luci-theme-openmptcprouter sqm-autorate speedtestc mlvpn mptcp tcptraceroute tracebox tsping atinout z8102
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/luci" applications/luci-app-yt-dlp applications/luci-app-apfree-wifidog applications/luci-app-ss-redir
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/packages" net/ss-redir
+        git_sparse_clone istoreos-24.10 "https://github.com/jjm2473/luci" applications/luci-app-dockerman
         ) &
         git_sparse_clone openwrt-25.12 "https://github.com/immortalwrt/packages" net/n2n net/dae net/frp \
         net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
@@ -389,7 +390,7 @@ jobs:
         git_sparse_clone openwrt-25.12 "https://github.com/immortalwrt/luci" applications collections/luci-nginx protocols/luci-proto-minieap protocols/luci-proto-quectel themes/luci-theme-argon
         rm -rf applications/luci-app-frp*;mv -n luciapp/!(luci-app-filetransfer|luci-app-ksmbd) applications/; rm -rf luciapp
 
-        for ipk in $(ls -d applications/!(luci-app-rclone|luci-app-dockerman|luci-app-smartdns|luci-app-3ginfo-lite|luci-app-aria2|luci-app-ddns|luci-app-package-manager|luci-app-ksmbd|luci-app-samba4|luci-app-watchcat|luci-app-upnp|luci-app-transmission)/); do
+        for ipk in $(ls -d applications/!(luci-app-rclone|luci-app-smartdns|luci-app-3ginfo-lite|luci-app-aria2|luci-app-ddns|luci-app-package-manager|luci-app-ksmbd|luci-app-samba4|luci-app-watchcat|luci-app-upnp|luci-app-transmission)/); do
         	if [[ $(ls $ipk/po | wc -l) -gt 4 ]]; then
             rm -rf $ipk
         	fi
