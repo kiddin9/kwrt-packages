@@ -1,0 +1,133 @@
+--- a/luci-app-dockerman/luasrc/model/cbi/dockerman/container.lua
++++ b/luci-app-dockerman/luasrc/model/cbi/dockerman/container.lua
+@@ -37,7 +37,15 @@ local get_ports = function(d)
+ 
+ 	if d.HostConfig and d.HostConfig.PortBindings then
+ 		for inter, out in pairs(d.HostConfig.PortBindings) do
+-			data = (data and (data .. "<br />") or "") .. out[1]["HostPort"] .. ":" .. inter
++			if out[1] and out[1]["HostPort"] then
++				local host_ip = ""
++				if out[1].HostIp and out[1].HostIp ~= "" then
++					host_ip = out[1].HostIp
++				else
++					host_ip = "*"
++				end
++				local line = host_ip  .. ":" .. out[1]["HostPort"] .. ":" .. inter
++				data = (data and (data .. "<br />") or "") .. line
+ 		end
+ 	end
+ 
+
+--- a/luci-app-dockerman/luasrc/model/cbi/dockerman/containers.lua
++++ b/luci-app-dockerman/luasrc/model/cbi/dockerman/containers.lua
+@@ -67,17 +67,38 @@ function get_containers()
+ 
+ 		if v.Ports and next(v.Ports) ~= nil then
+ 			data[index]["_ports"] = nil
+-			for _,v2 in ipairs(v.Ports) do
+-				data[index]["_ports"] = (data[index]["_ports"] and (data[index]["_ports"] .. ", ") or "")
+-					.. ((v2.PublicPort and v2.Type and v2.Type == "tcp") and ('<a href="javascript:void(0);" onclick="window.open((window.location.origin.match(/^(.+):\\d+$/) && window.location.origin.match(/^(.+):\\d+$/)[1] || window.location.origin) + \':\' + '.. v2.PublicPort ..', \'_blank\');">') or "")
+-					.. (v2.PublicPort and (v2.PublicPort .. ":") or "")  .. (v2.PrivatePort and (v2.PrivatePort .."/") or "") .. (v2.Type and v2.Type or "")
+-					.. ((v2.PublicPort and v2.Type and v2.Type == "tcp")and "</a>" or "")
++			for _, v2 in ipairs(v.Ports) do
++				local port_string = ""
++			
++				-- Add clickable link for TCP ports
++				if v2.PublicPort and v2.Type == "tcp" then
++					local url = (v2.IP and v2.IP ~= "" and v2.IP ~= "0.0.0.0" and v2.IP ~= "::") 
++						and ("'http://" .. (v2.IP:find(":") and ("[" .. v2.IP .. "]") or v2.IP) .. ":" .. v2.PublicPort .. "'")
++						or ("(window.location.origin.match(/^(.+):\\\\d+$/) && window.location.origin.match(/^(.+):\\\\d+$/)[1] || window.location.origin) + ':" .. v2.PublicPort .. "'")
++					port_string = '<a href="javascript:void(0);" onclick="window.open(' .. url .. ', \'_blank\');">'
++				end
++			
++				-- Build display string: IP:PublicPort:PrivatePort/Type
++				port_string = port_string .. (v2.IP and v2.IP ~= "" 
++					 and v2.IP ~= "0.0.0.0" and v2.IP ~= "::" and (v2.IP .. ":") or "*:")
++					.. (v2.PublicPort and (v2.PublicPort .. ":") or "")
++					.. (v2.PrivatePort and (v2.PrivatePort .. "/") or "")
++					.. (v2.Type or "")
++					.. (v2.PublicPort and v2.Type == "tcp" and "</a>" or "")
++			
++				data[index]["_ports"] = (data[index]["_ports"] and (data[index]["_ports"] .. ", ") or "") .. port_string
+ 			end
+ 		end
+ 
+ 		for ii,iv in ipairs(images) do
+ 			if iv.Id == v.ImageID then
+-				data[index]["_image"] = iv.RepoTags and iv.RepoTags[1] or (next(iv.RepoDigests) and (iv.RepoDigests[1]:gsub("(.-)@.+", "%1") .. ":&lt;none&gt;")) or ""
++				if iv.RepoTags and iv.RepoTags[1] then
++					data[index]["_image"] = iv.RepoTags[1]
++				elseif iv.RepoDigests and iv.RepoDigests[1] then
++					data[index]["_image"] = iv.RepoDigests[1]:gsub("(.-)@.+", "%1") .. ":<none>"
++				else
++					data[index]["_image"] = "<none>"
++				end
+ 			end
+ 		end
+ 
+
+--- a/luci-app-dockerman/luasrc/model/cbi/dockerman/newcontainer.lua
++++ b/luci-app-dockerman/luasrc/model/cbi/dockerman/newcontainer.lua
+@@ -408,7 +408,14 @@ elseif cmd_line and cmd_line:match("^duplicate/[^/]+$") then
+ 		if create_body.HostConfig.PortBindings and type(create_body.HostConfig.PortBindings) == "table" then
+ 			default_config.publish = {}
+ 			for k, v in pairs(create_body.HostConfig.PortBindings) do
+-				table.insert( default_config.publish, v[1].HostPort..":"..k:match("^(%d+)/.+").."/"..k:match("^%d+/(.+)") )
++				local host_ip = ""
++				if v[1].HostIp and v[1].HostIp ~= "" then
++					host_ip = v[1].HostIp .. ":"
++				end
++				local host_port = v[1].HostPort
++				local container_port = k:match("^(%d+)/.+")
++				local protocol = k:match("^%d+/(.+)")
++				table.insert(default_config.publish, host_ip .. host_port .. ":" .. container_port .. "/" .. protocol)
+ 			end
+ 		end
+ 
+@@ -544,7 +551,7 @@ o.default = default_config.volume or nil
+ local d_publish = s:option(DynamicList, "publish",
+ 	translate("Exposed Ports(-p)"),
+ 	translate("Publish container's port(s) to the host"))
+-d_publish.placeholder = "2200:22/tcp"
++d_publish.placeholder = "[192.168.1.0:]2200:22/tcp"
+ d_publish.rmempty = true
+ d_publish.default = default_config.publish or nil
+ 
+@@ -768,13 +775,22 @@ m.handle = function(self, state, data)
+ 
+ 	tmp = data.publish or {}
+ 	for i, v in ipairs(tmp) do
+-		for v1 ,v2 in string.gmatch(v, "(%d+):([^%s]+)") do
+-			local _,_,p= v2:find("^%d+/(%w+)")
+-			if p == nil then
+-				v2=v2..'/tcp'
++		local ip, host_port, container_port = v:match("^([^:]+):(%d+):([^%s]+)$")
++		if not container_port then
++			host_port, container_port = v:match("^(%d+):([^%s]+)$")
++		end
++
++		if container_port then
++			if not container_port:match("^%d+/(%w+)$") then
++				container_port = container_port .. "/tcp"
+ 			end
+-			portbindings[v2] = {{HostPort=v1}}
+-			exposedports[v2] = {HostPort=v1}
++			local binding = { HostPort = host_port }
++			if ip then
++				binding["HostIp"] = ip
++			end
++
++			portbindings[container_port] = { binding }
++			exposedports[container_port] = {HostPort = host_port}
+ 		end
+ 	end
+ 
+--- a/luci-app-dockerman/root/etc/uci-defaults/luci-app-dockerman
++++ b/luci-app-dockerman/root/etc/uci-defaults/luci-app-dockerman
+@@ -4,3 +4,6 @@ uci -q batch <<-EOF >/dev/null
+ 	set uhttpd.main.script_timeout="360"
+ 	commit uhttpd
+ EOF
++
++/etc/init.d/dockerd restart
++
