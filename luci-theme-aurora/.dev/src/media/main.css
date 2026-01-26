@@ -499,6 +499,10 @@
       }
     }
 
+    .control-group {
+      @apply mt-1;
+    }
+
     .control-group,
     .cbi-page-actions > div,
     .cbi-section-actions > div {
@@ -1689,15 +1693,17 @@
       }
 
       & > .cbi-value-field {
-        @apply flex max-w-full flex-1 flex-col gap-3;
-        &:not(:has(.cbi-dynlist)) {
-          @apply flex-row flex-wrap;
-        }
+        @apply max-w-full flex-1;
+
         &:has(> .cbi-dropdown[disabled]) {
           @apply cursor-not-allowed;
         }
         & .cbi-value-description {
-          @apply ml-3 break-words text-slate-500 dark:text-slate-400;
+          @apply relative mt-1 pl-4 leading-none break-words text-slate-500 dark:text-slate-400;
+
+          &:not(:empty) {
+            @apply before:bg-info-text before:absolute before:-left-0.5 before:inline-block before:size-4 before:[mask:url('@assets/icons/info.svg')_center/cover_no-repeat];
+          }
         }
       }
 
