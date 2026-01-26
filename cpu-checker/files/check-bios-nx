@@ -1,0 +1,66 @@
+#!/bin/sh
+# Copyright 2010, Canonical, Ltd.
+# License: GPLv2
+# Author: Kees Cook <kees@ubuntu.com>
+set -e
+
+export LANG=C
+
+usage() {
+    echo "Usage: $0 [options]"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help  show this help message and exit"
+    echo "  --verbose   Explain in detail what has been detected"
+}
+
+report() {
+    if [ -n "$VERBOSE" ]; then
+        echo "$@" >/dev/stderr
+    fi
+}
+
+VERBOSE=
+
+TEMP=$(getopt -o h --long verbose,help -n check-bios-nx -- "$@")
+eval set -- "$TEMP"
+
+while :; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ;;
+        --verbose) VERBOSE=1; shift ;;
+        --) shift ; break ;;
+        *) usage >&2 ; exit 2 ;;
+    esac
+done
+
+export VERBOSE
+
+if ! uname -m | egrep -q '^(i.86|x86_64)$' ; then
+    report "This script is currently only useful on x86-based CPUs"
+    exit 0
+fi
+
+# Prepare MSR access
+msr="/dev/cpu/0/msr"
+if [ ! -r "$msr" ]; then
+        modprobe msr
+fi
+if [ ! -r "$msr" ]; then
+        echo "$0: You must be root to run this check." >&2
+        exit 2
+fi
+
+# Check MSR_IA32_MISC_ENABLE's bit 34, NX_DISABLE
+BIT=$(rdmsr --bitfield 34:34 0x1a0 2>/dev/null || true)
+if [ "$BIT" = "1" ]; then
+	report "FAIL: the NX bit is being filtered by the BIOS on this CPU!"
+	exit 1
+else
+	if egrep -m1 -q '^flags[[:blank:]]*:.*\<nx\>' /proc/cpuinfo ; then
+		report "ok: the NX bit is operational on this CPU."
+	else
+		report "WARNING: the NX bit is not available for this CPU."
+	fi
+fi
+exit 0
