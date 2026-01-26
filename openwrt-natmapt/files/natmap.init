@@ -149,6 +149,14 @@ validate_section_natmap() {
 		'log_stderr:bool:1'
 }
 
+# ip_match <hostname>
+hostname_match() {
+	[ "$#" -ge 1 ] || return 1
+	local _hostname="$1"
+
+	echo "$_hostname" | grep -E "^[[:alnum:]][-[:alnum:]]{0,62}(\.[[:alnum:]][-[:alnum:]]{0,62})*\.?$"
+}
+
 # ip_match <family> <ipaddr>
 ip_match() {
 	[ "$#" -ge 2 ] || return 1
@@ -367,7 +375,7 @@ launcher() {
 		[ "$forward_mode" = "dnat" -a "$family" = "ipv6" ] && >&2 echo "$(basename $0): section $1 option forward_mode 'dnat' not support under IPv6" && let error++
 		[ "$forward_mode" != "dnat" ] && natloopback=0
 		if [ -n "$forward_target" ]; then
-			if grep -q "[a-zA-Z]" <<< "$forward_target"; then
+			if [ -n "$(hostname_match "$forward_target")" -a -z "$(ip_match ipv4 "$forward_target")" ]; then
 				# hostname
 				[ "$forward_mode" = "dnat" ] && >&2 echo "$(basename $0): section $1 option forward_target '$forward_target', hostname not support under DNAT mode" && let error++
 			else

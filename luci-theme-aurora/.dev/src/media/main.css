@@ -1045,11 +1045,6 @@
     .cbi-section {
       @apply mb-3 overflow-visible rounded-2xl p-5 max-md:p-3;
 
-      /**
-       * Fix tab switching layout issue where `h-0` + invisible still leaves box spacing.
-       * If you wonder why this exists, ask the stupid LuCI `channel_analysis.js`.
-       */
-
       &[data-tab-title] {
         @apply m-0 p-0;
       }
@@ -1858,7 +1853,7 @@
   }
 
   .spinning {
-    @apply relative !pl-8;
+    @apply relative inline-block !pl-8;
     @apply before:absolute before:top-1/2 before:left-[6px] before:size-5 before:-translate-y-1/2 before:animate-spin before:bg-current before:[mask:url('@assets/icons/spinning.svg')_center/cover_no-repeat];
     #view > & {
       @apply first:mx-auto first:grid first:min-h-[15vh] first:w-fit first:place-items-center first:max-md:min-h-dvh;

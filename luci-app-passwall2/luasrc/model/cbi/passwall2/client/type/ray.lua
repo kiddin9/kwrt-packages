@@ -302,6 +302,7 @@ if load_shunt_options then -- [[ Shunt Start ]]
 				for k, v in pairs(balancers_table) do
 					o:value(v.id, v.remark)
 					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
 				end
 				for k, v in pairs(iface_table) do
 					o:value(v.id, v.remark)
@@ -533,7 +534,7 @@ o:depends({ [_n("tls")] = true, [_n("reality")] = false })
 
 o = s:option(Flag, _n("ech"), translate("ECH"))
 o.default = "0"
-o:depends({ [_n("tls")] = true, [_n("flow")] = "", [_n("reality")] = false })
+o:depends({ [_n("tls")] = true, [_n("reality")] = false })
 o:depends({ [_n("protocol")] = "hysteria2" })
 
 o = s:option(TextValue, _n("ech_config"), translate("ECH Config"))

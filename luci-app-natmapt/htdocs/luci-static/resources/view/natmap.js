@@ -467,7 +467,7 @@ return view.extend({
 		o.validate = function(section_id, value) {
 			const forward_mode = this.section.getUIElement(section_id, 'forward_mode').getValue();
 
-			if (new RegExp(/[a-zA-Z]/).test(value) && forward_mode === 'dnat')
+			if (new RegExp(/^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})*\.?$/).test(value) && !new RegExp(/^[0-9]+(\.[0-9]+){3}$/).test(value) && forward_mode === 'dnat')
 				return _('Expecting: %s').format(_('The hostname not support under DNAT mode'));
 
 			return true;
