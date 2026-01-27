@@ -805,6 +805,25 @@ function geo_view()
 		http.write(i18n.translate("Please enter query content!"))
 		return
 	end
+	local function get_rules(str, type)
+		local remarks = {}
+		uci:foreach(appname, "shunt_rules", function(s)
+			local list
+			if type == "geoip" then list = s.ip_list else list = s.domain_list end
+			for line in string.gmatch((list or ""), "[^\r\n]+") do
+				if line ~= "" and not line:find("#") then
+					local prefix, main = line:match("^(.-):(.*)")
+					if not main then main = line end
+					if type == "geoip" and (api.datatypes.ipaddr(str) or api.datatypes.ip6addr(str)) then
+						if main:find(str, 1, true) and s.remarks then remarks[#remarks + 1] = s.remarks end
+					else
+						if main == str and s.remarks then remarks[#remarks + 1] = s.remarks end
+					end
+				end
+			end
+		end)
+		return remarks
+	end
 	local geo_dir = (uci:get(appname, "@global_rules[0]", "v2ray_location_asset") or "/usr/share/v2ray/"):match("^(.*)/")
 	local geosite_path = geo_dir .. "/geosite.dat"
 	local geoip_path = geo_dir .. "/geoip.dat"
@@ -819,13 +838,22 @@ function geo_view()
 		cmd = string.format("geoview -type %s -action lookup -input '%s' -value '%s' -lowmem=true", geo_type, file_path, value)
 		geo_string = luci.sys.exec(cmd):lower()
 		if geo_string ~= "" then
-			local lines = {}
-			for line in geo_string:gmatch("([^\n]*)\n?") do
-				if line ~= "" then
-					table.insert(lines, geo_type .. ":" .. line)
+			local lines, rules, seen = {}, {}, {}
+			for line in geo_string:gmatch("([^\n]+)") do
+				lines[#lines + 1] = geo_type .. ":" .. line
+				for _, r in ipairs(get_rules(line, geo_type) or {}) do
+					if not seen[r] then seen[r] = true; rules[#rules + 1] = r end
 				end
 			end
+			for _, r in ipairs(get_rules(value, geo_type) or {}) do
+				if not seen[r] then seen[r] = true; rules[#rules + 1] = r end
+			end
 			geo_string = table.concat(lines, "\n")
+			if #rules > 0 then
+				geo_string = geo_string .. "\n--------------------\n"
+				geo_string = geo_string .. i18n.translate("Rules containing this value:") .. "\n"
+				geo_string = geo_string .. table.concat(rules, "\n")
+			end
 		end
 	elseif action == "extract" then
 		local prefix, list = value:match("^(geoip:)(.*)$")

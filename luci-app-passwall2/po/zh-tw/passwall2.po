@@ -1849,6 +1849,9 @@ msgstr "請輸入查詢內容！"
 msgid "No results were found!"
 msgstr "未找到任何結果！"
 
+msgid "Rules containing this value:"
+msgstr "所在規則列表："
+
 msgid "Domain/IP Query"
 msgstr "域名/IP 查詢"
 

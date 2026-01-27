@@ -1,0 +1,28 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=02
+USE_PROCD=1
+
+start_service() {
+	[ -e /usr/sbin/libvirtd ] || return 0
+
+	procd_open_instance virtlogd
+	procd_set_param command /usr/sbin/virtlogd
+	procd_set_param stderr 1
+	procd_set_param respawn
+	procd_close_instance
+
+	procd_open_instance virtlockd
+	procd_set_param command /usr/sbin/virtlockd
+	procd_set_param stderr 1
+	procd_set_param respawn
+	procd_close_instance
+
+	procd_open_instance libvirtd
+	procd_set_param command /usr/sbin/libvirtd
+	procd_set_param stderr 1
+	procd_set_param respawn
+	procd_close_instance
+
+}

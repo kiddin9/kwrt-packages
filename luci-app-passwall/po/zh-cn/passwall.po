@@ -1996,6 +1996,9 @@ msgstr "请输入查询内容！"
 msgid "No results were found!"
 msgstr "未找到任何结果！"
 
+msgid "Rules containing this value:"
+msgstr "所在规则列表："
+
 msgid "Domain/IP Query"
 msgstr "域名/IP 查询"
 
