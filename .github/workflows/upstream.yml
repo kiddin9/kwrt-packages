@@ -365,6 +365,7 @@ jobs:
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/luci" applications/luci-app-yt-dlp applications/luci-app-apfree-wifidog applications/luci-app-ss-redir
         git_sparse_clone chawrt/24.10 "https://github.com/liudf0716/packages" net/ss-redir
         git_sparse_clone istoreos-24.10 "https://github.com/jjm2473/luci" applications/luci-app-dockerman
+        git_sparse_clone istoreos-24.10 "https://github.com/jjm2473/packages" utils/dockerd
         ) &
         git_sparse_clone openwrt-25.12 "https://github.com/immortalwrt/packages" net/n2n net/dae net/frp \
         net/amule net/cdnspeedtest net/minieap net/ddns-go net/sysuh3c net/3proxy net/cloudreve \
@@ -376,7 +377,7 @@ jobs:
         net/vsftpd net/smartdns net/miniupnpd net/p910nd \
         net/ariang libs/wxbase libs/rapidjson libs/libcron libs/quickjspp libs/toml11 libs/libdvbcsa \
         libs/libdouble-conversion libs/qt6base libs/jpcre2 libs/alac libs/libcryptopp libs/antileech \
-        utils/qt6tools utils/dockerd utils/cpulimit utils/sendat utils/cups-bjnp utils/rhash utils/boltbrowser \
+        utils/qt6tools utils/cpulimit utils/sendat utils/cups-bjnp utils/rhash utils/boltbrowser \
         utils/phicomm-k3screenctrl utils/joker utils/7z utils/dhrystone utils/supervisor utils/tinymembench utils/pcat-mgr utils/fan2go \
         utils/coremark utils/watchcat multimedia/you-get multimedia/lux multimedia/gmediarender multimedia/ykdl multimedia/gallery-dl \
         sound/spotifyd devel/go-rice devel/rust-bindgen admin/gotop \
