@@ -480,7 +480,7 @@ function add_node()
 		uci:set(appname, uuid, "group", group)
 	end
 
-	uci:set(appname, uuid, "type", "Xray")
+	uci:set(appname, uuid, "type", "Socks")
 
 	if redirect == "1" then
 		api.uci_save(uci, appname)

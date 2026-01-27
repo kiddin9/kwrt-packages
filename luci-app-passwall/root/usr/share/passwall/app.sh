@@ -1930,8 +1930,6 @@ get_config() {
 		SMARTDNS_LISTEN_PORT=${NEXT_DNS_LISTEN_PORT}
 		NEXT_DNS_LISTEN_PORT=$(expr $NEXT_DNS_LISTEN_PORT + 1)
 		LOCAL_DNS="127.0.0.1#${SMARTDNS_LOCAL_PORT}"
-		uci -q set smartdns.@smartdns[0].auto_set_dnsmasq=0
-		uci commit smartdns
 	}
 }
 

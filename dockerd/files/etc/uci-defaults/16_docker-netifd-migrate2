@@ -1,0 +1,13 @@
+#!/bin/sh
+
+uci -q set dockerd.globals.iptables=0
+
+uci -q delete firewall.docker.network
+
+DOCKER0_DEVICE=`uci show network | grep -E "^network\\.@device\\[\\d+\\]\\.name='docker0'" | head -n1 | head -c -16`
+
+if [ -n "$DOCKER0_DEVICE" ]; then
+    uci delete "$DOCKER0_DEVICE"
+fi
+uci -q delete network.docker
+uci commit

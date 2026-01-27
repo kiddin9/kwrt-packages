@@ -302,6 +302,7 @@ if load_shunt_options then -- [[ 分流模块 Start ]]
 				for k, v in pairs(balancers_table) do
 					o:value(v.id, v.remark)
 					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
 				end
 				for k, v in pairs(iface_table) do
 					o:value(v.id, v.remark)

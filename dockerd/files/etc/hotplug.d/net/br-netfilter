@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$ACTION" = add -a "x$DEVTYPE" = xbridge ]; then
+    if [ "$DEVICENAME" = "docker0" ] || echo "$DEVICENAME" | grep -qE '^br-[0-9a-f]{12}$'; then
+        if [ "$(uci -q get dockerd.globals.iptables)" = "1" ]; then
+            echo "1" >/sys$DEVPATH/bridge/nf_call_iptables
+        fi
+        if [ "$(uci -q get dockerd.globals.ip6tables)" = "1" ]; then
+            echo "1" >/sys$DEVPATH/bridge/nf_call_ip6tables
+        fi
+    fi
+fi
