@@ -1,0 +1,11 @@
+--- a/docs/meson.build
++++ b/docs/meson.build
+@@ -164,6 +164,8 @@ docs_api_generated = custom_target(
+   ],
+ )
+ 
++subdir_done()
++
+ docs_api_xml = docs_api_generated[0]
+ docs_lxc_api_xml = docs_api_generated[1]
+ docs_qemu_api_xml = docs_api_generated[2]

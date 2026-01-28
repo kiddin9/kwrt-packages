@@ -1689,7 +1689,7 @@
       }
 
       & > .cbi-value-title {
-        @apply text-right font-medium max-md:w-auto max-md:text-left md:flex-[0_0_12rem];
+        @apply pt-1 text-right font-medium max-md:w-auto max-md:text-left md:flex-[0_0_12rem];
       }
 
       & > .cbi-value-field {
@@ -1714,7 +1714,7 @@
     }
 
     .cbi-dynlist {
-      @apply inline-flex w-max flex-col items-start gap-3 max-md:!max-w-full;
+      @apply inline-flex w-max max-w-120 flex-col items-start gap-3 max-md:!max-w-full;
 
       & .item {
         @apply pointer-events-auto relative inline-flex cursor-move flex-col items-start gap-2 self-stretch overflow-hidden rounded-2xl border border-slate-200/40 bg-white py-3 pr-10 pl-4 break-all shadow-sm transition-all duration-200 select-text max-md:w-full max-md:py-2.5 max-md:pr-8 max-md:pl-3 dark:border-slate-600/25 dark:bg-slate-800;

@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libvirt
 PKG_VERSION:=11.10.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://libvirt.org/sources/
@@ -18,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:redhat:libvirt
 
 PKG_BUILD_DEPENDS:=acl augeas curl cyrus-sasl e2fsprogs fuse3 gnutls \
 	libbsd libcap-ng libjson-c libnl libpcap libpciaccess libssh2 libtasn1 libtirpc libudev-zero libxml2 \
-	lvm2 parted readline rpcsvc-proto util-linux
+	lvm2 parted readline rpcsvc-proto util-linux libxslt/host
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/meson.mk
@@ -52,15 +52,18 @@ define Package/libvirt/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libvirt $(1)/usr/lib/
 	$(CP) $(PKG_INSTALL_DIR)/etc/libvirt/* $(1)/etc/libvirt/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/sasl2/libvirt.conf $(1)/etc/sasl2/
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/libvirt/* $(1)/usr/share/libvirt/
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/libvirt/{cpu_map,schemas} $(1)/usr/share/libvirt/
 	$(INSTALL_BIN) ./files/libvirt.init $(1)/etc/init.d/
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DIR) $(1)/usr/share/libvirt
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/libvirt $(1)/usr/include
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/libvirt/api $(1)/usr/share/libvirt
+	$(SED) 's,=/usr,=$(STAGING_DIR)/usr,g' $(1)/usr/lib/pkgconfig/*.pc
 endef
 
 MESON_ARGS += \
@@ -68,7 +71,7 @@ MESON_ARGS += \
 	--libexec=/usr/lib/libvirt \
 	-Dno_git=true \
 	-Daudit=disabled \
-	-Ddocs=disabled \
+	-Ddocs=enabled \
 	-Dfirewalld=disabled \
 	-Dfirewall_backend_priority=nftables \
 	-Dinit_script=none \
