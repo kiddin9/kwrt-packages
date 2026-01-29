@@ -98,7 +98,7 @@ local function fetch_geofile(geo_name, geo_type, url)
 			local content = f:read("*l")
 			f:close()
 			if content then
-				content = content:gsub(down_filename, tmp_path)
+				content = content:gsub("(%x+)%s+.+", "%1  " .. tmp_path)
 				f = io.open(sha_path, "w")
 				if f then
 					f:write(content)

@@ -198,14 +198,17 @@
 
 		{% if (toolbar_enabled): %}
 		<div id="floating-toolbar" class="floating-toolbar">
-			<div class="toolbar-list">
-				{% for (let i = 0; i < length(toolbar_items); i++): %}
-					{% let item = toolbar_items[i]; %}
-					<a href="{{ item.url }}" class="toolbar-btn" title="{{ item.title }}">
-						<img src="{{ media }}/images/{{ item.icon }}?v={{ icon_cache_version }}" class="icon" alt="{{ item.title }}"/>
-					</a>
-				{% endfor %}
-			</div>
+    		<div class="toolbar-list">
+        		<div class="toolbar-list-inner">
+            		{% for (let i = 0; i < length(toolbar_items); i++): %}
+                		{% let item = toolbar_items[i]; %}
+                		<a href="{{ item.url }}" class="toolbar-btn" title="{{ item.title }}">
+                    		<img src="{{ media }}/images/{{ item.icon }}?v={{ icon_cache_version }}" class="icon" alt="{{ item.title }}"/>
+                		</a>
+            		{% endfor %}
+        		</div>
+    		</div>
+    
 			<button class="toolbar-btn toggle" id="toolbar-toggle" title="{{ _('Toggle floating buttons') }}" aria-label="{{ _('Toggle floating buttons') }}">
 				<span class="icon">
 					<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -214,13 +217,14 @@
 				</span>
 			</button>
 		</div>
+
 		<script>
-			(function() {
-				const toolbar = document.getElementById('floating-toolbar');
-				if (toolbar && localStorage.getItem('aurora.toolbarCollapsed') === 'true') {
-					toolbar.classList.add('collapsed');
-				}
-			})();
+    		(function() {
+        		const toolbar = document.getElementById('floating-toolbar');
+        		if (toolbar && localStorage.getItem('aurora.toolbarCollapsed') === 'true') {
+            		toolbar.classList.add('collapsed');
+        		}
+    		})();
 		</script>
 		{% endif %}
 
