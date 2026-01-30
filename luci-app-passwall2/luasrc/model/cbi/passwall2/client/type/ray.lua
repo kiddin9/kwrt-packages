@@ -272,7 +272,10 @@ if load_shunt_options then -- [[ Shunt Start ]]
 			o.default = o.keylist[1]
 		end
 
-		o = s:option(Flag, _n("fakedns"), "FakeDNS")
+		o = s:option(Flag, _n("fakedns"), '<a style="color:#FF8C00">FakeDNS</a>', translate("Use FakeDNS work in the domain that proxy.") .. "<br>" ..
+			translate("Suitable scenarios for let the node servers get the target domain names.") .. "<br>" ..
+			translate("Such as: DNS unlocking of streaming media, reducing DNS query latency, etc.")
+		)
 		o:depends({ [_n("protocol")] = "_shunt" })
 	end
 	m.uci:foreach(appname, "shunt_rules", function(e)
@@ -292,7 +295,7 @@ if load_shunt_options then -- [[ Shunt Start ]]
 				pt:value("", translate("Close (Not use)"))
 				pt:value("main", translate("Use preproxy node"))
 
-				local fakedns_tag = s:option(Flag, _n(e[".name"] .. "_fakedns"), string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"), translate("Use FakeDNS work in the domain that proxy."))
+				local fakedns_tag = s:option(Flag, _n(e[".name"] .. "_fakedns"), string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. "FakeDNS"))
 
 				for k, v in pairs(socks_list) do
 					o:value(v.id, v.remark)

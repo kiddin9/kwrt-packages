@@ -87,6 +87,7 @@ function index()
 	entry({"admin", "services", appname, "save_node_order"}, call("save_node_order")).leaf = true
 	entry({"admin", "services", appname, "save_node_list_opt"}, call("save_node_list_opt")).leaf = true
 	entry({"admin", "services", appname, "update_rules"}, call("update_rules")).leaf = true
+	entry({"admin", "services", appname, "rollback_rules"}, call("rollback_rules")).leaf = true
 	entry({"admin", "services", appname, "subscribe_del_node"}, call("subscribe_del_node")).leaf = true
 	entry({"admin", "services", appname, "subscribe_del_all"}, call("subscribe_del_all")).leaf = true
 	entry({"admin", "services", appname, "subscribe_manual"}, call("subscribe_manual")).leaf = true
@@ -665,6 +666,19 @@ function update_rules()
 	local update = http.formvalue("update")
 	luci.sys.call("lua /usr/share/passwall2/rule_update.lua log '" .. update .. "' > /dev/null 2>&1 &")
 	http_write_json()
+end
+
+function rollback_rules()
+	local arg_type = http.formvalue("type")
+	if arg_type ~= "geoip" and arg_type ~= "geosite" then
+		http_write_json_error()
+		return
+	end
+	local bak_dir = "/tmp/bak_v2ray/"
+	local geo_dir = (uci:get(appname, "@global_rules[0]", "v2ray_location_asset") or "/usr/share/v2ray/")
+	fs.move(bak_dir .. arg_type .. ".dat", geo_dir .. arg_type .. ".dat")
+	fs.rmdir(bak_dir)
+	http_write_json_ok()
 end
 
 function server_user_status()

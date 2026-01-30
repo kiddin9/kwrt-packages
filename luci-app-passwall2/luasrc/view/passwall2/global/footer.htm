@@ -129,7 +129,7 @@ local api = self.api
 		hiddenSelect.addEventListener("change", function(el){
 			let new_val = el.target.value
 			const new_hasItem = shunt_list.find(element => element.id == new_val);
-			if (new_hasItem || (o_hasItem && !new_hasItem)) {
+			if (new_hasItem) {
 				XHR.get('<%=api.url("update_node")%>', {
 					id: "<%=self.global_cfgid%>",
 					data: JSON.stringify({

@@ -223,10 +223,14 @@ run_xray() {
 	local _json_arg="$(json_dump)"
 	lua $UTIL_XRAY gen_config "${_json_arg}" > $config_file
 
-	$XRAY_BIN run -test -c "$config_file" > $log_file; local status=$?
+	test_log_file=$log_file
+	[ "$test_log_file" = "/dev/null" ] && test_log_file="${TMP_PATH}/test.log"
+
+	$XRAY_BIN run -test -c "$config_file" > $test_log_file; local status=$?
 	if [ "${status}" == 0 ]; then
 		ln_run "$XRAY_BIN" xray $log_file run -c "$config_file"
 	else
+		_error_log_file=$test_log_file
 		return ${status}
 	fi
 }
@@ -357,10 +361,14 @@ run_singbox() {
 	local _json_arg="$(json_dump)"
 	lua $UTIL_SINGBOX gen_config "${_json_arg}" > $config_file
 
-	$SINGBOX_BIN check -c "$config_file" > $log_file 2>&1; local status=$?
+	test_log_file=$log_file
+	[ "$test_log_file" = "/dev/null" ] && test_log_file="${TMP_PATH}/test.log"
+
+	$SINGBOX_BIN check -c "$config_file" > $test_log_file 2>&1; local status=$?
 	if [ "${status}" == 0 ]; then
 		ln_run "$SINGBOX_BIN" "sing-box" "${log_file}" run -c "$config_file"
 	else
+		_error_log_file=$test_log_file
 		return ${status}
 	fi
 }
@@ -669,7 +677,9 @@ run_global() {
 	if [ "$status" == 0 ]; then
 		log 0 ${dns_msg}
 	else
-		log_i18n 0 "[%s] process %s error, skip!" $(i18n "Global") "${V2RAY_CONFIG}"
+		log_i18n 0 "[%s] process %s error, skip this transparent proxy!" $(i18n "Global") "${V2RAY_CONFIG}"
+		cat ${_error_log_file} >> ${LOG_FILE}
+		unset _error_log_file
 		ENABLED_DEFAULT_ACL=0
 		return 1
 	fi
@@ -1092,7 +1102,9 @@ acl_app() {
 											write_ipset_direct=${write_ipset_direct} config_file=${config_file}
 								local status=$?
 								if [ "$status" != 0 ]; then
-									log_i18n 2 "[%s] process %s error, skip!" "${remarks}" "${config_file}"
+									log_i18n 2 "[%s] process %s error, skip this transparent proxy!" "${remarks}" "${config_file}"
+									cat ${_error_log_file} >> ${LOG_FILE}
+									unset _error_log_file
 									continue
 								fi
 							fi

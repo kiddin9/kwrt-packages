@@ -169,6 +169,12 @@ msgstr "远程查询策略"
 msgid "Use FakeDNS work in the domain that proxy."
 msgstr "需要代理的域名使用 FakeDNS。"
 
+msgid "Suitable scenarios for let the node servers get the target domain names."
+msgstr "适合让节点服务器获取目标域名的场景。"
+
+msgid "Such as: DNS unlocking of streaming media, reducing DNS query latency, etc."
+msgstr "例如：流媒体的 DNS 解锁、减少 DNS 查询延迟等。"
+
 msgid "Domain Override"
 msgstr "域名重写"
 
@@ -285,6 +291,9 @@ msgstr "清空所有节点"
 
 msgid "Are you sure to clear all nodes?"
 msgstr "你确定要清空所有节点吗？"
+
+msgid "Success"
+msgstr "成功"
 
 msgid "Error"
 msgstr "错误"
@@ -840,6 +849,12 @@ msgstr "规则版本"
 
 msgid "Manually update"
 msgstr "手动更新"
+
+msgid "Rollback"
+msgstr "回滚"
+
+msgid "Rollbacking..."
+msgstr "回滚中..."
 
 msgid "Enable auto update rules"
 msgstr "开启自动更新规则"
@@ -1957,8 +1972,8 @@ msgstr "Socks节点：[%s]%s，启动 %s:%s"
 msgid "To enable experimental IPv6 transparent proxy (TProxy), please ensure your node and type support IPv6!"
 msgstr "开启实验性IPv6透明代理(TProxy)，请确认您的节点及类型支持IPv6！"
 
-msgid "[%s] process %s error, skip!"
-msgstr "【%s】 进程 %s 错误，跳过！"
+msgid "[%s] process %s error, skip this transparent proxy!"
+msgstr "【%s】 进程 %s 错误，跳过此透明代理！"
 
 msgid "Analyzing the node configuration of the Socks service..."
 msgstr "分析 Socks 服务的节点配置..."

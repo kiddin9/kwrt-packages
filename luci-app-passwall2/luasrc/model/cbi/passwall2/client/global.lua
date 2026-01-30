@@ -121,17 +121,6 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 				local vid = v.id
 				s:tab("Shunt", translate("Shunt Rule"))
 				s:tab("ShuntDNS", translate("Shunt Rule") .. " DNS")
-				-- shunt node type, Sing-Box or Xray
-				local type = s:taboption("Shunt", ListValue, vid .. "-type", translate("Type"))
-				if has_singbox then
-					type:value("sing-box", translate("Sing-Box"))
-				end
-				if has_xray then
-					type:value("Xray", translate("Xray"))
-				end
-				type.cfgvalue = get_cfgvalue(v.id, "type")
-				type.write = get_write(v.id, "type")
-				
 				-- pre-proxy
 				o = s:taboption("Shunt", Flag, vid .. "-preproxy_enabled", translate("Preproxy"))
 				o:depends("node", v.id)
@@ -169,17 +158,14 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 				o.cfgvalue = get_cfgvalue(v.id, "main_node")
 				o.write = get_write(v.id, "main_node")
 
-				o = s:taboption("ShuntDNS", Flag, vid .. "-fakedns", "FakeDNS")
+				o = s:taboption("ShuntDNS", Flag, vid .. "-fakedns", '<a style="color:#FF8C00">FakeDNS</a>', translate("Use FakeDNS work in the domain that proxy.") .. "<br>" ..
+					translate("Suitable scenarios for let the node servers get the target domain names.") .. "<br>" ..
+					translate("Such as: DNS unlocking of streaming media, reducing DNS query latency, etc.")
+				)
 				o:depends("node", v.id)
 				o.cfgvalue = get_cfgvalue(v.id, "fakedns")
 				o.write = get_write(v.id, "fakedns")
 				o.remove = get_remove(v.id, "fakedns")
-
-				if (has_singbox and has_xray) or (v.type == "sing-box" and not has_singbox) or (v.type == "Xray" and not has_xray) then
-					type:depends("node", v.id)
-				else
-					type:depends({ __hide = true }) -- Always hidden.
-				end
 
 				m.uci:foreach(appname, "shunt_rules", function(e)
 					local id = e[".name"]
@@ -204,7 +190,7 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 						o:value("", translate("Close (Not use)"))
 						pt:value("main", translate("Use preproxy node"))
 
-						local fakedns_tag = s:taboption("ShuntDNS", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. "FakeDNS"))
+						local fakedns_tag = s:taboption("ShuntDNS", Flag, vid .. "-".. id .. "_fakedns", string.format('* <a style="color:#FF8C00">%s</a>', e.remarks))
 						fakedns_tag.cfgvalue = get_cfgvalue(v.id, id .. "_fakedns")
 						fakedns_tag.write = get_write(v.id, id .. "_fakedns")
 						fakedns_tag.remove = get_remove(v.id, id .. "_fakedns")

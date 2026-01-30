@@ -1,5 +1,8 @@
 <%
 local api = require "luci.passwall2.api"
+local fs = api.fs
+local has_old_geoip = fs.access("/tmp/bak_v2ray/geoip.dat")
+local has_old_geosite = fs.access("/tmp/bak_v2ray/geosite.dat")
 -%>
 <script src="<%=resource%>/view/<%=api.appname%>/Sortable.min.js?v=26.1.9"></script>
 
@@ -48,7 +51,14 @@ local api = require "luci.passwall2.api"
 				<input class="cbi-input-checkbox" type="checkbox" name="geosite" value="1" />
 				geosite
 			</label>
-			<br><br><input class="btn cbi-button cbi-button-apply" type="button" id="update_rules_btn" onclick="update_rules(this)" value="<%:Manually update%>" />
+			<br><br>
+			<input class="btn cbi-button cbi-button-apply" type="button" id="update_rules_btn" onclick="update_rules(this)" value="<%:Manually update%>" />
+			<% if has_old_geoip then %>
+			<input class="btn cbi-button cbi-button-reset" type="button" onclick="rollback_rules(this, 'geoip')" value="<%:Rollback%> GeoIP" />
+			<% end %>
+			<% if has_old_geosite then %>
+			<input class="btn cbi-button cbi-button-reset" type="button" onclick="rollback_rules(this, 'geosite')" value="<%:Rollback%> Geosite" />
+			<% end %>
 		</div>
 	</div>
 </div>
@@ -120,6 +130,27 @@ local api = require "luci.passwall2.api"
 			}
 		);
 	}
+	
+	function rollback_rules(btn, type) {
+		let ori_val = btn.value;
+		btn.disabled = true;
+		btn.value = '<%:Rollbacking...%>';
+		XHR.get('<%=api.url("rollback_rules")%>', {
+			type: type
+			},
+			function(x, data) {
+				if(x && x.status == 200 && data.code == 1) {
+					alert("<%:Success%>");
+					btn.style.display = "none";
+				} else {
+					alert("<%:Error%>");
+					btn.disabled = false;
+					btn.value = ori_val;
+				}
+			}
+		);
+	}
+
 	//分流规则添加拖拽排序
 	document.addEventListener("DOMContentLoaded", function () {
 		function initSortableForTable() {
