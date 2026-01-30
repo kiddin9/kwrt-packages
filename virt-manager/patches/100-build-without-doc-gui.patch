@@ -1,0 +1,26 @@
+--- a/meson.build
++++ b/meson.build
+@@ -15,18 +15,18 @@ pkgdir = datadir / 'virt-manager'
+ git = run_command('test', '-e', '.git', check: false).returncode() == 0
+ 
+ subdir('scripts')
+-subdir('man')
++# subdir('man')
+ subdir('data')
+-subdir('ui')
++# subdir('ui')
+ subdir('virtinst')
+-subdir('virtManager')
+-subdir('po')
++# subdir('virtManager')
++# subdir('po')
+ 
+ bin_data = [
+   {'pkgname': 'virtinst', 'filename': 'virtinstall', 'toolname': 'virt-install'},
+   {'pkgname': 'virtinst', 'filename': 'virtclone', 'toolname': 'virt-clone'},
+   {'pkgname': 'virtinst', 'filename': 'virtxml', 'toolname': 'virt-xml'},
+-  {'pkgname': 'virtManager', 'filename': 'virtmanager', 'toolname': 'virt-manager'},
++#  {'pkgname': 'virtManager', 'filename': 'virtmanager', 'toolname': 'virt-manager'},
+ ]
+ 
+ foreach bin : bin_data

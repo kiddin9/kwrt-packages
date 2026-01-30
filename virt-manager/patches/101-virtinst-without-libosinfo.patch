@@ -1,0 +1,81 @@
+--- a/virtinst/__init__.py
++++ b/virtinst/__init__.py
+@@ -5,8 +5,10 @@
+ 
+ # pylint: disable=wrong-import-position
+ 
++"""
+ import gi
+ gi.require_version('Libosinfo', '1.0')
++"""
+ 
+ from virtinst.buildconfig import BuildConfig
+ 
+--- a/virtinst/install/unattended.py
++++ b/virtinst/install/unattended.py
+@@ -13,7 +13,9 @@ import pwd
+ import re
+ import tempfile
+ 
++"""
+ from gi.repository import Libosinfo
++"""
+ 
+ from . import urlfetcher
+ from .. import progress
+--- a/virtinst/osdict.py
++++ b/virtinst/osdict.py
+@@ -10,7 +10,10 @@ import datetime
+ import os
+ import re
+ 
++"""
+ from gi.repository import Libosinfo
++"""
++from . import Libosinfo
+ 
+ from . import xmlutil
+ from .logger import log
+@@ -90,7 +93,7 @@ class _OSDB(object):
+     ###############
+ 
+     def lookup_os_by_full_id(self, full_id, raise_error=False):
+-        osobj = self._os_db.get_os(full_id)
++        osobj = None #self._os_db.get_os(full_id)
+         if osobj is None:
+             if raise_error:
+                 raise ValueError(_("Unknown libosinfo ID '%s'") % full_id)
+@@ -101,10 +104,10 @@ class _OSDB(object):
+         if key == self._os_generic.name:
+             return self._os_generic
+ 
+-        flt = Libosinfo.Filter()
+-        flt.add_constraint(Libosinfo.PRODUCT_PROP_SHORT_ID,
+-                           key)
+-        oslist = self._os_db.get_os_list().new_filtered(flt).get_elements()
++        #flt = Libosinfo.Filter()
++        #flt.add_constraint(Libosinfo.PRODUCT_PROP_SHORT_ID,
++        #                   key)
++        oslist = [] #self._os_db.get_os_list().new_filtered(flt).get_elements()
+         if len(oslist) == 0:
+             if raise_error:
+                 raise ValueError(_("Unknown OS name '%s'. "
+@@ -113,6 +116,7 @@ class _OSDB(object):
+         return _OsVariant(oslist[0])
+ 
+     def guess_os_by_iso(self, location):
++        return None
+         try:
+             media = _media_create_from_location(location)
+         except Exception as e:
+@@ -154,8 +158,8 @@ class _OSDB(object):
+         """
+         List all OSes in the DB, sorting by the passes _OsVariant attribute
+         """
+-        oslist = [_OsVariant(osent) for osent in
+-                  self._os_db.get_os_list().get_elements()]
++        oslist = [] # [_OsVariant(osent) for osent in
++                  # self._os_db.get_os_list().get_elements()]
+         oslist.append(self._os_generic)
+ 
+         # human/natural sort, but with reverse sorted numbers

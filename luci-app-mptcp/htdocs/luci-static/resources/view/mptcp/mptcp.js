@@ -41,7 +41,7 @@ return L.view.extend({
 	o.value(1, _("enable"));
 	o.value(0, _("disable"));
 
-	if (boardinfo.kernel.substring(1,4) != "5.15" && boardinfo.kernel.substring(1,1) != "6") {
+	if (parseFloat(boardinfo.kernel.substring(0,4)) < 6) {
 		o = s.option(form.ListValue, "mptcp_debug", _("Multipath Debug"));
 		o.value(1, _("enable"));
 		o.value(0, _("disable"));
@@ -112,13 +112,10 @@ return L.view.extend({
 	};
 
 	if (parseFloat(boardinfo.kernel.substring(0,4)) >= 6) {
-		if (boardinfo.kernel.substring(0,1) == "6") {
-			// Only available since 5.19
-			o = s.option(form.ListValue, "mptcp_pm_type", _("Path Manager type"));
-			o.value(0, _("In-kernel path manager"));
-			o.value(1, _("Userspace path manager"));
-			o.default = 0;
-		}
+		o = s.option(form.ListValue, "mptcp_pm_type", _("Path Manager type"));
+		o.value(0, _("In-kernel path manager"));
+		o.value(1, _("Userspace path manager"));
+		o.default = 0;
 
 		o = s.option(form.ListValue, "mptcp_disable_initial_config", _("Initial MPTCP configuration"));
 		o.depends("mptcp_pm_type","1");
@@ -192,6 +189,22 @@ return L.view.extend({
 		o.datatype = "uinteger";
 		o.rmempty = false;
 		o.default = 120;
+		if (parseFloat(boardinfo.kernel.substring(0,4)) >= 6.18) {
+			o = s.option(form.Value, "mptcp_blackhole_timeout", _("Blackhole timeout"),_("Initial time period in second to disable MPTCP on active MPTCP sockets when a MPTCP firewall blackhole issue happens. This time period will grow exponentially when more blackhole issues get detected right after MPTCP is re-enabled and will reset to the initial value when the blackhole issue goes away."));
+			o.datatype = "uinteger";
+			o.rmempty = false;
+			o.default = 3600;
+
+			o = s.option(form.Value, "mptcp_close_timeout", _("Close timeout"),_("Set the make-after-break timeout: in absence of any close or shutdown syscall, MPTCP sockets will maintain the status unchanged for such time, after the last subflow removal, before moving to TCP_CLOSE."));
+			o.datatype = "uinteger";
+			o.rmempty = false;
+			o.default = 60;
+
+			o = s.option(form.Value, "mptcp_syn_retrans_before_tcp_fallback", _("Control message timeout"),_("The number of SYN + MP_CAPABLE retransmissions before falling back to TCP, i.e. dropping the MPTCP options."));
+			o.datatype = "uinteger";
+			o.rmempty = false;
+			o.default = 2;
+		}
 	} else {
 		o = s.option(form.Value, "mptcp_fullmesh_num_subflows", _("Fullmesh subflows for each pair of IP addresses"));
 		o.datatype = "uinteger";

@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libvirt
 PKG_VERSION:=11.10.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://libvirt.org/sources/
@@ -53,7 +53,7 @@ define Package/libvirt/install
 	$(CP) $(PKG_INSTALL_DIR)/etc/libvirt/* $(1)/etc/libvirt/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/sasl2/libvirt.conf $(1)/etc/sasl2/
 	$(CP) $(PKG_INSTALL_DIR)/usr/share/libvirt/{cpu_map,schemas} $(1)/usr/share/libvirt/
-	$(INSTALL_BIN) ./files/libvirt.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/libvirt.init $(1)/etc/init.d/libvirt
 endef
 
 define Build/InstallDev

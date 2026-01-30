@@ -23,6 +23,9 @@ if [ "$(uci -q get network.globals.mptcp_path_manager)" = "" ]; then
 	set network.globals.mptcp_disable_initial_config=0
 	set network.globals.mptcp_force_multipath=1
 	set network.globals.mptcpd_enable=0
+	set network.globals.mptcp_close_timeout=60
+	set network.globals.mptcp_blackhole_timeout=0
+	set network.globals.mptcp_syn_retrans_before_tcp_fallback=2
 	commit network
 	EOF
 fi
@@ -94,6 +97,14 @@ if [ "$(uci -q get ucitrack.@network[-1].affects | grep mptcp)" = "" ]; then
 	uci -q batch <<-EOF >/dev/null
 	    add_list ucitrack.@network[-1].affects=mptcp
 	    commit ucitrack
+	EOF
+fi
+if [ "$(uci -q get network.globals.mptcp_close_timeout)" = "" ]; then
+	uci -q batch <<-EOF >/dev/null
+	set network.globals.mptcp_close_timeout=60
+	set network.globals.mptcp_blackhole_timeout=0
+	set network.globals.mptcp_syn_retrans_before_tcp_fallback=2
+	commit network
 	EOF
 fi
 exit 0

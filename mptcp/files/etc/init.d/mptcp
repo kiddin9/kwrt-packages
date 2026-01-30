@@ -32,6 +32,9 @@ global_multipath_settings() {
 	config_get mptcp_stale_loss_cnt globals mptcp_stale_loss_cnt "4"
 	config_get mptcp_pm_type globals mptcp_pm_type "1"
 	config_get mptcp_allow_join_initial_addr_port globals mptcp_allow_join_initial_addr_port "1"
+	config_get mptcp_close_timeout globals mptcp_close_timeout "60"
+	config_get mptcp_blackhole_timeout globals mptcp_blackhole_timeout "3600"
+	config_get mptcp_syn_retrans_before_tcp_fallback globals mptcp_syn_retrans_before_tcp_fallback "2"
 	
 	[ "$multipath" = "enable" ] && multipath_status=1
 
@@ -68,6 +71,9 @@ global_multipath_settings() {
 		[ -z "$mptcp_stale_loss_cnt" ] || sysctl -qew net.mptcp.stale_loss_cnt="$mptcp_stale_loss_cnt"
 		[ -z "$mptcp_pm_type" ] || sysctl -qew net.mptcp.pm_type="$mptcp_pm_type"
 		[ -z "$mptcp_allow_join_initial_addr_port" ] || sysctl -qew net.mptcp.allow_join_initial_addr_port="$mptcp_allow_initial_addr_port"
+		[ -z "$mptcp_close_timeout" ] || sysctl -qew net.mptcp.close_timeout="$mptcp_close_timeout"
+		[ -z "$mptcp_syn_retrans_before_tcp_fallback" ] || sysctl -qew net.mptcp.syn_retrans_before_tcp_fallback="$mptcp_syn_retrans_before_tcp_fallback"
+		[ -z "$mptcp_blackhole_timeout" ] || sysctl -qew net.mptcp.blackhole_timeout="$mptcp_blackhole_timeout"
 		if [ -n "$mptcp_scheduler" ] && [ -d /usr/share/bpf/scheduler ]; then
 			for scheduler in $(ls -1 /usr/share/bpf/scheduler/*.o); do
 				bpftool struct_ops register $scheduler >/dev/null 2>&1

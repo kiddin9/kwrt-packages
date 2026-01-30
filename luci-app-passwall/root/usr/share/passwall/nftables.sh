@@ -240,7 +240,7 @@ get_wan_ips() {
 	local family="$1"
 	local NET_ADDR
 	local iface
-	local INTERFACES=$(ubus call network.interface dump | jsonfilter -e '@.interface[@.route[0]].interface')
+	local INTERFACES=$(ubus call network.interface dump | jsonfilter -e '@.interface[!(@.interface ~ /lan/) && @.route[0]].interface')
 	for iface in $INTERFACES; do
 		local addr
 		if [ "$family" = "ip6" ]; then
