@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=caddy
-PKG_VERSION:=2.10.2
-PKG_RELEASE:=17
+PKG_VERSION:=2.10.3
+PKG_RELEASE:=18
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/caddyserver/caddy.git
 PKG_SOURCE_DATE:=2025-10-09
-PKG_SOURCE_VERSION:=2ec28bca43e5269511f8d9c1656244dd84acdad9
+PKG_SOURCE_VERSION:=935b09de836d5ce001632193ac21c19abf0a57ed
 PKG_MIRROR_HASH:=skip
 
 PKG_LICENSE:=GPL-3.0-or-later
@@ -50,7 +50,9 @@ define Build/Compile
 endef
 
 define Package/caddy/install
-	$(call GoPackage/Package/Install/Bin,$(1))
+	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
+	$(INSTALL_DIR) $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/caddy $(1)/usr/bin/caddy
 endef
 
 $(eval $(call GoBinPackage,$(PKG_NAME)))
