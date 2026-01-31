@@ -1,12 +1,10 @@
 local m, s = ...
 
-local api = require "luci.passwall2.api"
-
 if not api.is_finded("ss-local") then
 	return
 end
 
-local type_name = "SS"
+type_name = "SS"
 
 -- [[ Shadowsocks Libev ]]
 

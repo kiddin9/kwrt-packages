@@ -400,7 +400,7 @@ function connect_status()
 	local e = {}
 	e.use_time = ""
 	local url = http.formvalue("url")
-	local baidu = string.find(url, "baidu")
+	local aliyun = string.find(url, "aliyun")
 	local chn_list = uci:get(appname, "@global[0]", "chn_list") or "direct"
 	local gfw_list = uci:get(appname, "@global[0]", "use_gfw_list") or "1"
 	local proxy_mode = uci:get(appname, "@global[0]", "tcp_proxy_mode") or "proxy"
@@ -408,11 +408,11 @@ function connect_status()
 	local socks_server = (localhost_proxy == "0") and api.get_cache_var("GLOBAL_TCP_SOCKS_server") or ""
 	url = "-w %{http_code}:%{time_pretransfer} " .. url
 	if socks_server and socks_server ~= "" then
-		if (chn_list == "proxy" and gfw_list == "0" and proxy_mode ~= "proxy" and baidu ~= nil) or (chn_list == "0" and gfw_list == "0" and proxy_mode == "proxy") then
-		-- 中国列表+百度 or 全局
+		if (chn_list == "proxy" and gfw_list == "0" and proxy_mode ~= "proxy" and aliyun ~= nil) or (chn_list == "0" and gfw_list == "0" and proxy_mode == "proxy") then
+		-- 中国列表+阿里 or 全局
 			url = "-x socks5h://" .. socks_server .. " " .. url
-		elseif baidu == nil then
-		-- 其他代理模式+百度以外网站
+		elseif aliyun == nil then
+		-- 其他代理模式+阿里以外网站
 			url = "-x socks5h://" .. socks_server .. " " .. url
 		end
 	end

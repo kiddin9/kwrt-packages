@@ -67,17 +67,17 @@ msgstr "分流方案配置"
 msgid "Running Status"
 msgstr "运行状态"
 
-msgid "Baidu Connection"
-msgstr "百度连接"
+msgid "AliCloud Conn."
+msgstr "阿里连接"
 
-msgid "Google Connection"
+msgid "Google Conn."
 msgstr "谷歌连接"
 
-msgid "GitHub Connection"
+msgid "GitHub Conn."
 msgstr "GitHub 连接"
 
-msgid "Instagram Connection"
-msgstr "Instagram 连接"
+msgid "YouTube Conn."
+msgstr "YouTube 连接"
 
 msgid "Node Check"
 msgstr "节点检测"

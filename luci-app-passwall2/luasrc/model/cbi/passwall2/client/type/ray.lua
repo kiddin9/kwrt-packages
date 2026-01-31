@@ -1,15 +1,12 @@
 local m, s = ...
 
-local api = require "luci.passwall2.api"
-
 if not api.finded_com("xray") then
 	return
 end
 
-local appname = api.appname
 local jsonc = api.jsonc
 
-local type_name = "Xray"
+type_name = "Xray"
 
 -- [[ Xray ]]
 
@@ -82,10 +79,10 @@ if not arg_select_proto:find("_") then
 	load_normal_options = true
 end
 
-local nodes_table = {}
-local balancers_table = {}
+nodes_table = {}
+balancers_table = {}
 local fallback_table = {}
-local iface_table = {}
+iface_table = {}
 local is_balancer = nil
 for k, e in ipairs(api.get_valid_nodes()) do
 	if e.node_type == "normal" then
@@ -123,7 +120,7 @@ for k, e in ipairs(api.get_valid_nodes()) do
 	end
 end
 
-local socks_list = {}
+socks_list = {}
 m.uci:foreach(appname, "socks", function(s)
 	if s.enabled == "1" and s.node then
 		socks_list[#socks_list + 1] = {
@@ -241,143 +238,6 @@ if load_balancing_options then -- [[ Load balancing Start ]]
 	o.placeholder = "2"
 	o.description = translate("The load balancer selects the optimal number of nodes, and traffic is randomly distributed among them.")
 end -- [[ Load balancing End ]]
-
-if load_shunt_options then -- [[ Shunt Start ]]
-	local default_node = m.uci:get(appname, arg[1], "default_node") or "_direct"
-	if #nodes_table > 0 then
-		o = s:option(Flag, _n("preproxy_enabled"), translate("Preproxy"))
-		o:depends({ [_n("protocol")] = "_shunt" })
-
-		o = s:option(ListValue, _n("main_node"), string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
-		o:depends({ [_n("protocol")] = "_shunt", [_n("preproxy_enabled")] = true })
-		o.template = appname .. "/cbi/nodes_listvalue"
-		o.group = {}
-		for k, v in pairs(socks_list) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		for k, v in pairs(balancers_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		for k, v in pairs(iface_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		for k, v in pairs(nodes_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		if #o.keylist > 0 then
-			o.default = o.keylist[1]
-		end
-
-		o = s:option(Flag, _n("fakedns"), '<a style="color:#FF8C00">FakeDNS</a>', translate("Use FakeDNS work in the domain that proxy.") .. "<br>" ..
-			translate("Suitable scenarios for let the node servers get the target domain names.") .. "<br>" ..
-			translate("Such as: DNS unlocking of streaming media, reducing DNS query latency, etc.")
-		)
-		o:depends({ [_n("protocol")] = "_shunt" })
-	end
-	m.uci:foreach(appname, "shunt_rules", function(e)
-		if e[".name"] and e.remarks then
-			o = s:option(ListValue, _n(e[".name"]), string.format('* <a href="%s" target="_blank">%s</a>', api.url("shunt_rules", e[".name"]), e.remarks))
-			--o.optional = true
-			o:value("", translate("Close (Not use)"))
-			o:value("_default", translate("Use default node"))
-			o:value("_direct", translate("Direct Connection"))
-			o:value("_blackhole", translate("Blackhole (Block)"))
-			o:depends({ [_n("protocol")] = "_shunt" })
-			o.template = appname .. "/cbi/nodes_listvalue"
-			o.group = {"","","",""}
-
-			if #nodes_table > 0 then
-				local pt = s:option(ListValue, _n(e[".name"] .. "_proxy_tag"), string.format('* <a style="color:red">%s</a>', e.remarks .. " " .. translate("Preproxy")))
-				pt:value("", translate("Close (Not use)"))
-				pt:value("main", translate("Use preproxy node"))
-
-				local fakedns_tag = s:option(Flag, _n(e[".name"] .. "_fakedns"), string.format('* <a style="color:#FF8C00">%s</a>', e.remarks .. " " .. "FakeDNS"))
-
-				for k, v in pairs(socks_list) do
-					o:value(v.id, v.remark)
-					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
-				end
-				for k, v in pairs(balancers_table) do
-					o:value(v.id, v.remark)
-					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
-				end
-				for k, v in pairs(iface_table) do
-					o:value(v.id, v.remark)
-					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-				end
-				for k, v in pairs(nodes_table) do
-					o:value(v.id, v.remark)
-					o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-					pt:depends({ [_n("protocol")] = "_shunt", [_n("preproxy_enabled")] = true, [_n(e[".name"])] = v.id })
-					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = v.id })
-				end
-				if default_node ~= "_direct" or default_node ~= "_blackhole" then
-					fakedns_tag:depends({ [_n("protocol")] = "_shunt", [_n("fakedns")] = true, [_n(e[".name"])] = "_default" })
-				end
-			end
-		end
-	end)
-
-	o = s:option(DummyValue, _n("shunt_tips"), " ")
-	o.not_rewrite = true
-	o.rawhtml = true
-	o.cfgvalue = function(t, n)
-		return string.format('<a style="color: red" href="../rule">%s</a>', translate("No shunt rules? Click me to go to add."))
-	end
-	o:depends({ [_n("protocol")] = "_shunt" })
-
-	local o = s:option(ListValue, _n("default_node"), string.format('* <a style="color:red">%s</a>', translate("Default")))
-	o:depends({ [_n("protocol")] = "_shunt" })
-	o:value("_direct", translate("Direct Connection"))
-	o:value("_blackhole", translate("Blackhole (Block)"))
-	o.template = appname .. "/cbi/nodes_listvalue"
-	o.group = {"",""}
-
-	if #nodes_table > 0 then
-		for k, v in pairs(socks_list) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		for k, v in pairs(balancers_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		for k, v in pairs(iface_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-		end
-		local dpt = s:option(ListValue, _n("default_proxy_tag"), string.format('* <a style="color:red">%s</a>', translate("Default Preproxy")), translate("When using, localhost will connect this node first and then use this node to connect the default node."))
-		dpt:value("", translate("Close (Not use)"))
-		dpt:value("main", translate("Use preproxy node"))
-		for k, v in pairs(nodes_table) do
-			o:value(v.id, v.remark)
-			o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-			dpt:depends({ [_n("protocol")] = "_shunt", [_n("preproxy_enabled")] = true, [_n("default_node")] = v.id })
-		end
-	end
-
-	o = s:option(ListValue, _n("domainStrategy"), translate("Domain Strategy"))
-	o:value("AsIs")
-	o:value("IPIfNonMatch")
-	o:value("IPOnDemand")
-	o.default = "IPOnDemand"
-	o.description = "<br /><ul><li>" .. translate("'AsIs': Only use domain for routing. Default value.")
-		.. "</li><li>" .. translate("'IPIfNonMatch': When no rule matches current domain, resolves it into IP addresses (A or AAAA records) and try all rules again.")
-		.. "</li><li>" .. translate("'IPOnDemand': As long as there is a IP-based rule, resolves the domain into IP immediately.")
-		.. "</li></ul>"
-	o:depends({ [_n("protocol")] = "_shunt" })
-
-	o = s:option(ListValue, _n("domainMatcher"), translate("Domain matcher"))
-	o:value("hybrid")
-	o:value("linear")
-	o:depends({ [_n("protocol")] = "_shunt" })
-end -- [[ Shunt End ]]
 
 if load_iface_options then -- [[ Custom Interface Start ]]
 	o = s:option(Value, _n("iface"), translate("Interface"))
@@ -871,6 +731,11 @@ for i, v in ipairs(s.fields[_n("protocol")].keylist) do
 end
 
 end
--- [[ Normal single node Start ]]
+-- [[ Normal single node End ]]
 
 api.luci_types(arg[1], m, s, type_name, option_prefix)
+
+if load_shunt_options then
+	local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/node_config_shunt.lua")
+	setfenv(shunt_lua, getfenv(1))(m, s)
+end

@@ -1,5 +1,5 @@
-local api = require "luci.passwall2.api"
-local appname = api.appname
+api = require "luci.passwall2.api"
+appname = api.appname
 
 m = Map(appname, translate("Node Config"))
 m.redirect = api.url()
