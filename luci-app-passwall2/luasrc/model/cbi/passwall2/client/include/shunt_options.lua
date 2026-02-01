@@ -1,6 +1,10 @@
-local m, s = ...
+local m, s, data = ...
 
-s:tab("Shunt", translate("Shunt Rule"))
+if not data.node_id or not data.node then
+	return
+end
+
+local current_node_id = data.node_id
 
 local function get_cfgvalue()
 	return function(self, section)
@@ -9,64 +13,90 @@ local function get_cfgvalue()
 end
 local function get_write()
 	return function(self, section, value)
-		if s.fields["node"]:formvalue(section) == current_node_id then
+		if data.verify_option then
+			if data.verify_option:formvalue(section) == current_node_id then
+				m:set(current_node_id, self.option, value)
+			end
+		else
 			m:set(current_node_id, self.option, value)
 		end
 	end
 end
 local function get_remove()
 	return function(self, section)
-		if s.fields["node"]:formvalue(section) == current_node_id then
+		if data.verify_option then
+			if data.verify_option:formvalue(section) == current_node_id then
+				m:del(current_node_id, self.option)
+			end
+		else
 			m:del(current_node_id, self.option)
 		end
 	end
 end
 
-if current_node.type == "Xray" then
-	o = s:taboption("Shunt", ListValue, "domainStrategy", translate("Domain Strategy"))
+if data.tab then
+	s:tab(data.tab, data.tab_desc)
+end
+
+local function add_option(class, option_name, option_title, option_desc)
+	local a
+	if data.tab then
+		a = s:taboption(data.tab, class, option_name, option_title)
+	else
+		a = s:option(class, option_name, option_title)
+	end
+	if a then
+		if option_desc then
+			a.description = option_desc
+		end
+		a.cfgvalue = get_cfgvalue()
+		a.write = get_write()
+		a.remove = get_remove()
+	end
+	if data.verify_option then
+		a:depends(data.verify_option.option, current_node_id)
+	end
+	return a
+end
+
+local function add_depends(o, deps)
+	if #o.deps > 0 then
+		for index, value in ipairs(o.deps) do
+			for k, v in pairs(deps) do
+				o.deps[index][k] = v
+			end
+		end
+	else
+		o:depends(deps)
+	end
+end
+
+if data.node.type == "Xray" then
+	o = add_option(ListValue, "domainStrategy", translate("Domain Strategy"))
 	o:value("AsIs")
 	o:value("IPIfNonMatch")
 	o:value("IPOnDemand")
-	o:depends("node", current_node_id)
 	o.default = "IPOnDemand"
 	o.description = "<br /><ul><li>" .. translate("'AsIs': Only use domain for routing. Default value.")
 		.. "</li><li>" .. translate("'IPIfNonMatch': When no rule matches current domain, resolves it into IP addresses (A or AAAA records) and try all rules again.")
 		.. "</li><li>" .. translate("'IPOnDemand': As long as there is a IP-based rule, resolves the domain into IP immediately.")
 		.. "</li></ul>"
-	o.cfgvalue = get_cfgvalue()
-	o.write = get_write()
-	o.remove = get_remove()
 
-	o = s:taboption("Shunt", ListValue, "domainMatcher", translate("Domain matcher"))
+	o = add_option(ListValue, "domainMatcher", translate("Domain matcher"))
 	o:value("hybrid")
 	o:value("linear")
-	o:depends("node", current_node_id)
-	o.cfgvalue = get_cfgvalue()
-	o.write = get_write()
-	o.remove = get_remove()
 end
 
-o = s:taboption("Shunt", Flag, "preproxy_enabled", translate("Preproxy") .. " " .. translate("Main switch"))
-o:depends("node", current_node_id)
-o.cfgvalue = get_cfgvalue()
-o.write = get_write()
-o.remove = get_remove()
+o = add_option(Flag, "preproxy_enabled", translate("Preproxy") .. " " .. translate("Main switch"))
 
-main_node = s:taboption("Shunt", ListValue, "main_node", string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
-main_node:depends("preproxy_enabled", true)
+main_node = add_option(ListValue, "main_node", string.format('<a style="color:red">%s</a>', translate("Preproxy Node")), translate("Set the node to be used as a pre-proxy. Each rule (including <code>Default</code>) has a separate switch that controls whether this rule uses the pre-proxy or not."))
+add_depends(main_node, {["preproxy_enabled"] = true})
 main_node.template = appname .. "/cbi/nodes_listvalue"
 main_node.group = {}
-main_node.cfgvalue = get_cfgvalue()
-main_node.write = get_write()
-main_node.remove = get_remove()
 
-o = s:taboption("Shunt", Flag, "fakedns", '<a style="color:#FF8C00">FakeDNS</a>' .. " " .. translate("Main switch"), translate("Use FakeDNS work in the domain that proxy.") .. "<br>" ..
+o = add_option(Flag, "fakedns", '<a style="color:#FF8C00">FakeDNS</a>' .. " " .. translate("Main switch"), translate("Use FakeDNS work in the domain that proxy.") .. "<br>" ..
 	translate("Suitable scenarios for let the node servers get the target domain names.") .. "<br>" ..
 	translate("Such as: DNS unlocking of streaming media, reducing DNS query latency, etc."))
-o:depends("node", current_node_id)
-o.cfgvalue = get_cfgvalue()
-o.write = get_write()
-o.remove = get_remove()
 
 local shunt_rules = {}
 m.uci:foreach(appname, "shunt_rules", function(e)
@@ -103,14 +133,10 @@ _node.cfgvalue = function(self, section)
 	return m:get(current_node_id, shunt_rules[section]["_node_option"]) or shunt_rules[section]["_node_default"]
 end
 _node.write = function(self, section, value)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:set(current_node_id, shunt_rules[section]["_node_option"], value)
-	end
+	return m:set(current_node_id, shunt_rules[section]["_node_option"], value)
 end
 _node.remove = function(self, section)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:del(current_node_id, shunt_rules[section]["_node_option"])
-	end
+	return m:del(current_node_id, shunt_rules[section]["_node_option"])
 end
 
 o = s2:option(Flag, "_fakedns", '<a style="color:#FF8C00">FakeDNS</a>')
@@ -118,14 +144,10 @@ o.cfgvalue = function(self, section)
 	return m:get(current_node_id, shunt_rules[section]["_fakedns_option"])
 end
 o.write = function(self, section, value)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:set(current_node_id, shunt_rules[section]["_fakedns_option"], value)
-	end
+	return m:set(current_node_id, shunt_rules[section]["_fakedns_option"], value)
 end
 o.remove = function(self, section)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:del(current_node_id, shunt_rules[section]["_fakedns_option"])
-	end
+	return m:del(current_node_id, shunt_rules[section]["_fakedns_option"])
 end
 
 o = s2:option(ListValue, "_proxy_tag", string.format('<a style="color:red">%s</a>', translate("Preproxy")))
@@ -135,25 +157,14 @@ o.cfgvalue = function(self, section)
 	return m:get(current_node_id, shunt_rules[section]["_proxy_tag_option"])
 end
 o.write = function(self, section, value)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:set(current_node_id, shunt_rules[section]["_proxy_tag_option"], value)
-	end
+	return m:set(current_node_id, shunt_rules[section]["_proxy_tag_option"], value)
 end
 o.remove = function(self, section)
-	if s.fields["node"]:formvalue(global_cfgid) == current_node_id then
-		return m:del(current_node_id, shunt_rules[section]["_proxy_tag_option"])
-	end
+	return m:del(current_node_id, shunt_rules[section]["_proxy_tag_option"])
 end
 
-for k, v in pairs(socks_list) do
-	main_node:value(v.id, v.remark)
-	main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-
-	_node:value(v.id, v.remark)
-	_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-end
-if urltest_list then
-	for k, v in pairs(urltest_list) do
+if data.socks_list then
+	for k, v in pairs(data.socks_list) do
 		main_node:value(v.id, v.remark)
 		main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 
@@ -161,8 +172,8 @@ if urltest_list then
 		_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
 end
-if balancing_list then
-	for k, v in pairs(balancing_list) do
+if data.urltest_list then
+	for k, v in pairs(data.urltest_list) do
 		main_node:value(v.id, v.remark)
 		main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 
@@ -170,19 +181,32 @@ if balancing_list then
 		_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
 end
-for k, v in pairs(iface_list) do
-	main_node:value(v.id, v.remark)
-	main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+if data.balancing_list then
+	for k, v in pairs(data.balancing_list) do
+		main_node:value(v.id, v.remark)
+		main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 
-	_node:value(v.id, v.remark)
-	_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+		_node:value(v.id, v.remark)
+		_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+	end
 end
-for k, v in pairs(normal_list) do
-	main_node:value(v.id, v.remark)
-	main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+if data.iface_list then
+	for k, v in pairs(data.iface_list) do
+		main_node:value(v.id, v.remark)
+		main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 
-	_node:value(v.id, v.remark)
-	_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+		_node:value(v.id, v.remark)
+		_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+	end
+end
+if data.normal_list then
+	for k, v in pairs(data.normal_list) do
+		main_node:value(v.id, v.remark)
+		main_node.group[#main_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+
+		_node:value(v.id, v.remark)
+		_node.group[#_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
+	end
 end
 
 if #main_node.keylist > 0 then

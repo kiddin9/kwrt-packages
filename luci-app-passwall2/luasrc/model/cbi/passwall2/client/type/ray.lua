@@ -79,14 +79,14 @@ if not arg_select_proto:find("_") then
 	load_normal_options = true
 end
 
-nodes_table = {}
-balancers_table = {}
-local fallback_table = {}
-iface_table = {}
+local nodes_list = {}
+local balancing_list = {}
+local fallback_list = {}
+local iface_list = {}
 local is_balancer = nil
 for k, e in ipairs(api.get_valid_nodes()) do
 	if e.node_type == "normal" then
-		nodes_table[#nodes_table + 1] = {
+		nodes_list[#nodes_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			type = e["type"],
@@ -95,13 +95,13 @@ for k, e in ipairs(api.get_valid_nodes()) do
 		}
 	end
 	if e.protocol == "_balancing" then
-		balancers_table[#balancers_table + 1] = {
+		balancing_list[#balancing_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			group = e["group"]
 		}
 		if e[".name"] ~= arg[1] then
-			fallback_table[#fallback_table + 1] = {
+			fallback_list[#fallback_list + 1] = {
 				id = e[".name"],
 				remark = e["remark"],
 				fallback = e["fallback_node"],
@@ -112,7 +112,7 @@ for k, e in ipairs(api.get_valid_nodes()) do
 		end
 	end
 	if e.protocol == "_iface" then
-		iface_table[#iface_table + 1] = {
+		iface_list[#iface_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			group = e["group"]
@@ -120,7 +120,7 @@ for k, e in ipairs(api.get_valid_nodes()) do
 	end
 end
 
-socks_list = {}
+local socks_list = {}
 m.uci:foreach(appname, "socks", function(s)
 	if s.enabled == "1" and s.node then
 		socks_list[#socks_list + 1] = {
@@ -141,7 +141,7 @@ if load_balancing_options then -- [[ Load balancing Start ]]
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = v.group or ""
 	end
-	for i, v in pairs(nodes_table) do
+	for i, v in pairs(nodes_list) do
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = v.group or ""
 	end
@@ -185,9 +185,9 @@ if load_balancing_options then -- [[ Load balancing Start ]]
 	o.template = appname .. "/cbi/nodes_listvalue"
 	o.group = {""}
 	local function check_fallback_chain(fb)
-		for k, v in pairs(fallback_table) do
+		for k, v in pairs(fallback_list) do
 			if v.fallback == fb then
-				fallback_table[k] = nil
+				fallback_list[k] = nil
 				check_fallback_chain(v.id)
 			end
 		end
@@ -200,11 +200,11 @@ if load_balancing_options then -- [[ Load balancing Start ]]
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
-	for k, v in pairs(fallback_table) do
+	for k, v in pairs(fallback_list) do
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
-	for k, v in pairs(nodes_table) do
+	for k, v in pairs(nodes_list) do
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	end
@@ -713,7 +713,7 @@ o2:depends({ [_n("chain_proxy")] = "2" })
 o2.template = appname .. "/cbi/nodes_listvalue"
 o2.group = {}
 
-for k, v in pairs(nodes_table) do
+for k, v in pairs(nodes_list) do
 	if v.type == "Xray" and v.id ~= arg[1] and (not v.chain_proxy or v.chain_proxy == "") then
 		o1:value(v.id, v.remark)
 		o1.group[#o1.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
@@ -736,6 +736,14 @@ end
 api.luci_types(arg[1], m, s, type_name, option_prefix)
 
 if load_shunt_options then
-	local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/node_config_shunt.lua")
-	setfenv(shunt_lua, getfenv(1))(m, s)
+	local current_node = m.uci:get_all(appname, arg[1]) or {}
+	local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/include/shunt_options.lua")
+	setfenv(shunt_lua, getfenv(1))(m, s, {
+		node_id = arg[1],
+		node = current_node,
+		socks_list = socks_list,
+		balancing_list = balancing_list,
+		iface_list = iface_list,
+		normal_list = nodes_list
+	})
 end

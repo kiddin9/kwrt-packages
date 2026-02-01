@@ -14,11 +14,11 @@ for k, e in ipairs(api.get_valid_nodes()) do
 	nodes_table[#nodes_table + 1] = e
 end
 
-normal_list = {}
-balancing_list = {}
-urltest_list = {}
-shunt_list = {}
-iface_list = {}
+local normal_list = {}
+local balancing_list = {}
+local urltest_list = {}
+local shunt_list = {}
+local iface_list = {}
 for k, v in pairs(nodes_table) do
 	if v.node_type == "normal" then
 		normal_list[#normal_list + 1] = v
@@ -37,7 +37,7 @@ for k, v in pairs(nodes_table) do
 	end
 end
 
-socks_list = {}
+local socks_list = {}
 m.uci:foreach(appname, "socks", function(s)
 	if s.enabled == "1" and s.node then
 		socks_list[#socks_list + 1] = {
@@ -96,8 +96,19 @@ if (has_singbox or has_xray) and #nodes_table > 0 then
 		current_node_id = m.uci:get(appname, global_cfgid, "node")
 		current_node = current_node_id and m.uci:get_all(appname, current_node_id) or {}
 		if current_node.protocol == "_shunt" then
-			local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/global_shunt.lua")
-			setfenv(shunt_lua, getfenv(1))(m, s)
+			local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/include/shunt_options.lua")
+			setfenv(shunt_lua, getfenv(1))(m, s, {
+				node_id = current_node_id,
+				node = current_node,
+				socks_list = socks_list,
+				urltest_list = urltest_list,
+				balancing_list = balancing_list,
+				iface_list = iface_list,
+				normal_list = normal_list,
+				verify_option = s.fields["node"],
+				tab = "Shunt",
+				tab_desc = translate("Shunt Rule")
+			})
 		end
 	else
 		local tips = s:taboption("Main", DummyValue, "tips", " ")
