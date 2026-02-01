@@ -390,10 +390,12 @@ o = s:option(Value, _n("tls_serverName"), translate("Domain"))
 o:depends({ [_n("tls")] = true })
 o:depends({ [_n("protocol")] = "hysteria2" })
 
-o = s:option(Flag, _n("tls_allowInsecure"), translate("allowInsecure"), translate("Whether unsafe connections are allowed. When checked, Certificate validation will be skipped."))
-o.default = "0"
-o:depends({ [_n("tls")] = true, [_n("reality")] = false })
-o:depends({ [_n("protocol")] = "hysteria2" })
+if api.compare_versions(xray_version, "<", "26.1.31") then
+	o = s:option(Flag, _n("tls_allowInsecure"), translate("allowInsecure"), translate("Whether unsafe connections are allowed. When checked, Certificate validation will be skipped."))
+	o.default = "0"
+	o:depends({ [_n("tls")] = true, [_n("reality")] = false })
+	o:depends({ [_n("protocol")] = "hysteria2" })
+end
 
 o = s:option(Value, _n("tls_chain_fingerprint"), translate("TLS Chain Fingerprint (SHA256)"), translate("Once set, connects only when the server’s chain fingerprint matches."))
 o:depends({ [_n("tls")] = true, [_n("reality")] = false })

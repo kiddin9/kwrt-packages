@@ -92,7 +92,8 @@
 	display: inline-block;
 	overflow: hidden;
 	white-space: nowrap;
-	max-width: calc(100% - 18px);
+	width: 100%;
+	text-align: left;
 }
 .lv-dropdown-panel {
 	position: fixed;
@@ -634,7 +635,7 @@
 				hiddenSelect.options[0].value = key;
 				hiddenSelect.options[0].text = key;
 				hiddenSelect.value = key;
-				labelSpan.textContent = text;
+				labelSpan.textContent = lv_ellipsisByWidth(cbid, text);
 				labelSpan.title = text;
 				lv_highlightSelectedItem(listContainer, hiddenSelect);
 				lv_updateGroupCounts(cbid, listContainer, hiddenSelect, searchInput);
@@ -691,17 +692,76 @@
 		}, { passive: false });
 	}
 
+	//截断display字符长度
+	window.lv_labelSpan_maxWidth = {};
+	function lv_ellipsisByWidth(cbid, text) {
+		const el = document.getElementById(cbid + ".label");
+		if (!el || !text) return text;
+		text = text.trim();
+		const maxWidth = el.clientWidth;
+		window.lv_labelSpan_maxWidth[cbid] = maxWidth;
+		if (maxWidth <= 0) return text;
+		const style = window.getComputedStyle(el);
+		const font = [
+			style.fontStyle,
+			style.fontVariant,
+			style.fontWeight,
+			style.fontSize || '16px',
+			style.fontFamily || 'sans-serif'
+		].join(" ").replace(/\s+/g, ' ');
+		const canvas = lv_ellipsisByWidth._canvas || (lv_ellipsisByWidth._canvas = document.createElement("canvas"));
+		const ctx = canvas.getContext("2d");
+		ctx.font = font;
+		if (ctx.measureText(text).width <= maxWidth) {
+			return text;
+		}
+		const ellipsis = "...";
+		const ellipsisWidth = ctx.measureText(ellipsis).width;
+		const minChars = 15;
+		const probe = text.slice(0, minChars);
+		const probeWidth = ctx.measureText(probe).width;
+		if (probeWidth + ellipsisWidth > maxWidth) {
+			return text;
+		}
+		let left = 0;
+		let right = text.length;
+		let result = ellipsis;
+		while (left <= right) {
+			const mid = (left + right) >> 1;
+			const substr = text.slice(0, mid);
+			const w = ctx.measureText(substr).width;
+			if (w + ellipsisWidth <= maxWidth) {
+				result = substr + ellipsis;
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+		return result;
+	}
+
 	const lv_adaptiveControls = new Set();
 	function lv_registerAdaptive(cbid) {
 		lv_adaptiveControls.add(cbid);
 		lv_adaptiveStyle(cbid);
+	}
+	function lv_labelSpanResize(cbid) {
+		const el = document.getElementById(cbid + ".label");
+		if (!el) return;
+		const maxWidth = el.clientWidth;
+		if (window.lv_labelSpan_maxWidth[cbid] == maxWidth) return;
+		let text = el.title;
+		el.textContent = lv_ellipsisByWidth(cbid, text);
 	}
 	let lv_adaptiveTicking = false;
 	window.addEventListener("resize", () => {
 		if (!lv_adaptiveTicking) {
 			lv_adaptiveTicking = true;
 			requestAnimationFrame(() => {
-				lv_adaptiveControls.forEach(cbid => lv_adaptiveStyle(cbid));
+				lv_adaptiveControls.forEach(cbid => {
+					lv_adaptiveStyle(cbid);
+					lv_labelSpanResize(cbid);
+				});
 				lv_adaptiveTicking = false;
 			});
 		}

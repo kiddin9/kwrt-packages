@@ -7,6 +7,8 @@ local appname = api.appname
 local fs = api.fs
 local CACHE_PATH = api.CACHE_PATH
 
+local xray_version = api.get_app_version("xray")
+
 local function get_noise_packets()
 	local noises = {}
 	uci:foreach(appname, "xray_noise_packets", function(n)
@@ -145,7 +147,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 				security = node.stream_security,
 				tlsSettings = (node.stream_security == "tls") and {
 					serverName = node.tls_serverName,
-					allowInsecure = (node.tls_allowInsecure == "1") and true or false,
+					allowInsecure = (api.compare_versions(xray_version, "<", "26.1.31") and node.tls_allowInsecure == "1") and true or nil,
 					fingerprint = (node.type == "Xray" and node.utls == "1" and node.fingerprint and node.fingerprint ~= "") and node.fingerprint or nil,
 					pinnedPeerCertSha256 = node.tls_chain_fingerprint or nil,
 					echConfigList = (node.ech == "1") and node.ech_config or nil,
