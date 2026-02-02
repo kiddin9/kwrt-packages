@@ -273,16 +273,12 @@ table td, .table .td {
 		ajaxAbortAll();
 		const dom = document.getElementsByClassName("cbi-tab")[0];
 		const current_group = dom.getAttribute("group_name")
-		if (protocol && protocol === "shunt") {
-			window.location.href = '<%=api.url("add_node")%>?protocol=shunt&redirect=1&group=' + current_group;
-		} else {
-			window.location.href = '<%=api.url("add_node")%>?redirect=1&group=' + current_group;
-		}
+		window.location.href = '<%=api.url("add_node")%>?redirect=1&group=' + current_group;
 	}
 
 	function to_edit_node(cbi_id) {
 		ajaxAbortAll();
-		window.location.href = '<%=api.url("edit_node")%>' + "?section=" + cbi_id;
+		location.href='<%=api.url("node_config")%>/' + cbi_id;
 	}
 
 	function copy_node(cbi_id) {

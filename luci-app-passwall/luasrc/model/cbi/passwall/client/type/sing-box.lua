@@ -75,6 +75,7 @@ if version_ge_1_12_0 then
 end
 o:value("ssh", "SSH")
 o:value("_urltest", translate("URLTest"))
+o:value("_shunt", translate("Shunt"))
 o:value("_iface", translate("Custom Interface"))
 function o.custom_cfgvalue(self, section)
 	if arg_select_proto ~= "" then
@@ -85,21 +86,22 @@ function o.custom_cfgvalue(self, section)
 end
 
 local load_urltest_options = s.val["protocol"] == "_urltest" or arg_select_proto == "_urltest"
+local load_shunt_options = s.val["protocol"] == "_shunt" or arg_select_proto == "_shunt"
 local load_iface_options = s.val["protocol"] == "_iface" or arg_select_proto == "_iface"
 local load_normal_options = true
-if load_urltest_options or load_iface_options then
+if load_urltest_options or load_shunt_options or load_iface_options then
 	load_normal_options = nil
 end
 if not arg_select_proto:find("_") then
 	load_normal_options = true
 end
 
-local nodes_table = {}
-local iface_table = {}
-local urltest_table = {}
+local nodes_list = {}
+local iface_list = {}
+local urltest_list = {}
 for k, e in ipairs(api.get_valid_nodes()) do
 	if e.node_type == "normal" then
-		nodes_table[#nodes_table + 1] = {
+		nodes_list[#nodes_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			type = e["type"],
@@ -109,14 +111,14 @@ for k, e in ipairs(api.get_valid_nodes()) do
 		}
 	end
 	if e.protocol == "_iface" then
-		iface_table[#iface_table + 1] = {
+		iface_list[#iface_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			group = e["group"]
 		}
 	end
 	if e.protocol == "_urltest" then
-		urltest_table[#urltest_table + 1] = {
+		urltest_list[#urltest_list + 1] = {
 			id = e[".name"],
 			remark = e["remark"],
 			group = e["group"]
@@ -145,7 +147,7 @@ if load_urltest_options then -- [[ URLTest Start ]]
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = v.group or ""
 	end
-	for i, v in pairs(nodes_table) do
+	for i, v in pairs(nodes_list) do
 		o:value(v.id, v.remark)
 		o.group[#o.group+1] = v.group or ""
 	end
@@ -775,7 +777,7 @@ o2:depends({ [_n("chain_proxy")] = "2" })
 o2.template = appname .. "/cbi/nodes_listvalue"
 o2.group = {}
 
-for k, v in pairs(nodes_table) do
+for k, v in pairs(nodes_list) do
 	if v.type == "sing-box" and v.id ~= arg[1] and (not v.chain_proxy or v.chain_proxy == "") then
 		o1:value(v.id, v.remark)
 		o1.group[#o1.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
@@ -785,5 +787,19 @@ for k, v in pairs(nodes_table) do
 end
 
 end
+-- [[ Normal single node End ]]
 
 api.luci_types(arg[1], m, s, type_name, option_prefix)
+
+if load_shunt_options then
+	local current_node = m.uci:get_all(appname, arg[1]) or {}
+	local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall/client/include/shunt_options.lua")
+	setfenv(shunt_lua, getfenv(1))(m, s, {
+		node_id = arg[1],
+		node = current_node,
+		socks_list = socks_list,
+		urltest_list = urltest_list,
+		iface_list = iface_list,
+		normal_list = nodes_list
+	})
+end

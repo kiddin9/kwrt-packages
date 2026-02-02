@@ -27,7 +27,7 @@ local api = self.api
 				if (el.value.startsWith("_") || (o_val.startsWith("_") && !el.value.startsWith("_"))) {
 					let name_split = el.name.split(".");
 					let name = name_split[name_split.length - 1];
-					let save = false;
+					let save = true;
 					if (save) {
 						update_node({
 							protocol: getOption(name).value

@@ -10,6 +10,11 @@ local api = self.api
 		white-space: normal;
 	}
 }
+
+.shunt-tab-hidden {
+	display: none !important;
+	visibility: hidden !important;
+}
 </style>
 <script type="text/javascript">
 	//<![CDATA[
@@ -145,8 +150,14 @@ local api = self.api
 					}
 				});
 			} else {
-				try { document.getElementById("tab.passwall2.<%=self.global_cfgid%>.Shunt").style.display = "none"; } catch (error) {}
-				try { document.querySelector('li[data-tab*="Shunt"]').style.display = "none"; } catch (error) {}
+				try {
+					document.getElementById("tab.passwall.<%=self.global_cfgid%>.Shunt").classList.add('shunt-tab-hidden');
+					document.getElementById("tab.passwall.<%=self.global_cfgid%>.Shunt").style.display = "none";
+				} catch (error) {}
+				try {
+					document.querySelector('li[data-tab*="Shunt"]').classList.add('shunt-tab-hidden');
+					document.querySelector('li[data-tab*="Shunt"]').style.display = "none";
+				} catch (error) {}
 			}
 		});
 		let shunt_taboption = document.getElementById("container.passwall2.<%=self.global_cfgid%>.Shunt");

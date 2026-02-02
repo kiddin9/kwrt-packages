@@ -10,9 +10,16 @@ local api = self.api
 		white-space: normal;
 	}
 }
+
+.shunt-tab-hidden {
+	display: none !important;
+	visibility: hidden !important;
+}
 </style>
 <script type="text/javascript">
 	//<![CDATA[
+	var shunt_list = JSON.parse('<%=self.shunt_list%>');
+
 	function to_edit_node(btn) {
 		if (!btn) return;
 		const idReg = /^cbid\.<%=api.appname%>\..*node$/;
@@ -27,7 +34,7 @@ local api = self.api
 		}
 		if (!hidden_select) return;
 		let node_select_value = hidden_select ? hidden_select.options[0].value : "";
-		let to_url = '<%=api.url("edit_node")%>?section=' + node_select_value;
+		let to_url = '<%=api.url("node_config")%>/' + node_select_value;
 		if (node_select_value.indexOf("Socks_") === 0) {
 			to_url = '<%=api.url("socks_config")%>/' + node_select_value.substring("Socks_".length);
 		}
@@ -72,7 +79,8 @@ local api = self.api
 			var node_id = node.getAttribute("id");
 			global_id = node_id;
 			var all_node = node.querySelectorAll("[id]");
-			var reg1 = /^cbid\..*node\.main$/;
+			//var reg1 = /^cbid\..*node\.main$/;
+			var reg1 = /^cbid\..*\.(tcp_node|udp_node)\.main$/;
 
 			for (var i = 0; i < all_node.length; i++) {
 				var el = all_node[i];
@@ -202,5 +210,47 @@ local api = self.api
 			select.insertAdjacentElement("afterend", logLink);
 		};
 	})();
+
+	document.addEventListener("DOMContentLoaded", function () {
+		const hiddenSelect = document.getElementById("cbid.passwall.<%=self.global_cfgid%>.tcp_node");
+		let o_val = hiddenSelect.value
+		const o_hasItem = shunt_list.find(element => element.id == o_val);
+		hiddenSelect.addEventListener("change", function(el){
+			let new_val = el.target.value
+			const new_hasItem = shunt_list.find(element => element.id == new_val);
+			if (new_hasItem) {
+				XHR.get('<%=api.url("update_node")%>', {
+					id: "<%=self.global_cfgid%>",
+					data: JSON.stringify({
+						tcp_node: new_val
+					})
+				},
+				function(x, data) {
+					if (x && x.status == 200 && data.code == 1) {
+						window.location.reload();
+					}
+					else {
+						alert("<%:Error%>");
+					}
+				});
+			} else {
+				try {
+					document.getElementById("tab.passwall.<%=self.global_cfgid%>.Shunt").classList.add('shunt-tab-hidden');
+					document.getElementById("tab.passwall.<%=self.global_cfgid%>.Shunt").style.display = "none";
+				} catch (error) {}
+				try {
+					document.querySelector('li[data-tab*="Shunt"]').classList.add('shunt-tab-hidden');
+					document.querySelector('li[data-tab*="Shunt"]').style.display = "none";
+				} catch (error) {}
+			}
+		});
+		let shunt_taboption = document.getElementById("container.passwall.<%=self.global_cfgid%>.Shunt");
+		if (shunt_taboption) {
+			let shunt_option_list = document.getElementById("cbi-passwall-shunt_option_list");
+			if (shunt_option_list) {
+				shunt_taboption.appendChild(shunt_option_list);
+			}
+		}
+	});
 	//]]>
 </script>

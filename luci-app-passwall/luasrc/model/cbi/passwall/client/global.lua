@@ -1,9 +1,9 @@
-local api = require "luci.passwall.api"
-local appname = "passwall"
-local datatypes = api.datatypes
+api = require "luci.passwall.api"
+appname = "passwall"
+datatypes = api.datatypes
 local fs = api.fs
-local has_singbox = api.finded_com("sing-box")
-local has_xray = api.finded_com("xray")
+has_singbox = api.finded_com("sing-box")
+has_xray = api.finded_com("xray")
 local has_gfwlist = fs.access("/usr/share/passwall/rules/gfwlist")
 local has_chnlist = fs.access("/usr/share/passwall/rules/chnlist")
 local has_chnroute = fs.access("/usr/share/passwall/rules/chnroute")
@@ -95,6 +95,8 @@ end
 
 m:append(Template(appname .. "/global/status"))
 
+global_cfgid = m:get("@global[0]")[".name"]
+
 s = m:section(TypedSection, "global")
 s.anonymous = true
 s.addremove = false
@@ -140,13 +142,41 @@ o.write = function(self, section, value)
 	return m:set(section, "udp_node", value)
 end
 
-o = s:taboption("Main", DummyValue, "shunt_tips", "　")
-o.rawhtml = true
-o.cfgvalue = function(t, n)
-	return string.format('<font color=#FF8C00>%s</font>',
-	translate("To modify the shunt policy, click the Edit button."))
+-- Shunt Start
+if (has_singbox or has_xray) and #nodes_table > 0 then
+	if #normal_list > 0 then
+		current_node_id = m.uci:get(appname, global_cfgid, "tcp_node")
+		current_node = current_node_id and m.uci:get_all(appname, current_node_id) or {}
+		if current_node.protocol == "_shunt" then
+			local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall/client/include/shunt_options.lua")
+			setfenv(shunt_lua, getfenv(1))(m, s, {
+				node_id = current_node_id,
+				node = current_node,
+				socks_list = socks_list,
+				urltest_list = urltest_list,
+				balancing_list = balancing_list,
+				iface_list = iface_list,
+				normal_list = normal_list,
+				verify_option = s.fields["tcp_node"],
+				tab = "Shunt",
+				tab_desc = translate("Shunt Rule")
+			})
+		end
+	else
+		local tips = s:taboption("Main", DummyValue, "tips", " ")
+		tips.rawhtml = true
+		tips.cfgvalue = function(t, n)
+			return string.format('<a style="color: red">%s</a>', translate("There are no available nodes, please add or subscribe nodes first."))
+		end
+		tips:depends({ tcp_node = "", ["!reverse"] = true })
+		for k, v in pairs(shunt_list) do
+			tips:depends("tcp_node", v.id)
+		end
+		for k, v in pairs(balancing_list) do
+			tips:depends("tcp_node", v.id)
+		end
+	end
 end
-o:depends("_node_sel_shunt", "1")
 
 o = s:taboption("Main", Value, "tcp_node_socks_port", translate("TCP Node") .. " Socks " .. translate("Listen Port"))
 o.default = 1070
@@ -783,6 +813,8 @@ end
 
 local footer = Template(appname .. "/global/footer")
 footer.api = api
+footer.global_cfgid = global_cfgid
+footer.shunt_list = api.jsonc.stringify(shunt_list)
 m:append(footer)
 m:append(Template(appname .. "/global/status_bottom"))
 
