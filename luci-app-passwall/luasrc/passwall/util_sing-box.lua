@@ -48,7 +48,8 @@ function geo_convert_srs(var)
 	local rule_name = var["rule_name"]
 	local output_srs_file = GEO_VAR.TO_SRS_PATH .. prefix .. "-" .. rule_name .. ".srs"
 	if not fs.access(output_srs_file) then
-		local cmd = string.format("geoview -type %s -action convert -input '%s' -list '%s' -output '%s' -lowmem=true",
+		local bin = api.get_app_path("geoview")
+		local cmd = string.format(bin .. " -type %s -action convert -input '%s' -list '%s' -output '%s' -lowmem=true",
 			prefix, geo_path, rule_name, output_srs_file)
 		sys.call(cmd)
 		local status = fs.access(output_srs_file) and "success." or "failed!"

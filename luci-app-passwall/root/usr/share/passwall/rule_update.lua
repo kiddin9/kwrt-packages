@@ -374,6 +374,7 @@ local function GeoToRule(rule_name, rule_type, out_path)
 	local geosite_path = asset_location .. "geosite.dat"
 	local geoip_path = asset_location .. "geoip.dat"
 	local file_path = (rule_type == "domain") and geosite_path or geoip_path
+	local bin = api.get_app_path("geoview")
 	local geo_arg
 	if rule_type == "domain" then
 		if rule_name == "gfwlist" then
@@ -386,7 +387,7 @@ local function GeoToRule(rule_name, rule_type, out_path)
 	elseif rule_type == "ip6" then
 		geo_arg = "-type geoip -list cn -ipv4=false"
 	end
-	local cmd = string.format("geoview -input '%s' %s -lowmem=true -output '%s'", file_path, geo_arg, out_path)
+	local cmd = string.format(bin .. " -input '%s' %s -lowmem=true -output '%s'", file_path, geo_arg, out_path)
 	sys.exec(cmd)
 	return true;
 end
