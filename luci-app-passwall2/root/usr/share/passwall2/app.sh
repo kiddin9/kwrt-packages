@@ -73,9 +73,10 @@ check_run_environment() {
 
 run_xray() {
 	local flag node redir_port tcp_proxy_way socks_address socks_port socks_username socks_password http_address http_port http_username http_password
-	local dns_listen_port direct_dns_query_strategy remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy dns_cache write_ipset_direct
+	local dns_listen_port direct_dns_query_strategy remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy dns_cache
 	local loglevel log_file config_file
 	eval_set_val $@
+	node_protocol=$(config_n_get $node protocol)
 	[ -n "$log_file" ] || local log_file="/dev/null"
 	[ -z "$loglevel" ] && local loglevel=$(config_t_get global loglevel "warning")
 
@@ -113,24 +114,33 @@ run_xray() {
 		DIRECT_DNS_UDP_SERVER=${_dns_address}
 		DIRECT_DNS_UDP_PORT=${_dns_port}
 
+		[ "${node_protocol}" = "_shunt" ] && local write_ipset_direct=$(config_n_get $node write_ipset_direct 0)
 		[ "${write_ipset_direct}" = "1" ] && {
 			direct_dnsmasq_listen_port=$(get_new_port $(expr $dns_listen_port + 1) udp)
-			local set_flag="${flag}"
 			local direct_ipset_conf=${GLOBAL_ACL_PATH}/dns_${flag}_direct.conf
-			[ -n "$(echo ${flag} | grep '^acl')" ] && {
-				direct_ipset_conf=${TMP_ACL_PATH}/${sid}/dns_${flag}_direct.conf
-				set_flag=$(echo ${flag} | awk -F '_' '{print $2}')
-			}
+			[ -n "$(echo ${flag} | grep '^acl')" ] && direct_ipset_conf=${TMP_ACL_PATH}/${sid}/dns_${flag}_direct.conf
 			if [ "${nftflag}" = "1" ]; then
-				local direct_nftset="4#inet#passwall2#passwall2_${set_flag}_white,6#inet#passwall2#passwall2_${set_flag}_white6"
+				local direct_nftset4="passwall2_${node}_white"
+				local direct_nftset6="passwall2_${node}_white6"
+				local direct_nftset="4#inet#passwall2#${direct_nftset4},6#inet#passwall2#${direct_nftset6}"
 			else
-				local direct_ipset="passwall2_${set_flag}_white,passwall2_${set_flag}_white6"
+				local direct_ipset4="passwall2_${node}_white"
+				local direct_ipset6="passwall2_${node}_white6"
+				local direct_ipset="${direct_ipset4},${direct_ipset6}"
 			fi
 			run_ipset_dns_server listen_port=${direct_dnsmasq_listen_port} server_dns=${AUTO_DNS} ipset="${direct_ipset}" nftset="${direct_nftset}" config_file=${direct_ipset_conf}
 			DIRECT_DNS_UDP_PORT=${direct_dnsmasq_listen_port}
 			DIRECT_DNS_UDP_SERVER="127.0.0.1"
-			[ -n "${direct_ipset}" ] && json_add_string "direct_ipset" "${direct_ipset}"
-			[ -n "${direct_nftset}" ] && json_add_string "direct_nftset" "${direct_nftset}"
+			[ -n "${direct_ipset}" ] && {
+				json_add_string "direct_ipset" "${direct_ipset}"
+				set_cache_var "node_${node}_direct_ipset4" "${direct_ipset4}"
+				set_cache_var "node_${node}_direct_ipset6" "${direct_ipset6}"
+			}
+			[ -n "${direct_nftset}" ] && {
+				json_add_string "direct_nftset" "${direct_nftset}"
+				set_cache_var "node_${node}_direct_nftset4" "${direct_nftset4}"
+				set_cache_var "node_${node}_direct_nftset6" "${direct_nftset6}"
+			}
 		}
 		json_add_string "direct_dns_udp_port" "${DIRECT_DNS_UDP_PORT}"
 		json_add_string "direct_dns_udp_server" "${DIRECT_DNS_UDP_SERVER}"
@@ -237,11 +247,12 @@ run_xray() {
 
 run_singbox() {
 	local flag node redir_port tcp_proxy_way socks_address socks_port socks_username socks_password http_address http_port http_username http_password
-	local dns_listen_port direct_dns_query_strategy remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy dns_cache write_ipset_direct
+	local dns_listen_port direct_dns_query_strategy remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy dns_cache
 	local loglevel log_file config_file
 	eval_set_val $@
 	local type=$(echo $(config_n_get $node type) | tr 'A-Z' 'a-z')
 	[ -z "$type" ] && return 1
+	node_protocol=$(config_n_get $node protocol)
 	[ -n "$log_file" ] || local log_file="/dev/null"
 	[ -z "$loglevel" ] && local loglevel=$(config_t_get global loglevel "warn")
 	[ "$loglevel" = "warning" ] && loglevel="warn"
@@ -286,24 +297,33 @@ run_singbox() {
 		DIRECT_DNS_UDP_SERVER=${_dns_address}
 		DIRECT_DNS_UDP_PORT=${_dns_port}
 
+		[ "${node_protocol}" = "_shunt" ] && local write_ipset_direct=$(config_n_get $node write_ipset_direct 0)
 		[ "${write_ipset_direct}" = "1" ] && {
 			direct_dnsmasq_listen_port=$(get_new_port $(expr $dns_listen_port + 1) udp)
-			local set_flag="${flag}"
 			local direct_ipset_conf=${GLOBAL_ACL_PATH}/dns_${flag}_direct.conf
-			[ -n "$(echo ${flag} | grep '^acl')" ] && {
-				direct_ipset_conf=${TMP_ACL_PATH}/${sid}/dns_${flag}_direct.conf
-				set_flag=$(echo ${flag} | awk -F '_' '{print $2}')
-			}
+			[ -n "$(echo ${flag} | grep '^acl')" ] && direct_ipset_conf=${TMP_ACL_PATH}/${sid}/dns_${flag}_direct.conf
 			if [ "${nftflag}" = "1" ]; then
-				local direct_nftset="4#inet#passwall2#passwall2_${set_flag}_white,6#inet#passwall2#passwall2_${set_flag}_white6"
+				local direct_nftset4="passwall2_${node}_white"
+				local direct_nftset6="passwall2_${node}_white6"
+				local direct_nftset="4#inet#passwall2#${direct_nftset4},6#inet#passwall2#${direct_nftset6}"
 			else
-				local direct_ipset="passwall2_${set_flag}_white,passwall2_${set_flag}_white6"
+				local direct_ipset4="passwall2_${node}_white"
+				local direct_ipset6="passwall2_${node}_white6"
+				local direct_ipset="${direct_ipset4},${direct_ipset6}"
 			fi
 			run_ipset_dns_server listen_port=${direct_dnsmasq_listen_port} server_dns=${AUTO_DNS} ipset="${direct_ipset}" nftset="${direct_nftset}" config_file=${direct_ipset_conf}
 			DIRECT_DNS_UDP_PORT=${direct_dnsmasq_listen_port}
 			DIRECT_DNS_UDP_SERVER="127.0.0.1"
-			[ -n "${direct_ipset}" ] && json_add_string "direct_ipset" "${direct_ipset}"
-			[ -n "${direct_nftset}" ] && json_add_string "direct_nftset" "${direct_nftset}"
+			[ -n "${direct_ipset}" ] && {
+				json_add_string "direct_ipset" "${direct_ipset}"
+				set_cache_var "node_${node}_direct_ipset4" "${direct_ipset4}"
+				set_cache_var "node_${node}_direct_ipset6" "${direct_ipset6}"
+			}
+			[ -n "${direct_nftset}" ] && {
+				json_add_string "direct_nftset" "${direct_nftset}"
+				set_cache_var "node_${node}_direct_nftset4" "${direct_nftset4}"
+				set_cache_var "node_${node}_direct_nftset6" "${direct_nftset6}"
+			}
 		}
 		json_add_string "direct_dns_udp_port" "${DIRECT_DNS_UDP_PORT}"
 		json_add_string "direct_dns_udp_server" "${DIRECT_DNS_UDP_SERVER}"
@@ -606,6 +626,7 @@ run_global() {
 	[ -z "$NODE" ] && return 1
 	TYPE=$(echo $(config_n_get $NODE type) | tr 'A-Z' 'a-z')
 	[ -z "$TYPE" ] && return 1
+
 	mkdir -p ${GLOBAL_ACL_PATH}
 
 	if [ $PROXY_IPV6 == "1" ]; then
@@ -660,8 +681,6 @@ run_global() {
 
 	node_http_port=$(config_t_get global node_http_port 0)
 	[ "$node_http_port" != "0" ] && V2RAY_ARGS="${V2RAY_ARGS} http_port=${node_http_port}"
-
-	V2RAY_ARGS="${V2RAY_ARGS} write_ipset_direct=${WRITE_IPSET_DIRECT}"
 
 	local run_func
 	[ -n "${XRAY_BIN}" ] && run_func="run_xray"
@@ -1004,7 +1023,7 @@ acl_app() {
 		dnsmasq_port=${GLOBAL_DNSMASQ_PORT:-11400}
 		for item in $items; do
 			index=$(expr $index + 1)
-			local enabled sid remarks sources interface tcp_no_redir_ports udp_no_redir_ports node direct_dns_query_strategy write_ipset_direct remote_dns_protocol remote_dns remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy
+			local enabled sid remarks sources interface tcp_no_redir_ports udp_no_redir_ports node direct_dns_query_strategy remote_dns_protocol remote_dns remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy
 			local _ip _mac _iprange _ipset _ip_or_mac source_list config_file
 			local sid=$(uci -q show "${CONFIG}.${item}" | grep "=acl_rule" | awk -F '=' '{print $1}' | awk -F '.' '{print $2}')
 			[ "$(config_n_get $sid enabled)" = "1" ] || continue
@@ -1050,7 +1069,6 @@ acl_app() {
 				tcp_proxy_mode="global"
 				udp_proxy_mode="global"
 				direct_dns_query_strategy=${direct_dns_query_strategy:-UseIP}
-				write_ipset_direct=${write_ipset_direct:-1}
 				remote_dns_protocol=${remote_dns_protocol:-tcp}
 				remote_dns=${remote_dns:-1.1.1.1}
 				[ "$remote_dns_protocol" = "doh" ] && remote_dns=${remote_dns_doh:-https://1.1.1.1/dns-query}
@@ -1099,7 +1117,7 @@ acl_app() {
 											direct_dns_query_strategy=${direct_dns_query_strategy} \
 											remote_dns_protocol=${remote_dns_protocol} remote_dns_tcp_server=${remote_dns} remote_dns_udp_server=${remote_dns} remote_dns_doh="${remote_dns}" \
 											remote_dns_client_ip=${remote_dns_client_ip} remote_dns_detour=${remote_dns_detour} remote_fakedns=${remote_fakedns} remote_dns_query_strategy=${remote_dns_query_strategy} \
-											write_ipset_direct=${write_ipset_direct} config_file=${config_file}
+											config_file=${config_file}
 								local status=$?
 								if [ "$status" != 0 ]; then
 									log_i18n 2 "[%s] process %s error, skip this transparent proxy!" "${remarks}" "${config_file}"
@@ -1119,7 +1137,7 @@ acl_app() {
 					}
 				fi
 			}
-			unset enabled sid remarks sources interface tcp_no_redir_ports udp_no_redir_ports node direct_dns_query_strategy write_ipset_direct remote_dns_protocol remote_dns remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy 
+			unset enabled sid remarks sources interface tcp_no_redir_ports udp_no_redir_ports node direct_dns_query_strategy remote_dns_protocol remote_dns remote_dns_doh remote_dns_client_ip remote_dns_detour remote_fakedns remote_dns_query_strategy 
 			unset _ip _mac _iprange _ipset _ip_or_mac source_list config_file
 		done
 		unset redir_port dns_port dnsmasq_port
@@ -1250,7 +1268,6 @@ get_config() {
 	REMOTE_DNS=$(config_t_get global remote_dns 1.1.1.1:53 | sed 's/#/:/g' | sed -E 's/\:([^:]+)$/#\1/g')
 	REMOTE_FAKEDNS=$(config_t_get global remote_fakedns '0')
 	REMOTE_DNS_QUERY_STRATEGY=$(config_t_get global remote_dns_query_strategy UseIPv4)
-	WRITE_IPSET_DIRECT=$(config_t_get global write_ipset_direct 1)
 	DNS_CACHE=$(config_t_get global dns_cache 1)
 	DNS_REDIRECT=$(config_t_get global dns_redirect 1)
 

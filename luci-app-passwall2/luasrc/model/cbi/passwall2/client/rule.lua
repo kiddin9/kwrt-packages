@@ -27,24 +27,6 @@ o.default = "/usr/share/v2ray/"
 o.placeholder = o.default
 o.rmempty = false
 
-if api.is_finded("geoview") then
-	o = s:option(Flag, "enable_geoview", translate("Enable Geo Data Parsing"))
-	o.default = 0
-	o.rmempty = false
-	o.description = "<ul>"
-		.. "<li>" .. translate("Experimental feature.") .. "</li>"
-		.. "<li>" .. translate("Analyzes and preloads GeoIP/Geosite data to enhance the shunt performance of Sing-box/Xray.") .. "</li>"
-		.. "<li>" .. translate("Note: Increases resource usage.") .. "</li>"
-		.. "</ul>"
-	function o.write(self, section, value)
-		local old = m:get(section, self.option) or "0"
-		if old ~= value then
-			m:set(section, "flush_set", "1")
-		end
-		return Flag.write(self, section, value)
-	end
-end
-
 ---- Auto Update
 o = s:option(Flag, "auto_update", translate("Enable auto update rules"))
 o.default = 0

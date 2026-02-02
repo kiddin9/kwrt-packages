@@ -181,8 +181,11 @@ msgstr "域名重寫"
 msgid "Direct DNS result write to IPSet"
 msgstr "直連 DNS 解析結果寫入到 IPSet"
 
-msgid "Perform the matching direct domain name rules into IP to IPSet/NFTSet, and then connect directly (not entering the core). Maybe conflict with some special circumstances."
-msgstr "將匹配到的直連規則的域名解析IP寫入到 IPSet/NFTSet，然後直連（不進入內核）。可能和某些特殊情況衝突。"
+msgid "Perform the matching direct domain name rules into IP to IPSet/NFTSet, and then connect directly (not entering the core)."
+msgstr "將匹配到的直連規則的網域解析IP寫入到 IPSet/NFTSet，然後直連（不進入核心）。"
+
+msgid "Maybe conflict with some special circumstances."
+msgstr "可能和某些特殊情況衝突。"
 
 msgid "DNS Redirect"
 msgstr "DNS 重定向"
@@ -913,11 +916,11 @@ msgstr "Geo 资源文件目錄"
 msgid "This variable specifies a directory where geoip.dat and geosite.dat files are."
 msgstr "此變量指定geoip.dat和geosite.dat文件所在的目錄。"
 
-msgid "Enable Geo Data Parsing"
-msgstr "開啟 Geo 數据解析"
+msgid "Enable GeoIP Data Parsing"
+msgstr "開啟 GeoIP 數据解析"
 
-msgid "Analyzes and preloads GeoIP/Geosite data to enhance the shunt performance of Sing-box/Xray."
-msgstr "分析和预加载 GeoIP/Geosite 數据，以增強 Sing-box/Xray 的分流效果。"
+msgid "Analyzes and preloads GeoIP data to enhance the shunt performance."
+msgstr "分析和预加载 GeoIP 數据，以增強分流效果。"
 
 msgid "Note: Increases resource usage."
 msgstr "注：会增加一些系統资源的開销。"

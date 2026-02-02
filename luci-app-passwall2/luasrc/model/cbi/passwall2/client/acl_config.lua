@@ -252,10 +252,6 @@ o:value("UseIPv4")
 o:value("UseIPv6")
 o:depends({ _hide_dns_option = "1",  ['!reverse'] = true })
 
-o = s:option(Flag, "write_ipset_direct", translate("Direct DNS result write to IPSet"), translate("Perform the matching direct domain name rules into IP to IPSet/NFTSet, and then connect directly (not entering the core). Maybe conflict with some special circumstances."))
-o.default = "1"
-o:depends({ direct_dns_query_strategy = "",  ['!reverse'] = true })
-
 o = s:option(ListValue, "remote_dns_protocol", translate("Remote DNS Protocol"))
 o:value("tcp", "TCP")
 o:value("doh", "DoH")

@@ -48,7 +48,6 @@ config global_rules
 	option v2ray_location_asset '/usr/share/v2ray/'
 	option geoip_url 'https://github.com/Loyalsoldier/geoip/releases/latest/download/geoip.dat'
 	option geosite_url 'https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
-	option enable_geoview '1'
 
 config global_app
 	option geoview_file '/usr/bin/geoview'
@@ -83,6 +82,8 @@ config nodes 'myshunt'
 	option default_node '_direct'
 	option domainStrategy 'IPOnDemand'
 	option domainMatcher 'hybrid'
+	option write_ipset_direct '1'
+	option enable_geoview_ip '1'
 
 config shunt_rules 'DirectGame'
 	option remarks 'DirectGame'

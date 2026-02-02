@@ -264,9 +264,6 @@ gen_shunt_list() {
 	local node=${1}
 	local shunt_list4_var_name=${2}
 	local shunt_list6_var_name=${3}
-	local _write_ipset_direct=${4}
-	local _set_name4=${5}
-	local _set_name6=${6}
 	[ -z "$node" ] && continue
 	unset ${shunt_list4_var_name}
 	unset ${shunt_list6_var_name}
@@ -275,10 +272,10 @@ gen_shunt_list() {
 	NODE_PROTOCOL=$(config_n_get $node protocol)
 	[ "$NODE_PROTOCOL" = "_shunt" ] && USE_SHUNT_NODE=1
 	[ "$USE_SHUNT_NODE" = "1" ] && {
-		local enable_geoview=$(config_t_get global_rules enable_geoview 0)
-		[ -z "$(first_type geoview)" ] && enable_geoview=0
+		local enable_geoview_ip=$(config_n_get $node enable_geoview_ip 0)
+		[ -z "$(first_type geoview)" ] && enable_geoview_ip=0
 		local preloading=0
-		preloading=$enable_geoview
+		preloading=$enable_geoview_ip
 		[ "${preloading}" = "1" ] && {
 			local default_node=$(config_n_get ${node} default_node _direct)
 			local default_outbound="redirect"
@@ -298,7 +295,7 @@ gen_shunt_list() {
 					_SHUNT_LIST6="${_SHUNT_LIST6} ${nftset_v6}:${outbound}"
 					config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "(\.((2(5[0-5]|[0-4][0-9]))|[0-1]?[0-9]{1,2})){3}" | insert_nftset $nftset_v4 "0"
 					config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "([A-Fa-f0-9]{1,4}::?){1,7}[A-Fa-f0-9]{1,4}" | insert_nftset $nftset_v6 "0"
-					[ "${enable_geoview}" = "1" ] && {
+					[ "${enable_geoview_ip}" = "1" ] && {
 						local _geoip_code=$(config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "^geoip:" | grep -v "^geoip:private" | sed -E 's/^geoip:(.*)/\1/' | sed ':a;N;$!ba;s/\n/,/g')
 						[ -n "$_geoip_code" ] && {
 							get_geoip $_geoip_code ipv4 | grep -E "(\.((2(5[0-5]|[0-4][0-9]))|[0-1]?[0-9]{1,2})){3}" | insert_nftset $nftset_v4 "0"
@@ -309,9 +306,15 @@ gen_shunt_list() {
 				}
 			done
 		}
-		[ "${_write_ipset_direct}" = "1" ] && {
-			_SHUNT_LIST4="${_SHUNT_LIST4} ${_set_name4}:direct"
-			_SHUNT_LIST6="${_SHUNT_LIST6} ${_set_name6}:direct"
+		local direct_nftset4=$(get_cache_var "node_${node}_direct_nftset4")
+		[ -n "${direct_nftset4}" ] && {
+			gen_nftset $direct_nftset4 ipv4_addr 0 0
+			_SHUNT_LIST4="${_SHUNT_LIST4} ${direct_nftset4}:direct"
+		}
+		local direct_nftset6=$(get_cache_var "node_${node}_direct_nftset6")
+		[ -n "${direct_nftset6}" ] && {
+			gen_nftset $direct_nftset6 ipv6_addr 0 0
+			_SHUNT_LIST6="${_SHUNT_LIST6} ${direct_nftset6}:direct"
 		}
 		[ "${preloading}" = "1" ] && [ -n "$default_node" ] && {
 			local nftset_v4="passwall2_${node}_default"
@@ -369,23 +372,13 @@ load_acl() {
 			[ -n "$(get_cache_var "ACL_${sid}_dns_port")" ] && dns_redirect_port=$(get_cache_var "ACL_${sid}_dns_port")
 			[ -n "$node" ] && node_remark=$(config_n_get $node remarks)
 
-			write_ipset_direct=${write_ipset_direct:-1}
-			[ "${write_ipset_direct}" = "1" ] && {
-				if [ -n "$(get_cache_var "ACL_${sid}_default")" ]; then
-					local nftset_white=${nftset_global_white}
-					local nftset_white6=${nftset_global_white6}
-					shunt_list4=${SHUNT_LIST4}
-					shunt_list6=${SHUNT_LIST6}
-				else
-					local nftset_white="passwall2_${sid}_white"
-					local nftset_white6="passwall2_${sid}_white6"
-					gen_nftset $nftset_white ipv4_addr 3d 3d
-					gen_nftset $nftset_white6 ipv6_addr 3d 3d
-
-					# Shunt rules IP list (import when use shunt node)
-					gen_shunt_list "${node}" shunt_list4 shunt_list6 ${write_ipset_direct} ${nftset_white} ${nftset_white6}
-				fi
-			}
+			if [ -n "$(get_cache_var "ACL_${sid}_default")" ]; then
+				shunt_list4=${SHUNT_LIST4}
+				shunt_list6=${SHUNT_LIST6}
+			else
+				# Shunt rules IP list (import when use shunt node)
+				gen_shunt_list "${node}" shunt_list4 shunt_list6
+			fi
 
 			_acl_list=${TMP_ACL_PATH}/${sid}/source_list
 
@@ -533,7 +526,7 @@ load_acl() {
 				[ "$_ipv4" != "1" ] && nft "add rule $NFTABLE_NAME PSW2_MANGLE_V6 meta l4proto udp ${_ipt_source} counter return comment \"$remarks\"" 2>/dev/null
 				unset nft_chain nft_j _ipt_source msg msg2 _ipv4
 			done
-			unset enabled sid remarks sources tcp_proxy_mode udp_proxy_mode tcp_no_redir_ports udp_no_redir_ports tcp_redir_ports udp_redir_ports node interface write_ipset_direct
+			unset enabled sid remarks sources tcp_proxy_mode udp_proxy_mode tcp_no_redir_ports udp_no_redir_ports tcp_redir_ports udp_redir_ports node interface
 			unset redir_port node_remark _acl_list
 		done
 	}
@@ -743,14 +736,9 @@ add_firewall_rule() {
 			log_i18n 1 "$(i18n "Add ISP %s DNS to the whitelist: %s" "IPv6" "${ispip6}")"
 		done
 	}
-	
-	local nftset_global_white="passwall2_global_white"
-	local nftset_global_white6="passwall2_global_white6"
-	gen_nftset $nftset_global_white ipv4_addr 0 0
-	gen_nftset $nftset_global_white6 ipv6_addr 0 0
 
 	# Shunt rules IP list (import when use shunt node)
-	gen_shunt_list "${NODE}" SHUNT_LIST4 SHUNT_LIST6 ${WRITE_IPSET_DIRECT} ${nftset_global_white} ${nftset_global_white6}
+	gen_shunt_list "${NODE}" SHUNT_LIST4 SHUNT_LIST6
 
 	# Filter all node IPs
 	filter_vpsip > /dev/null 2>&1 &

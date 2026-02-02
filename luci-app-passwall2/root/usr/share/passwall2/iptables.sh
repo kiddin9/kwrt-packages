@@ -231,9 +231,6 @@ gen_shunt_list() {
 	local node=${1}
 	local shunt_list4_var_name=${2}
 	local shunt_list6_var_name=${3}
-	local _write_ipset_direct=${4}
-	local _set_name4=${5}
-	local _set_name6=${6}
 	[ -z "$node" ] && continue
 	unset ${shunt_list4_var_name}
 	unset ${shunt_list6_var_name}
@@ -242,10 +239,10 @@ gen_shunt_list() {
 	NODE_PROTOCOL=$(config_n_get $node protocol)
 	[ "$NODE_PROTOCOL" = "_shunt" ] && USE_SHUNT_NODE=1
 	[ "$USE_SHUNT_NODE" = "1" ] && {
-		local enable_geoview=$(config_t_get global_rules enable_geoview 0)
-		[ -z "$(first_type geoview)" ] && enable_geoview=0
+		local enable_geoview_ip=$(config_n_get $node enable_geoview_ip 0)
+		[ -z "$(first_type geoview)" ] && enable_geoview_ip=0
 		local preloading=0
-		preloading=$enable_geoview
+		preloading=$enable_geoview_ip
 		[ "${preloading}" = "1" ] && {
 			local default_node=$(config_n_get ${node} default_node _direct)
 			local default_outbound="redirect"
@@ -266,7 +263,7 @@ gen_shunt_list() {
 
 					config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "(\.((2(5[0-5]|[0-4][0-9]))|[0-1]?[0-9]{1,2})){3}" | sed -e "s/^/add $ipset_v4 &/g" | awk '{print $0} END{print "COMMIT"}' | ipset -! -R
 					config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "([A-Fa-f0-9]{1,4}::?){1,7}[A-Fa-f0-9]{1,4}" | sed -e "s/^/add $ipset_v6 &/g" | awk '{print $0} END{print "COMMIT"}' | ipset -! -R
-					[ "${enable_geoview}" = "1" ] && {
+					[ "${enable_geoview_ip}" = "1" ] && {
 						local _geoip_code=$(config_n_get $shunt_id ip_list | tr -s "\r\n" "\n" | sed -e "/^$/d" | grep -E "^geoip:" | grep -v "^geoip:private" | sed -E 's/^geoip:(.*)/\1/' | sed ':a;N;$!ba;s/\n/,/g')
 						[ -n "$_geoip_code" ] && {
 							get_geoip $_geoip_code ipv4 | grep -E "(\.((2(5[0-5]|[0-4][0-9]))|[0-1]?[0-9]{1,2})){3}" | sed -e "s/^/add $ipset_v4 &/g" | awk '{print $0} END{print "COMMIT"}' | ipset -! -R
@@ -277,9 +274,15 @@ gen_shunt_list() {
 				}
 			done
 		}
-		[ "${_write_ipset_direct}" = "1" ] && {
-			_SHUNT_LIST4="${_SHUNT_LIST4} ${_set_name4}:direct"
-			_SHUNT_LIST6="${_SHUNT_LIST6} ${_set_name6}:direct"
+		local direct_ipset4=$(get_cache_var "node_${node}_direct_ipset4")
+		[ -n "${direct_ipset4}" ] && {
+			ipset -! create ${direct_ipset4} nethash maxelem 1048576 timeout 259200
+			_SHUNT_LIST4="${_SHUNT_LIST4} ${direct_ipset4}:direct"
+		}
+		local direct_ipset6=$(get_cache_var "node_${node}_direct_ipset6")
+		[ -n "${direct_ipset6}" ] && {
+			ipset -! create ${direct_ipset6} nethash family inet6 maxelem 1048576 timeout 259200
+			_SHUNT_LIST6="${_SHUNT_LIST6} ${direct_ipset6}:direct"
 		}
 		[ "${preloading}" = "1" ] && [ -n "$default_node" ] && {
 			local ipset_v4="passwall2_${node}_default"
@@ -340,23 +343,13 @@ load_acl() {
 			[ -n "$(get_cache_var "ACL_${sid}_dns_port")" ] && dns_redirect_port=$(get_cache_var "ACL_${sid}_dns_port")
 			[ -n "$node" ] && node_remark=$(config_n_get $node remarks)
 
-			write_ipset_direct=${write_ipset_direct:-1}
-			[ "${write_ipset_direct}" = "1" ] && {
-				if [ -n "$(get_cache_var "ACL_${sid}_default")" ]; then
-					local ipset_white=${ipset_global_white}
-					local ipset_white6=${ipset_global_white6}
-					shunt_list4=${SHUNT_LIST4}
-					shunt_list6=${SHUNT_LIST6}
-				else
-					local ipset_white="passwall2_${sid}_white"
-					local ipset_white6="passwall2_${sid}_white6"
-					ipset -! create $ipset_white nethash maxelem 1048576
-					ipset -! create $ipset_white6 nethash family inet6 maxelem 1048576
-
-					# Shunt rules IP list (import when use shunt node)
-					gen_shunt_list "${node}" shunt_list4 shunt_list6 ${write_ipset_direct} ${ipset_white} ${ipset_white6}
-				fi
-			}
+			if [ -n "$(get_cache_var "ACL_${sid}_default")" ]; then
+				shunt_list4=${SHUNT_LIST4}
+				shunt_list6=${SHUNT_LIST6}
+			else
+				# Shunt rules IP list (import when use shunt node)
+				gen_shunt_list "${node}" shunt_list4 shunt_list6
+			fi
 			
 			_acl_list=${TMP_ACL_PATH}/${sid}/source_list
 
@@ -508,7 +501,7 @@ load_acl() {
 				[ "$_ipv4" != "1" ] && $ip6t_m -A PSW2 $(comment "$remarks") ${_ipt_source} -p udp -j RETURN 2>/dev/null
 				unset ipt_tmp ipt_j _ipt_source msg msg2 _ipv4
 			done
-			unset enabled sid remarks sources tcp_no_redir_ports udp_no_redir_ports tcp_redir_ports udp_redir_ports node interface write_ipset_direct
+			unset enabled sid remarks sources tcp_no_redir_ports udp_no_redir_ports tcp_redir_ports udp_redir_ports node interface
 			unset node_remark _acl_list
 		done
 	}
@@ -725,15 +718,9 @@ add_firewall_rule() {
 			log_i18n 1 "$(i18n "Add ISP %s DNS to the whitelist: %s" "IPv6" "${ispip6}")"
 		done
 	}
-	
-	local ipset_global_white="passwall2_global_white"
-	local ipset_global_white6="passwall2_global_white6"
-	ipset -! create $ipset_global_white nethash maxelem 1048576 timeout 259200
-	ipset -! create $ipset_global_white6 nethash family inet6 maxelem 1048576 timeout 259200
-
 
 	# Shunt rules IP list (import when use shunt node)
-	gen_shunt_list "${NODE}" SHUNT_LIST4 SHUNT_LIST6 ${WRITE_IPSET_DIRECT} ${ipset_global_white} ${ipset_global_white6}
+	gen_shunt_list "${NODE}" SHUNT_LIST4 SHUNT_LIST6
 
 	# Filter all node IPs
 	filter_vpsip > /dev/null 2>&1 &
