@@ -7,7 +7,7 @@
 
 @custom-variant dark (&:where([data-darkmode=true], [data-darkmode=true] *));
 
-@plugin 'tailwind-scrollbar' {
+@plugin "tailwind-scrollbar" {
   nocompatible: true;
 }
 
@@ -919,7 +919,7 @@
         @apply mb-0;
       }
 
-      .modal.login & {
+      .login-wrapper & {
         @apply mt-6 rounded-2xl px-2 py-2.5 text-center text-sm max-md:px-0.5;
       }
 
@@ -1268,43 +1268,6 @@
         & .button-row,
         & div.right {
           @apply justify-end;
-        }
-
-        &.login {
-          @apply mx-auto w-full max-w-sm rounded-3xl border border-slate-200 bg-white shadow-lg max-md:mx-4 max-md:w-11/12 dark:border-slate-700 dark:bg-slate-800;
-
-          & > h4 {
-            @apply px-6 pt-6 max-md:pb-4 max-md:text-base;
-          }
-
-          & .cbi-map {
-            @apply px-12 pb-0 max-md:px-6;
-
-            & .cbi-section {
-              @apply m-0 px-0 pb-0;
-
-              & .cbi-section-node {
-                & .cbi-value {
-                  @apply flex-col gap-3 text-sm font-medium max-md:text-xs;
-
-                  & .cbi-value-title {
-                    @apply flex-1 text-left text-slate-700 dark:text-slate-300;
-                  }
-
-                  & .cbi-value-field {
-                    & input[type="text"],
-                    & input[type="password"] {
-                      @apply w-full rounded-2xl px-3 py-2 dark:bg-slate-700;
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          & .btn.cbi-button-positive {
-            @apply mx-3 mb-6 rounded-2xl px-4 py-2 max-md:mb-4 max-md:text-sm;
-          }
         }
 
         &.uci-dialog {
@@ -1809,6 +1772,56 @@
 
     .cbi-section-node-tabbed {
       @apply mt-6;
+    }
+  }
+
+  @layer login {
+    .login-wrapper {
+      @apply flex min-h-screen flex-col items-center justify-center p-6;
+
+      .login-box {
+        @apply bg-card-bg border-card-border w-full max-w-sm rounded-3xl border p-10 shadow-2xl backdrop-blur;
+
+        & .login-brand {
+          @apply mb-4 flex items-center justify-center gap-1;
+
+          & img {
+            @apply h-6 w-6;
+          }
+
+          & span {
+            @apply text-base-text text-xl font-bold tracking-tight;
+          }
+        }
+
+        & h2 {
+          @apply text-muted-text mb-8 text-center text-sm;
+        }
+
+        & .login-row {
+          @apply mb-6 px-4;
+
+          & .cbi-value-title {
+            @apply mb-2 block font-medium;
+          }
+
+          & .cbi-input-text {
+            @apply w-full;
+          }
+        }
+
+        & .btn {
+          @apply mt-4 w-full;
+        }
+      }
+    }
+
+    .login-footer {
+      @apply text-muted-text fixed right-0 bottom-0 left-0 py-4 text-center text-xs;
+
+      & a {
+        @apply text-primary-text;
+      }
     }
   }
 }

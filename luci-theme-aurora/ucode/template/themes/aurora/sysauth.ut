@@ -7,45 +7,43 @@
  Licensed to the public under the Apache License 2.0.
 -#}
 
+{%const boardinfo = ubus.call('system', 'board');-%}
 {% include('header', { blank_page: true }) %}
 
-<section hidden>
-	<form method="post" class="cbi-map">
-		<div class="cbi-section">
-			<div class="cbi-section-node">
-				<div class="cbi-value">
-					<label class="cbi-value-title" for="luci_username">{{ _('Username') }}</label>
-					<div class="cbi-value-field">
-						<input name="luci_username" id="luci_username" type="text" autocomplete="username" value="{{ entityencode(duser, true) }}">
-					</div>
-				</div>
-				<div class="cbi-value">
-					<label class="cbi-value-title" for="luci_password">{{ _('Password') }}</label>
-					<div class="cbi-value-field">
-						<input name="luci_password" id="luci_password" type="password" autocomplete="current-password">
-					</div>
-				</div>
-				{% if (fuser): %}
-				<div class="alert-message error">
-					{{ _('Invalid username and/or password! Please try again.') }}
-				</div>
-				{% endif %}
-			</div>
+<div class="login-wrapper">
+	<form method="post" class="login-box">
+		<div class="login-brand">
+			<img src="{{ media }}/images/logo.svg" alt="">
+			<span>{{ striptags(boardinfo?.hostname ?? '?') }}</span>
 		</div>
+
+		<h2>{{ _('Authorization Required') }}</h2>
+		
+		<div class="login-row">
+			<label class="cbi-value-title" for="luci_username">{{ _('Username') }}</label>
+			<input name="luci_username" id="luci_username" type="text" class="cbi-input-text" value="{{ entityencode(duser ?? '', true) }}" autocomplete="username">
+		</div>
+
+		<div class="login-row">
+			<label class="cbi-value-title" for="luci_password">{{ _('Password') }}</label>
+			<input name="luci_password" id="luci_password" type="password" class="cbi-input-text" autocomplete="current-password">
+		</div>
+
+		{% if (fuser): %}
+		<div class="alert-message error">{{ _('Invalid username and/or password! Please try again.') }}</div>
+		{% endif %}
+
+		<button type="submit" class="btn cbi-button-positive">{{ _('Log in') }}</button>
 	</form>
-
-	<hr>
-
-	<button class="btn cbi-button-positive important">{{ _('Log in') }}</button>
-</section>
-
-<div id="view">
-	<div class="spinning">{{ _('Loading view…') }}</div>
-    <script>
-        L.require('ui').then(function(ui) {
-            ui.instantiateView('aurora.sysauth');
-        });
-    </script>
 </div>
+
+<div class="login-footer">
+	<p>© 2025–<span id="current-year"></span> | <a href="https://github.com/eamonxg/luci-theme-aurora" target="_blank">Aurora Theme</a></p>
+</div>
+
+<script>
+document.getElementById('current-year').textContent = new Date().getFullYear();
+document.getElementById('luci_username').value ? document.getElementById('luci_password').focus() : document.getElementById('luci_username').focus();
+</script>
 
 {% include('footer', { blank_page: true }) %}
