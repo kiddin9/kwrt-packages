@@ -43,6 +43,7 @@ reflector_ping_interval_s=$(uci -q get sqm.${INTERFACE}.reflector_ping_interval_
 #reflectors=("1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" "9.9.9.9" "9.9.9.10")
 country="$(uci get omr-tracker.defaults.country)"
 reflectors=($(uci get omr-tracker.${country}.hosts))
+#$(uci get omr-tracker.${country}.hosts | wc -w)
 no_pingers=$(uci -q get sqm.${INTERFACE}.no_pingers || echo "4")
 
 # delay threshold in ms is the extent of RTT increase to classify as a delay

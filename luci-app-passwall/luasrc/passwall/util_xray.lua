@@ -153,7 +153,16 @@ function gen_outbound(flag, node, tag, proxy_table)
 					serverName = node.tls_serverName,
 					allowInsecure = (api.compare_versions(xray_version, "<", "26.1.31") and node.tls_allowInsecure == "1") and true or nil,
 					fingerprint = (node.type == "Xray" and node.utls == "1" and node.fingerprint and node.fingerprint ~= "") and node.fingerprint or nil,
-					pinnedPeerCertSha256 = node.tls_chain_fingerprint or nil,
+					pinnedPeerCertSha256 = (function()
+								if api.compare_versions(xray_version, "<", "26.1.31") then return nil end
+								if not node.tls_CertSha then return "" end
+								return node.tls_CertSha
+							end)(),
+					verifyPeerCertByName = (function()
+								if api.compare_versions(xray_version, "<", "26.1.31") then return nil end
+								if not node.tls_CertByName then return "" end
+								return node.tls_CertByName
+							end)(),
 					echConfigList = (node.ech == "1") and node.ech_config or nil,
 					echForceQuery = (node.ech == "1") and (node.ech_ForceQuery or "none") or nil
 				} or nil,

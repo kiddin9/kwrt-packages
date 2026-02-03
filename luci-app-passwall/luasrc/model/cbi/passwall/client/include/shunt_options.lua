@@ -121,6 +121,14 @@ s2.config = appname
 s2.sectiontype = "shunt_option_list"
 
 o = s2:option(DummyValue, "remarks", translate("Rule"))
+o.rawhtml = true
+o.cfgvalue = function(self, section)
+	if shunt_rules[section].id == ".default" then
+		return string.format('<font style="color: red">%s</font>', shunt_rules[section].remarks)
+	else
+		return string.format('<a href="%s" target="_blank">%s</a>', api.url("shunt_rules", shunt_rules[section].id), shunt_rules[section].remarks)
+	end
+end
 
 _node = s2:option(Value, "_node", translate("Node"))
 _node.template = appname .. "/cbi/nodes_listvalue"
@@ -139,7 +147,9 @@ _node.remove = function(self, section)
 	return m:del(current_node_id, shunt_rules[section]["_node_option"])
 end
 
-o = s2:option(Flag, "_fakedns", '<a style="color:#FF8C00">FakeDNS</a>')
+o = s2:option(Flag, "_fakedns", string.format('<a style="color:#FF8C00" title="%s">FakeDNS</a>', translate("Use FakeDNS work in the domain that proxy.") .. "\n" ..
+	translate("Suitable scenarios for let the node servers get the target domain names.") .. "\n" ..
+	translate("Such as: DNS unlocking of streaming media, reducing DNS query latency, etc.")))
 o.cfgvalue = function(self, section)
 	return m:get(current_node_id, shunt_rules[section]["_fakedns_option"])
 end
