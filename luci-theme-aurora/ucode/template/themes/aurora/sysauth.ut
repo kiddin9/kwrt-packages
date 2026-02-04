@@ -10,35 +10,48 @@
 {%const boardinfo = ubus.call('system', 'board');-%}
 {% include('header', { blank_page: true }) %}
 
-<div class="login-wrapper">
-	<form method="post" class="login-box">
-		<div class="login-brand">
-			<img src="{{ media }}/images/logo.svg" alt="">
-			<span>{{ striptags(boardinfo?.hostname ?? '?') }}</span>
+<div class="login-screen">
+	<div class="login-shell">
+		<form method="post" class="login-card">
+			<div class="login-brand">
+				<div class="login-logo">
+					<img src="{{ media }}/images/logo.svg" alt="">
+				</div>
+				<div class="login-title">
+					<span class="login-hostname">{{ striptags(boardinfo?.hostname ?? '?') }}</span>
+					<span class="login-subtitle">{{ _('Authorization Required') }}</span>
+				</div>
+			</div>
+
+			<div class="login-divider" aria-hidden="true"></div>
+
+			<div class="login-form">
+				<div class="login-fields">
+					<div class="login-field">
+						<label class="login-label" for="luci_username">{{ _('Username') }}</label>
+						<input name="luci_username" id="luci_username" type="text" class="login-input" value="{{ entityencode(duser ?? '', true) }}" autocomplete="username">
+					</div>
+
+					<div class="login-field">
+						<label class="login-label" for="luci_password">{{ _('Password') }}</label>
+						<input name="luci_password" id="luci_password" type="password" class="login-input" autocomplete="current-password">
+					</div>
+				</div>
+
+				{% if (fuser): %}
+				<div class="alert-message error" role="alert">{{ _('Invalid username and/or password! Please try again.') }}</div>
+				{% endif %}
+
+				<div class="login-actions">
+					<button type="submit" class="btn primary login-submit">{{ _('Log in') }}</button>
+				</div>
+			</div>
+		</form>
+
+		<div class="login-footer">
+			<p>© 2025–<span id="current-year"></span> | <a href="https://github.com/eamonxg/luci-theme-aurora" target="_blank">Aurora Theme</a></p>
 		</div>
-
-		<h2>{{ _('Authorization Required') }}</h2>
-		
-		<div class="login-row">
-			<label class="cbi-value-title" for="luci_username">{{ _('Username') }}</label>
-			<input name="luci_username" id="luci_username" type="text" class="cbi-input-text" value="{{ entityencode(duser ?? '', true) }}" autocomplete="username">
-		</div>
-
-		<div class="login-row">
-			<label class="cbi-value-title" for="luci_password">{{ _('Password') }}</label>
-			<input name="luci_password" id="luci_password" type="password" class="cbi-input-text" autocomplete="current-password">
-		</div>
-
-		{% if (fuser): %}
-		<div class="alert-message error">{{ _('Invalid username and/or password! Please try again.') }}</div>
-		{% endif %}
-
-		<button type="submit" class="btn cbi-button-positive">{{ _('Log in') }}</button>
-	</form>
-</div>
-
-<div class="login-footer">
-	<p>© 2025–<span id="current-year"></span> | <a href="https://github.com/eamonxg/luci-theme-aurora" target="_blank">Aurora Theme</a></p>
+	</div>
 </div>
 
 <script>

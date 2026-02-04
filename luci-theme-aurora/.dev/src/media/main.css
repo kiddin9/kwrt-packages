@@ -919,8 +919,8 @@
         @apply mb-0;
       }
 
-      .login-wrapper & {
-        @apply mt-6 rounded-2xl px-2 py-2.5 text-center text-sm max-md:px-0.5;
+      .login-shell & {
+        @apply mb-0 rounded-2xl px-2 py-2.5 text-center text-base max-md:px-0.5;
       }
 
       &.success {
@@ -1776,51 +1776,79 @@
   }
 
   @layer login {
-    .login-wrapper {
-      @apply flex min-h-screen flex-col items-center justify-center p-6;
+    .login-screen {
+      @apply relative flex min-h-dvh items-center justify-center overflow-hidden px-5;
 
-      .login-box {
-        @apply bg-card-bg border-card-border w-full max-w-sm rounded-3xl border p-10 shadow-2xl backdrop-blur;
+      .login-shell {
+        @apply relative z-10 flex w-full max-w-md flex-col items-stretch gap-6;
 
-        & .login-brand {
-          @apply mb-4 flex items-center justify-center gap-1;
+        .login-card {
+          @apply border-card-border bg-card-bg relative overflow-hidden rounded-4xl border p-10 shadow-xl backdrop-blur-xl max-md:rounded-3xl max-md:p-6;
 
-          & img {
-            @apply h-6 w-6;
+          .login-brand {
+            @apply flex items-center gap-4;
+
+            .login-logo {
+              @apply bg-primary/15 ring-primary/20 flex h-12 w-12 items-center justify-center rounded-2xl ring-1;
+
+              & img {
+                @apply h-6 w-6;
+              }
+            }
+
+            .login-title {
+              @apply flex flex-col gap-1;
+
+              .login-hostname {
+                @apply text-base-text text-2xl font-semibold tracking-tight;
+              }
+
+              .login-subtitle {
+                @apply text-muted-text text-sm;
+              }
+            }
           }
 
-          & span {
-            @apply text-base-text text-xl font-bold tracking-tight;
+          .login-divider {
+            @apply via-card-border my-6 h-px w-full bg-gradient-to-r from-transparent to-transparent md:my-8;
+          }
+
+          .login-form {
+            @apply flex flex-col gap-6 md:gap-4;
+
+            .login-fields {
+              @apply flex flex-col gap-4 md:gap-5;
+
+              .login-field {
+                @apply flex flex-col gap-2;
+
+                .login-label {
+                  @apply text-muted-text text-xs font-semibold uppercase;
+                }
+
+                .login-input {
+                  @apply border-card-border bg-card-bg/70 text-base-text focus:border-primary rounded-2xl border px-3 py-2.5 text-base;
+                }
+              }
+            }
+
+            .login-actions {
+              @apply md:pt-4;
+
+              .login-submit {
+                @apply w-full py-2.5 text-base;
+              }
+            }
           }
         }
 
-        & h2 {
-          @apply text-muted-text mb-8 text-center text-sm;
-        }
+        .login-footer {
+          @apply text-muted-text fixed bottom-0 left-1/2 -translate-x-1/2 pb-4 text-center text-xs whitespace-nowrap max-md:pb-3;
 
-        & .login-row {
-          @apply mb-6 px-4;
-
-          & .cbi-value-title {
-            @apply mb-2 block font-medium;
-          }
-
-          & .cbi-input-text {
-            @apply w-full;
+          & a {
+            @apply text-primary-text hover:text-primary;
           }
         }
-
-        & .btn {
-          @apply mt-4 w-full;
-        }
-      }
-    }
-
-    .login-footer {
-      @apply text-muted-text fixed right-0 bottom-0 left-0 py-4 text-center text-xs;
-
-      & a {
-        @apply text-primary-text;
       }
     }
   }

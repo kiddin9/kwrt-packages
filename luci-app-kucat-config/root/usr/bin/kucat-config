@@ -1,0 +1,117 @@
+#!/bin/sh
+# Copyright 2023-2026 sirpdboy team <herboy2008@gmail.com>
+
+kucatset(){
+sum=$(grep -c 'theme' /etc/config/kucat)
+useset=0
+for i in $(seq 0 $((sum-1)))
+do
+    use=$(uci -q get kucat.@theme[$i].use )
+    
+    if [ "x$use" == "x1" ]; then
+	mode=`uci -q get kucat.@theme[$i].mode`
+	primary_rgbm=`uci -q get kucat.@theme[$i].primary_rgbm`
+	uci set kucat.@basic[0].mode=${mode}
+	case "$primary_rgbm" in
+		blue)
+			uci set kucat.@basic[0].primary_rgbm='20,109,179'
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.9'
+			uci set kucat.@basic[0].primary_opacity='0'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='28,66,188'
+ 			[ $mode = dark ] && uci set kucat.@basic[0].primary_rgbbody='33,45,60' || uci set kucat.@basic[0].primary_rgbbody='248,248,248'
+		;;
+		green)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.9'
+			uci set kucat.@basic[0].primary_opacity='0'
+			uci set kucat.@basic[0].primary_rgbm='26,131,97'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='76,157,69'
+ 			[ $mode = dark ] && uci set kucat.@basic[0].primary_rgbbody='33,45,60' || uci set kucat.@basic[0].primary_rgbbody='248,248,248'
+		;;
+		orange)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.9'
+			uci set kucat.@basic[0].primary_opacity='0'
+			uci set kucat.@basic[0].primary_rgbm='163,71,6'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='142,93,8'
+		;;
+		red)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.9'
+			uci set kucat.@basic[0].primary_opacity='0'
+			uci set kucat.@basic[0].primary_rgbm='143,32,13'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='243,119,72'
+		;;
+		black)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.95'
+			uci set kucat.@basic[0].primary_opacity='0'
+			uci set kucat.@basic[0].primary_rgbm='25,25,26'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='55,80,90'
+		;;
+		gray)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.5'
+			uci set kucat.@basic[0].primary_opacity='10'
+			uci set kucat.@basic[0].primary_rgbm='50,67,77'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='64,68,70'
+		;;
+		bluets)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts='0.5'
+			uci set kucat.@basic[0].primary_opacity='10'
+			uci set kucat.@basic[0].primary_rgbm='66,139,139'
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+			uci set kucat.@basic[0].primary_rgbs='55,103,128'
+		;;
+		*)
+			uci set kucat.@basic[0].bkuse=`uci -q get kucat.@theme[$i].bkuse`
+			uci set kucat.@basic[0].primary_rgbm_ts=`uci -q get kucat.@theme[$i].primary_rgbm_ts`
+			uci set kucat.@basic[0].primary_opacity=`uci -q get kucat.@theme[$i].primary_opacity`
+			uci set kucat.@basic[0].primary_rgbm=`echo $primary_rgbm | sed 's#(##; s#)##g; s#rgb##g; s#\,\ #\,#g;s#\ #\,#g;'`
+			uci set kucat.@basic[0].primary_rgbs=`uci -q get kucat.@theme[$i].primary_rgbs | sed 's#(##; s#)##g; s#rgb##g; s#\,\ #\,#g;s#\ #\,#g;'`
+			uci set kucat.@basic[0].primary_rgbs_ts=`uci -q get kucat.@theme[$i].primary_rgbs_ts`
+ 		;;
+	esac
+	useset=1
+	break
+    fi
+done
+if [ "x$useset" == "x0" ] ; then
+	uci set kucat.@basic[0].mode='auto'
+	uci set kucat.@basic[0].primary_rgbm='74,161,133'
+	uci set kucat.@basic[0].primary_rgbs_ts='0'
+	uci set kucat.@basic[0].primary_rgbs='225,112,88'
+	uci set kucat.@basic[0].bkuse='1'
+	uci set kucat.@basic[0].primary_rgbm_ts='0.5'
+	uci set kucat.@basic[0].primary_opacity='10'
+fi
+[ $mode == dark ] && uci set kucat.@basic[0].primary_rgbbody='33,45,60' || uci set kucat.@basic[0].primary_rgbbody='244,245,247'
+case "x$(uci -q get kucat.@basic[0].fontmode)" in
+	x1)
+	uci set kucat.@basic[0].font_d='1.1rem'
+	uci set kucat.@basic[0].font_z='0.92rem'
+	uci set kucat.@basic[0].font_x='0.875rem'
+	;;
+	x2)
+	uci set kucat.@basic[0].font_d='1.3rem'
+	uci set kucat.@basic[0].font_z='1.1rem'
+	uci set kucat.@basic[0].font_x='0.92rem'
+	;;
+	*)
+	uci set kucat.@basic[0].font_d='1rem'
+	uci set kucat.@basic[0].font_z='0.875rem'
+	uci set kucat.@basic[0].font_x='0.82rem'
+	;;
+esac
+uci commit kucat
+}
+kucatset
+

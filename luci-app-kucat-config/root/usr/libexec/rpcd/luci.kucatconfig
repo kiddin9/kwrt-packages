@@ -89,7 +89,7 @@ case "$1" in
 	case "$2" in
 	"space")
 		json_init
-        json_add_int "space" "$(df /www 2>/dev/null | awk 'NR==2 {print $4}')"
+		json_add_int "space" "$(df /www 2>/dev/null | awk 'NR==2 {print $4}')"
 		json_dump
 		json_cleanup
 		;;

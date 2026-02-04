@@ -123,7 +123,7 @@ return view.extend({
 		var m, s, o;
 		m = new form.Map('kucat', _('KuCat Theme Config'),
 			_('You can set KuCat theme font size, color scheme, shortcut tools, and manage login and desktop background images here.'));
-		
+
 		s = m.section(form.TypedSection, 'basic', '');
 		s.anonymous = true;
 
@@ -178,18 +178,18 @@ return view.extend({
 		o.rmempty = false;
 		o.default = '0';
 
-		// o = s.option(form.Value, 'colortools', _('RGB color values'))
-		// o.default = '0 0 0';
-		// o.rmempty = false;
+		 o = s.option(form.Value, 'colortools', _('RGB color values'))
+		 o.default = '0 0 0';
+		 o.rmempty = false;
 
-		// o.render = function(section_id, option_index, cfgvalue) {
-		// 	var el = form.Value.prototype.render.apply(this, arguments);
-		// 	setTimeout(function() {
-		// 		const textInput = document.querySelector('[id^="widget.cbid.kucat."][id$=".colortools"]');
-		// 		createColorPickerrgb(textInput);
-		// 	}, 0);
-		// 	return el;
-		// };
+		 o.render = function(section_id, option_index, cfgvalue) {
+		 	var el = form.Value.prototype.render.apply(this, arguments);
+		 	setTimeout(function() {
+		 		const textInput = document.querySelector('[id^="widget.cbid.kucat."][id$=".colortools"]');
+		 		createColorPickerrgb(textInput);
+		 	}, 0);
+		 	return el;
+		 };
 		// Status Homekey settings
 		o = s.option( form.ListValue, 'gohome', _('Status Homekey settings'));
 		o.value('overview', _('Overview'));
@@ -228,8 +228,24 @@ return view.extend({
 		o.default = 'OpenClash';
 		o.rmempty = false;
 
+		o = s.option(form.Button, '_save', _('Save current settings'));
+		o.inputstyle = 'apply';
+		o.inputtitle = _('Save & Apply');
+		o.onclick = function() {
+   	 	   ui.changes.apply(true);
+ 		   return this.map.save(null, true).then(function() {
+ 		       return fs.exec('/usr/bin/kucat-config');
+ 		   }).then(function(res) {
+ 		       if (res.code === 0) {
+  		          location.href = location.pathname + '?_=' + Date.now();
+   		     }
+ 		   }).catch(console.error);
+		};
 
+        return m.render();
+	},
 
-		return m.render();
-	}
+	handleSaveApply: null,
+	handleSave: null,
+	handleReset: null
 });

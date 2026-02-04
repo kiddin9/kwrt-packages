@@ -1,7 +1,7 @@
 #!/bin/sh
-chmod +x  /etc/init.d/kucat
-
-[ -s /etc/config/kucat ] || {
+chmod +x  /etc/init.d/kucat /usr/bin/kucat-config /usr/libexec/rpcd/luci.kucatconfig
+[  `uci get kucat.@basic[0]` ] ||
+{
 cat <<-EOF > /etc/config/kucat
  
 config basic
@@ -14,13 +14,13 @@ config basic
 	option dayword '0'
 	option background '0'
 	option bklock '1'
-	option mode 'auto'
+	option mode 'dark'
 	option bkuse '1'
 	option primary_rgbs_ts '0'
-	option primary_rgbbody '244,245,247'
-	option primary_opacity '10'
+	option primary_rgbbody '33,45,60'
+	option primary_opacity '0'
 	option primary_rgbs '55,103,128'
-	option primary_rgbm_ts '0.5'
+	option primary_rgbm_ts '0.7'
 	option primary_rgbm '20,109,179'
 	option fontmode '0'
 	option font_d '1rem'
@@ -32,9 +32,9 @@ config basic
 config theme
 	option primary_rgbbody '33,45,60'
 	option primary_rgbs '76,157,69'
-	option remarks '隔栏经典蓝色'
+	option remarks '栅栏经典蓝9.5透'
 	option primary_opacity '0'
-	option primary_rgbm_ts '0.9'
+	option primary_rgbm_ts '0.95'
 	option bkuse '1'
 	option primary_rgbs_ts '0.1'
 	option mode 'auto'
@@ -44,10 +44,10 @@ config theme
 config theme
 	option primary_rgbbody '33,45,60'
 	option primary_rgbs '76,157,69'
-	option primary_rgbm_ts '0.9'
+	option primary_rgbm_ts '0.95'
 	option primary_opacity '0'
 	option bkuse '0'
-	option remarks '无隔栏清爽绿'
+	option remarks '无栏无背绿9.5透'
 	option primary_rgbs_ts '0'
 	option mode 'auto'
 	option use '0'
@@ -57,22 +57,22 @@ config theme
 	option primary_rgb_ts '0.3'
 	option primary_rgbm '26,131,97'
 	option primary_rgbs '76 157 69'
-	option bkuse '0'
-	option remarks '无隔栏绿模糊'
+	option bkuse '1'
+	option remarks '无栏绿8透'
 	option primary_rgbs_ts '0'
-	option primary_opacity '10'
-	option primary_rgbm_ts '0.5'
-	option mode 'light'
+	option primary_opacity '0'
+	option primary_rgbm_ts '0.8'
+	option mode 'dark'
 	option use '0'
 
 config theme
 	option primary_rgbm '20,109,179'
 	option primary_rgbs 'rgb(55,103,128)'
-	option mode 'auto'
-	option primary_opacity '10'
+	option mode 'dark'
+	option primary_opacity '0'
 	option primary_rgbs_ts '0'
-	option primary_rgbm_ts '0.5'
-	option remarks '无隔栏蓝模糊'
+	option primary_rgbm_ts '0.7'
+	option remarks '无栏蓝7透'
 	option bkuse '1'
 	option use '1'
 
@@ -81,18 +81,18 @@ config theme
 	option primary_rgbs 'rgb(64, 68, 70)'
 	option primary_opacity '0'
 	option primary_rgbs_ts '0'
-	option remarks '灰无隔栏无背景'
+	option remarks '无栏无背灰不透'
 	option bkuse '0'
-	option primary_rgbm_ts '0.9'
+	option primary_rgbm_ts '1'
 	option mode 'auto'
-	option use '0'
+	option use '1'
 
 config theme
 	option bkuse '1'
 	option mode 'dark'
 	option primary_rgbm '50 66 77'
 	option primary_rgbs '55 80 90'
-	option remarks '炫灰隔栏模糊'
+	option remarks '炫灰栅栏模糊5透'
 	option primary_rgbs_ts '0.1'
 	option use '0'
 	option primary_rgbm_ts '0.5'
@@ -103,16 +103,16 @@ config theme
 	option primary_rgbm '74,161,133'
 	option primary_rgbs '76 157 69'
 	option primary_rgbs_ts '0.1'
-	option remarks '炫绿隔栏模糊'
-	option primary_rgbm_ts '0.7'
+	option remarks '炫绿栅栏模糊6透'
+	option primary_rgbm_ts '0.6'
 	option bkuse '1'
 	option primary_opacity '10'
 	option use '0'
 
 
-
 EOF
-
+uci commit kucat
+/etc/init.d/kucat restart
 }
 
 

@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: GPL-3.0-only
 #
-# Copyright (C) 2021-2025  sirpdboy  <herboy2008@gmail.com> 
+# Copyright (C) 2021-2026  sirpdboy  <herboy2008@gmail.com> 
 # https://github.com/sirpdboy/luci-app-kucat-config
 # This is free software, licensed under the Apache License, Version 2.0 .
 #
 include $(TOPDIR)/rules.mk
 NAME:=kucat-config
 PKG_NAME:=luci-app-$(NAME)
-PKG_VERSION:=2.1.6
-PKG_RELEASE:=8
+PKG_VERSION:=2.1.7
+PKG_RELEASE:=9
 
 PKG_MAINTAINER:=sirpdboy team <herboy2008@gmail.com>
 
