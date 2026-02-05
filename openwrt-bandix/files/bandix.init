@@ -17,6 +17,7 @@ start_service() {
 	local port
 	local data_dir
 	local log_level
+	local tc_priority
 	local traffic_enabled
 	local traffic_retention_seconds
 	local traffic_persist_interval_seconds
@@ -33,6 +34,7 @@ start_service() {
 	config_get port 'general' 'port'
 	config_get data_dir 'general' 'data_dir'
 	config_get log_level 'general' 'log_level'
+	config_get tc_priority 'general' 'tc_priority'
 	config_get_bool traffic_enabled 'traffic' 'enabled'
 	config_get traffic_retention_seconds 'traffic' 'traffic_retention_seconds'
 	config_get traffic_persist_interval_seconds 'traffic' 'traffic_persist_interval_seconds'
@@ -50,6 +52,9 @@ start_service() {
 	local args="--iface $iface --port $port --data-dir $data_dir"
 	if [ -n "$log_level" ]; then
 		args="$args --log-level $log_level"
+	fi
+	if [ -n "$tc_priority" ]; then
+		args="$args --tc-priority $tc_priority"
 	fi
 	
 	# 添加流量监控相关参数
