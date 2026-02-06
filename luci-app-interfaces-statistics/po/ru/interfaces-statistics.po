@@ -12,6 +12,9 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "Language: ru\n"
 
+msgid "Gb"
+msgstr "Гб"
+
 msgid "Interface is down"
 msgstr "Интерфейс выключен"
 
@@ -21,8 +24,14 @@ msgstr "Интерфейс включен"
 msgid "Interfaces Statistics"
 msgstr "Статистика интерфейсов"
 
+msgid "Kb"
+msgstr "Кб"
+
 msgid "MAC Address"
 msgstr "MAC адрес"
+
+msgid "Mb"
+msgstr "Мб"
 
 msgid "No interfaces detected"
 msgstr "Интерфейсы не найдены"
@@ -38,6 +47,9 @@ msgstr "Обновить интерфейсы"
 
 msgid "State"
 msgstr "Состояние"
+
+msgid "Tb"
+msgstr "Тб"
 
 msgid "Transmit"
 msgstr "Передано"

@@ -4,7 +4,8 @@
 'require ui';
 'require view';
 
-const labelStyleUp = 'background-color:#46a546; color:#ffffff';
+const labelStyleUp   = 'background-color:#388438; color:#fff';
+const labelStyleDown = 'background-color:#767676; color:#fff';
 
 return view.extend({
 	ifacesArray  : [],
@@ -15,7 +16,18 @@ return view.extend({
 		expect: { '': {} }
 	}),
 
-	setIfacesData: function(ifacesData) {
+	formatBytesString(bytes) {
+		let units = (bytes > 10**12) ?
+			`${Number((bytes / 1000 / 1000 / 1000 / 1000).toFixed(2))} ${_('Tb')}` :
+				(bytes > 10**9) ?
+					`${Number((bytes / 1000 / 1000 / 1000).toFixed(2))} ${_('Gb')}` :
+						(bytes > 10**6) ?
+							`${Number((bytes / 1000 / 1000).toFixed(2))} ${_('Mb')}` :
+								`${Number((bytes / 1000).toFixed(2))} ${_('Kb')}`;
+		return `${bytes} (${units})`;
+	},
+
+	setIfacesData(ifacesData) {
 		for(let iface of this.ifacesArray) {
 			let ifaceState             = null;
 			let ifacesStatisticsObject = null;
@@ -27,31 +39,35 @@ return view.extend({
 
 			let state         = document.querySelector('[data-ifstat="%s_state"]'.format(iface));
 			state.textContent = (ifaceState) ? _('Interface is up') : _('Interface is down');
-			state.style       = (ifaceState) ? labelStyleUp : '';
+			state.style       = (ifaceState) ? labelStyleUp : labelStyleDown;
 
 			if(!ifacesStatisticsObject) continue;
 
 			for(let [k, v] of Object.entries(ifacesStatisticsObject)) {
 				let elem = document.querySelector('[data-ifstat="%s_%s"]'.format(iface, k));
 				if(elem !== null) {
-					elem.textContent = v;
+					if(k == 'rx_bytes' || k == 'tx_bytes') {
+						elem.innerHTML = this.formatBytesString(v);
+					} else {
+						elem.textContent = v;
+					}
 				};
 			};
 		};
 	},
 
-	update: function() {
+	update() {
 		return this.callNetDevice().then(ifacesData => {
 			this.setIfacesData(ifacesData);
 		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
 	},
 
-	load: function() {
+	load() {
 		return this.callNetDevice().catch(
 			e => ui.addNotification(null, E('p', {}, e.message)));
 	},
 
-	render: function(ifacesData) {
+	render(ifacesData) {
 
 		let ifacesNode = E('div', { 'class': 'cbi-section fade-in' },
 			E('div', { 'class': 'cbi-section-node' },
@@ -86,7 +102,7 @@ return view.extend({
 				let ifaceState             = ifacesData[iface].up;
 				let ifaceMac               = ifacesData[iface].macaddr;
 
-				if(ifaceMac === "00:00:00:00:00:00") {
+				if(ifaceMac == "00:00:00:00:00:00") {
 					ifaceMac = null;
 				};
 
@@ -119,7 +135,7 @@ return view.extend({
 							E('span', {
 								'data-ifstat': iface + '_state',
 								'class': 'label',
-								'style': (ifaceState) ? labelStyleUp : '',
+								'style': (ifaceState) ? labelStyleUp : labelStyleDown,
 							},
 								(ifaceState) ?
 									_('Interface is up') : _('Interface is down')

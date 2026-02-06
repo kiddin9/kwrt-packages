@@ -1,6 +1,9 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+msgid "Gb"
+msgstr ""
+
 msgid "Interface is down"
 msgstr ""
 
@@ -10,7 +13,13 @@ msgstr ""
 msgid "Interfaces Statistics"
 msgstr ""
 
+msgid "Kb"
+msgstr ""
+
 msgid "MAC Address"
+msgstr ""
+
+msgid "Mb"
 msgstr ""
 
 msgid "No interfaces detected"
@@ -26,6 +35,9 @@ msgid "Refresh interfaces"
 msgstr ""
 
 msgid "State"
+msgstr ""
+
+msgid "Tb"
 msgstr ""
 
 msgid "Transmit"
