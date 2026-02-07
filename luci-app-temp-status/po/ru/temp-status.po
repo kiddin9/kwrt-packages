@@ -42,6 +42,9 @@ msgstr "Датчик"
 msgid "Show hidden sensors"
 msgstr "Показать скрытые датчики"
 
+msgid "Switch view"
+msgstr "Переключить вид"
+
 msgid "Temperature"
 msgstr "Температура"
 

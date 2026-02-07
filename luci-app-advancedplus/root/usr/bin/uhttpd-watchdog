@@ -1,0 +1,109 @@
+#!/bin/sh
+# uhttpd 进程监控守护进程 2025-2026 by sirpdboy 
+
+PROG="uhttpd-watchdog"
+UHTTPD_BIN="/usr/sbin/uhttpd"
+UHTTPD_SERVICE="uhttpd"
+CHECK_INTERVAL=30  # 检查间隔（秒）
+MAX_FAILURES=3     # 最大连续失败次数
+LOG_IDENT="$PROG"
+
+log() {
+    logger -t "$LOG_IDENT" "$1"
+}
+
+check_binary() {
+    if [ ! -x "$UHTTPD_BIN" ]; then
+        log "错误：$UHTTPD_BIN 不存在或不可执行，监控停止"
+        return 1
+    fi
+    return 0
+}
+
+check_process() {
+    if pgrep -f "/usr/sbin/uhttpd" >/dev/null 2>&1 || \
+       pgrep -x uhttpd >/dev/null 2>&1; then
+                return 0
+    fi
+    return 1
+}
+
+restart_service() {
+    log "尝试重启 $UHTTPD_SERVICE 服务..."
+    if /etc/init.d/$UHTTPD_SERVICE restart >/dev/null 2>&1; then
+        sleep 3  # 等待服务启动
+        if check_process; then
+            log "$UHTTPD_SERVICE 重启成功"
+            return 0
+        else
+            log "$UHTTPD_SERVICE 重启后进程仍不存在"
+            return 1
+        fi
+    else
+        log "执行 service $UHTTPD_SERVICE restart 失败"
+        return 1
+    fi
+}
+
+monitor_loop() {
+    local failures=0
+    
+    log "启动 $UHTTPD_SERVICE 监控守护进程"
+    
+    while true; do
+        # 检查二进制文件
+        if ! check_binary; then
+            sleep 60
+            continue
+        fi
+        
+        # 检查进程状态
+        if ! check_process; then
+            failures=$((failures + 1))
+            log "检测到 $UHTTPD_SERVICE 进程停止 (失败次数: $failures/$MAX_FAILURES)"
+            
+            if [ $failures -ge $MAX_FAILURES ]; then
+                log "达到最大失败次数，尝试重启服务..."
+                if restart_service; then
+                    failures=0
+                else
+                    sleep 60
+                fi
+            fi
+        else
+            # 进程正常，重置失败计数器
+            if [ $failures -gt 0 ]; then
+                log "$UHTTPD_SERVICE 恢复正常运行"
+                failures=0
+            fi
+        fi
+        
+        sleep $CHECK_INTERVAL
+    done
+}
+
+start() {
+    if pgrep -f "$PROG" | grep -v $$ >/dev/null 2>&1; then
+        log "警告：$PROG 已经在运行"
+        exit 1
+    fi
+    monitor_loop
+}
+
+stop() {
+    pkill -f "$PROG" 2>/dev/null
+    log "监控服务已停止"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    *)
+        echo "用法: $0 {start|stop}"
+        exit 1
+        ;;
+esac

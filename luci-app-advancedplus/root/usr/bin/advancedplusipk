@@ -22,7 +22,7 @@ is_iStore() {
 
 is_vip() {
     local ezver
-    ezver=$(grep -o "EZVER=\S*" /etc/ezopenwrt_version 2>/dev/null | cut -d'=' -f2)
+    ezver=$(grep -o "EZVER=\S*" /etc/ezopenwrt_version 2>/dev/null | cut -d'-' -f3)
     [[ "${ezver^^}" =~ VIP ]]
 }
 
@@ -37,39 +37,25 @@ istore_install(){
         setup_software_source 1
 	ISTORE_REPO=https://istore.linkease.com/repo/all/store
 	FCURL="curl --fail --show-error"
-	curl -V >/dev/null 2>&1 || {
-  	  echo "prereq: install curl"
-  	  opkg info curl | grep -Fqm1 curl || opkg update
-  	  opkg install curl
-	}
+
 	IPK=$($FCURL "$ISTORE_REPO/Packages.gz" | zcat | grep -m1 '^Filename: luci-app-store.*\.ipk$' | sed -n -e 's/^Filename: \(.\+\)$/\1/p')
 	[ -n "$IPK" ] || exit 1
 	$FCURL "$ISTORE_REPO/$IPK" | tar -xzO ./data.tar.gz | tar -xzO ./bin/is-opkg >/tmp/is-opkg
 	chmod 755 /tmp/is-opkg
+	
+
 	/tmp/is-opkg update
-	# /tmp/is-opkg install taskd
+	/tmp/is-opkg install taskd
 	/tmp/is-opkg opkg install --force-reinstall luci-lib-taskd luci-lib-xterm
 	/tmp/is-opkg opkg install --force-reinstall luci-app-store || exit $?
 	[ -s "/etc/init.d/tasks" ] || /tmp/is-opkg opkg install --force-reinstall taskd
 	[ -s "/usr/lib/lua/luci/cbi.lua" ] || /tmp/is-opkg opkg install luci-compat >/dev/null 2>&1
-            uci set system.@system[0].hostname='iStoreOS'
-            uci commit system
-            /etc/init.d/system reload
-            if is_x86_64; then
-                extra_info="with iStoreOS Style"
-		echo "src/gz is_store https://istore.linkease.com/repo/all/store" >/etc/opkg/customfeeds.conf
-                current_revision=$(grep "DISTRIB_REVISION" /etc/openwrt_release | cut -d "'" -f 2)
-                if [[ $current_revision != *"$extra_info"* ]]; then
-                    new_revision="${current_revision} ${extra_info}"
-                    sed -i "s/DISTRIB_REVISION=.*$/DISTRIB_REVISION='$new_revision'/" /etc/openwrt_release
-                fi
-            else
-                echo "src/gz is_store https://istore.linkease.com/repo/all/store" >/etc/opkg/customfeeds.conf
-		
-                if ! grep -q " like iStoreOS" /tmp/sysinfo/model; then
-                    sed -i '1s/$/ like iStoreOS/' /tmp/sysinfo/model
-                fi
-            fi
+
+	sed -i 's/istore.linkease.com/istore.istoreos.com/g' /bin/is-opkg
+
+	sed -i 's/istore.linkease.com/istore.istoreos.com/g' /etc/opkg/compatfeeds.conf
+	sed -i 's/istore.linkease.com/istore.istoreos.com/g' /www/luci-static/istore/index.js
+
         uci -q set luci.main.mediaurlbase='/luci-static/kucat'
         uci commit
 	rm -rf /tmp/is-opkg /tmp/luci*
