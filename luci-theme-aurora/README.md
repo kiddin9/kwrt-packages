@@ -15,13 +15,17 @@
   <a href="https://discord.gg/EBncRrzfTw"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white"></a>
 </div>
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/multi-device-showcase.png" alt="Multi-Device Showcase" width="100%">
+</div>
+
 ## Features
 
 - **Modern**: Modern, content-first UI design with a clean layout and elegant animations.
 - **Mobile-friendly**: Optimized for mobile interactions and display, supporting both smartphones and tablets.
 - **Theme Switcher**: Built-in theme switcher with seamless switching between Auto (system), Light, and Dark modes.
 - **Floating Toolbar**: Clickable button icons for quick access to frequently used pages
-- **Customizable**: Allows customizing colors, navigation submenu styles, theme logo, and adding or editing frequently used pages in the floating toolbar via the [luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) plugin.
+- **Customizable**: The [luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) plugin includes multiple built‑in theme presets you can switch between, and lets you customize colors, navigation submenu styles, the theme logo, and the floating toolbar (add or edit frequently used pages).
 
 ## Preview
 
@@ -33,18 +37,10 @@
 
 <br>
 
-### 🖥️ Desktop
-
-|                                                                   Light Mode                                                                   |                                                                  Dark Mode                                                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-light.png" alt="PC Light Mode" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-dark.png" alt="PC Dark Mode" width="100%"> |
-
-### 📱 Mobile & Tablet
-
-|            Device            |                                                             Overview <br><sub>Menu Collapsed</sub>                                                              |                                                             Overview <br><sub>Menu Expanded</sub>                                                             |
-| :--------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| **Mobile**<br>_(Light Mode)_ | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-collapsed.png" alt="Mobile Collapsed" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-expanded.png" alt="Mobile Expanded" width="100%"> |
-| **Tablet**<br>_(Dark Mode)_  | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-collapsed.png" alt="Tablet Collapsed" width="100%">  | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-expanded.png" alt="Tablet Expanded" width="100%">  |
+<div align="center">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/dark-light-preview.png" alt="Dark and Light Preview" width="49%">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/mobile-preview.png" alt="Mobile Preview" width="49%">
+</div>
 
 ## Compatibility
 

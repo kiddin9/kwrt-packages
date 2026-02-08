@@ -15,13 +15,17 @@
   <a href="https://discord.gg/EBncRrzfTw"><img alt="Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white"></a>
 </div>
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/multi-device-showcase.png" alt="Multi-Device Showcase" width="100%">
+</div>
+
 ## 特性
 
 - **现代化**：内容优先的现代化 UI 设计，布局整洁，动画优雅。
 - **移动端友好**：针对移动端的交互和显示进行了优化，适配手机和平板设备。
 - **主题切换**：内置主题切换器，支持在自动（跟随系统）、浅色和深色模式之间无缝切换。
 - **悬浮工具栏**：提供可点击的图标按钮，用于快速访问常用页面。
-- **高度可定制**：通过 [luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) 插件，支持自定义颜色、导航子菜单样式、主题 Logo，以及添加或编辑悬浮工具栏中的常用页面。
+- **高度可定制**：[luci-app-aurora-config](https://github.com/eamonxg/luci-app-aurora-config) 插件内置多套主题预设，可自由切换；同时还支持自定义颜色、导航子菜单样式、主题 Logo，以及添加或编辑悬浮工具栏中的常用页面。
 
 ## 预览
 
@@ -33,18 +37,10 @@
 
 <br>
 
-### 🖥️ 桌面端
-
-|                                                                    浅色模式                                                                    |                                                                   深色模式                                                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-light.png" alt="PC Light Mode" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-pc-dark.png" alt="PC Dark Mode" width="100%"> |
-
-### 📱 移动端与平板
-
-|         设备类型         |                                                                  概览 <br><sub>菜单收起</sub>                                                                   |                                                                 概览 <br><sub>菜单展开</sub>                                                                  |
-| :----------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| **手机**<br>_(浅色模式)_ | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-collapsed.png" alt="Mobile Collapsed" width="100%"> | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-mobile-light-expanded.png" alt="Mobile Expanded" width="100%"> |
-| **平板**<br>_(深色模式)_ | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-collapsed.png" alt="Tablet Collapsed" width="100%">  | <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/preview-tablet-dark-expanded.png" alt="Tablet Expanded" width="100%">  |
+<div align="center">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/dark-light-preview.png" alt="Dark and Light Preview" width="49%">
+  <img src="https://raw.githubusercontent.com/eamonxg/assets/master/aurora/preview/theme/mobile-preview.png" alt="Mobile Preview" width="49%">
+</div>
 
 ## 兼容性
 
@@ -67,6 +63,7 @@ OpenWrt 25.12+ 和 Snapshot 版本使用 `apk`；其他版本使用 `opkg`：
   ```
 
 - **apk** (OpenWrt 25.12+ 及 snapshots):
+
   ```sh
   cd /tmp && wget -O luci-theme-aurora.apk https://github.com/eamonxg/luci-theme-aurora/releases/latest/download/luci-theme-aurora-0.10.0-r20260119.apk && apk add --allow-untrusted luci-theme-aurora.apk
   ```
