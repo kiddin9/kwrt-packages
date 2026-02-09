@@ -367,6 +367,30 @@ msgstr "分流"
 msgid "Balancing"
 msgstr "負載均衡"
 
+msgid "Node Addition Method"
+msgstr "節點新增方式"
+
+msgid "Manual"
+msgstr "手動"
+
+msgid "Batch"
+msgstr "批量"
+
+msgid "Select Group"
+msgstr "選擇分組"
+
+msgid "Node Matching Rules"
+msgstr "節點匹配規則"
+
+msgid ""
+"Example: <code>^A && B && !C && D$</code><br>"
+"This means the node remark must start with A (^), include B, exclude C (!), and end with D ($).<br>"
+"Conditions are joined by <code>&&</code>, and their order does not affect the result."
+msgstr ""
+"示例：<code>^A && B && !C && D$</code><br>"
+"表示節點備註需同時滿足：以 A 開頭（^）、包含 B、不包含 C（!）、並以 D 結尾（$）。<br>"
+"多個條件使用 <code>&&</code> 連接，條件順序不影響結果。"
+
 msgid "Balancing Strategy"
 msgstr "負載均衡策略"
 
