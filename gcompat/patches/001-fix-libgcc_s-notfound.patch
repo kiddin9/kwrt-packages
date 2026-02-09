@@ -1,0 +1,11 @@
+--- a/Makefile
++++ b/Makefile
+@@ -76,7 +76,7 @@ ${LIBGCOMPAT_NAME}: ${LIBGCOMPAT_OBJ}
+ ${LIBGCOMPAT_OBJ}: ${LIBGCOMPAT_INCLUDE}
+ 
+ ${LOADER_NAME}: ${LOADER_OBJ}
+-	${CC} ${CFLAGS} ${LDFLAGS} -static-pie -o ${LOADER_NAME} ${LOADER_OBJ}
++	${CC} ${CFLAGS} ${LDFLAGS} -static-libgcc -static -o ${LOADER_NAME} ${LOADER_OBJ}
+ 
+ .c.o:
+ 	${CC} ${CPPFLAGS} ${CFLAGS} -c -D_BSD_SOURCE \

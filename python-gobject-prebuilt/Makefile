@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-gobject
 PKG_VERSION:=3.46.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=python311-gobject-prebuilt-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/jjm2473/openwrt-apps/releases/download/prebuilt/
@@ -21,7 +21,7 @@ define Package/python3-gobject
   CATEGORY:=Languages
   SUBMENU:=Python
   TITLE:=Python bindings for the GObject library
-  DEPENDS:=+gobject-introspection
+  DEPENDS:=@(x86_64||aarch64) +gobject-introspection
   URL:=https://pygobject.gnome.org
 endef
 
@@ -30,7 +30,7 @@ define Build/Configure
 endef
 
 define Build/Compile
-	rm -f $(PKG_BUILD_DIR)/*/lib/python3.*/site-packages/gi/_gi_cairo.*.so
+	rm -f $(PKG_BUILD_DIR)/*/usr/lib/python3.*/site-packages/gi/_gi_cairo.*.so
 endef
 
 define Package/python3-gobject/install
@@ -38,7 +38,7 @@ define Package/python3-gobject/install
 		$(1)/usr
 
 	$(CP) \
-		$(PKG_BUILD_DIR)/$(ARCH)/lib \
+		$(PKG_BUILD_DIR)/$(ARCH)/usr/lib \
 		$(1)/usr
 endef
 

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gobject-introspection
 PKG_VERSION:=1.78.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=gobject-introspection-prebuilt-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/jjm2473/openwrt-apps/releases/download/prebuilt/
@@ -37,7 +37,7 @@ define Package/gobject-introspection/install
 		$(1)/usr
 
 	$(CP) \
-		$(PKG_BUILD_DIR)/$(ARCH)/lib \
+		$(PKG_BUILD_DIR)/$(ARCH)/usr/lib \
 		$(1)/usr
 endef
 

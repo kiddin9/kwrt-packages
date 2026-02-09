@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=flash_fox
 PKG_VERSION:=1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Konstantine Shevlakov <shevlakov@132lan.ru>
 PKG_LICENSE:=LICENSE
@@ -21,7 +21,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
   SECTION:=utils
-  CATEGORY:=Utilites
+  CATEGORY:=Utilities
   MAINTAINER := Andrey Safonov <andrey.safonov@gmail.com>
   TITLE:=Tool for flashing Qualcomm T99W175 modems
   URL:=https://github.com/andrewz1/flash_fox/
