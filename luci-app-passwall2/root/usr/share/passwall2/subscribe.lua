@@ -249,10 +249,6 @@ do
 				[".name"] = "default_node",
 				remarks = i18n.translatef("Default")
 			})
-			table.insert(rules, {
-				[".name"] = "main_node",
-				remarks = i18n.translatef("Default Preproxy")
-			})
 
 			for k, e in pairs(rules) do
 				local _node_id = node[e[".name"]] or nil
