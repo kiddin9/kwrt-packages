@@ -171,7 +171,6 @@ jobs:
         git_clone https://github.com/linkease/istore && mv -n istore/luci/* ./; rm -rf istore
         #git_clone https://github.com/linkease/lcdsimple lcdsimple1 && mvdir lcdsimple1
         git_clone https://github.com/fcshark-org/openwrt-fchomo && mvdir openwrt-fchomo
-        git_clone https://github.com/Tokisaki-Galaxy/luci-app-tailscale-community tailscalec && mv -n tailscalec/luci-app-tailscale-community ./;rm -rf tailscalec
         ) &
         (
         git_clone https://github.com/frainzy1477/luci-app-clash
