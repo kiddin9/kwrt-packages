@@ -259,16 +259,7 @@ if (isset($_GET['action'])) {
             exit;
         }
 
-        $name = basename($name);
-        $name = str_replace(' ', '_', $name);
-        $name = preg_replace('/[\/:*?"<>|\s]/', '_', $name);
-        $name = preg_replace('/[^\w\-\.\u4e00-\u9fff]/u', '_', $name);
-        $name = preg_replace('/_+/', '_', $name);
-        $name = trim($name, '._-');
-    
-        if (empty($name)) {
-            $name = 'new_folder_' . time();
-        }
+        $name = preg_replace('/[\/:*?"<>|]/', '', $name);
         
         $path = rtrim($path, '/') . '/';
         $fullPath = $path . $name;
@@ -305,16 +296,7 @@ if (isset($_GET['action'])) {
             exit;
         }
         
-        $name = basename($name);
-        $name = str_replace(' ', '_', $name);
-        $name = preg_replace('/[\/:*?"<>|\s]/', '_', $name);
-        $name = preg_replace('/[^\w\-\.\u4e00-\u9fff]/u', '_', $name);
-        $name = preg_replace('/_+/', '_', $name);
-        $name = trim($name, '._-');
-    
-        if (empty($name)) {
-            $name = 'new_file_' . time() . '.txt';
-        }
+        $name = preg_replace('/[\/:*?"<>|]/', '', $name);
         
         $fullPath = $path . '/' . $name;
         $fullPath = preg_replace('#/+#', '/', $fullPath);
@@ -541,20 +523,6 @@ if (isset($_GET['action'])) {
         $uploadedFiles = [];
         $errors = [];
 
-        function sanitizeFilename($filename) {
-            $filename = basename($filename);
-            $filename = str_replace(' ', '_', $filename);
-            $filename = preg_replace('/[^\w\-\.\u4e00-\u9fff]/u', '_', $filename);
-            $filename = preg_replace('/_+/', '_', $filename);
-            $filename = trim($filename, '._-');
-        
-            if (empty($filename)) {
-                $filename = 'upload_' . time();
-            }
-        
-            return $filename;
-        }
-
         function generateUniqueFilename($directory, $filename) {
             $pathinfo = pathinfo($filename);
             $name = $pathinfo['filename'];
@@ -574,7 +542,7 @@ if (isset($_GET['action'])) {
             if (!is_array($_FILES['file']['name'])) {
                 $file = $_FILES['file'];
                 if ($file['error'] === UPLOAD_ERR_OK) {
-                    $fileName = sanitizeFilename($file['name']);
+                    $fileName = preg_replace('/[\/:*?"<>|]/', '_', basename($file['name']));
 
                     if (file_exists($realPath . '/' . $fileName)) {
                         $fileName = generateUniqueFilename($realPath, $fileName);
@@ -592,7 +560,7 @@ if (isset($_GET['action'])) {
                 $fileCount = count($_FILES['file']['name']);
                 for ($i = 0; $i < $fileCount; $i++) {
                     if ($_FILES['file']['error'][$i] === UPLOAD_ERR_OK) {
-                        $fileName = sanitizeFilename($_FILES['file']['name'][$i]);
+                        $fileName = preg_replace('/[\/:*?"<>|]/', '_', basename($_FILES['file']['name'][$i]));
 
                         if (file_exists($realPath . '/' . $fileName)) {
                             $fileName = generateUniqueFilename($realPath, $fileName);
@@ -634,17 +602,7 @@ if (isset($_GET['action'])) {
             exit;
         }
         
-        $name = basename($name);
-        $name = str_replace(' ', '_', $name);
-        $name = preg_replace('/[\/:*?"<>|\s]/', '_', $name);
-        $name = preg_replace('/[^\w\-\.\u4e00-\u9fff]/u', '_', $name);
-        $name = preg_replace('/_+/', '_', $name);
-        $name = trim($name, '._-');
-    
-        if (empty($newName)) {
-            echo json_encode(['success' => false, 'error' => 'Invalid file name']);
-            exit;
-        }
+        $newName = preg_replace('/[\/:*?"<>|]/', '', $newName);
         
         $oldPath = preg_replace('#/+#', '/', $oldPath);
         if (substr($oldPath, 0, 1) !== '/') {
@@ -4770,7 +4728,7 @@ list-group:hover {
         
         <div class="menu-item" id="fileCutItem" onclick="copyToClipboard('cut')">
             <i class="fas fa-cut me-2"></i>
-            <span data-translate="cut">Cut</span>
+            <span data-translate="menucut">Cut</span>
             <span style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;">Ctrl+X</span>
         </div>
         <div class="menu-item" id="fileCopyItem" onclick="copyToClipboard('copy')">
@@ -8171,6 +8129,8 @@ function copyToClipboard(action = 'copy') {
     const countText = (translations['items_count'] || '{count} item(s)')
         .replace('{count}', selectedFiles.size);
     
+    hideFileContextMenu();
+
     showLogMessage(`${actionText} ${countText}`, 'success');
     
     if (action === 'cut') {
@@ -8233,49 +8193,49 @@ async function pasteFromClipboard() {
         .replace('{count}', clipboardItems.paths.size)
         .replace('{target}', targetPath);
     
-    if (!confirm(confirmMessage)) return;
-    
-    let successCount = 0;
-    let errorCount = 0;
-    
-    for (const sourcePath of clipboardItems.paths) {
-        try {
-            const apiAction = operation === 'copy' ? 'copy_item' : 'move_item';
-            const response = await fetch(`?action=${apiAction}&source=${encodeURIComponent(sourcePath)}&dest=${encodeURIComponent(targetPath)}`);
-            const data = await response.json();
-            
-            if (data.success) {
-                successCount++;
-            } else {
-                errorCount++;
-                console.error('Operation failed:', data.error);
-            }
-        } catch (error) {
-            errorCount++;
-            console.error('Operation error:', error);
-        }
-    }
-    
-    if (clipboardItems.action === 'cut') {
-        clearClipboard();
-    }
-    
-    if (successCount > 0) {
-        const message = (translations['paste_success'] || 'Successfully {operation} {count} item(s)')
-            .replace('{operation}', operationText)
-            .replace('{count}', successCount);
-        showLogMessage(message, 'success');
-        refreshFiles();
-    }
-    
-    if (errorCount > 0) {
-        const message = (translations['paste_failed'] || 'Failed to {operation} {count} item(s)')
-            .replace('{operation}', operationText)
-            .replace('{count}', errorCount);
-        showLogMessage(message, 'error');
-    }
-    
     hideFileContextMenu();
+
+    showConfirmation(confirmMessage, async () => {
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (const sourcePath of clipboardItems.paths) {
+            try {
+                const apiAction = operation === 'copy' ? 'copy_item' : 'move_item';
+                const response = await fetch(`?action=${apiAction}&source=${encodeURIComponent(sourcePath)}&dest=${encodeURIComponent(targetPath)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                    console.error('Operation failed:', data.error);
+                }
+            } catch (error) {
+                errorCount++;
+                console.error('Operation error:', error);
+            }
+        }
+        
+        if (clipboardItems.action === 'cut') {
+            clearClipboard();
+        }
+        
+        if (successCount > 0) {
+            const message = (translations['paste_success'] || 'Successfully {operation} {count} item(s)')
+                .replace('{operation}', operationText)
+                .replace('{count}', successCount);
+            showLogMessage(message, 'success');
+            refreshFiles();
+        }
+        
+        if (errorCount > 0) {
+            const message = (translations['paste_failed'] || 'Failed to {operation} {count} item(s)')
+                .replace('{operation}', operationText)
+                .replace('{count}', errorCount);
+            showLogMessage(message, 'error');
+        }        
+    });
 }
 
 function clearClipboard() {
@@ -11638,6 +11598,20 @@ function closeAllEditorTabs() {
 }
 
 function editFile(path) {
+    const fileName = path.split('/').pop();
+    const ext = fileName.toLowerCase().split('.').pop();
+    
+    const archiveExts = ['zip', 'tar', 'gz', 'bz2', '7z', 'rar', 'tgz', 'tbz2'];
+    
+    if (archiveExts.includes(ext)) {
+        selectedFiles.clear();
+        selectedFiles.add(path);
+        updateFileSelection();
+        
+        showExtractDialog();
+        return;
+    }
+    
     openEditor(path);
     toggleView('editor');
 }
@@ -12208,7 +12182,9 @@ ${sha256Label} ${sha256}
     a.click();
     URL.revokeObjectURL(url);
     
-    showLogMessage(translations['hash_exported'] || 'Hash exported', 'success');
+    const successMsg = translations['hash_exported'] || 'Hash exported successfully';
+    showLogMessage(successMsg);
+    speakMessage(successMsg);
 }
 
 window.addEventListener('beforeunload', function(e) {

@@ -87,6 +87,10 @@ return L.view.extend({
 	    // bpf_rr => always picks the next available subflow to send data (round-robin)
 	}
 
+	scheduler.onchange = function(ev, section_id, value) {
+		return m.checkDepends();
+	};
+
 	if (parseFloat(boardinfo.kernel.substring(0,4)) < 6) {
 		o = s.option(form.Value, "mptcp_syn_retries", _("Multipath TCP SYN retries"));
 		o.datatype = "uinteger";
@@ -238,7 +242,7 @@ return L.view.extend({
 
 	s = m.section(form.TypedSection, "interface", _("Interfaces Settings"));
 	s.filter = function(section) {
-	    return (!section.match("^oip.*") && !section.match("^lo.*") && section != "omrvpn" && section != "omr6in4");
+	    return (!section.match("^oip.*") && !section.match("^lo.*") && section != "omrvpn" && section != "OWVPN" && section != "omr6in4");
 	}
 
 	o = s.option(form.ListValue, "multipath", _("Multipath TCP"), _("One interface must be set as master"));
@@ -253,7 +257,26 @@ return L.view.extend({
 	o.datatype = "uinteger";
 	o.rmempty = false;
 	o.default = 100;
-	//o.depends("mptcp_scheduler","mptcp_bpf_weight.o");
-	return m.render();
+
+	return m.render().then(function(mapEl) {
+		function updateWeightVisibility() {
+			var schedulerEl = document.getElementById('widget.cbid.network.globals.mptcp_scheduler');
+			var val = schedulerEl ? schedulerEl.value : (uci.get('network', 'globals', 'mptcp_scheduler') || '');
+			var show = val.toLowerCase().indexOf('weight') > -1;
+
+			mapEl.querySelectorAll('[data-name="multipath_weight"]').forEach(function(el) {
+				var row = el.closest('.cbi-value') || el;
+				row.style.display = show ? '' : 'none';
+			});
+		}
+
+		var schedulerEl = document.getElementById('widget.cbid.network.globals.mptcp_scheduler');
+		if (schedulerEl) {
+			schedulerEl.addEventListener('change', updateWeightVisibility);
+		}
+		updateWeightVisibility();
+
+		return mapEl;
+	});
     }
 });
