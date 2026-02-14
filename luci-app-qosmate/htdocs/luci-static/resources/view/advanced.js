@@ -194,6 +194,98 @@ return view.extend({
 
         createOption('NFT_PRIORITY', _('Nftables Priority'), _('Set the priority for the nftables chain. Lower values are processed earlier. Default is 0 | mangle is -150.'), _('0'), 'integer');
 
+        // Autorate Settings Section
+        s = m.section(form.NamedSection, 'autorate', 'autorate', _('Autorate Settings'),
+            _('Fine-tune the dynamic bandwidth adjustment algorithm. Enable Autorate in the Settings tab.'));
+        s.anonymous = true;
+
+        o = s.option(form.Value, 'interval', _('Measurement Interval (ms)'),
+            _('How often to measure latency and adjust bandwidth.'));
+        o.datatype = 'uinteger';
+        o.placeholder = '500';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'latency_increase_threshold', _('Latency Increase Threshold (ms)'),
+            _('Increase bandwidth when latency delta is below this value.'));
+        o.datatype = 'uinteger';
+        o.placeholder = '5';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'latency_decrease_threshold', _('Latency Decrease Threshold (ms)'),
+            _('Decrease bandwidth when latency delta exceeds this value.'));
+        o.datatype = 'uinteger';
+        o.placeholder = '10';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'reflectors', _('Ping Reflectors'),
+            _('Space-separated list of IP addresses for latency measurement.'));
+        o.placeholder = '1.1.1.1 8.8.8.8 9.9.9.9';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'refractory_increase', _('Refractory Period - Increase (s)'),
+            _('Minimum wait time after a rate increase before next adjustment.'));
+        o.datatype = 'uinteger';
+        o.placeholder = '3';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'refractory_decrease', _('Refractory Period - Decrease (s)'),
+            _('Minimum wait time after a rate decrease before next adjustment.'));
+        o.datatype = 'uinteger';
+        o.placeholder = '1';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'adjust_up_factor', _('Adjustment Factor - Increase (%)'),
+            _('Multiply current rate by this percentage when increasing (102 = 2% increase).'));
+        o.datatype = 'uinteger';
+        o.placeholder = '102';
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'adjust_down_factor', _('Adjustment Factor - Decrease (%)'),
+            _('Multiply current rate by this percentage when decreasing (85 = 15% decrease).'));
+        o.datatype = 'uinteger';
+        o.placeholder = '85';
+        o.rmempty = true;
+
+        o = s.option(form.Flag, 'log_changes', _('Log All Rate Changes'),
+            _('Log every rate change to system log (for debugging). May spam logs.'));
+        o.rmempty = false;
+
+        o = s.option(form.Value, 'min_ul_rate', _('Min Upload Rate (kbps)'),
+            _('Leave empty for auto-calculation (25% of configured upload rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'base_ul_rate', _('Base Upload Rate (kbps)'),
+            _('Leave empty for auto-calculation (100% of configured upload rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'max_ul_rate', _('Max Upload Rate (kbps)'),
+            _('Leave empty for auto-calculation (105% of configured upload rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'min_dl_rate', _('Min Download Rate (kbps)'),
+            _('Leave empty for auto-calculation (25% of configured download rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'base_dl_rate', _('Base Download Rate (kbps)'),
+            _('Leave empty for auto-calculation (100% of configured download rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
+        o = s.option(form.Value, 'max_dl_rate', _('Max Download Rate (kbps)'),
+            _('Leave empty for auto-calculation (105% of configured download rate).'));
+        o.datatype = 'uinteger';
+        o.placeholder = _('Auto');
+        o.rmempty = true;
+
         // Update settings
         s = m.section(form.NamedSection, 'global', 'global', _('Update Settings'));
         s.anonymous = true;

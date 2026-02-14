@@ -15,6 +15,14 @@ debug_log() {
     fi
 }
 
+# Return a safe unsigned integer for JSON number fields
+json_uint_or_zero() {
+    case "$1" in
+        ''|*[!0-9]*) printf '0' ;;
+        *) printf '%s' "$1" ;;
+    esac
+}
+
 # Function to safely get JSON from tc command
 get_tc_json() {
     local output
@@ -288,6 +296,120 @@ get_rrd_data() {
     fi
 }
 
+# Function to get autorate statistics (current state + config + history)
+get_autorate_stats() {
+    config_load qosmate
+    
+    local enabled
+    config_get enabled autorate enabled "0"
+    
+    if [ "$enabled" != "1" ]; then
+        echo '{"autorate_enabled":false}'
+        return
+    fi
+    
+    # Read current state from daemon's state file
+    local current='{"ul_rate":0,"dl_rate":0,"achieved_ul":0,"achieved_dl":0,"latency":0,"baseline":0,"ul_load_pct":0,"dl_load_pct":0}'
+    if [ -f "/tmp/qosmate-autorate-state" ]; then
+        local _ar_ul=0 _ar_dl=0 _ar_aul=0 _ar_adl=0 _ar_lat=0 _ar_bl=0 _ar_ulp=0 _ar_dlp=0
+        local _key _val
+        while IFS='=' read -r _key _val; do
+            case "$_key" in
+                ul_rate) _ar_ul="$_val" ;;
+                dl_rate) _ar_dl="$_val" ;;
+                achieved_ul) _ar_aul="$_val" ;;
+                achieved_dl) _ar_adl="$_val" ;;
+                latency) _ar_lat="$_val" ;;
+                baseline) _ar_bl="$_val" ;;
+                ul_load_pct) _ar_ulp="$_val" ;;
+                dl_load_pct) _ar_dlp="$_val" ;;
+            esac
+        done < "/tmp/qosmate-autorate-state"
+        _ar_ul=$(json_uint_or_zero "$_ar_ul")
+        _ar_dl=$(json_uint_or_zero "$_ar_dl")
+        _ar_aul=$(json_uint_or_zero "$_ar_aul")
+        _ar_adl=$(json_uint_or_zero "$_ar_adl")
+        _ar_lat=$(json_uint_or_zero "$_ar_lat")
+        _ar_bl=$(json_uint_or_zero "$_ar_bl")
+        _ar_ulp=$(json_uint_or_zero "$_ar_ulp")
+        _ar_dlp=$(json_uint_or_zero "$_ar_dlp")
+        current=$(printf '{"ul_rate":%s,"dl_rate":%s,"achieved_ul":%s,"achieved_dl":%s,"latency":%s,"baseline":%s,"ul_load_pct":%s,"dl_load_pct":%s}' \
+            "$_ar_ul" "$_ar_dl" "$_ar_aul" "$_ar_adl" "$_ar_lat" "$_ar_bl" "$_ar_ulp" "$_ar_dlp")
+    fi
+    
+    # Read config values (replicate defaults from autorate daemon)
+    local uprate downrate
+    config_get uprate settings UPRATE "0"
+    config_get downrate settings DOWNRATE "0"
+    
+    local base_ul base_dl min_ul min_dl max_ul max_dl dec_thr inc_thr
+    config_get base_ul autorate base_ul_rate ""
+    config_get base_dl autorate base_dl_rate ""
+    config_get min_ul autorate min_ul_rate ""
+    config_get min_dl autorate min_dl_rate ""
+    config_get max_ul autorate max_ul_rate ""
+    config_get max_dl autorate max_dl_rate ""
+    config_get dec_thr autorate latency_decrease_threshold "10"
+    config_get inc_thr autorate latency_increase_threshold "5"
+    
+    : "${base_ul:=$uprate}"
+    : "${base_dl:=$downrate}"
+    : "${min_ul:=$((uprate * 25 / 100))}"
+    : "${min_dl:=$((downrate * 25 / 100))}"
+    : "${max_ul:=$((uprate * 105 / 100))}"
+    : "${max_dl:=$((downrate * 105 / 100))}"
+    
+    # Convert thresholds to tenths of ms (matching daemon's internal format)
+    dec_thr=$((dec_thr * 10))
+    inc_thr=$((inc_thr * 10))
+
+    base_ul=$(json_uint_or_zero "$base_ul")
+    base_dl=$(json_uint_or_zero "$base_dl")
+    min_ul=$(json_uint_or_zero "$min_ul")
+    min_dl=$(json_uint_or_zero "$min_dl")
+    max_ul=$(json_uint_or_zero "$max_ul")
+    max_dl=$(json_uint_or_zero "$max_dl")
+    dec_thr=$(json_uint_or_zero "$dec_thr")
+    inc_thr=$(json_uint_or_zero "$inc_thr")
+    
+    local config
+    config=$(printf '{"base_ul":%s,"base_dl":%s,"min_ul":%s,"min_dl":%s,"max_ul":%s,"max_dl":%s,"decrease_threshold":%s,"increase_threshold":%s}' \
+        "$base_ul" "$base_dl" "$min_ul" "$min_dl" "$max_ul" "$max_dl" "$dec_thr" "$inc_thr")
+    
+    # Convert RAM CSV history to compact JSON arrays (60 min, 2s resolution)
+    # Format: [[ts,ul,dl,a_ul,a_dl,lat,bl,ulp,dlp], ...]
+    local history="[]"
+    if [ -f "/tmp/qosmate-autorate-history" ] && [ -s "/tmp/qosmate-autorate-history" ]; then
+        history=$(awk -F',' '{
+            for(i=1; i<=9; i++) {
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", $i)
+                if($i !~ /^[0-9]+$/) $i=0
+            }
+            if(NR>1) printf ","
+            printf "[%s,%s,%s,%s,%s,%s,%s,%s,%s]",$1,$2,$3,$4,$5,$6,$7,$8,$9
+        }' "/tmp/qosmate-autorate-history")
+        history="[${history}]"
+    fi
+    
+    # Convert Flash CSV history to JSON (30 days, 10-min bucket summaries)
+    # Format: [[ts,avg_ul,avg_dl,avg_a_ul,avg_a_dl,avg_lat,max_lat,avg_bl,avg_ulp,avg_dlp], ...]
+    local flash_history="[]"
+    if [ -f "/etc/qosmate.d/autorate_hourly.csv" ] && [ -s "/etc/qosmate.d/autorate_hourly.csv" ]; then
+        flash_history=$(awk -F',' '{
+            for(i=1; i<=10; i++) {
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", $i)
+                if($i !~ /^[0-9]+$/) $i=0
+            }
+            if(NR>1) printf ","
+            printf "[%s,%s,%s,%s,%s,%s,%s,%s,%s,%s]",$1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+        }' "/etc/qosmate.d/autorate_hourly.csv")
+        flash_history="[${flash_history}]"
+    fi
+    
+    printf '{"autorate_enabled":true,"current":%s,"config":%s,"history":%s,"flash_history":%s}\n' \
+        "$current" "$config" "$history" "$flash_history"
+}
+
 # Function to get nftables rule counters for active rules
 get_rule_counters() {
     local nft_output rules_json
@@ -345,6 +467,9 @@ handle_call() {
         getRuleCounters)
             get_rule_counters
             ;;
+        getAutorateStats)
+            get_autorate_stats
+            ;;
         *)
             echo '{"error": "Method not found"}'
             ;;
@@ -355,7 +480,7 @@ handle_call() {
 case "$1" in
     list)
         # List available methods
-        echo '{"getStats": {}, "getHistoricalStats": {}, "getRrdData": {}, "getRuleCounters": {}}'
+        echo '{"getStats": {}, "getHistoricalStats": {}, "getRrdData": {}, "getRuleCounters": {}, "getAutorateStats": {}}'
         ;;
     call)
         handle_call "$2"

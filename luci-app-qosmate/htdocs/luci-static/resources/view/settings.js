@@ -851,6 +851,42 @@ return view.extend({
                 return E('div');
             }
         };
+
+        // Autorate Section
+        var s_autorate = m.section(form.NamedSection, 'autorate', 'autorate', _('Dynamic Bandwidth (Autorate)'));
+        s_autorate.anonymous = true;
+
+        o = s_autorate.option(form.Flag, 'enabled', _('Enable Autorate'), 
+            _('Dynamically adjust bandwidth based on latency measurements. Fine-tune in Advanced tab.'));
+        o.rmempty = false;
+
+        o = s_autorate.option(form.DummyValue, '_autorate_status', _(''));
+        o.rawhtml = true;
+        o.render = function(section_id) {
+            var enabled = uci.get('qosmate', 'autorate', 'enabled');
+            if (enabled !== '1') {
+                return E('div');
+            }
+            
+            var uprate = parseInt(uci.get('qosmate', 'settings', 'UPRATE') || '0');
+            var downrate = parseInt(uci.get('qosmate', 'settings', 'DOWNRATE') || '0');
+            
+            var minUl = parseInt(uci.get('qosmate', 'autorate', 'min_ul_rate')) || Math.floor(uprate * 25 / 100);
+            var maxUl = parseInt(uci.get('qosmate', 'autorate', 'max_ul_rate')) || Math.floor(uprate * 105 / 100);
+            var minDl = parseInt(uci.get('qosmate', 'autorate', 'min_dl_rate')) || Math.floor(downrate * 25 / 100);
+            var maxDl = parseInt(uci.get('qosmate', 'autorate', 'max_dl_rate')) || Math.floor(downrate * 105 / 100);
+
+            return E('div', { 'class': 'cbi-value' }, [
+                E('label', { 'class': 'cbi-value-title' }, _('Active Range')),
+                E('div', { 'class': 'cbi-value-field' }, [
+                    E('span', { 'style': 'color: #2196F3;' }, '↓ '),
+                    minDl + ' - ' + maxDl + ' kbps',
+                    E('span', { 'style': 'margin: 0 12px; color: #666;' }, '|'),
+                    E('span', { 'style': 'color: #4CAF50;' }, '↑ '),
+                    minUl + ' - ' + maxUl + ' kbps'
+                ])
+            ]);
+        };
         
         return m.render();
     }

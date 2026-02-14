@@ -4,7 +4,7 @@
         "read": {
             "ubus": {
                 "luci.qosmate": [ "getConntrackDSCP" ],
-                "luci.qosmate_stats": [ "getStats", "getHistoricalStats", "getRrdData", "getRuleCounters" ],
+                "luci.qosmate_stats": [ "getStats", "getHistoricalStats", "getRrdData", "getRuleCounters", "getAutorateStats" ],
                 "luci": [ "getInitList", "setInitAction", "getInitActionStatus", "exec" ]
             },
             "uci": [ "qosmate" ],
@@ -17,7 +17,10 @@
                 "/etc/qosmate.d/custom_rules.nft": [ "read" ],
                 "/etc/qosmate.d/inline_dscptag.nft": [ "read" ],
                 "/tmp/qosmate_custom_rules_validation.txt": [ "read" ],
-                "/tmp/qosmate_stats_history.json": [ "read" ]                                                                     
+                "/tmp/qosmate_stats_history.json": [ "read" ],
+                "/tmp/qosmate-autorate-state": [ "read" ],
+                "/tmp/qosmate-autorate-history": [ "read" ],
+                "/etc/qosmate.d/autorate_hourly.csv": [ "read" ]
             }
         },
         "write": {
